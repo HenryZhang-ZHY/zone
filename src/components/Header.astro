@@ -1,0 +1,106 @@
+---
+import HeaderLink from './HeaderLink.astro'
+import { SITE_TITLE } from '../consts'
+---
+
+<header class="header">
+	<nav class="nav">
+		<div class="brand">
+			<a href="/">{SITE_TITLE}</a>
+		</div>
+		<ul class="nav-links">
+			<HeaderLink href="/">Writing</HeaderLink>
+			<HeaderLink href="/reading">Reading</HeaderLink>
+			<HeaderLink href="/listening">Listening</HeaderLink>
+		</ul>
+	</nav>
+</header>
+
+<style>
+	.header {
+		position: sticky;
+		top: 0;
+		z-index: 100;
+
+		background-color: var(--z-color-black);
+
+		border-color: var(--z-color-border);
+		border-bottom: 1px solid var(--z-color-white);
+	}
+
+	.nav {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+
+		margin: 0 auto;
+
+		max-width: 96rem;
+
+		padding: 0.75rem 1rem;
+	}
+
+	.brand a {
+		font-weight: 700;
+		letter-spacing: -0.02em;
+
+		font-size: var(--z-text-base);
+	}
+
+	.nav-links {
+		display: flex;
+		align-items: center;
+
+		gap: 1rem;
+	}
+
+	.nav-links a {
+		font-weight: 600;
+		color: var(--z-color-text-secondary);
+
+		font-size: var(--z-text-sm);
+	}
+
+	.nav-links a:hover,
+	.nav-links a.active {
+		color: var(--z-color-text-accent);
+	}
+
+	/* md	48rem (768px) */
+	@media (width >= 48rem) {
+		.nav {
+			padding: 1rem 1.5rem;
+		}
+
+		.brand a {
+			font-size: var(--z-text-lg);
+		}
+
+		.nav-links {
+			gap: 1.5rem;
+		}
+
+		.nav-links a {
+			font-size: var(--z-text-base);
+		}
+	}
+
+	/* lg	64rem (1024px) */
+	@media (width >= 64rem) {
+		.nav {
+			padding: 1.25rem 2rem;
+		}
+
+		.brand a {
+			font-size: var(--z-text-xl);
+		}
+
+		.nav-links {
+			gap: 2rem;
+		}
+
+		.nav-links a {
+			font-size: var(--z-text-lg);
+		}
+	}
+</style>

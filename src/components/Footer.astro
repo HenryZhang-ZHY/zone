@@ -1,0 +1,57 @@
+---
+const today = new Date()
+---
+
+<footer class="footer">
+	<ul>
+		<li><a href="/rss.xml" class="rss-footer-link">RSS Feed</a></li>
+	</ul>
+	<p class="copyright">&copy; {today.getFullYear()} shuzhi.zone All rights reserved.</p>
+</footer>
+
+<style>
+	.footer {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+
+		background-color: var(--z-color-black);
+
+		border-color: var(--z-color-border);
+		border-top: 1px solid var(--z-color-white);
+
+		font-size: var(--z-text-sm);
+	}
+
+	.footer ul {
+		list-style: none;
+	}
+
+	.copyright {
+		color: var(--z-color-text-secondary);
+
+		font-size: var(--z-text-2xs);
+	}
+
+	/* md	48rem (768px) */
+	@media (width >= 48rem) {
+		.footer {
+			font-size: var(--z-text-base);
+		}
+
+		.copyright {
+			font-size: var(--z-text-xs);
+		}
+	}
+
+	/* lg	64rem (1024px) */
+	@media (width >= 64rem) {
+		.footer {
+			font-size: var(--z-text-lg);
+		}
+
+		.copyright {
+			font-size: var(--z-text-sm);
+		}
+	}
+</style>

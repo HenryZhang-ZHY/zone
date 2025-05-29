@@ -1,0 +1,274 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+
+import { Image } from 'astro:assets'
+import { SITE_TITLE } from '../consts'
+import { getCollection } from 'astro:content'
+
+const episodes = await getCollection('podcast')
+---
+
+<BaseLayout title={`Podcast | ${SITE_TITLE}`}>
+  <main>
+    <section class="episodes-container">
+      {
+        episodes.map((episode, index) => (
+          <article class="episode-item">
+            <div class="episode-content">
+              <div class="episode-image">
+                <Image src={episode.data.ogImage} alt={episode.data.ogTitle} loading={index < 12 ? 'eager' : 'lazy'} width={100} height={100} />
+              </div>
+              <div class="episode-info">
+                <h2 class="episode-title">
+                  <a href={episode.data.ogUrl} class="episode-link" target="_blank" rel="noopener noreferrer">
+                    {episode.data.ogTitle}
+                  </a>
+                </h2>
+
+                <div class="episode-controls">
+                  <div class="audio-player">
+                    <audio controls preload="none">
+                      <source src={episode.data.ogAudio} type="audio/mpeg" />
+                      Your browser does not support the audio element.
+                    </audio>
+                  </div>
+                </div>
+
+                <div class="episode-meta">
+                  <a href={episode.data.ogUrl} class="external-link" target="_blank" rel="noopener noreferrer">
+                    View Original
+                    <svg class="external-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                      <polyline points="15,3 21,3 21,9" />
+                      <line x1="10" y1="14" x2="21" y2="3" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 4rem 2rem 6rem;
+    min-height: calc(100vh - 200px);
+  }
+
+  .episodes-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .episode-item {
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--z-color-hairline-light);
+  }
+
+  .episode-item:last-child {
+    border-bottom: none;
+  }
+
+  .episode-content {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+
+  .episode-image {
+    flex-shrink: 0;
+    width: 120px;
+    height: 120px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--z-color-bg-inline-code);
+  }
+
+  .episode-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .episode-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .episode-title {
+    font-size: var(--z-text-xl);
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 0 0 1rem 0;
+    color: var(--z-color-text);
+    letter-spacing: -0.01em;
+  }
+
+  .episode-link {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .episode-link:hover .episode-title {
+    color: var(--z-color-text-accent);
+  }
+
+  .episode-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .audio-player {
+    flex: 1;
+    height: 40px;
+    border-radius: 20px;
+    background: var(--z-color-bg-inline-code);
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .audio-player audio {
+    flex: 1;
+    height: 30px;
+  }
+
+  .episode-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: var(--z-text-sm);
+    color: var(--z-color-text-dimmed);
+  }
+
+  .external-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-weight: 400;
+    text-decoration: none;
+    color: var(--z-color-text-accent);
+  }
+
+  .external-link:hover {
+    text-decoration: underline;
+  }
+
+  .external-link-icon {
+    width: 12px;
+    height: 12px;
+    opacity: 0.6;
+  }
+
+  /* Loading state */
+  .loading {
+    opacity: 0.6;
+  }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 0;
+    color: var(--z-color-text-secondary);
+  }
+
+  .empty-state h3 {
+    font-size: var(--z-text-h4);
+    margin: 0 0 1rem 0;
+    color: var(--z-color-text);
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    main {
+      padding: 2rem 1.5rem 4rem;
+      max-width: 100%;
+    }
+
+    .episode-content {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .episode-image {
+      width: 100%;
+      height: 200px;
+      align-self: center;
+      max-width: 300px;
+    }
+
+    .episode-item {
+      padding: 1.5rem 0;
+    }
+
+    .episode-title {
+      font-size: var(--z-text-lg);
+      margin-bottom: 0.75rem;
+    }
+
+    .episode-controls {
+      gap: 0.75rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    main {
+      padding: 1.5rem 1rem 3rem;
+    }
+
+    .episode-item {
+      padding: 1.25rem 0;
+    }
+
+    .episode-title {
+      font-size: var(--z-text-base);
+      line-height: 1.25;
+    }
+
+    .episode-controls {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.75rem;
+    }
+
+    .audio-player {
+      height: 36px;
+      padding: 0 0.75rem;
+    }
+  }
+
+  /* Large screens */
+  @media (min-width: 1200px) {
+    main {
+      max-width: 728px;
+      padding: 5rem 2rem 8rem;
+    }
+
+    .episode-item {
+      padding: 2.5rem 0;
+    }
+
+    .episode-image {
+      width: 140px;
+      height: 140px;
+    }
+
+    .episode-title {
+      font-size: var(--z-text-2xl);
+    }
+  }
+</style>

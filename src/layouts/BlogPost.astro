@@ -1,0 +1,250 @@
+---
+import type { CollectionEntry } from 'astro:content'
+import FormattedDate from '../components/FormattedDate.astro'
+import BaseLayout from '../layouts/BaseLayout.astro'
+
+type Props = CollectionEntry<'blog'>['data']
+
+const { title, description, pubDate, updatedDate } = Astro.props
+---
+
+<BaseLayout title={title} description={description}>
+	<main>
+		<article>
+			<header class="article-header">
+				<h1 class="article-title">{title}</h1>
+				<div class="article-meta">
+					<time class="publish-date">
+						<FormattedDate date={pubDate} />
+					</time>
+					{
+						updatedDate && (
+							<div class="updated-date">
+								Updated on <FormattedDate date={updatedDate} />
+							</div>
+						)
+					}
+				</div>
+			</header>
+			<div class="article-content">
+				<slot />
+			</div>
+		</article>
+	</main>
+</BaseLayout>
+
+<style>
+	main {
+		max-width: 728px;
+		margin: 0 auto;
+		padding: 4rem 2rem 6rem;
+		min-height: calc(100vh - 200px);
+	}
+
+	article {
+		width: 100%;
+	}
+
+	.article-header {
+		margin-bottom: 3rem;
+		padding-bottom: 2rem;
+		border-bottom: 1px solid var(--z-color-hairline-light);
+		text-align: left;
+	}
+
+	.article-title {
+		font-size: clamp(var(--z-text-h3), 4vw, var(--z-text-h1));
+		font-weight: 700;
+		line-height: 1.2;
+		margin: 0 0 1.5rem 0;
+		letter-spacing: -0.02em;
+		color: var(--z-color-text);
+	}
+
+	.article-meta {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		font-size: var(--z-text-sm);
+		margin-bottom: 0;
+	}
+
+	.publish-date {
+		font-weight: 400;
+		color: var(--z-color-text-secondary);
+	}
+
+	.updated-date {
+		font-style: italic;
+		color: var(--z-color-text-dimmed);
+		font-size: var(--z-text-xs);
+	}
+
+	.article-content {
+		font-size: var(--z-text-lg);
+		line-height: var(--z-line-height);
+		color: var(--z-color-text);
+	}
+
+	.article-content :global(p) {
+		margin: var(--paragraph-spacing) 0;
+	}
+
+	.article-content :global(a) {
+		color: var(--z-color-text-accent);
+		text-decoration: none;
+		border-bottom: 1px solid transparent;
+	}
+
+	.article-content :global(a:hover) {
+		border-bottom-color: var(--z-color-text-accent);
+	}
+
+	.article-content :global(blockquote) {
+		margin: 2rem 0;
+		padding: 1.5rem 2rem;
+		border-left: 4px solid var(--z-color-hairline-light);
+		background: var(--z-color-bg-inline-code);
+		font-style: italic;
+		color: var(--z-color-text-secondary);
+	}
+
+	.article-content :global(blockquote p) {
+		margin: 0;
+	}
+
+	.article-content :global(ul),
+	.article-content :global(ol) {
+		margin: var(--paragraph-spacing) 0;
+		padding-left: 2rem;
+	}
+
+	.article-content :global(li) {
+		margin: 0.5rem 0;
+	}
+
+	.article-content :global(img) {
+		max-width: 100%;
+		height: auto;
+		border-radius: 8px;
+		margin: 2rem 0;
+		box-shadow: var(--z-shadow-md);
+	}
+
+	.article-content :global(table) {
+		width: 100%;
+		border-collapse: collapse;
+		margin: 2rem 0;
+		border: 1px solid var(--z-color-hairline-light);
+	}
+
+	.article-content :global(th),
+	.article-content :global(td) {
+		padding: 0.75rem 1rem;
+		text-align: left;
+		border-bottom: 1px solid var(--z-color-hairline-light);
+	}
+
+	.article-content :global(th) {
+		background: var(--z-color-bg-inline-code);
+		font-weight: 600;
+		color: var(--z-color-text);
+	}
+
+	.article-content :global(hr) {
+		border: none;
+		height: 1px;
+		background: var(--z-color-hairline-light);
+		margin: 3rem 0;
+	}
+
+	/* Responsive Design */
+	@media (max-width: 768px) {
+		main {
+			padding: 2rem 1.5rem 4rem;
+			max-width: 100%;
+		}
+
+		.article-header {
+			margin-bottom: 2rem;
+			padding-bottom: 1.5rem;
+		}
+
+		.article-title {
+			font-size: var(--z-text-4xl);
+			margin-bottom: 1rem;
+		}
+
+		.article-meta {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 0.5rem;
+		}
+
+		.article-content {
+			font-size: var(--z-text-base);
+		}
+
+		.article-content :global(h1) {
+			font-size: var(--z-text-h3);
+			margin-top: 2rem;
+		}
+
+		.article-content :global(h2) {
+			font-size: var(--z-text-h4);
+		}
+
+		.article-content :global(h3) {
+			font-size: var(--z-text-h5);
+		}
+
+		.article-content :global(blockquote) {
+			margin: 1.5rem 0;
+			padding: 1rem 1.5rem;
+		}
+	}
+
+	@media (max-width: 480px) {
+		main {
+			padding: 1.5rem 1rem 3rem;
+		}
+
+		.article-title {
+			font-size: var(--z-text-3xl);
+			line-height: 1.2;
+		}
+
+		.article-content {
+			font-size: var(--z-text-sm);
+		}
+
+		.article-content :global(h1) {
+			font-size: var(--z-text-h4);
+		}
+
+		.article-content :global(h2) {
+			font-size: var(--z-text-h5);
+		}
+
+		.article-content :global(h3) {
+			font-size: var(--z-text-lg);
+		}
+	}
+
+	/* Large screens */
+	@media (min-width: 1200px) {
+		main {
+			max-width: 768px;
+			padding: 5rem 2rem 8rem;
+		}
+
+		.article-header {
+			margin-bottom: 4rem;
+		}
+
+		.article-content {
+			font-size: var(--z-text-xl);
+			line-height: 1.75;
+		}
+	}
+</style>

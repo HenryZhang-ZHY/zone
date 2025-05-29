@@ -1,0 +1,141 @@
+:root {
+	color-scheme: light dark;
+
+	--z-font-system-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+	--__z-font: 'IBM Plex Mono', 'LXGW WenKai', var(--z-font-system-mono);
+
+	--z-line-height: 1.6875;
+
+	--z-color-white: light-dark(hsl(224, 10%, 10%), hsl(0, 0%, 100%));
+	--z-color-black: light-dark(hsl(0, 0%, 100%), hsl(224, 10%, 10%));
+
+	--z-color-gray-1: light-dark(hsl(224, 14%, 16%), hsl(224, 20%, 94%));
+	--z-color-gray-2: light-dark(hsl(224, 10%, 23%), hsl(224, 6%, 77%));
+	--z-color-gray-3: light-dark(hsl(224, 7%, 36%), hsl(224, 6%, 56%));
+	--z-color-gray-4: light-dark(hsl(224, 6%, 56%), hsl(224, 7%, 36%));
+	--z-color-gray-5: light-dark(hsl(224, 6%, 77%), hsl(224, 10%, 23%));
+	--z-color-gray-6: light-dark(hsl(224, 20%, 94%), hsl(224, 14%, 16%));
+
+	--z-hue-orange: 41;
+	--z-color-orange-high: light-dark((var(--z-hue-orange), 80%, 25%), hsl(var(--z-hue-orange), 39%, 22%));
+	--z-color-orange: light-dark((var(--z-hue-orange), 90%, 60%), hsl(var(--z-hue-orange), 82%, 63%));
+	--z-color-orange-low: light-dark((var(--z-hue-orange), 90%, 88%), hsl(var(--z-hue-orange), 82%, 87%));
+
+	--z-hue-green: 101;
+	--z-color-green-high: light-dark(hsl(var(--z-hue-green), 80%, 22%), hsl(var(--z-hue-green), 39%, 22%));
+	--z-color-green: light-dark(hsl(var(--z-hue-green), 90%, 46%), hsl(var(--z-hue-green), 82%, 63%));
+	--z-color-green-low: light-dark(hsl(var(--z-hue-green), 85%, 90%), hsl(var(--z-hue-green), 82%, 80%));
+
+	--z-hue-blue: 234;
+	--z-color-blue-high: light-dark(hsl(var(--z-hue-blue), 80%, 30%), hsl(var(--z-hue-blue), 54%, 20%));
+	--z-color-blue: light-dark(hsl(var(--z-hue-blue), 90%, 60%), hsl(var(--z-hue-blue), 100%, 60%));
+	--z-color-blue-low: light-dark(hsl(var(--z-hue-blue), 88%, 90%), hsl(var(--z-hue-blue), 100%, 87%));
+
+	--z-hue-purple: 281;
+	--z-color-purple-high: light-dark(hsl(var(--z-hue-purple), 90%, 30%), hsl(var(--z-hue-purple), 39%, 22%));
+	--z-color-purple: light-dark(hsl(var(--z-hue-purple), 90%, 60%), hsl(var(--z-hue-purple), 82%, 63%));
+	--z-color-purple-low: light-dark(hsl(var(--z-hue-purple), 80%, 90%), hsl(var(--z-hue-purple), 82%, 89%));
+
+	--z-hue-red: 339;
+	--z-color-red-high: light-dark(hsl(var(--z-hue-red), 80%, 30%), hsl(var(--z-hue-red), 39%, 22%));
+	--z-color-red: light-dark(hsl(var(--z-hue-red), 90%, 60%), hsl(var(--z-hue-red), 82%, 63%));
+	--z-color-red-low: light-dark(hsl(var(--z-hue-red), 80%, 90%), hsl(var(--z-hue-red), 82%, 87%));
+
+	--z-color-accent-high: light-dark(hsl(234, 80%, 30%), hsl(224, 54%, 20%));
+	--z-color-accent: light-dark(hsl(234, 90%, 60%), hsl(224, 100%, 60%));
+	--z-color-accent-low: light-dark(hsl(234, 88%, 90%), hsl(224, 100%, 85%));
+
+	--z-color-text: light-dark(var(--z--whitcolore), var(--z-color-gray-2));
+	--z-color-text-accent: light-dark(var(--z-color-accent), var(--z-color-accent-high));
+	--z-color-text-invert: light-dark(var(--z-color-black), var(--z-color-accent-low));
+
+	--z-color-text-secondary: var(--z-color-gray-3);
+	--z-color-text-dimmed: var(--z-color-gray-4);
+
+	--z-color-bg-nav: light-dark(var(--z-color-gray-7), var(--z-color-gray-6));
+	--z-color-bg-sidebar: light-dark(var(--z-color-bg), var(--z-color-gray-6));
+	--z-color-bg-inline-code: light-dark(var(--z-color-gray-6), var(--z-color-gray-5));
+	--z-color-bg-accent: light-dark(var(--z-color-accent), var(--z-color-accent-high));
+
+	--z-color-hairline-light: light-dark(var(--z-color-gray-6), var(--z-color-gray-5));
+	--z-color-hairline-shade: light-dark(var(--z-color-gray-6), var(--z-color-black));
+
+	--z-color-backdrop-overlay: light-dark(hsla(225, 9%, 36%, .66), hsla(223, 13%, 10%, .66));
+
+	--z-shadow-sm: 0px 1px 1px light-dark(hsla(0, 0%, 0%, .06), hsla(0, 0%, 0%, .12)), 0px 2px 1px light-dark(hsla(0, 0%, 0%, .06), hsla(0, 0%, 0%, .24));
+	--z-shadow-md: 0px 8px 4px light-dark(hsla(0, 0%, 0%, .03), hsla(0, 0%, 0%, .08)), 0px 5px 2px light0dark(hsla(0, 0%, 0%, .03), hsla(0, 0%, 0%, .12)), 0px 3px 2px light-dark(hsla(0, 0%, 0%, .06), hsla(0, 0%, 0%, .15)), 0px 1px 1px light0dark(hsla(0, 0%, 0%, .06), hsla(0, 0%, 0%, .15));
+	--z-shadow-lg: 0px 25px 7px light-dark(rgba(0, 0, 0, .01), hsla(0, 0%, 0%, .03)), 0px 16px 6px light0dark(hsla(0, 0%, 0%, .03), hsla(0, 0%, 0%, .1)), 0px 9px 5px light-dark(hsla(223, 13%, 10%, .08), hsla(223, 13%, 10%, .33)), 0px 4px 4px light-dark(hsla(0, 0%, 0%, .16), hsla(0, 0%, 0%, .75)), 0px 4px 2px light-dark(hsla(0, 0%, 0%, .04), hsla(0, 0%, 0%, .25));
+
+	--z-text-2xs: 0.75rem;
+	/* 12px */
+	--z-text-xs: 0.8125rem;
+	/* 13px */
+	--z-text-sm: 0.875rem;
+	/* 14px */
+	--z-text-base: 1rem;
+	/* 16px */
+	--z-text-lg: 1.125rem;
+	/* 18px */
+	--z-text-xl: 1.25rem;
+	/* 20px */
+	--z-text-2xl: 1.375rem;
+	/* 22px */
+	--z-text-3xl: 1.5625rem;
+	/* 25px */
+	--z-text-4xl: 1.875rem;
+	/* 30px */
+	--z-text-5xl: 2.5rem;
+	/* 40px */
+	--z-text-6xl: 3.25rem;
+	/* 52px */
+
+	--z-text-h1: 2rem;
+	--z-text-h2: var(--z-text-4xl);
+	--z-text-h3: 1.5rem;
+	--z-text-h4: var(--z-text-xl);
+	--z-text-h5: var(--z-text-lg);
+
+	--paragraph-spacing: 1.375rem;
+
+}
+
+@media (min-width: 50rem) {
+	:root {
+		--z-text-h1: 2.5rem;
+		--z-text-h2: 2rem;
+		--z-text-h3: 1.5625rem;
+		--z-text-h4: 1.25rem;
+	}
+}
+
+*,
+*:before,
+*:after {
+	box-sizing: border-box
+}
+
+* {
+	margin: 0
+}
+
+body {
+	font-family: var(--__z-font);
+	line-height: var(--z-line-height);
+	-webkit-font-smoothing: antialiased;
+	text-underline-offset: 0.1875rem;
+
+	color: var(--z-color-text);
+	background-color: var(--z-color-bg);
+}
+
+a {
+	color: var(--z-color-text);
+	text-decoration: none;
+}
+
+a:hover,
+a:active,
+a.active {
+	color: var(--z-color-text-accent);
+}
