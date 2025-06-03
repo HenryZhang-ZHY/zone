@@ -1,8 +1,8 @@
 ---
 title: 'Separation of Concerns'
 description: ''
-pubDate: 'May 31 2025'
-updatedDate: 'Jun 2 2025'
+pubDate: 2025-05-31
+updatedDate: 2025-06-02
 ---
 
 **关注点分离**（Separation of Concerns，简称 **SoC**）是一种思考方式，主张不要同时处理问题的多个方面，而是集中精力深入研究某一特定方面，有意识地将其他方面暂时搁置。[^1]
