@@ -19,4 +19,14 @@ const book = defineCollection({
 	}),
 });
 
-export const collections = { blog, book };
+const podcast = defineCollection({
+	loader: file('./src/content/podcast.yaml'),
+	schema: z.object({
+		ogTitle: z.string(),
+		ogUrl: z.string().url(),
+		ogImage: z.string().url(),
+		ogAudio: z.string().url(),
+	}),
+});
+
+export const collections = { blog, book, podcast };
