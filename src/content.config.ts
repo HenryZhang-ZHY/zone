@@ -15,7 +15,8 @@ const book = defineCollection({
 	loader: file('./src/content/book.yaml'),
 	schema: z.object({
 		title: z.string(),
-		url: z.string().url(),
+		ogUrl: z.string().url(),
+		ogImage: z.string().url(),
 	}),
 });
 

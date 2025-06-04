@@ -1,6 +1,7 @@
 ---
 import BaseHead from '../components/BaseHead.astro'
 import Header from '../components/Header.astro'
+import Image from 'astro/components/Image.astro'
 import Footer from '../components/Footer.astro'
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts'
 import { getCollection } from 'astro:content'
@@ -27,73 +28,31 @@ const books = await getCollection('book')
       }
 
       main {
-        max-width: 680px;
+        max-width: 1000px;
         margin: 0 auto;
         padding: 4rem 2rem 6rem;
         min-height: calc(100vh - 200px);
       }
 
-      .books-container {
-        display: flex;
-        flex-direction: column;
-        gap: 0;
+      .page-header {
+        text-align: center;
+        margin-bottom: 3rem;
       }
 
-      .book-item {
-        padding: 2rem 0;
-        border-bottom: 1px solid #f0f0f0;
-      }
-
-      .book-item:last-child {
-        border-bottom: none;
-      }
-
-      .book-link {
-        display: block;
-        text-decoration: none;
-        color: inherit;
-        transition: transform 0.2s ease;
-      }
-
-      .book-link:hover {
-        transform: translateY(-2px);
-      }
-
-      .book-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        line-height: 1.3;
-        margin: 0 0 0.5rem 0;
+      .page-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin: 0 0 1rem 0;
         color: #1a1a1a;
-        letter-spacing: -0.01em;
+        letter-spacing: -0.02em;
       }
 
-      .book-link:hover .book-title {
-        color: #0066cc;
+      .page-description {
+        font-size: 1.125rem;
+        color: #6b6b6b;
+        margin: 0 0 2rem 0;
       }
 
-      .book-meta {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        font-size: 0.875rem;
-        color: #999;
-      }
-
-      .book-source {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.25rem;
-        font-weight: 400;
-      }
-
-      .external-link-icon {
-        width: 12px;
-        height: 12px;
-        opacity: 0.6;
-      }
-
-      /* Book count indicator */
       .books-count {
         font-size: 0.875rem;
         color: #999;
@@ -101,17 +60,64 @@ const books = await getCollection('book')
         text-align: center;
       }
 
-      /* Empty state */
-      .empty-state {
-        text-align: center;
-        padding: 4rem 0;
-        color: #6b6b6b;
+      .books-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
       }
 
-      .empty-state h3 {
-        font-size: 1.5rem;
-        margin: 0 0 1rem 0;
+      .book-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem;
+        border-radius: 16px;
+        background: #ffffff;
+        text-align: center;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      .book-cover {
+        flex-shrink: 0;
+        width: 120px;
+        height: 180px;
+        overflow: hidden;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+      }
+
+      .book-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .book-content {
+        flex: 1;
+        min-width: 0;
+        width: 100%;
+      }
+
+      .book-link {
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .book-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        line-height: 1.4;
+        margin: 0;
         color: #1a1a1a;
+      }
+
+      .book-link:hover .book-title {
+        color: #0066cc;
       }
 
       /* Responsive Design */
@@ -122,7 +128,7 @@ const books = await getCollection('book')
         }
 
         .page-title {
-          font-size: 1.75rem;
+          font-size: 2rem;
         }
 
         .page-description {
@@ -130,17 +136,23 @@ const books = await getCollection('book')
           margin-bottom: 2rem;
         }
 
+        .books-container {
+          grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+          gap: 1.5rem;
+        }
+
         .book-item {
-          padding: 1.5rem 0;
+          padding: 1.5rem;
+        }
+
+        .book-cover {
+          width: 100px;
+          height: 150px;
+          margin-bottom: 1rem;
         }
 
         .book-title {
-          font-size: 1.375rem;
-          margin-bottom: 0.5rem;
-        }
-
-        .book-meta {
-          font-size: 0.8125rem;
+          font-size: 1rem;
         }
       }
 
@@ -150,28 +162,53 @@ const books = await getCollection('book')
         }
 
         .page-title {
-          font-size: 1.5rem;
+          font-size: 1.75rem;
+        }
+
+        .books-container {
+          grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+          gap: 1rem;
         }
 
         .book-item {
-          padding: 1.25rem 0;
+          padding: 1.25rem;
+        }
+
+        .book-cover {
+          width: 80px;
+          height: 120px;
         }
 
         .book-title {
-          font-size: 1.25rem;
-          line-height: 1.25;
+          font-size: 0.95rem;
+          line-height: 1.3;
         }
       }
 
       /* Large screens */
       @media (min-width: 1200px) {
         main {
-          max-width: 728px;
+          max-width: 1000px;
           padding: 5rem 2rem 8rem;
         }
 
+        .books-container {
+          grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+          gap: 2.5rem;
+        }
+
         .book-item {
-          padding: 2.5rem 0;
+          padding: 2.5rem;
+        }
+
+        .book-cover {
+          width: 140px;
+          height: 210px;
+          margin-bottom: 2rem;
+        }
+
+        .book-title {
+          font-size: 1.25rem;
         }
 
         .page-description {
@@ -183,22 +220,25 @@ const books = await getCollection('book')
   <body>
     <Header />
     <main>
+      <header class="page-header">
+        <h1 class="page-title">Reading List</h1>
+        <p class="page-description">Books that have shaped my thinking and approach to work and life.</p>
+      </header>
+
       <section class="books-container">
         {
-          books.length > 0 ? (
-            books.map((book) => (
-              <article class="book-item">
-                <a href={book.data.url} class="book-link" target="_blank" rel="noopener noreferrer">
+          books.map((book) => (
+            <div class="book-item">
+              <a href={book.data.ogUrl} class="book-link" target="_blank" rel="noopener noreferrer">
+                <div class="book-cover">
+                  <Image src={book.data.ogImage} alt={`Cover of ${book.data.title}`} loading={'lazy'} width={140} height={210} referrerpolicy={'no-referrer'} />
+                </div>
+                <div class="book-content">
                   <h2 class="book-title">{book.data.title}</h2>
-                </a>
-              </article>
-            ))
-          ) : (
-            <div class="empty-state">
-              <h3>No books yet</h3>
-              <p>Check back later for new additions to the reading list.</p>
+                </div>
+              </a>
             </div>
-          )
+          ))
         }
       </section>
     </main>
