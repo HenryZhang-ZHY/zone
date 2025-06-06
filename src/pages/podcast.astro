@@ -247,11 +247,11 @@ const episodes = await getCollection('podcast')
     <main>
       <section class="episodes-container">
         {
-          episodes.map((episode) => (
+          episodes.map((episode, index) => (
             <article class="episode-item">
               <div class="episode-content">
                 <div class="episode-image">
-                  <Image src={episode.data.ogImage} alt={episode.data.ogTitle} loading={'lazy'} width={100} height={100} />
+                  <Image src={episode.data.ogImage} alt={episode.data.ogTitle} loading={index < 12 ? 'eager' : 'lazy'} width={100} height={100} />
                 </div>
                 <div class="episode-info">
                   <h2 class="episode-title">
