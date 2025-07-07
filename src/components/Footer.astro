@@ -4,6 +4,9 @@ const today = new Date()
 
 <footer>
 	<div class="footer-content">
+		<div class="footer-links">
+			<a href="/rss.xml" class="rss-footer-link">RSS Feed</a>
+		</div>
 		<p>&copy; {today.getFullYear()} shuzhi.zone All rights reserved.</p>
 	</div>
 </footer>
@@ -20,6 +23,22 @@ const today = new Date()
 		margin: 0 auto;
 		padding: 2rem;
 		text-align: center;
+	}
+
+	.footer-links {
+		margin-bottom: 1rem;
+	}
+
+	.rss-footer-link {
+		color: #6b6b6b;
+		text-decoration: none;
+		font-size: 0.875rem;
+		font-weight: 500;
+		transition: color 0.2s ease;
+	}
+
+	.rss-footer-link:hover {
+		color: #ff6600;
 	}
 
 	footer p {
@@ -39,6 +58,10 @@ const today = new Date()
 		footer p {
 			font-size: 0.8125rem;
 		}
+
+		.rss-footer-link {
+			font-size: 0.8125rem;
+		}
 	}
 
 	@media (max-width: 480px) {
@@ -47,6 +70,10 @@ const today = new Date()
 		}
 
 		footer p {
+			font-size: 0.75rem;
+		}
+
+		.rss-footer-link {
 			font-size: 0.75rem;
 		}
 	}
@@ -58,6 +85,10 @@ const today = new Date()
 		}
 
 		footer p {
+			font-size: 0.9375rem;
+		}
+
+		.rss-footer-link {
 			font-size: 0.9375rem;
 		}
 	}
