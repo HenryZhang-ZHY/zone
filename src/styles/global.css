@@ -1,6 +1,7 @@
 :root {
 	color-scheme: light dark;
 
+	--z-font-system: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 	--z-font-system-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
 	--__z-font: 'IBM Plex Mono', 'LXGW WenKai', var(--z-font-system-mono);
@@ -95,6 +96,29 @@
 	--z-text-h3: 1.5rem;
 	--z-text-h4: var(--z-text-xl);
 	--z-text-h5: var(--z-text-lg);
+
+	--z-nav-height: 3.5rem;
+	--z-nav-pad-x: 1rem;
+	--z-nav-pad-y: .75rem;
+
+	--z-mobile-toc-height: 3rem;
+
+	--z-sidebar-width: 18.75rem;
+	--z-sidebar-pad-x: 1rem;
+
+	--z-content-width: 45rem;
+	--z-content-pad-x: 1rem;
+
+	--z-menu-button-size: 2rem;
+
+	--z-nav-gap: var(--z-content-pad-x);
+
+	--z-outline-offset-inside: -.1875rem;
+
+	--z-z-index-toc: 4;
+	--z-z-index-menu: 5;
+	--z-z-index-navbar: 10;
+	--z-z-index-skiplink: 20;
 
 	--paragraph-spacing: 1.375rem;
 
