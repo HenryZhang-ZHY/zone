@@ -175,7 +175,6 @@ fn print_text(result: ExecutionResult) {
 
 这其实是对“倒推法”的应用，从预期的结果出发，假设各个关注点已经被分离开，把“分离”的任务变成我们更加熟悉的“组合”任务，问题的难度就会大大降低。
 
-## 参考资料
 
 [^1]: [E.W. Dijkstra Archive: On the role of scientific thought (EWD447)](https://www.cs.utexas.edu/~EWD/transcriptions/EWD04xx/EWD447.html)
 
