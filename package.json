@@ -9,12 +9,12 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.3.7",
-    "@astrojs/rss": "^4.0.12",
+    "@astrojs/mdx": "^4.3.8",
+    "@astrojs/rss": "^4.0.13",
     "@astrojs/sitemap": "^3.6.0",
     "@fontsource/ibm-plex-mono": "^5.2.7",
     "@fontsource/lxgw-wenkai": "^5.2.5",
-    "astro": "^5.14.8",
+    "astro": "^5.15.1",
     "astro-expressive-code": "^0.41.3",
     "normalize.css": "^8.0.1"
   },
