@@ -10,24 +10,17 @@ const books = await getCollection('book')
 
 <BaseLayout title={`Reading List | ${SITE_TITLE}`}>
   <main>
-    <header class="page-header">
-      <h1 class="page-title">Reading List</h1>
-      <p class="page-description">Books that have shaped my thinking and approach to work and life.</p>
-    </header>
-
     <section class="books-container">
       {
         books.map((book, index) => (
-          <div class="book-item">
+          <article class="book-item">
             <a href={book.data.ogUrl} class="book-link" target="_blank" rel="noopener noreferrer">
               <div class="book-cover">
                 <Image src={book.data.ogImage} alt={`Cover of ${book.data.title}`} loading={index < 12 ? 'eager' : 'lazy'} width={140} height={210} referrerpolicy={'no-referrer'} />
               </div>
-              <div class="book-content">
-                <h2 class="book-title">{book.data.title}</h2>
-              </div>
+              <h2 class="book-title">{book.data.title}</h2>
             </a>
-          </div>
+          </article>
         ))
       }
     </section>
@@ -40,76 +33,21 @@ const books = await getCollection('book')
   }
 
   main {
-    max-width: 1000px;
+    max-width: 960px;
     margin: 0 auto;
     padding: 4rem 2rem 6rem;
     min-height: calc(100vh - 200px);
   }
 
-  .page-header {
-    text-align: center;
-    margin-bottom: 3rem;
-  }
-
-  .page-title {
-    font-size: var(--z-text-5xl);
-    font-weight: 800;
-    margin: 0 0 1rem 0;
-    color: var(--z-color-text);
-    letter-spacing: -0.02em;
-  }
-
-  .page-description {
-    font-size: var(--z-text-lg);
-    color: var(--z-color-text-secondary);
-    margin: 0 0 2rem 0;
-  }
-
-  .books-count {
-    font-size: var(--z-text-sm);
-    color: var(--z-color-text-dimmed);
-    margin-bottom: 2rem;
-    text-align: center;
-  }
-
   .books-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 2rem;
-    margin-top: 3rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3rem 2rem;
   }
 
   .book-item {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 2rem;
-    border-radius: 16px;
-    background: var(--z-color-bg-inline-code);
-    text-align: center;
-    border-bottom: 1px solid var(--z-color-hairline-light);
-  }
-
-  .book-cover {
-    flex-shrink: 0;
-    width: 120px;
-    height: 180px;
-    overflow: hidden;
-    border-radius: 12px;
-    margin-bottom: 1.5rem;
-  }
-
-  .book-cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  .book-content {
-    flex: 1;
-    min-width: 0;
-    width: 100%;
   }
 
   .book-link {
@@ -117,7 +55,23 @@ const books = await getCollection('book')
     color: inherit;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    gap: 1rem;
+  }
+
+  .book-cover {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: var(--z-color-gray-6);
+    border: 1px solid var(--z-color-hairline-light);
+  }
+
+  .book-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    background: var(--z-color-gray-6);
   }
 
   .book-title {
@@ -136,31 +90,15 @@ const books = await getCollection('book')
   @media (max-width: 768px) {
     main {
       padding: 2rem 1.5rem 4rem;
-      max-width: 100%;
-    }
-
-    .page-title {
-      font-size: var(--z-text-h1);
-    }
-
-    .page-description {
-      font-size: var(--z-text-base);
-      margin-bottom: 2rem;
     }
 
     .books-container {
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem 1.5rem;
     }
 
-    .book-item {
-      padding: 1.5rem;
-    }
-
-    .book-cover {
-      width: 100px;
-      height: 150px;
-      margin-bottom: 1rem;
+    .book-link {
+      gap: 0.75rem;
     }
 
     .book-title {
@@ -173,22 +111,13 @@ const books = await getCollection('book')
       padding: 1.5rem 1rem 3rem;
     }
 
-    .page-title {
-      font-size: var(--z-text-h3);
-    }
-
     .books-container {
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-      gap: 1rem;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem 1.25rem;
     }
 
-    .book-item {
-      padding: 1.25rem;
-    }
-
-    .book-cover {
-      width: 80px;
-      height: 120px;
+    .book-link {
+      gap: 0.5rem;
     }
 
     .book-title {
@@ -198,33 +127,24 @@ const books = await getCollection('book')
   }
 
   /* Large screens */
-  @media (min-width: 1200px) {
-    main {
-      max-width: 1000px;
-      padding: 5rem 2rem 8rem;
-    }
-
+  @media (min-width: 1024px) {
     .books-container {
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 2.5rem;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4rem 3rem;
     }
 
-    .book-item {
-      padding: 2.5rem;
-    }
-
-    .book-cover {
-      width: 140px;
-      height: 210px;
-      margin-bottom: 2rem;
+    .book-link {
+      gap: 1.25rem;
     }
 
     .book-title {
       font-size: var(--z-text-xl);
     }
+  }
 
-    .page-description {
-      margin-bottom: 4rem;
+  @media (min-width: 1280px) {
+    .books-container {
+      grid-template-columns: repeat(6, 1fr);
     }
   }
 </style>

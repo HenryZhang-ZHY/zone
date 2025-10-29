@@ -26,23 +26,25 @@ const episodes = await getCollection('podcast')
                 </h2>
 
                 <div class="episode-controls">
-                  <div class="audio-player">
-                    <audio controls preload="none">
+                  <div class="audio-player" data-audio-src={episode.data.ogAudio}>
+                    <button class="play-button" aria-label="Play">
+                      <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                      <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                        <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+                      </svg>
+                    </button>
+                    <span class="time-current">0:00</span>
+                    <div class="progress-bar">
+                      <div class="progress-fill"></div>
+                      <input type="range" class="progress-slider" min="0" max="100" value="0" step="0.1" aria-label="Seek">
+                    </div>
+                    <span class="time-duration">0:00</span>
+                    <audio preload="none">
                       <source src={episode.data.ogAudio} type="audio/mpeg" />
-                      Your browser does not support the audio element.
                     </audio>
                   </div>
-                </div>
-
-                <div class="episode-meta">
-                  <a href={episode.data.ogUrl} class="external-link" target="_blank" rel="noopener noreferrer">
-                    View Original
-                    <svg class="external-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                      <polyline points="15,3 21,3 21,9" />
-                      <line x1="10" y1="14" x2="21" y2="3" />
-                    </svg>
-                  </a>
                 </div>
               </div>
             </div>
@@ -59,7 +61,7 @@ const episodes = await getCollection('podcast')
   }
 
   main {
-    max-width: 680px;
+    max-width: 960px;
     margin: 0 auto;
     padding: 4rem 2rem 6rem;
     min-height: calc(100vh - 200px);
@@ -88,17 +90,16 @@ const episodes = await getCollection('podcast')
 
   .episode-image {
     flex-shrink: 0;
-    width: 120px;
-    height: 120px;
-    border-radius: 8px;
+    width: 100px;
+    height: 100px;
     overflow: hidden;
-    background: var(--z-color-bg-inline-code);
   }
 
   .episode-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
   }
 
   .episode-info {
@@ -107,10 +108,10 @@ const episodes = await getCollection('podcast')
   }
 
   .episode-title {
-    font-size: var(--z-text-xl);
+    font-size: var(--z-text-h4);
     font-weight: 700;
     line-height: 1.3;
-    margin: 0 0 1rem 0;
+    margin: 0 0 0.75rem 0;
     color: var(--z-color-text);
     letter-spacing: -0.01em;
   }
@@ -120,7 +121,7 @@ const episodes = await getCollection('podcast')
     text-decoration: none;
   }
 
-  .episode-link:hover .episode-title {
+  .episode-link:hover {
     color: var(--z-color-text-accent);
   }
 
@@ -128,23 +129,118 @@ const episodes = await getCollection('podcast')
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
   }
 
   .audio-player {
     flex: 1;
-    height: 40px;
-    border-radius: 20px;
-    background: var(--z-color-bg-inline-code);
-    padding: 0 1rem;
     display: flex;
     align-items: center;
     gap: 0.75rem;
   }
 
   .audio-player audio {
+    display: none;
+  }
+
+  .play-button {
+    flex-shrink: 0;
+    height: 32px;
+    padding: 0;
+    border: 1px solid var(--z-color-text);
+    background-color: transparent;
+    color: var(--z-color-text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+
+  .play-button svg {
+    height: 16px;
+  }
+
+  .play-button.playing .play-icon {
+    display: none;
+  }
+
+  .play-button.playing .pause-icon {
+    display: block !important;
+  }
+
+  .time-current,
+  .time-duration {
+    font-size: var(--z-text-xs);
+    color: var(--z-color-text-secondary);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    min-width: 40px;
+    text-align: center;
+  }
+
+  .progress-bar {
     flex: 1;
-    height: 30px;
+    height: 20px;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .progress-bar::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    height: 2px;
+    background-color: var(--z-color-gray-5);
+    z-index: 0;
+  }
+
+  .progress-fill {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 2px;
+    background-color: var(--z-color-text-accent);
+    width: 0%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .progress-slider {
+    width: 100%;
+    height: 20px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    outline: none;
+    margin: 0;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+  }
+
+  .progress-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 0;
+    height: 0;
+    background: transparent;
+    cursor: pointer;
+    border: none;
+  }
+
+  .progress-slider::-moz-range-thumb {
+    width: 0;
+    height: 0;
+    background: transparent;
+    cursor: pointer;
+    border: none;
+    border-radius: 0;
   }
 
   .episode-meta {
@@ -159,19 +255,19 @@ const episodes = await getCollection('podcast')
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
-    font-weight: 400;
+    font-weight: 500;
     text-decoration: none;
-    color: var(--z-color-text-accent);
+    color: var(--z-color-text-dimmed);
+    transition: color 0.2s ease;
   }
 
   .external-link:hover {
-    text-decoration: underline;
+    color: var(--z-color-text-accent);
   }
 
   .external-link-icon {
-    width: 12px;
-    height: 12px;
-    opacity: 0.6;
+    width: 14px;
+    height: 14px;
   }
 
   /* Loading state */
@@ -196,32 +292,49 @@ const episodes = await getCollection('podcast')
   @media (max-width: 768px) {
     main {
       padding: 2rem 1.5rem 4rem;
-      max-width: 100%;
     }
 
     .episode-content {
-      flex-direction: column;
       gap: 1rem;
     }
 
     .episode-image {
-      width: 100%;
-      height: 200px;
-      align-self: center;
-      max-width: 300px;
-    }
-
-    .episode-item {
-      padding: 1.5rem 0;
+      width: 80px;
+      height: 80px;
     }
 
     .episode-title {
       font-size: var(--z-text-lg);
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
     }
 
-    .episode-controls {
-      gap: 0.75rem;
+    .audio-player audio {
+      height: 36px;
+    }
+
+    .play-button {
+      width: 28px;
+      height: 28px;
+    }
+
+    .play-button svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .time-current,
+    .time-duration {
+      min-width: 35px;
+      font-size: 11px;
+    }
+
+    .external-link {
+      font-size: var(--z-text-xs);
+    }
+
+    .external-link-icon {
+      width: 12px;
+      height: 12px;
     }
   }
 
@@ -231,44 +344,104 @@ const episodes = await getCollection('podcast')
     }
 
     .episode-item {
-      padding: 1.25rem 0;
+      padding: 1.5rem 0;
+    }
+
+    .episode-content {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .episode-image {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1;
+    }
+
+    .episode-info {
+      width: 100%;
     }
 
     .episode-title {
       font-size: var(--z-text-base);
-      line-height: 1.25;
-    }
-
-    .episode-controls {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 0.75rem;
     }
 
     .audio-player {
-      height: 36px;
-      padding: 0 0.75rem;
-    }
-  }
-
-  /* Large screens */
-  @media (min-width: 1200px) {
-    main {
-      max-width: 728px;
-      padding: 5rem 2rem 8rem;
-    }
-
-    .episode-item {
-      padding: 2.5rem 0;
-    }
-
-    .episode-image {
-      width: 140px;
-      height: 140px;
-    }
-
-    .episode-title {
-      font-size: var(--z-text-2xl);
+      width: 100%;
     }
   }
 </style>
+
+<script>
+  // Custom audio player functionality
+  document.addEventListener('DOMContentLoaded', () => {
+    const audioPlayers = document.querySelectorAll('.audio-player');
+    
+    audioPlayers.forEach(playerEl => {
+      const audio = playerEl.querySelector('audio') as HTMLAudioElement;
+      const playButton = playerEl.querySelector('.play-button') as HTMLButtonElement;
+      const progressSlider = playerEl.querySelector('.progress-slider') as HTMLInputElement;
+      const progressFill = playerEl.querySelector('.progress-fill') as HTMLElement;
+      const timeCurrent = playerEl.querySelector('.time-current') as HTMLElement;
+      const timeDuration = playerEl.querySelector('.time-duration') as HTMLElement;
+      
+      if (!audio || !playButton || !progressSlider || !progressFill || !timeCurrent || !timeDuration) return;
+      
+      // Format time helper
+      const formatTime = (seconds: number): string => {
+        if (isNaN(seconds)) return '0:00';
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+      };
+      
+      // Play/Pause
+      playButton.addEventListener('click', () => {
+        if (audio.paused) {
+          // Pause all other audio players
+          audioPlayers.forEach(otherPlayer => {
+            const otherAudio = otherPlayer.querySelector('audio') as HTMLAudioElement;
+            const otherButton = otherPlayer.querySelector('.play-button') as HTMLButtonElement;
+            if (otherAudio && otherAudio !== audio && !otherAudio.paused) {
+              otherAudio.pause();
+              otherButton?.classList.remove('playing');
+            }
+          });
+          
+          audio.play();
+          playButton.classList.add('playing');
+        } else {
+          audio.pause();
+          playButton.classList.remove('playing');
+        }
+      });
+      
+      // Update progress
+      audio.addEventListener('timeupdate', () => {
+        const progress = (audio.currentTime / audio.duration) * 100;
+        progressSlider.value = progress.toString();
+        progressFill.style.width = `${progress}%`;
+        timeCurrent.textContent = formatTime(audio.currentTime);
+      });
+      
+      // Update duration when metadata loads
+      audio.addEventListener('loadedmetadata', () => {
+        timeDuration.textContent = formatTime(audio.duration);
+      });
+      
+      // Seek
+      progressSlider.addEventListener('input', () => {
+        const seekTime = (parseFloat(progressSlider.value) / 100) * audio.duration;
+        audio.currentTime = seekTime;
+      });
+      
+      // Reset when ended
+      audio.addEventListener('ended', () => {
+        playButton.classList.remove('playing');
+        progressSlider.value = '0';
+        progressFill.style.width = '0%';
+        timeCurrent.textContent = '0:00';
+      });
+    });
+  });
+</script>
