@@ -9,16 +9,16 @@ const books = await getCollection('book')
 ---
 
 <BaseLayout title={`Reading List | ${SITE_TITLE}`}>
-  <main>
-    <section class="books-container">
+  <main class="reading">
+    <section class="reading__container">
       {
         books.map((book, index) => (
-          <article class="book-item">
-            <a href={book.data.ogUrl} class="book-link" target="_blank" rel="noopener noreferrer">
-              <div class="book-cover">
+          <article class="reading__item">
+            <a href={book.data.ogUrl} class="reading__link" target="_blank" rel="noopener noreferrer">
+              <div class="reading__cover">
                 <Image src={book.data.ogImage} alt={`Cover of ${book.data.title}`} loading={index < 12 ? 'eager' : 'lazy'} width={140} height={210} referrerpolicy={'no-referrer'} />
               </div>
-              <h2 class="book-title">{book.data.title}</h2>
+              <h2 class="reading__title">{book.data.title}</h2>
             </a>
           </article>
         ))
@@ -32,25 +32,25 @@ const books = await getCollection('book')
     box-sizing: border-box;
   }
 
-  main {
+  .reading {
     max-width: 960px;
     margin: 0 auto;
     padding: 4rem 2rem 6rem;
     min-height: calc(100vh - 200px);
   }
 
-  .books-container {
+  .reading__container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 3rem 2rem;
   }
 
-  .book-item {
+  .reading__item {
     display: flex;
     flex-direction: column;
   }
 
-  .book-link {
+  .reading__link {
     text-decoration: none;
     color: inherit;
     display: flex;
@@ -58,7 +58,7 @@ const books = await getCollection('book')
     gap: 1rem;
   }
 
-  .book-cover {
+  .reading__cover {
     width: 100%;
     aspect-ratio: 3 / 4;
     overflow: hidden;
@@ -66,7 +66,7 @@ const books = await getCollection('book')
     border: 1px solid var(--z-color-hairline-light);
   }
 
-  .book-cover img {
+  .reading__cover img {
     width: 100%;
     height: 100%;
     object-fit: contain;
@@ -74,7 +74,7 @@ const books = await getCollection('book')
     background: var(--z-color-gray-6);
   }
 
-  .book-title {
+  .reading__title {
     font-size: var(--z-text-lg);
     font-weight: 600;
     line-height: 1.4;
@@ -82,45 +82,45 @@ const books = await getCollection('book')
     color: var(--z-color-text);
   }
 
-  .book-link:hover .book-title {
+  .reading__link:hover .reading__title {
     color: var(--z-color-text-accent);
   }
 
   /* Responsive Design */
   @media (max-width: 768px) {
-    main {
+    .reading {
       padding: 2rem 1.5rem 4rem;
     }
 
-    .books-container {
+    .reading__container {
       grid-template-columns: repeat(3, 1fr);
       gap: 2.5rem 1.5rem;
     }
 
-    .book-link {
+    .reading__link {
       gap: 0.75rem;
     }
 
-    .book-title {
+    .reading__title {
       font-size: var(--z-text-base);
     }
   }
 
   @media (max-width: 480px) {
-    main {
+    .reading {
       padding: 1.5rem 1rem 3rem;
     }
 
-    .books-container {
+    .reading__container {
       grid-template-columns: repeat(2, 1fr);
       gap: 2rem 1.25rem;
     }
 
-    .book-link {
+    .reading__link {
       gap: 0.5rem;
     }
 
-    .book-title {
+    .reading__title {
       font-size: var(--z-text-sm);
       line-height: 1.3;
     }
@@ -128,22 +128,22 @@ const books = await getCollection('book')
 
   /* Large screens */
   @media (min-width: 1024px) {
-    .books-container {
+    .reading__container {
       grid-template-columns: repeat(5, 1fr);
       gap: 4rem 3rem;
     }
 
-    .book-link {
+    .reading__link {
       gap: 1.25rem;
     }
 
-    .book-title {
+    .reading__title {
       font-size: var(--z-text-xl);
     }
   }
 
   @media (min-width: 1280px) {
-    .books-container {
+    .reading__container {
       grid-template-columns: repeat(6, 1fr);
     }
   }

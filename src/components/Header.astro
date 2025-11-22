@@ -4,11 +4,11 @@ import { SITE_TITLE } from '../consts'
 ---
 
 <header class="header">
-	<nav class="nav">
-		<div class="brand">
+	<nav class="header__nav">
+		<div class="header__brand">
 			<a href="/">{SITE_TITLE}</a>
 		</div>
-		<ul class="nav-links">
+		<ul class="header__nav-list">
 			<HeaderLink href="/">Writing</HeaderLink>
 			<HeaderLink href="/reading">Reading</HeaderLink>
 			<HeaderLink href="/listening">Listening</HeaderLink>
@@ -28,7 +28,7 @@ import { SITE_TITLE } from '../consts'
 		border-bottom: 1px solid var(--z-color-white);
 	}
 
-	.nav {
+	.header__nav {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
@@ -40,66 +40,66 @@ import { SITE_TITLE } from '../consts'
 		padding: 0.75rem 1rem;
 	}
 
-	.brand a {
+	.header__brand a {
 		font-weight: 700;
 		letter-spacing: -0.02em;
 
 		font-size: var(--z-text-base);
 	}
 
-	.nav-links {
+	.header__nav-list {
 		display: flex;
 		align-items: center;
 
 		gap: 1rem;
 	}
 
-	.nav-links a {
+	.header__nav-list a {
 		font-weight: 600;
 		color: var(--z-color-text-secondary);
 
 		font-size: var(--z-text-sm);
 	}
 
-	.nav-links a:hover,
-	.nav-links a.active {
+	.header__nav-list a:hover,
+	.header__nav-list a.active {
 		color: var(--z-color-text-accent);
 	}
 
 	/* md	48rem (768px) */
 	@media (width >= 48rem) {
-		.nav {
+		.header__nav {
 			padding: 1rem 1.5rem;
 		}
 
-		.brand a {
+		.header__brand a {
 			font-size: var(--z-text-lg);
 		}
 
-		.nav-links {
+		.header__nav-list {
 			gap: 1.5rem;
 		}
 
-		.nav-links a {
+		.header__nav-list a {
 			font-size: var(--z-text-base);
 		}
 	}
 
 	/* lg	64rem (1024px) */
 	@media (width >= 64rem) {
-		.nav {
+		.header__nav {
 			padding: 1.25rem 2rem;
 		}
 
-		.brand a {
+		.header__brand a {
 			font-size: var(--z-text-xl);
 		}
 
-		.nav-links {
+		.header__nav-list {
 			gap: 2rem;
 		}
 
-		.nav-links a {
+		.header__nav-list a {
 			font-size: var(--z-text-lg);
 		}
 	}
