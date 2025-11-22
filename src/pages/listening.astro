@@ -9,38 +9,38 @@ const episodes = await getCollection('podcast')
 ---
 
 <BaseLayout title={`Podcast | ${SITE_TITLE}`}>
-  <main>
-    <section class="episodes-container">
+  <main class="podcast">
+    <section class="podcast__container">
       {
         episodes.map((episode, index) => (
-          <article class="episode-item">
-            <div class="episode-content">
-              <div class="episode-image">
+          <article class="podcast__item">
+            <div class="podcast__content">
+              <div class="podcast__image">
                 <Image src={episode.data.ogImage} alt={episode.data.ogTitle} loading={index < 12 ? 'eager' : 'lazy'} width={100} height={100} />
               </div>
-              <div class="episode-info">
-                <h2 class="episode-title">
-                  <a href={episode.data.ogUrl} class="episode-link" target="_blank" rel="noopener noreferrer">
+              <div class="podcast__info">
+                <h2 class="podcast__title">
+                  <a href={episode.data.ogUrl} class="podcast__link" target="_blank" rel="noopener noreferrer">
                     {episode.data.ogTitle}
                   </a>
                 </h2>
 
-                <div class="episode-controls">
-                  <div class="audio-player" data-audio-src={episode.data.ogAudio}>
-                    <button class="play-button" aria-label="Play">
-                      <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                <div class="podcast__controls">
+                  <div class="podcast__player" data-audio-src={episode.data.ogAudio}>
+                    <button class="podcast__play-button" aria-label="Play">
+                      <svg class="podcast__play-icon" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M8 5v14l11-7z"/>
                       </svg>
-                      <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                      <svg class="podcast__pause-icon" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
                         <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
                       </svg>
                     </button>
-                    <span class="time-current">0:00</span>
-                    <div class="progress-bar">
-                      <div class="progress-fill"></div>
-                      <input type="range" class="progress-slider" min="0" max="100" value="0" step="0.1" aria-label="Seek">
+                    <span class="podcast__time-current">0:00</span>
+                    <div class="podcast__progress-bar">
+                      <div class="podcast__progress-fill"></div>
+                      <input type="range" class="podcast__progress-slider" min="0" max="100" value="0" step="0.1" aria-label="Seek">
                     </div>
-                    <span class="time-duration">0:00</span>
+                    <span class="podcast__time-duration">0:00</span>
                     <audio preload="none">
                       <source src={episode.data.ogAudio} type="audio/mpeg" />
                     </audio>
@@ -60,54 +60,54 @@ const episodes = await getCollection('podcast')
     box-sizing: border-box;
   }
 
-  main {
+  .podcast {
     max-width: 960px;
     margin: 0 auto;
     padding: 4rem 2rem 6rem;
     min-height: calc(100vh - 200px);
   }
 
-  .episodes-container {
+  .podcast__container {
     display: flex;
     flex-direction: column;
     gap: 0;
   }
 
-  .episode-item {
+  .podcast__item {
     padding: 2rem 0;
     border-bottom: 1px solid var(--z-color-hairline-light);
   }
 
-  .episode-item:last-child {
+  .podcast__item:last-child {
     border-bottom: none;
   }
 
-  .episode-content {
+  .podcast__content {
     display: flex;
     gap: 1.5rem;
     align-items: flex-start;
   }
 
-  .episode-image {
+  .podcast__image {
     flex-shrink: 0;
     width: 100px;
     height: 100px;
     overflow: hidden;
   }
 
-  .episode-image img {
+  .podcast__image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
   }
 
-  .episode-info {
+  .podcast__info {
     flex: 1;
     min-width: 0;
   }
 
-  .episode-title {
+  .podcast__title {
     font-size: var(--z-text-h4);
     font-weight: 700;
     line-height: 1.3;
@@ -116,34 +116,34 @@ const episodes = await getCollection('podcast')
     letter-spacing: -0.01em;
   }
 
-  .episode-link {
+  .podcast__link {
     color: inherit;
     text-decoration: none;
   }
 
-  .episode-link:hover {
+  .podcast__link:hover {
     color: var(--z-color-text-accent);
   }
 
-  .episode-controls {
+  .podcast__controls {
     display: flex;
     align-items: center;
     gap: 1rem;
     margin-bottom: 0.75rem;
   }
 
-  .audio-player {
+  .podcast__player {
     flex: 1;
     display: flex;
     align-items: center;
     gap: 0.75rem;
   }
 
-  .audio-player audio {
+  .podcast__player audio {
     display: none;
   }
 
-  .play-button {
+  .podcast__play-button {
     flex-shrink: 0;
     height: 32px;
     padding: 0;
@@ -157,20 +157,20 @@ const episodes = await getCollection('podcast')
     transition: all 0.2s ease;
   }
 
-  .play-button svg {
+  .podcast__play-button svg {
     height: 16px;
   }
 
-  .play-button.playing .play-icon {
+  .podcast__play-button.playing .podcast__play-icon {
     display: none;
   }
 
-  .play-button.playing .pause-icon {
+  .podcast__play-button.playing .podcast__pause-icon {
     display: block !important;
   }
 
-  .time-current,
-  .time-duration {
+  .podcast__time-current,
+  .podcast__time-duration {
     font-size: var(--z-text-xs);
     color: var(--z-color-text-secondary);
     font-weight: 500;
@@ -179,7 +179,7 @@ const episodes = await getCollection('podcast')
     text-align: center;
   }
 
-  .progress-bar {
+  .podcast__progress-bar {
     flex: 1;
     height: 20px;
     position: relative;
@@ -187,7 +187,7 @@ const episodes = await getCollection('podcast')
     align-items: center;
   }
 
-  .progress-bar::before {
+  .podcast__progress-bar::before {
     content: '';
     position: absolute;
     left: 0;
@@ -199,7 +199,7 @@ const episodes = await getCollection('podcast')
     z-index: 0;
   }
 
-  .progress-fill {
+  .podcast__progress-fill {
     position: absolute;
     left: 0;
     top: 50%;
@@ -211,7 +211,7 @@ const episodes = await getCollection('podcast')
     z-index: 1;
   }
 
-  .progress-slider {
+  .podcast__progress-slider {
     width: 100%;
     height: 20px;
     -webkit-appearance: none;
@@ -224,7 +224,7 @@ const episodes = await getCollection('podcast')
     z-index: 2;
   }
 
-  .progress-slider::-webkit-slider-thumb {
+  .podcast__progress-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
     width: 0;
@@ -234,7 +234,7 @@ const episodes = await getCollection('podcast')
     border: none;
   }
 
-  .progress-slider::-moz-range-thumb {
+  .podcast__progress-slider::-moz-range-thumb {
     width: 0;
     height: 0;
     background: transparent;
@@ -243,46 +243,19 @@ const episodes = await getCollection('podcast')
     border-radius: 0;
   }
 
-  .episode-meta {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-size: var(--z-text-sm);
-    color: var(--z-color-text-dimmed);
-  }
-
-  .external-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    font-weight: 500;
-    text-decoration: none;
-    color: var(--z-color-text-dimmed);
-    transition: color 0.2s ease;
-  }
-
-  .external-link:hover {
-    color: var(--z-color-text-accent);
-  }
-
-  .external-link-icon {
-    width: 14px;
-    height: 14px;
-  }
-
   /* Loading state */
-  .loading {
+  .podcast__player--loading {
     opacity: 0.6;
   }
 
   /* Empty state */
-  .empty-state {
+  .podcast__empty {
     text-align: center;
     padding: 4rem 0;
     color: var(--z-color-text-secondary);
   }
 
-  .empty-state h3 {
+  .podcast__empty h3 {
     font-size: var(--z-text-h4);
     margin: 0 0 1rem 0;
     color: var(--z-color-text);
@@ -290,83 +263,74 @@ const episodes = await getCollection('podcast')
 
   /* Responsive Design */
   @media (max-width: 768px) {
-    main {
+    .podcast {
       padding: 2rem 1.5rem 4rem;
     }
 
-    .episode-content {
+    .podcast__content {
       gap: 1rem;
     }
 
-    .episode-image {
+    .podcast__image {
       width: 80px;
       height: 80px;
     }
 
-    .episode-title {
+    .podcast__title {
       font-size: var(--z-text-lg);
       margin-bottom: 0.5rem;
     }
 
-    .audio-player audio {
+    .podcast__player audio {
       height: 36px;
     }
 
-    .play-button {
+    .podcast__play-button {
       width: 28px;
       height: 28px;
     }
 
-    .play-button svg {
+    .podcast__play-button svg {
       width: 14px;
       height: 14px;
     }
 
-    .time-current,
-    .time-duration {
+    .podcast__time-current,
+    .podcast__time-duration {
       min-width: 35px;
       font-size: 11px;
-    }
-
-    .external-link {
-      font-size: var(--z-text-xs);
-    }
-
-    .external-link-icon {
-      width: 12px;
-      height: 12px;
     }
   }
 
   @media (max-width: 480px) {
-    main {
+    .podcast {
       padding: 1.5rem 1rem 3rem;
     }
 
-    .episode-item {
+    .podcast__item {
       padding: 1.5rem 0;
     }
 
-    .episode-content {
+    .podcast__content {
       flex-direction: column;
       gap: 1rem;
     }
 
-    .episode-image {
+    .podcast__image {
       width: 100%;
       height: auto;
       aspect-ratio: 1;
     }
 
-    .episode-info {
+    .podcast__info {
       width: 100%;
     }
 
-    .episode-title {
+    .podcast__title {
       font-size: var(--z-text-base);
     }
 
-    .audio-player {
+    .podcast__player {
       width: 100%;
     }
   }
@@ -375,15 +339,15 @@ const episodes = await getCollection('podcast')
 <script>
   // Custom audio player functionality
   document.addEventListener('DOMContentLoaded', () => {
-    const audioPlayers = document.querySelectorAll('.audio-player');
+    const audioPlayers = document.querySelectorAll('.podcast__player');
     
     audioPlayers.forEach(playerEl => {
       const audio = playerEl.querySelector('audio') as HTMLAudioElement;
-      const playButton = playerEl.querySelector('.play-button') as HTMLButtonElement;
-      const progressSlider = playerEl.querySelector('.progress-slider') as HTMLInputElement;
-      const progressFill = playerEl.querySelector('.progress-fill') as HTMLElement;
-      const timeCurrent = playerEl.querySelector('.time-current') as HTMLElement;
-      const timeDuration = playerEl.querySelector('.time-duration') as HTMLElement;
+      const playButton = playerEl.querySelector('.podcast__play-button') as HTMLButtonElement;
+      const progressSlider = playerEl.querySelector('.podcast__progress-slider') as HTMLInputElement;
+      const progressFill = playerEl.querySelector('.podcast__progress-fill') as HTMLElement;
+      const timeCurrent = playerEl.querySelector('.podcast__time-current') as HTMLElement;
+      const timeDuration = playerEl.querySelector('.podcast__time-duration') as HTMLElement;
       
       if (!audio || !playButton || !progressSlider || !progressFill || !timeCurrent || !timeDuration) return;
       
@@ -401,7 +365,7 @@ const episodes = await getCollection('podcast')
           // Pause all other audio players
           audioPlayers.forEach(otherPlayer => {
             const otherAudio = otherPlayer.querySelector('audio') as HTMLAudioElement;
-            const otherButton = otherPlayer.querySelector('.play-button') as HTMLButtonElement;
+            const otherButton = otherPlayer.querySelector('.podcast__play-button') as HTMLButtonElement;
             if (otherAudio && otherAudio !== audio && !otherAudio.paused) {
               otherAudio.pause();
               otherButton?.classList.remove('playing');

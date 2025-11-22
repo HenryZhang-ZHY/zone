@@ -3,10 +3,10 @@ const today = new Date()
 ---
 
 <footer class="footer">
-	<ul>
-		<li><a href="/rss.xml" class="rss-footer-link">RSS Feed</a></li>
+	<ul class="footer__links">
+		<li class="footer__link-item"><a href="/rss.xml" class="footer__link">RSS Feed</a></li>
 	</ul>
-	<p class="copyright">&copy; {today.getFullYear()} shuzhi.zone All rights reserved.</p>
+	<p class="footer__copyright">&copy; {today.getFullYear()} shuzhi.zone All rights reserved.</p>
 </footer>
 
 <style>
@@ -23,11 +23,11 @@ const today = new Date()
 		font-size: var(--z-text-sm);
 	}
 
-	.footer ul {
+	.footer__links {
 		list-style: none;
 	}
 
-	.copyright {
+	.footer__copyright {
 		color: var(--z-color-text-secondary);
 
 		font-size: var(--z-text-2xs);
@@ -39,7 +39,7 @@ const today = new Date()
 			font-size: var(--z-text-base);
 		}
 
-		.copyright {
+		.footer__copyright {
 			font-size: var(--z-text-xs);
 		}
 	}
@@ -50,7 +50,7 @@ const today = new Date()
 			font-size: var(--z-text-lg);
 		}
 
-		.copyright {
+		.footer__copyright {
 			font-size: var(--z-text-sm);
 		}
 	}

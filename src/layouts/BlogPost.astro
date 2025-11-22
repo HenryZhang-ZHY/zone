@@ -9,17 +9,17 @@ const { title, description, pubDate, updatedDate } = Astro.props
 ---
 
 <BaseLayout title={title} description={description}>
-	<main>
-		<article>
-			<header class="article-header">
-				<h1 class="article-title">{title}</h1>
-				<div class="article-meta">
-					<time class="publish-date">
+	<main class="blog-post">
+		<article class="blog-post__article">
+			<header class="blog-post__header">
+				<h1 class="blog-post__title">{title}</h1>
+				<div class="blog-post__meta">
+					<time class="blog-post__date">
 						<FormattedDate date={pubDate} />
 					</time>
 					{
 						updatedDate && (
-							<div class="updated-date">
+							<div class="blog-post__updated">
 								Updated on <FormattedDate date={updatedDate} />
 							</div>
 						)
@@ -34,25 +34,25 @@ const { title, description, pubDate, updatedDate } = Astro.props
 </BaseLayout>
 
 <style>
-	main {
+	.blog-post {
 		max-width: 960px;
 		margin: 0 auto;
 		padding: 4rem 2rem 6rem;
 		min-height: calc(100vh - 200px);
 	}
 
-	article {
+	.blog-post__article {
 		width: 100%;
 	}
 
-	.article-header {
+	.blog-post__header {
 		margin-bottom: 3rem;
 		padding-bottom: 2rem;
 		border-bottom: 1px solid var(--z-color-hairline-light);
 		text-align: left;
 	}
 
-	.article-title {
+	.blog-post__title {
 		font-size: clamp(var(--z-text-h3), 4vw, var(--z-text-h1));
 		font-weight: 700;
 		line-height: 1.2;
@@ -61,7 +61,7 @@ const { title, description, pubDate, updatedDate } = Astro.props
 		color: var(--z-color-text);
 	}
 
-	.article-meta {
+	.blog-post__meta {
 		display: flex;
 		align-items: center;
 		gap: 1rem;
@@ -69,12 +69,12 @@ const { title, description, pubDate, updatedDate } = Astro.props
 		margin-bottom: 0;
 	}
 
-	.publish-date {
+	.blog-post__date {
 		font-weight: 400;
 		color: var(--z-color-text-secondary);
 	}
 
-	.updated-date {
+	.blog-post__updated {
 		font-style: italic;
 		color: var(--z-color-text-dimmed);
 		font-size: var(--z-text-xs);
@@ -82,22 +82,22 @@ const { title, description, pubDate, updatedDate } = Astro.props
 
 	/* Responsive Design */
 	@media (max-width: 768px) {
-		main {
+		.blog-post {
 			padding: 2rem 1.5rem 4rem;
 			max-width: 100%;
 		}
 
-		.article-header {
+		.blog-post__header {
 			margin-bottom: 2rem;
 			padding-bottom: 1.5rem;
 		}
 
-		.article-title {
+		.blog-post__title {
 			font-size: var(--z-text-4xl);
 			margin-bottom: 1rem;
 		}
 
-		.article-meta {
+		.blog-post__meta {
 			flex-direction: column;
 			align-items: flex-start;
 			gap: 0.5rem;
@@ -105,11 +105,11 @@ const { title, description, pubDate, updatedDate } = Astro.props
 	}
 
 	@media (max-width: 480px) {
-		main {
+		.blog-post {
 			padding: 1.5rem 1rem 3rem;
 		}
 
-		.article-title {
+		.blog-post__title {
 			font-size: var(--z-text-3xl);
 			line-height: 1.2;
 		}
@@ -117,12 +117,12 @@ const { title, description, pubDate, updatedDate } = Astro.props
 
 	/* Large screens */
 	@media (min-width: 1200px) {
-		main {
+		.blog-post {
 			max-width: 960px;
 			padding: 5rem 2rem 8rem;
 		}
 
-		.article-header {
+		.blog-post__header {
 			margin-bottom: 4rem;
 		}
 	}

@@ -8,17 +8,17 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueO
 ---
 
 <BaseLayout>
-	<main>
-		<section class="posts-container">
+	<main class="blog-list">
+		<section class="blog-list__container">
 			{
 				posts.length > 0 ? (
 					posts.map((post) => (
-						<article class="post-item">
-							<a href={`/blog/${post.id}/`} class="post-link">
-								<h2 class="post-title">{post.data.title}</h2>
-								{post.data.description && <p class="post-excerpt">{post.data.description}</p>}
-								<div class="post-meta">
-									<time class="post-date">
+						<article class="blog-list__item">
+							<a href={`/blog/${post.id}/`} class="blog-list__link">
+								<h2 class="blog-list__title">{post.data.title}</h2>
+								{post.data.description && <p class="blog-list__excerpt">{post.data.description}</p>}
+								<div class="blog-list__meta">
+									<time class="blog-list__date">
 										<FormattedDate date={post.data.pubDate} />
 									</time>
 								</div>
@@ -26,7 +26,7 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueO
 						</article>
 					))
 				) : (
-					<div class="empty-state">
+					<div class="blog-list__empty">
 						<h3>No posts yet</h3>
 						<p>Check back later for new content.</p>
 					</div>
@@ -41,35 +41,35 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueO
 		box-sizing: border-box;
 	}
 
-	main {
+	.blog-list {
 		max-width: 960px;
 		margin: 0 auto;
 		padding: 4rem 2rem 6rem;
 		min-height: calc(100vh - 200px);
 	}
 
-	.posts-container {
+	.blog-list__container {
 		display: flex;
 		flex-direction: column;
 		gap: 0;
 	}
 
-	.post-item {
+	.blog-list__item {
 		padding: 2rem 0;
 		border-bottom: 1px solid var(--z-color-hairline-light);
 	}
 
-	.post-item:last-child {
+	.blog-list__item:last-child {
 		border-bottom: none;
 	}
 
-	.post-link {
+	.blog-list__link {
 		display: block;
 		text-decoration: none;
 		color: inherit;
 	}
 
-	.post-title {
+	.blog-list__title {
 		font-size: var(--z-text-h4);
 		font-weight: 700;
 		line-height: 1.3;
@@ -78,11 +78,11 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueO
 		color: var(--z-color-text);
 	}
 
-	.post-link:hover .post-title {
+	.blog-list__link:hover .blog-list__title {
 		color: var(--z-color-text-accent);
 	}
 
-	.post-excerpt {
+	.blog-list__excerpt {
 		font-size: var(--z-text-base);
 		color: var(--z-color-text-secondary);
 		line-height: var(--z-line-height);
@@ -90,7 +90,7 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueO
 		font-weight: 400;
 	}
 
-	.post-meta {
+	.blog-list__meta {
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
@@ -98,29 +98,20 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueO
 		color: var(--z-color-text-dimmed);
 	}
 
-	.post-date {
+	.blog-list__date {
 		font-weight: 400;
 		text-transform: none;
 		letter-spacing: 0;
 	}
 
-	.divider {
-		margin: 0 0.5rem;
-		color: var(--z-color-hairline-light);
-	}
-
-	.read-time {
-		color: var(--z-color-text-dimmed);
-	}
-
 	/* Empty state */
-	.empty-state {
+	.blog-list__empty {
 		text-align: center;
 		padding: 4rem 0;
 		color: var(--z-color-text-secondary);
 	}
 
-	.empty-state h3 {
+	.blog-list__empty h3 {
 		font-size: var(--z-text-h4);
 		margin: 0 0 1rem 0;
 		color: var(--z-color-text);
@@ -128,45 +119,45 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueO
 
 	/* Responsive Design */
 	@media (max-width: 768px) {
-		main {
+		.blog-list {
 			padding: 2rem 1.5rem 4rem;
 			max-width: 100%;
 		}
 
-		.post-item {
+		.blog-list__item {
 			padding: 1.5rem 0;
 		}
 
-		.post-title {
+		.blog-list__title {
 			font-size: var(--z-text-2xl);
 			margin-bottom: 0.5rem;
 		}
 
-		.post-excerpt {
+		.blog-list__excerpt {
 			font-size: var(--z-text-sm);
 			margin-bottom: 0.75rem;
 		}
 
-		.post-meta {
+		.blog-list__meta {
 			font-size: var(--z-text-xs);
 		}
 	}
 
 	@media (max-width: 480px) {
-		main {
+		.blog-list {
 			padding: 1.5rem 1rem 3rem;
 		}
 
-		.post-item {
+		.blog-list__item {
 			padding: 1.25rem 0;
 		}
 
-		.post-title {
+		.blog-list__title {
 			font-size: var(--z-text-xl);
 			line-height: 1.25;
 		}
 
-		.post-excerpt {
+		.blog-list__excerpt {
 			font-size: var(--z-text-sm);
 			line-height: 1.5;
 		}
@@ -174,16 +165,12 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueO
 
 	/* Large screens */
 	@media (min-width: 1200px) {
-		main {
+		.blog-list {
 			max-width: 960px;
 			padding: 5rem 2rem 8rem;
 		}
 
-		.hero-section {
-			margin-bottom: 5rem;
-		}
-
-		.post-item {
+		.blog-list__item {
 			padding: 2.5rem 0;
 		}
 	}
