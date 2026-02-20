@@ -109,7 +109,7 @@ const yearStats = years.map((year) => {
     groups[g] = entries
     total += entries.length
   }
-  return { year, total, groups }
+  return { year, total, link: yd.link, groups }
 })
 
 // Changes between consecutive years
@@ -154,29 +154,6 @@ function typeLabel(type: string) {
       <p class="subtitle">2021–2025 历年名单及变化追踪</p>
       <p class="note">数据来源：<a href="https://www.pbc.gov.cn/huobizhengceersi/214481/3868581/3868587/index.html" target="_blank" rel="noopener noreferrer">中国人民银行宏观审慎管理局</a></p>
     </div>
-
-    <!-- Summary Cards -->
-    <section class="summary-cards">
-      {
-        yearStats.map((s) => (
-          <a class="summary-card" href={data[s.year].link} target="_blank" rel="noopener noreferrer">
-            <div class="card-year">{s.year}</div>
-            <div class="card-total">{s.total}</div>
-            <div class="card-label">家银行</div>
-            <div class="card-breakdown">
-              {[4, 3, 2, 1].map(
-                (g) =>
-                  s.groups[g].length > 0 && (
-                    <span class={`card-group g${g}`}>
-                      {groupLabels[g]}: {s.groups[g].length}家
-                    </span>
-                  ),
-              )}
-            </div>
-          </a>
-        ))
-      }
-    </section>
 
     <!-- Detailed Table -->
     <section class="table-section">
@@ -426,7 +403,7 @@ function typeLabel(type: string) {
   }
 
   .page-header {
-    margin-bottom: 3rem;
+    margin-bottom: 1.5rem;
   }
 
   .page-header h1 {
@@ -444,74 +421,6 @@ function typeLabel(type: string) {
     font-size: var(--z-text-xs);
     color: var(--z-color-text-dimmed);
     margin-top: 0.5rem;
-  }
-
-  /* Summary Cards */
-  .summary-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1rem;
-    margin-bottom: 3rem;
-  }
-
-  .summary-card {
-    display: block;
-    background: var(--z-color-black);
-    border: 1px solid var(--z-color-hairline-light);
-    border-radius: 0.75rem;
-    padding: 1.5rem;
-    text-align: center;
-    color: inherit;
-    text-decoration: none;
-    transition: border-color 0.15s;
-  }
-
-  .summary-card:hover {
-    border-color: var(--z-color-text-secondary);
-  }
-
-  .card-year {
-    font-size: var(--z-text-2xl);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-  }
-
-  .card-total {
-    font-size: var(--z-text-5xl);
-    font-weight: 800;
-    line-height: 1.2;
-    margin: 0.25rem 0;
-  }
-
-  .card-label {
-    font-size: var(--z-text-sm);
-    color: var(--z-color-text-secondary);
-    margin-bottom: 0.75rem;
-  }
-
-  .card-breakdown {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    font-size: var(--z-text-xs);
-    color: var(--z-color-text-secondary);
-  }
-
-  .card-group {
-    display: inline-block;
-  }
-
-  .card-group.g4 {
-    color: var(--g4);
-  }
-  .card-group.g3 {
-    color: var(--g3);
-  }
-  .card-group.g2 {
-    color: var(--g2);
-  }
-  .card-group.g1 {
-    color: var(--g1);
   }
 
   /* Section common */
