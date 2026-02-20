@@ -17,7 +17,7 @@ const book = defineCollection({
 	schema: z.object({
 		title: z.string(),
 		ogUrl: z.string().url(),
-		ogImage: z.string().url(),
+		ogImage: z.string(),
 	}),
 });
 
