@@ -1,0 +1,343 @@
+---
+/**
+ * SparklinePopover — hover/click a sparkline cell to show an enlarged trajectory chart.
+ *
+ * Usage: drop `<SparklinePopover />` anywhere in the page.
+ * It automatically binds to every `td.col-spark[data-trajectory]` found in the DOM.
+ *
+ * Required data-attributes on each `<td class="col-spark">`:
+ *   data-bank-name   — display name
+ *   data-bank-type   — CSS suffix like "-state" / "-joint" / "-city"
+ *   data-trajectory  — JSON array of { year, group, type } (group/type may be null)
+ *
+ * Color variables (--g1…g4, --t-state, --t-joint, --t-city, etc.) must be defined by the
+ * consuming page.
+ */
+---
+
+<div id="spark-popover" class="spark-popover" aria-hidden="true">
+  <div class="pop-header">
+    <span class="pop-name"></span>
+    <span class="pop-type"></span>
+  </div>
+  <svg class="pop-chart" viewBox="0 0 340 200"></svg>
+</div>
+
+<style>
+  /* ── Popover container (static elements — scoped is fine) ── */
+  .spark-popover {
+    position: fixed;
+    z-index: 100;
+    background: var(--z-color-black);
+    border: 1px solid var(--z-color-hairline-light);
+    border-radius: 0.75rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    padding: 0.75rem 1rem 0.5rem;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(4px);
+    transition:
+      opacity 0.18s ease,
+      transform 0.18s ease;
+    width: 372px;
+  }
+
+  .spark-popover[aria-hidden='false'] {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .pop-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .pop-name {
+    font-weight: 700;
+    font-size: var(--z-text-sm);
+  }
+
+  .pop-type {
+    font-size: var(--z-text-2xs);
+    padding: 0.1rem 0.35rem;
+    border-radius: 0.25rem;
+    font-weight: 600;
+  }
+
+  .pop-type.-state {
+    background: var(--t-state-bg);
+    color: var(--t-state);
+  }
+  .pop-type.-joint {
+    background: var(--t-joint-bg);
+    color: var(--t-joint);
+  }
+  .pop-type.-city {
+    background: var(--t-city-bg);
+    color: var(--t-city);
+  }
+
+  .pop-chart {
+    width: 340px;
+    height: 200px;
+    display: block;
+  }
+
+  /*
+   * ── Dynamically‑created SVG children ──
+   * These elements are built by the <script> below via createElementNS and therefore
+   * never carry Astro's scoped data‑attribute. We scope them under the static `.pop-chart`
+   * which *does* have the attribute, using :global() so Astro doesn't rewrite the child
+   * selector.
+   */
+  .pop-chart :global(.pop-grid) {
+    stroke: var(--z-color-hairline-light);
+    stroke-width: 0.5;
+    stroke-dasharray: 3 3;
+  }
+
+  .pop-chart :global(.pop-label-y) {
+    font-size: 9px;
+    fill: var(--z-color-text-dimmed);
+    dominant-baseline: middle;
+  }
+
+  .pop-chart :global(.pop-label-x) {
+    font-size: 11px;
+    fill: var(--z-color-text-secondary);
+    text-anchor: middle;
+    dominant-baseline: hanging;
+  }
+
+  .pop-chart :global(.pop-line) {
+    fill: none;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .pop-chart :global(.pop-line.-state) {
+    stroke: var(--t-state);
+  }
+  .pop-chart :global(.pop-line.-joint) {
+    stroke: var(--t-joint);
+  }
+  .pop-chart :global(.pop-line.-city) {
+    stroke: var(--t-city);
+  }
+
+  .pop-chart :global(.pop-dot.-state) {
+    fill: var(--t-state);
+  }
+  .pop-chart :global(.pop-dot.-joint) {
+    fill: var(--t-joint);
+  }
+  .pop-chart :global(.pop-dot.-city) {
+    fill: var(--t-city);
+  }
+
+  .pop-chart :global(.pop-group-label) {
+    font-size: 10px;
+    font-weight: 600;
+    dominant-baseline: middle;
+  }
+
+  .pop-chart :global(.pop-group-label.pg1) {
+    fill: var(--g1);
+  }
+  .pop-chart :global(.pop-group-label.pg2) {
+    fill: var(--g2);
+  }
+  .pop-chart :global(.pop-group-label.pg3) {
+    fill: var(--g3);
+  }
+  .pop-chart :global(.pop-group-label.pg4) {
+    fill: var(--g4);
+  }
+</style>
+
+<script>
+  const popover = document.getElementById('spark-popover')!
+  const popName = popover.querySelector<HTMLElement>('.pop-name')!
+  const popType = popover.querySelector<HTMLElement>('.pop-type')!
+  const popChart = popover.querySelector<SVGSVGElement>('.pop-chart')!
+
+  const SVG_NS = 'http://www.w3.org/2000/svg'
+
+  const GROUP_LABELS: Record<number, string> = { 1: '第一组', 2: '第二组', 3: '第三组', 4: '第四组' }
+  const TYPE_LABELS: Record<string, string> = {
+    国有商业银行: '国有',
+    股份制商业银行: '股份制',
+    城市商业银行: '城商行',
+  }
+  const TYPE_CSS: Record<string, string> = {
+    国有商业银行: '-state',
+    股份制商业银行: '-joint',
+    城市商业银行: '-city',
+  }
+
+  // Chart geometry
+  const PAD_L = 38
+  const PAD_R = 12
+  const PAD_T = 12
+  const PAD_B = 26
+  const CW = 340
+  const CH = 160
+  const plotW = CW - PAD_L - PAD_R
+  const plotH = CH - PAD_T - PAD_B
+
+  interface DataPoint {
+    year: string
+    group: number | null
+    type: string | null
+  }
+
+  function yForGroup(g: number): number {
+    return PAD_T + plotH - ((g - 0.5) / 4) * plotH
+  }
+
+  /* ── Build the enlarged SVG chart ── */
+  function buildChart(traj: DataPoint[], bankType: string): void {
+    popChart.innerHTML = ''
+
+    // Horizontal grid lines + Y‑axis group labels
+    for (let g = 1; g <= 4; g++) {
+      const y = yForGroup(g)
+
+      const line = document.createElementNS(SVG_NS, 'line')
+      line.setAttribute('x1', String(PAD_L))
+      line.setAttribute('x2', String(CW - PAD_R))
+      line.setAttribute('y1', String(y))
+      line.setAttribute('y2', String(y))
+      line.classList.add('pop-grid')
+      popChart.appendChild(line)
+
+      const label = document.createElementNS(SVG_NS, 'text')
+      label.setAttribute('x', String(PAD_L - 8))
+      label.setAttribute('y', String(y))
+      label.setAttribute('text-anchor', 'end')
+      label.classList.add('pop-group-label', `pg${g}`)
+      label.textContent = GROUP_LABELS[g]
+      popChart.appendChild(label)
+    }
+
+    // X‑axis year labels
+    const years = traj.map((t) => t.year)
+    const n = years.length
+    const xPos = years.map((_, i) => PAD_L + (n === 1 ? plotW / 2 : (i / (n - 1)) * plotW))
+
+    years.forEach((yr, i) => {
+      const label = document.createElementNS(SVG_NS, 'text')
+      label.setAttribute('x', String(xPos[i]))
+      label.setAttribute('y', String(CH - 4))
+      label.classList.add('pop-label-x')
+      label.textContent = yr
+      popChart.appendChild(label)
+    })
+
+    // Connecting polyline
+    const pts: string[] = []
+    traj.forEach((t, i) => {
+      if (t.group != null) pts.push(`${xPos[i]},${yForGroup(t.group)}`)
+    })
+    if (pts.length >= 2) {
+      const poly = document.createElementNS(SVG_NS, 'polyline')
+      poly.setAttribute('points', pts.join(' '))
+      poly.classList.add('pop-line', TYPE_CSS[bankType] || '-state')
+      popChart.appendChild(poly)
+    }
+
+    // Data‑point dots + G‑labels
+    traj.forEach((t, i) => {
+      if (t.group == null) return
+      const cx = xPos[i]
+      const cy = yForGroup(t.group)
+
+      const dot = document.createElementNS(SVG_NS, 'circle')
+      dot.setAttribute('cx', String(cx))
+      dot.setAttribute('cy', String(cy))
+      dot.setAttribute('r', '5')
+      dot.classList.add('pop-dot', TYPE_CSS[t.type!] || '-state')
+      popChart.appendChild(dot)
+    })
+  }
+
+  /* ── Positioning ── */
+  function positionPopover(target: HTMLElement): void {
+    const rect = target.getBoundingClientRect()
+    const pw = 372
+    const ph = 210
+    let left = rect.left + rect.width / 2 - pw / 2
+    let top = rect.top - ph - 8
+
+    if (top < 4) top = rect.bottom + 8
+    if (left < 4) left = 4
+    if (left + pw > window.innerWidth - 4) left = window.innerWidth - pw - 4
+
+    popover.style.left = `${left}px`
+    popover.style.top = `${top}px`
+  }
+
+  /* ── Show / hide ── */
+  function show(cell: HTMLElement): void {
+    const name = cell.dataset.bankName || ''
+    const traj: DataPoint[] = JSON.parse(cell.dataset.trajectory || '[]')
+    const latestType = [...traj].reverse().find((t) => t.type)?.type || ''
+
+    popName.textContent = name
+    popType.textContent = TYPE_LABELS[latestType] || latestType
+    popType.className = 'pop-type ' + (TYPE_CSS[latestType] || '')
+
+    buildChart(traj, latestType)
+    positionPopover(cell)
+    popover.setAttribute('aria-hidden', 'false')
+  }
+
+  function hide(): void {
+    popover.setAttribute('aria-hidden', 'true')
+  }
+
+  /* ── Event binding ── */
+  let activeTd: HTMLElement | null = null
+  let isLocked = false
+
+  document.querySelectorAll<HTMLElement>('td.col-spark[data-trajectory]').forEach((td) => {
+    td.addEventListener('mouseenter', () => {
+      if (!isLocked) {
+        activeTd = td
+        show(td)
+      }
+    })
+    td.addEventListener('mouseleave', () => {
+      if (!isLocked) {
+        activeTd = null
+        hide()
+      }
+    })
+    td.addEventListener('click', (e) => {
+      e.stopPropagation()
+      if (isLocked && activeTd === td) {
+        isLocked = false
+        hide()
+        activeTd = null
+      } else {
+        isLocked = true
+        activeTd = td
+        show(td)
+      }
+    })
+  })
+
+  document.addEventListener('click', () => {
+    if (isLocked) {
+      isLocked = false
+      hide()
+      activeTd = null
+    }
+  })
+
+  popover.addEventListener('click', (e) => e.stopPropagation())
+</script>

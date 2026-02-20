@@ -1,0 +1,1043 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import SparklinePopover from '../components/d-sibs/SparklinePopover.astro'
+import { SITE_TITLE } from '../consts'
+
+// Primary data: year → group → bank entries (name + type)
+// Group 1 = lowest importance, Group 5 = highest (always empty)
+
+type BankEntry = { name: string; type: '国有商业银行' | '股份制商业银行' | '城市商业银行' }
+type YearData = {
+  1: BankEntry[]
+  2: BankEntry[]
+  3: BankEntry[]
+  4: BankEntry[]
+  5: BankEntry[]
+  link: string
+}
+
+const years = ['2021', '2022', '2023', '2025'] as const
+
+const data: Record<string, YearData> = {
+  '2021': {
+    5: [],
+    4: [
+      { name: '中国工商银行', type: '国有商业银行' },
+      { name: '中国银行', type: '国有商业银行' },
+      { name: '中国建设银行', type: '国有商业银行' },
+      { name: '中国农业银行', type: '国有商业银行' },
+    ],
+    3: [
+      { name: '交通银行', type: '国有商业银行' },
+      { name: '招商银行', type: '股份制商业银行' },
+      { name: '兴业银行', type: '股份制商业银行' },
+    ],
+    2: [
+      { name: '浦发银行', type: '股份制商业银行' },
+      { name: '中信银行', type: '股份制商业银行' },
+      { name: '中国民生银行', type: '股份制商业银行' },
+      { name: '中国邮政储蓄银行', type: '国有商业银行' },
+    ],
+    1: [
+      { name: '平安银行', type: '股份制商业银行' },
+      { name: '中国光大银行', type: '股份制商业银行' },
+      { name: '华夏银行', type: '股份制商业银行' },
+      { name: '广发银行', type: '股份制商业银行' },
+      { name: '宁波银行', type: '城市商业银行' },
+      { name: '上海银行', type: '城市商业银行' },
+      { name: '江苏银行', type: '城市商业银行' },
+      { name: '北京银行', type: '城市商业银行' },
+    ],
+    link: 'https://www.pbc.gov.cn/huobizhengceersi/214481/3868581/3868587/762c43beec6a412abd935a54770ad1ff/index.html',
+  },
+  '2022': {
+    5: [],
+    4: [
+      { name: '中国工商银行', type: '国有商业银行' },
+      { name: '中国银行', type: '国有商业银行' },
+      { name: '中国建设银行', type: '国有商业银行' },
+      { name: '中国农业银行', type: '国有商业银行' },
+    ],
+    3: [
+      { name: '交通银行', type: '国有商业银行' },
+      { name: '招商银行', type: '股份制商业银行' },
+      { name: '兴业银行', type: '股份制商业银行' },
+    ],
+    2: [
+      { name: '中信银行', type: '股份制商业银行' },
+      { name: '中国邮政储蓄银行', type: '国有商业银行' },
+      { name: '浦发银行', type: '股份制商业银行' },
+    ],
+    1: [
+      { name: '中国民生银行', type: '股份制商业银行' },
+      { name: '中国光大银行', type: '股份制商业银行' },
+      { name: '平安银行', type: '股份制商业银行' },
+      { name: '华夏银行', type: '股份制商业银行' },
+      { name: '宁波银行', type: '城市商业银行' },
+      { name: '广发银行', type: '股份制商业银行' },
+      { name: '江苏银行', type: '城市商业银行' },
+      { name: '上海银行', type: '城市商业银行' },
+      { name: '北京银行', type: '城市商业银行' },
+    ],
+    link: 'https://www.pbc.gov.cn/huobizhengceersi/214481/3868581/3868587/f08b6ff135f04a458a8d33ad786ee0df/index.html',
+  },
+  '2023': {
+    5: [],
+    4: [
+      { name: '中国工商银行', type: '国有商业银行' },
+      { name: '中国银行', type: '国有商业银行' },
+      { name: '中国建设银行', type: '国有商业银行' },
+      { name: '中国农业银行', type: '国有商业银行' },
+    ],
+    3: [
+      { name: '交通银行', type: '国有商业银行' },
+      { name: '招商银行', type: '股份制商业银行' },
+      { name: '兴业银行', type: '股份制商业银行' },
+    ],
+    2: [
+      { name: '中信银行', type: '股份制商业银行' },
+      { name: '浦发银行', type: '股份制商业银行' },
+      { name: '中国邮政储蓄银行', type: '国有商业银行' },
+    ],
+    1: [
+      { name: '中国光大银行', type: '股份制商业银行' },
+      { name: '中国民生银行', type: '股份制商业银行' },
+      { name: '平安银行', type: '股份制商业银行' },
+      { name: '华夏银行', type: '股份制商业银行' },
+      { name: '宁波银行', type: '城市商业银行' },
+      { name: '江苏银行', type: '城市商业银行' },
+      { name: '广发银行', type: '股份制商业银行' },
+      { name: '上海银行', type: '城市商业银行' },
+      { name: '南京银行', type: '城市商业银行' },
+      { name: '北京银行', type: '城市商业银行' },
+    ],
+    link: 'https://www.pbc.gov.cn/huobizhengceersi/214481/3868581/3868587/70f69ff284254dcf88774ddfda485c96/index.html',
+  },
+  '2025': {
+    5: [],
+    4: [
+      { name: '中国工商银行', type: '国有商业银行' },
+      { name: '中国银行', type: '国有商业银行' },
+      { name: '中国建设银行', type: '国有商业银行' },
+      { name: '中国农业银行', type: '国有商业银行' },
+    ],
+    3: [
+      { name: '交通银行', type: '国有商业银行' },
+      { name: '招商银行', type: '股份制商业银行' },
+    ],
+    2: [
+      { name: '兴业银行', type: '股份制商业银行' },
+      { name: '中信银行', type: '股份制商业银行' },
+      { name: '浦发银行', type: '股份制商业银行' },
+      { name: '中国邮政储蓄银行', type: '国有商业银行' },
+    ],
+    1: [
+      { name: '中国民生银行', type: '股份制商业银行' },
+      { name: '中国光大银行', type: '股份制商业银行' },
+      { name: '平安银行', type: '股份制商业银行' },
+      { name: '华夏银行', type: '股份制商业银行' },
+      { name: '宁波银行', type: '城市商业银行' },
+      { name: '江苏银行', type: '城市商业银行' },
+      { name: '北京银行', type: '城市商业银行' },
+      { name: '南京银行', type: '城市商业银行' },
+      { name: '广发银行', type: '股份制商业银行' },
+      { name: '浙商银行', type: '股份制商业银行' },
+      { name: '上海银行', type: '城市商业银行' },
+    ],
+    link: 'https://www.pbc.gov.cn/huobizhengceersi/214481/3868581/3868587/2026021318433023031/index.html',
+  },
+}
+
+// --- Derived structures ---
+
+const groupKeys = [1, 2, 3, 4, 5] as const
+
+function getGroups(yd: YearData): [number, BankEntry[]][] {
+  return groupKeys.map((g) => [g, yd[g]])
+}
+
+const groupLabels: Record<number, string> = {
+  1: '第一组',
+  2: '第二组',
+  3: '第三组',
+  4: '第四组',
+  5: '第五组',
+}
+
+// Helper: find a bank's group and type in a given year
+function findBank(year: string, bankName: string): { group: number; type: string } | null {
+  const yd = data[year]
+  if (!yd) return null
+  for (const [g, entries] of getGroups(yd)) {
+    const entry = entries.find((e) => e.name === bankName)
+    if (entry) return { group: g, type: entry.type }
+  }
+  return null
+}
+
+// Collect all unique bank names across all years
+const allBankNames = [
+  ...new Set(
+    years.flatMap((y) =>
+      getGroups(data[y])
+        .flatMap(([, entries]) => entries)
+        .map((e) => e.name),
+    ),
+  ),
+]
+
+// Build per-bank history: { name, years: { [year]: { group, type } | null } }
+type BankHistory = {
+  name: string
+  years: Record<string, { group: number; type: string } | null>
+  latestType: string
+}
+
+const bankHistories: BankHistory[] = allBankNames.map((name) => {
+  const history: Record<string, { group: number; type: string } | null> = {}
+  let latestType = ''
+  for (const y of years) {
+    const found = findBank(y, name)
+    history[y] = found
+    if (found) latestType = found.type
+  }
+  return { name, years: history, latestType }
+})
+
+// Sort: highest latest group first, then by type order
+const typeOrder: Record<string, number> = { 国有商业银行: 0, 股份制商业银行: 1, 城市商业银行: 2 }
+
+const sortedBanks = [...bankHistories].sort((a, b) => {
+  const latestA = a.years[years[years.length - 1]]?.group ?? 0
+  const latestB = b.years[years[years.length - 1]]?.group ?? 0
+  if (latestB !== latestA) return latestB - latestA
+  return (typeOrder[a.latestType] ?? 3) - (typeOrder[b.latestType] ?? 3)
+})
+
+// Stats per year
+const yearStats = years.map((year) => {
+  const yd = data[year]
+  const groups: Record<number, BankEntry[]> = { 1: [], 2: [], 3: [], 4: [], 5: [] }
+  let total = 0
+  for (const [g, entries] of getGroups(yd)) {
+    groups[g] = entries
+    total += entries.length
+  }
+  return { year, total, groups }
+})
+
+// Changes between consecutive years
+const changes: { from: string; to: string; entered: [string, number][]; exited: string[]; upgraded: [string, number, number][]; downgraded: [string, number, number][] }[] = []
+for (let i = 1; i < years.length; i++) {
+  const from = years[i - 1]
+  const to = years[i]
+  const entered: [string, number][] = []
+  const exited: string[] = []
+  const upgraded: [string, number, number][] = []
+  const downgraded: [string, number, number][] = []
+
+  for (const bh of bankHistories) {
+    const prev = bh.years[from]
+    const curr = bh.years[to]
+    if (!prev && curr) entered.push([bh.name, curr.group])
+    else if (prev && !curr) exited.push(bh.name)
+    else if (prev && curr && curr.group > prev.group) upgraded.push([bh.name, prev.group, curr.group])
+    else if (prev && curr && curr.group < prev.group) downgraded.push([bh.name, prev.group, curr.group])
+  }
+  changes.push({ from, to, entered, exited, upgraded, downgraded })
+}
+
+// Helper CSS class for bank type
+function typeClass(type: string, prefix: string) {
+  if (type === '国有商业银行') return `${prefix}-state`
+  if (type === '股份制商业银行') return `${prefix}-joint`
+  return `${prefix}-city`
+}
+
+function typeLabel(type: string) {
+  if (type === '国有商业银行') return '国有'
+  if (type === '股份制商业银行') return '股份制'
+  return '城商行'
+}
+---
+
+<BaseLayout title={`系统重要性银行名单 | ${SITE_TITLE}`}>
+  <main>
+    <div class="page-header">
+      <h1>中国系统重要性银行</h1>
+      <p class="subtitle">2021–2025 历年名单及变化追踪</p>
+      <p class="note">数据来源：<a href="https://www.pbc.gov.cn/huobizhengceersi/214481/3868581/3868587/index.html" target="_blank" rel="noopener noreferrer">中国人民银行宏观审慎管理局</a></p>
+    </div>
+
+    <!-- Summary Cards -->
+    <section class="summary-cards">
+      {
+        yearStats.map((s) => (
+          <a class="summary-card" href={data[s.year].link} target="_blank" rel="noopener noreferrer">
+            <div class="card-year">{s.year}</div>
+            <div class="card-total">{s.total}</div>
+            <div class="card-label">家银行</div>
+            <div class="card-breakdown">
+              {[4, 3, 2, 1].map(
+                (g) =>
+                  s.groups[g].length > 0 && (
+                    <span class={`card-group g${g}`}>
+                      {groupLabels[g]}: {s.groups[g].length}家
+                    </span>
+                  ),
+              )}
+            </div>
+          </a>
+        ))
+      }
+    </section>
+
+    <!-- Detailed Table -->
+    <section class="table-section">
+      <h2>历年分组详情</h2>
+      <div class="table-wrapper">
+        <table class="bank-table">
+          <thead>
+            <tr>
+              <th class="col-name">银行</th>
+              <th class="col-type">类型</th>
+              {years.map((y) => <th class="col-year">{y}</th>)}
+              <th class="col-spark">变迁</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              sortedBanks.map((bh) => {
+                return (
+                  <tr data-bank={bh.name}>
+                    <td class="col-name">{bh.name}</td>
+                    <td class="col-type">
+                      <span class={`type-tag ${typeClass(bh.latestType, 'tag')}`}>{typeLabel(bh.latestType)}</span>
+                    </td>
+                    {years.map((y) => {
+                      const info = bh.years[y]
+                      return <td class="col-year">{info ? <span class={`group-pill g${info.group}`}>{groupLabels[info.group]}</span> : <span class="not-listed">—</span>}</td>
+                    })}
+                    <td
+                      class="col-spark"
+                      data-bank-name={bh.name}
+                      data-bank-type={typeClass(bh.latestType, '')}
+                      data-trajectory={JSON.stringify(
+                        years.map((y) => {
+                          const info = bh.years[y]
+                          return info ? { year: y, group: info.group, type: info.type } : { year: y, group: null, type: null }
+                        }),
+                      )}
+                    >
+                      <svg class="sparkline" viewBox="0 0 80 32" preserveAspectRatio="none">
+                        {/* Grid lines for group levels */}
+                        {[1, 2, 3, 4].map((g) => (
+                          <line x1="0" y1={32 - ((g - 0.5) / 4) * 32} x2="80" y2={32 - ((g - 0.5) / 4) * 32} class="spark-grid" />
+                        ))}
+                        {/* Connecting line */}
+                        {(() => {
+                          const points: string[] = []
+                          const n = years.length as number
+                          years.forEach((y, i) => {
+                            const info = bh.years[y]
+                            if (info) {
+                              const x = n === 1 ? 40 : (i / (n - 1)) * 68 + 6
+                              const yPos = 32 - ((info.group - 0.5) / 4) * 32
+                              points.push(`${x},${yPos}`)
+                            }
+                          })
+                          return points.length >= 2 ? <polyline points={points.join(' ')} class={`spark-line ${typeClass(bh.latestType, 'spark')}`} /> : null
+                        })()}
+                        {/* Dots */}
+                        {(() => {
+                          const n = years.length as number
+                          return years.map((y, i) => {
+                            const info = bh.years[y]
+                            if (!info) return null
+                            const x = n === 1 ? 40 : (i / (n - 1)) * 68 + 6
+                            const yPos = 32 - ((info.group - 0.5) / 4) * 32
+                            return <circle cx={x} cy={yPos} r="2.5" class={`spark-dot ${typeClass(info.type, 'spark')}`} />
+                          })
+                        })()}
+                      </svg>
+                    </td>
+                  </tr>
+                )
+              })
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <SparklinePopover />
+
+    <!-- Changes Timeline -->
+    <section class="changes-section">
+      <h2>历年变化</h2>
+      <div class="timeline">
+        {
+          changes.map((c) => {
+            const hasChanges = c.entered.length > 0 || c.exited.length > 0 || c.upgraded.length > 0 || c.downgraded.length > 0
+            return (
+              <div class="timeline-item">
+                <div class="timeline-marker" />
+                <div class="timeline-content">
+                  <h3>
+                    {c.from} → {c.to}
+                  </h3>
+                  {!hasChanges && <p class="no-change">无变化</p>}
+                  {c.entered.length > 0 && (
+                    <div class="change-group change-enter">
+                      <span class="change-icon">＋</span>
+                      <div>
+                        <strong>新增入选</strong>
+                        {c.entered.map(([n, g]) => (
+                          <span class="change-banks">
+                            {n}：{groupLabels[g]}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {c.exited.length > 0 && (
+                    <div class="change-group change-exit">
+                      <span class="change-icon">－</span>
+                      <div>
+                        <strong>退出名单</strong>
+                        <span class="change-banks">{c.exited.join('、')}</span>
+                      </div>
+                    </div>
+                  )}
+                  {c.upgraded.length > 0 && (
+                    <div class="change-group change-up">
+                      <span class="change-icon">↑</span>
+                      <div>
+                        <strong>组别上升</strong>
+                        {c.upgraded.map(([n, from, to]) => (
+                          <span class="change-banks">
+                            {n}：{groupLabels[from]} → {groupLabels[to]}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {c.downgraded.length > 0 && (
+                    <div class="change-group change-down">
+                      <span class="change-icon">↓</span>
+                      <div>
+                        <strong>组别下降</strong>
+                        {c.downgraded.map(([n, from, to]) => (
+                          <span class="change-banks">
+                            {n}：{groupLabels[from]} → {groupLabels[to]}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )
+          })
+        }
+      </div>
+    </section>
+
+    <!-- Group composition per year -->
+    <section class="composition-section">
+      <h2>各年度分组构成</h2>
+      <div class="composition-grid">
+        {
+          yearStats.map((s) => (
+            <div class="composition-year">
+              <h3>
+                <a href={data[s.year].link} target="_blank" rel="noopener noreferrer">
+                  {s.year}年
+                </a>{' '}
+                <span class="comp-total">（共{s.total}家）</span>
+              </h3>
+              {[4, 3, 2, 1].map(
+                (g) =>
+                  s.groups[g].length > 0 && (
+                    <div class="comp-group">
+                      <div class={`comp-header g${g}`}>
+                        <span class="comp-label">{groupLabels[g]}</span>
+                        <span class="comp-line" />
+                        <span class="comp-count">{s.groups[g].length}家</span>
+                      </div>
+                      <div class="comp-banks">
+                        {s.groups[g].map((entry) => (
+                          <span class={`comp-bank ${typeClass(entry.type, 'tag')}`}>{entry.name}</span>
+                        ))}
+                      </div>
+                    </div>
+                  ),
+              )}
+            </div>
+          ))
+        }
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  /*
+   * Two independent color systems:
+   * GROUPS (g1-g4): importance levels — 4 distinct warm/neutral hues
+   * TYPES  (t-*):   bank categories — 3 distinct cool hues
+   */
+  :root {
+    /* Group 1 (lowest): slate gray */
+    --g1: hsl(210, 12%, 50%);
+    --g1-bg: hsl(210, 15%, 92%);
+    /* Group 2: warm amber */
+    --g2: hsl(38, 80%, 45%);
+    --g2-bg: hsl(38, 75%, 91%);
+    /* Group 3: burnt orange */
+    --g3: hsl(18, 80%, 50%);
+    --g3-bg: hsl(18, 80%, 92%);
+    /* Group 4 (highest): crimson red */
+    --g4: hsl(350, 75%, 45%);
+    --g4-bg: hsl(350, 70%, 93%);
+
+    /* Bank type: 国有 = navy blue */
+    --t-state: hsl(220, 70%, 42%);
+    --t-state-bg: hsl(220, 60%, 93%);
+    /* Bank type: 股份制 = teal */
+    --t-joint: hsl(170, 65%, 34%);
+    --t-joint-bg: hsl(170, 50%, 92%);
+    /* Bank type: 城商行 = violet */
+    --t-city: hsl(280, 55%, 50%);
+    --t-city-bg: hsl(280, 45%, 93%);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --g1: hsl(210, 15%, 65%);
+      --g1-bg: hsl(210, 10%, 18%);
+      --g2: hsl(38, 75%, 58%);
+      --g2-bg: hsl(38, 35%, 16%);
+      --g3: hsl(18, 75%, 60%);
+      --g3-bg: hsl(18, 35%, 16%);
+      --g4: hsl(350, 70%, 62%);
+      --g4-bg: hsl(350, 30%, 17%);
+
+      --t-state: hsl(220, 75%, 68%);
+      --t-state-bg: hsl(220, 30%, 17%);
+      --t-joint: hsl(170, 60%, 55%);
+      --t-joint-bg: hsl(170, 25%, 16%);
+      --t-city: hsl(280, 55%, 68%);
+      --t-city-bg: hsl(280, 25%, 17%);
+    }
+  }
+
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 6rem;
+    min-height: calc(100vh - 200px);
+  }
+
+  .page-header {
+    margin-bottom: 3rem;
+  }
+
+  .page-header h1 {
+    font-size: var(--z-text-h1);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  .subtitle {
+    font-size: var(--z-text-lg);
+    color: var(--z-color-text-secondary);
+  }
+
+  .note {
+    font-size: var(--z-text-xs);
+    color: var(--z-color-text-dimmed);
+    margin-top: 0.5rem;
+  }
+
+  /* Summary Cards */
+  .summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+
+  .summary-card {
+    display: block;
+    background: var(--z-color-black);
+    border: 1px solid var(--z-color-hairline-light);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    text-align: center;
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.15s;
+  }
+
+  .summary-card:hover {
+    border-color: var(--z-color-text-secondary);
+  }
+
+  .card-year {
+    font-size: var(--z-text-2xl);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .card-total {
+    font-size: var(--z-text-5xl);
+    font-weight: 800;
+    line-height: 1.2;
+    margin: 0.25rem 0;
+  }
+
+  .card-label {
+    font-size: var(--z-text-sm);
+    color: var(--z-color-text-secondary);
+    margin-bottom: 0.75rem;
+  }
+
+  .card-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: var(--z-text-xs);
+    color: var(--z-color-text-secondary);
+  }
+
+  .card-group {
+    display: inline-block;
+  }
+
+  .card-group.g4 {
+    color: var(--g4);
+  }
+  .card-group.g3 {
+    color: var(--g3);
+  }
+  .card-group.g2 {
+    color: var(--g2);
+  }
+  .card-group.g1 {
+    color: var(--g1);
+  }
+
+  /* Section common */
+  section {
+    margin-bottom: 3rem;
+  }
+
+  h2 {
+    font-size: var(--z-text-h2);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Sparkline */
+  .col-spark {
+    min-width: 90px;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  th.col-spark {
+    text-align: center;
+  }
+
+  .sparkline {
+    width: 80px;
+    height: 32px;
+    vertical-align: middle;
+  }
+
+  .spark-grid {
+    stroke: var(--z-color-hairline-light);
+    stroke-width: 0.5;
+    stroke-dasharray: 2 2;
+  }
+
+  .spark-line {
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .spark-line.spark-state {
+    stroke: var(--t-state);
+  }
+  .spark-line.spark-joint {
+    stroke: var(--t-joint);
+  }
+  .spark-line.spark-city {
+    stroke: var(--t-city);
+  }
+
+  .spark-dot.spark-state {
+    fill: var(--t-state);
+  }
+  .spark-dot.spark-joint {
+    fill: var(--t-joint);
+  }
+  .spark-dot.spark-city {
+    fill: var(--t-city);
+  }
+
+  /* Table */
+  .table-wrapper {
+    overflow-x: auto;
+    border: 1px solid var(--z-color-hairline-light);
+    border-radius: 0.75rem;
+  }
+
+  .bank-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--z-text-sm);
+  }
+
+  .bank-table th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    font-size: var(--z-text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--z-color-text-secondary);
+    border-bottom: 2px solid var(--z-color-hairline-light);
+    background: var(--z-color-black);
+    white-space: nowrap;
+  }
+
+  .bank-table td {
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--z-color-hairline-light);
+    white-space: nowrap;
+  }
+
+  .bank-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .bank-table tbody tr:hover {
+    background: var(--z-color-hairline-light);
+  }
+
+  .col-name {
+    font-weight: 600;
+    min-width: 140px;
+  }
+
+  .col-type {
+    min-width: 70px;
+  }
+
+  .col-year {
+    text-align: center;
+    min-width: 80px;
+  }
+
+  th.col-year {
+    text-align: center;
+  }
+
+  .type-tag {
+    font-size: var(--z-text-2xs);
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.25rem;
+    font-weight: 600;
+  }
+
+  .tag-state {
+    background: var(--t-state-bg);
+    color: var(--t-state);
+  }
+  .tag-joint {
+    background: var(--t-joint-bg);
+    color: var(--t-joint);
+  }
+  .tag-city {
+    background: var(--t-city-bg);
+    color: var(--t-city);
+  }
+
+  .group-pill {
+    display: inline-block;
+    font-size: var(--z-text-2xs);
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 1rem;
+  }
+
+  .group-pill.g1 {
+    background: var(--g1-bg);
+    color: var(--g1);
+  }
+  .group-pill.g2 {
+    background: var(--g2-bg);
+    color: var(--g2);
+  }
+  .group-pill.g3 {
+    background: var(--g3-bg);
+    color: var(--g3);
+  }
+  .group-pill.g4 {
+    background: var(--g4-bg);
+    color: var(--g4);
+  }
+
+  .not-listed {
+    color: var(--z-color-text-dimmed);
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--z-color-hairline-light);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 2rem;
+  }
+
+  .timeline-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .timeline-marker {
+    position: absolute;
+    left: -2rem;
+    top: 0.3rem;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--z-color-text-secondary);
+    border: 3px solid var(--z-color-black);
+  }
+
+  .timeline-content h3 {
+    font-size: var(--z-text-lg);
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+
+  .change-group {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: var(--z-text-sm);
+  }
+
+  .change-icon {
+    font-size: var(--z-text-lg);
+    font-weight: 700;
+    line-height: 1.3;
+    flex-shrink: 0;
+  }
+
+  .change-group strong {
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .change-banks {
+    display: block;
+    color: var(--z-color-text-secondary);
+  }
+
+  .change-enter {
+    background: hsl(170, 40%, 92%);
+  }
+  .change-enter .change-icon {
+    color: hsl(170, 55%, 42%);
+  }
+
+  .change-exit {
+    background: hsl(0, 40%, 93%);
+  }
+  .change-exit .change-icon {
+    color: hsl(0, 65%, 55%);
+  }
+
+  .change-up {
+    background: hsl(38, 50%, 92%);
+  }
+  .change-up .change-icon {
+    color: hsl(38, 80%, 45%);
+  }
+
+  .change-down {
+    background: hsl(210, 40%, 92%);
+  }
+  .change-down .change-icon {
+    color: hsl(210, 60%, 50%);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .change-enter {
+      background: hsl(170, 25%, 15%);
+    }
+    .change-exit {
+      background: hsl(0, 25%, 15%);
+    }
+    .change-up {
+      background: hsl(38, 25%, 15%);
+    }
+    .change-down {
+      background: hsl(210, 25%, 15%);
+    }
+  }
+
+  .no-change {
+    color: var(--z-color-text-dimmed);
+    font-size: var(--z-text-sm);
+  }
+
+  /* Composition Grid */
+  .composition-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .composition-year {
+    background: var(--z-color-black);
+    border: 1px solid var(--z-color-hairline-light);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+  }
+
+  .composition-year h3 {
+    font-size: var(--z-text-lg);
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .composition-year h3 a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .composition-year h3 a:hover {
+    text-decoration: underline;
+  }
+
+  .comp-total {
+    font-weight: 400;
+    font-size: var(--z-text-sm);
+    color: var(--z-color-text-secondary);
+  }
+
+  .comp-group {
+    margin-bottom: 2rem;
+  }
+
+  .comp-group:last-child {
+    margin-bottom: 0;
+  }
+
+  .comp-header {
+    font-size: var(--z-text-xs);
+    font-weight: 600;
+    padding: 0 0 0.35rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1.5px solid var(--z-color-hairline-light);
+    padding-left: 0.5rem;
+  }
+
+  .comp-label {
+    white-space: nowrap;
+  }
+
+  .comp-line {
+    flex: 1;
+    height: 0;
+  }
+
+  .comp-header.g1 {
+    border-left-color: var(--g1);
+    color: var(--g1);
+  }
+  .comp-header.g2 {
+    border-left-color: var(--g2);
+    color: var(--g2);
+  }
+  .comp-header.g3 {
+    border-left-color: var(--g3);
+    color: var(--g3);
+  }
+  .comp-header.g4 {
+    border-left-color: var(--g4);
+    color: var(--g4);
+  }
+
+  .comp-count {
+    font-weight: 400;
+    white-space: nowrap;
+    font-size: var(--z-text-2xs);
+    color: var(--z-color-text-dimmed);
+  }
+
+  .comp-banks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    padding-left: 0.75rem;
+  }
+
+  .comp-bank {
+    font-size: var(--z-text-2xs);
+    padding: 0.1rem 0.4rem;
+    border-radius: 0.25rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    main {
+      padding: 2rem 1rem 4rem;
+    }
+
+    .page-header h1 {
+      font-size: var(--z-text-xl);
+    }
+
+    .summary-cards {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .card-total {
+      font-size: var(--z-text-3xl);
+    }
+
+    h2 {
+      font-size: var(--z-text-xl);
+    }
+
+    .composition-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

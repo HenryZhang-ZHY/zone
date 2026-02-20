@@ -13,6 +13,9 @@ export async function getStaticPaths() {
 type Props = CollectionEntry<'blog'>
 
 const post = Astro.props
+if (post.data.redirect) {
+	return Astro.redirect(post.data.redirect)
+}
 const { Content } = await render(post)
 ---
 
