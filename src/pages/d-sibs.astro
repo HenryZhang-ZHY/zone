@@ -2,9 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro'
 import SparklinePopover from '../components/d-sibs/SparklinePopover.astro'
 import { SITE_TITLE } from '../consts'
-
-// Primary data: year → group → bank entries (name + type)
-// Group 1 = lowest importance, Group 5 = highest (always empty)
+import { getCollection } from 'astro:content'
 
 type BankEntry = { name: string; type: '国有商业银行' | '股份制商业银行' | '城市商业银行' }
 type YearData = {
@@ -16,137 +14,25 @@ type YearData = {
   link: string
 }
 
-const years = ['2021', '2022', '2023', '2025'] as const
+const rawEntries = (await getCollection('dsibs')).sort((a, b) => a.data.year - b.data.year)
+const years = rawEntries.map((e) => String(e.data.year))
 
-const data: Record<string, YearData> = {
-  '2021': {
-    5: [],
-    4: [
-      { name: '中国工商银行', type: '国有商业银行' },
-      { name: '中国银行', type: '国有商业银行' },
-      { name: '中国建设银行', type: '国有商业银行' },
-      { name: '中国农业银行', type: '国有商业银行' },
-    ],
-    3: [
-      { name: '交通银行', type: '国有商业银行' },
-      { name: '招商银行', type: '股份制商业银行' },
-      { name: '兴业银行', type: '股份制商业银行' },
-    ],
-    2: [
-      { name: '浦发银行', type: '股份制商业银行' },
-      { name: '中信银行', type: '股份制商业银行' },
-      { name: '中国民生银行', type: '股份制商业银行' },
-      { name: '中国邮政储蓄银行', type: '国有商业银行' },
-    ],
-    1: [
-      { name: '平安银行', type: '股份制商业银行' },
-      { name: '中国光大银行', type: '股份制商业银行' },
-      { name: '华夏银行', type: '股份制商业银行' },
-      { name: '广发银行', type: '股份制商业银行' },
-      { name: '宁波银行', type: '城市商业银行' },
-      { name: '上海银行', type: '城市商业银行' },
-      { name: '江苏银行', type: '城市商业银行' },
-      { name: '北京银行', type: '城市商业银行' },
-    ],
-    link: 'https://www.pbc.gov.cn/huobizhengceersi/214481/3868581/3868587/762c43beec6a412abd935a54770ad1ff/index.html',
-  },
-  '2022': {
-    5: [],
-    4: [
-      { name: '中国工商银行', type: '国有商业银行' },
-      { name: '中国银行', type: '国有商业银行' },
-      { name: '中国建设银行', type: '国有商业银行' },
-      { name: '中国农业银行', type: '国有商业银行' },
-    ],
-    3: [
-      { name: '交通银行', type: '国有商业银行' },
-      { name: '招商银行', type: '股份制商业银行' },
-      { name: '兴业银行', type: '股份制商业银行' },
-    ],
-    2: [
-      { name: '中信银行', type: '股份制商业银行' },
-      { name: '中国邮政储蓄银行', type: '国有商业银行' },
-      { name: '浦发银行', type: '股份制商业银行' },
-    ],
-    1: [
-      { name: '中国民生银行', type: '股份制商业银行' },
-      { name: '中国光大银行', type: '股份制商业银行' },
-      { name: '平安银行', type: '股份制商业银行' },
-      { name: '华夏银行', type: '股份制商业银行' },
-      { name: '宁波银行', type: '城市商业银行' },
-      { name: '广发银行', type: '股份制商业银行' },
-      { name: '江苏银行', type: '城市商业银行' },
-      { name: '上海银行', type: '城市商业银行' },
-      { name: '北京银行', type: '城市商业银行' },
-    ],
-    link: 'https://www.pbc.gov.cn/huobizhengceersi/214481/3868581/3868587/f08b6ff135f04a458a8d33ad786ee0df/index.html',
-  },
-  '2023': {
-    5: [],
-    4: [
-      { name: '中国工商银行', type: '国有商业银行' },
-      { name: '中国银行', type: '国有商业银行' },
-      { name: '中国建设银行', type: '国有商业银行' },
-      { name: '中国农业银行', type: '国有商业银行' },
-    ],
-    3: [
-      { name: '交通银行', type: '国有商业银行' },
-      { name: '招商银行', type: '股份制商业银行' },
-      { name: '兴业银行', type: '股份制商业银行' },
-    ],
-    2: [
-      { name: '中信银行', type: '股份制商业银行' },
-      { name: '浦发银行', type: '股份制商业银行' },
-      { name: '中国邮政储蓄银行', type: '国有商业银行' },
-    ],
-    1: [
-      { name: '中国光大银行', type: '股份制商业银行' },
-      { name: '中国民生银行', type: '股份制商业银行' },
-      { name: '平安银行', type: '股份制商业银行' },
-      { name: '华夏银行', type: '股份制商业银行' },
-      { name: '宁波银行', type: '城市商业银行' },
-      { name: '江苏银行', type: '城市商业银行' },
-      { name: '广发银行', type: '股份制商业银行' },
-      { name: '上海银行', type: '城市商业银行' },
-      { name: '南京银行', type: '城市商业银行' },
-      { name: '北京银行', type: '城市商业银行' },
-    ],
-    link: 'https://www.pbc.gov.cn/huobizhengceersi/214481/3868581/3868587/70f69ff284254dcf88774ddfda485c96/index.html',
-  },
-  '2025': {
-    5: [],
-    4: [
-      { name: '中国工商银行', type: '国有商业银行' },
-      { name: '中国银行', type: '国有商业银行' },
-      { name: '中国建设银行', type: '国有商业银行' },
-      { name: '中国农业银行', type: '国有商业银行' },
-    ],
-    3: [
-      { name: '交通银行', type: '国有商业银行' },
-      { name: '招商银行', type: '股份制商业银行' },
-    ],
-    2: [
-      { name: '兴业银行', type: '股份制商业银行' },
-      { name: '中信银行', type: '股份制商业银行' },
-      { name: '浦发银行', type: '股份制商业银行' },
-      { name: '中国邮政储蓄银行', type: '国有商业银行' },
-    ],
-    1: [
-      { name: '中国民生银行', type: '股份制商业银行' },
-      { name: '中国光大银行', type: '股份制商业银行' },
-      { name: '平安银行', type: '股份制商业银行' },
-      { name: '华夏银行', type: '股份制商业银行' },
-      { name: '宁波银行', type: '城市商业银行' },
-      { name: '江苏银行', type: '城市商业银行' },
-      { name: '北京银行', type: '城市商业银行' },
-      { name: '南京银行', type: '城市商业银行' },
-      { name: '广发银行', type: '股份制商业银行' },
-      { name: '浙商银行', type: '股份制商业银行' },
-      { name: '上海银行', type: '城市商业银行' },
-    ],
-    link: 'https://www.pbc.gov.cn/huobizhengceersi/214481/3868581/3868587/2026021318433023031/index.html',
-  },
-}
+const data: Record<string, YearData> = Object.fromEntries(
+  rawEntries.map((entry) => {
+    const byLevel = Object.fromEntries(entry.data.groups.map((g) => [g.level, g.banks as BankEntry[]]))
+    return [
+      String(entry.data.year),
+      {
+        1: byLevel[1] ?? [],
+        2: byLevel[2] ?? [],
+        3: byLevel[3] ?? [],
+        4: byLevel[4] ?? [],
+        5: byLevel[5] ?? [],
+        link: entry.data.link,
+      },
+    ]
+  }),
+)
 
 // --- Derived structures ---
 

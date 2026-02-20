@@ -1,0 +1,130 @@
+- id: "dsib-2021"
+  year: 2021
+  link: "https://www.pbc.gov.cn/huobizhengceersi/214481/3868581/3868587/762c43beec6a412abd935a54770ad1ff/index.html"
+  groups:
+    - level: 4
+      banks:
+        - { name: "中国工商银行", type: "国有商业银行" }
+        - { name: "中国银行", type: "国有商业银行" }
+        - { name: "中国建设银行", type: "国有商业银行" }
+        - { name: "中国农业银行", type: "国有商业银行" }
+    - level: 3
+      banks:
+        - { name: "交通银行", type: "国有商业银行" }
+        - { name: "招商银行", type: "股份制商业银行" }
+        - { name: "兴业银行", type: "股份制商业银行" }
+    - level: 2
+      banks:
+        - { name: "浦发银行", type: "股份制商业银行" }
+        - { name: "中信银行", type: "股份制商业银行" }
+        - { name: "中国民生银行", type: "股份制商业银行" }
+        - { name: "中国邮政储蓄银行", type: "国有商业银行" }
+    - level: 1
+      banks:
+        - { name: "平安银行", type: "股份制商业银行" }
+        - { name: "中国光大银行", type: "股份制商业银行" }
+        - { name: "华夏银行", type: "股份制商业银行" }
+        - { name: "广发银行", type: "股份制商业银行" }
+        - { name: "宁波银行", type: "城市商业银行" }
+        - { name: "上海银行", type: "城市商业银行" }
+        - { name: "江苏银行", type: "城市商业银行" }
+        - { name: "北京银行", type: "城市商业银行" }
+
+- id: "dsib-2022"
+  year: 2022
+  link: "https://www.pbc.gov.cn/huobizhengceersi/214481/3868581/3868587/f08b6ff135f04a458a8d33ad786ee0df/index.html"
+  groups:
+    - level: 4
+      banks:
+        - { name: "中国工商银行", type: "国有商业银行" }
+        - { name: "中国银行", type: "国有商业银行" }
+        - { name: "中国建设银行", type: "国有商业银行" }
+        - { name: "中国农业银行", type: "国有商业银行" }
+    - level: 3
+      banks:
+        - { name: "交通银行", type: "国有商业银行" }
+        - { name: "招商银行", type: "股份制商业银行" }
+        - { name: "兴业银行", type: "股份制商业银行" }
+    - level: 2
+      banks:
+        - { name: "中信银行", type: "股份制商业银行" }
+        - { name: "中国邮政储蓄银行", type: "国有商业银行" }
+        - { name: "浦发银行", type: "股份制商业银行" }
+    - level: 1
+      banks:
+        - { name: "中国民生银行", type: "股份制商业银行" }
+        - { name: "中国光大银行", type: "股份制商业银行" }
+        - { name: "平安银行", type: "股份制商业银行" }
+        - { name: "华夏银行", type: "股份制商业银行" }
+        - { name: "宁波银行", type: "城市商业银行" }
+        - { name: "广发银行", type: "股份制商业银行" }
+        - { name: "江苏银行", type: "城市商业银行" }
+        - { name: "上海银行", type: "城市商业银行" }
+        - { name: "北京银行", type: "城市商业银行" }
+
+- id: "dsib-2023"
+  year: 2023
+  link: "https://www.pbc.gov.cn/huobizhengceersi/214481/3868581/3868587/70f69ff284254dcf88774ddfda485c96/index.html"
+  groups:
+    - level: 4
+      banks:
+        - { name: "中国工商银行", type: "国有商业银行" }
+        - { name: "中国银行", type: "国有商业银行" }
+        - { name: "中国建设银行", type: "国有商业银行" }
+        - { name: "中国农业银行", type: "国有商业银行" }
+    - level: 3
+      banks:
+        - { name: "交通银行", type: "国有商业银行" }
+        - { name: "招商银行", type: "股份制商业银行" }
+        - { name: "兴业银行", type: "股份制商业银行" }
+    - level: 2
+      banks:
+        - { name: "中信银行", type: "股份制商业银行" }
+        - { name: "浦发银行", type: "股份制商业银行" }
+        - { name: "中国邮政储蓄银行", type: "国有商业银行" }
+    - level: 1
+      banks:
+        - { name: "中国光大银行", type: "股份制商业银行" }
+        - { name: "中国民生银行", type: "股份制商业银行" }
+        - { name: "平安银行", type: "股份制商业银行" }
+        - { name: "华夏银行", type: "股份制商业银行" }
+        - { name: "宁波银行", type: "城市商业银行" }
+        - { name: "江苏银行", type: "城市商业银行" }
+        - { name: "广发银行", type: "股份制商业银行" }
+        - { name: "上海银行", type: "城市商业银行" }
+        - { name: "南京银行", type: "城市商业银行" }
+        - { name: "北京银行", type: "城市商业银行" }
+
+- id: "dsib-2025"
+  year: 2025
+  link: "https://www.pbc.gov.cn/huobizhengceersi/214481/3868581/3868587/2026021318433023031/index.html"
+  groups:
+    - level: 4
+      banks:
+        - { name: "中国工商银行", type: "国有商业银行" }
+        - { name: "中国银行", type: "国有商业银行" }
+        - { name: "中国建设银行", type: "国有商业银行" }
+        - { name: "中国农业银行", type: "国有商业银行" }
+    - level: 3
+      banks:
+        - { name: "交通银行", type: "国有商业银行" }
+        - { name: "招商银行", type: "股份制商业银行" }
+    - level: 2
+      banks:
+        - { name: "兴业银行", type: "股份制商业银行" }
+        - { name: "中信银行", type: "股份制商业银行" }
+        - { name: "浦发银行", type: "股份制商业银行" }
+        - { name: "中国邮政储蓄银行", type: "国有商业银行" }
+    - level: 1
+      banks:
+        - { name: "中国民生银行", type: "股份制商业银行" }
+        - { name: "中国光大银行", type: "股份制商业银行" }
+        - { name: "平安银行", type: "股份制商业银行" }
+        - { name: "华夏银行", type: "股份制商业银行" }
+        - { name: "宁波银行", type: "城市商业银行" }
+        - { name: "江苏银行", type: "城市商业银行" }
+        - { name: "北京银行", type: "城市商业银行" }
+        - { name: "南京银行", type: "城市商业银行" }
+        - { name: "广发银行", type: "股份制商业银行" }
+        - { name: "浙商银行", type: "股份制商业银行" }
+        - { name: "上海银行", type: "城市商业银行" }

@@ -88,10 +88,9 @@
 
   /*
    * ── Dynamically‑created SVG children ──
-   * These elements are built by the <script> below via createElementNS and therefore
-   * never carry Astro's scoped data‑attribute. We scope them under the static `.pop-chart`
-   * which *does* have the attribute, using :global() so Astro doesn't rewrite the child
-   * selector.
+   * These elements are built via createElementNS and therefore never carry Astro's scoped
+   * data-attribute. We scope them under the static `.pop-chart` which *does* have the
+   * attribute, using :global() so Astro doesn't rewrite the child selector.
    */
   .pop-chart :global(.pop-grid) {
     stroke: var(--z-color-hairline-light);

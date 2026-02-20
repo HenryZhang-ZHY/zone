@@ -31,4 +31,21 @@ const podcast = defineCollection({
 	}),
 });
 
-export const collections = { blog, book, podcast };
+const bankType = z.enum(['国有商业银行', '股份制商业银行', '城市商业银行']);
+
+const dsibs = defineCollection({
+	loader: file('./src/content/d-sibs.yaml'),
+	schema: z.object({
+		year: z.number().int(),
+		link: z.string().url(),
+		groups: z.array(z.object({
+			level: z.number().int().min(1).max(5),
+			banks: z.array(z.object({
+				name: z.string(),
+				type: bankType,
+			})),
+		})),
+	}),
+});
+
+export const collections = { blog, book, podcast, dsibs };
