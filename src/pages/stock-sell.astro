@@ -8,7 +8,7 @@ import { SITE_TITLE } from '../consts'
     <div class="page-header">
       <h1>股票卖点计算器</h1>
       <p class="subtitle">基于股息率计算合理卖出价格</p>
-      <p class="note">输入买入成本、持有份额和每股分红，查看 3%–10% 股息率对应的卖出价格</p>
+      <p class="note">输入买入成本、持有份额和每股分红，计算卖出部分仓位以将剩余持仓摊薄成本降至目标股息率（4%–100%）所需的卖出价格</p>
     </div>
 
     <!-- Input Section -->
@@ -41,10 +41,12 @@ import { SITE_TITLE } from '../consts'
         <table class="sell-table">
           <thead>
             <tr>
-              <th class="col-yield">股息率</th>
+              <th class="col-yield">目标股息率</th>
+              <th class="col-lots">卖出股数</th>
               <th class="col-price">卖出价格</th>
-              <th class="col-total">卖出总额</th>
-              <th class="col-profit">盈亏比例</th>
+              <th class="col-cost">目标摊薄成本</th>
+              <th class="col-remain">剩余份额</th>
+              <th class="col-profit">盈利比例</th>
             </tr>
           </thead>
           <tbody id="result-body">
@@ -58,18 +60,18 @@ import { SITE_TITLE } from '../consts'
       <h2>计算说明</h2>
       <div class="explain-card">
         <div class="formula-group">
-          <span class="formula-label">卖出价格</span>
+          <span class="formula-label">目标摊薄成本</span>
           <span class="formula-eq">= 每股分红 ÷ 目标股息率</span>
         </div>
         <div class="formula-group">
-          <span class="formula-label">卖出总额</span>
-          <span class="formula-eq">= 卖出价格 × 股票份额</span>
+          <span class="formula-label">卖出价格 P</span>
+          <span class="formula-eq">= (持仓总成本 − 剩余份额 × 目标摊薄成本) ÷ 卖出份额</span>
         </div>
         <div class="formula-group">
-          <span class="formula-label">盈亏比例</span>
+          <span class="formula-label">盈利比例</span>
           <span class="formula-eq">= (卖出价格 − 买入成本) ÷ 买入成本 × 100%</span>
         </div>
-        <p class="explain-note">股息率越低，对应的合理卖出价格越高。当市场价格高于某一股息率对应的卖出价格时，说明以该价格卖出后，持有现金获取的收益率将高于继续持股的股息率。</p>
+        <p class="explain-note">策略：以高于买入成本的价格卖出部分仓位，利用卖出收益冲减剩余持仓的账面成本，使剩余股票的每股成本下降至目标股息率对应的价位。表中仅展示卖出价格高于买入成本（可获利）的结果。卖出股数以 100 股为最小单位穷举，目标股息率范围 4%–100%。</p>
       </div>
     </section>
   </main>
@@ -95,9 +97,9 @@ import { SITE_TITLE } from '../consts'
   }
 
   function yieldClass(pct: number): string {
-    if (pct <= 4) return 'yield-low'
-    if (pct <= 6) return 'yield-mid'
-    if (pct <= 8) return 'yield-high'
+    if (pct <= 10) return 'yield-low'
+    if (pct <= 20) return 'yield-mid'
+    if (pct <= 40) return 'yield-high'
     return 'yield-max'
   }
 
@@ -109,7 +111,7 @@ import { SITE_TITLE } from '../consts'
 
   function calculate() {
     const cost = parseFloat(costInput.value)
-    const shares = parseFloat(sharesInput.value)
+    const shares = parseInt(sharesInput.value)
     const dividend = parseFloat(dividendInput.value)
 
     if (!cost || cost <= 0 || !shares || shares <= 0 || isNaN(dividend) || dividend < 0) {
@@ -119,25 +121,35 @@ import { SITE_TITLE } from '../consts'
 
     const points = calcSellPoints({ costPerShare: cost, shares, dividendPerShare: dividend })
 
-    // Summary cards
-    const low = points[points.length - 1] // 10% yield (lowest price)
-    const high = points[0] // 3% yield (highest price)
+    if (points.length === 0) {
+      alert('没有找到可获利的卖点。请确认：持仓份额 ≥ 200 股，且分红大于 0。')
+      return
+    }
+
+    const naturalYield = dividend > 0 ? (dividend / cost) * 100 : 0
+    const minPrice = Math.min(...points.map((p) => p.sellPrice))
+    const maxPrice = Math.max(...points.map((p) => p.sellPrice))
+
     summaryCards.innerHTML = `
-      <div class="summary-card">
-        <div class="card-label">最低卖价（10% 股息率）</div>
-        <div class="card-value">${formatCurrency(low.sellPrice)} 元</div>
-      </div>
-      <div class="summary-card">
-        <div class="card-label">最高卖价（3% 股息率）</div>
-        <div class="card-value">${formatCurrency(high.sellPrice)} 元</div>
-      </div>
       <div class="summary-card">
         <div class="card-label">买入成本</div>
         <div class="card-value">${formatCurrency(cost)} 元</div>
       </div>
       <div class="summary-card">
-        <div class="card-label">持有份额</div>
-        <div class="card-value">${formatCurrency(shares)} 股</div>
+        <div class="card-label">自然股息率（基于成本）</div>
+        <div class="card-value">${formatPercent(naturalYield)}</div>
+      </div>
+      <div class="summary-card">
+        <div class="card-label">最低卖出价格</div>
+        <div class="card-value">${formatCurrency(minPrice)} 元</div>
+      </div>
+      <div class="summary-card">
+        <div class="card-label">最高卖出价格</div>
+        <div class="card-value">${formatCurrency(maxPrice)} 元</div>
+      </div>
+      <div class="summary-card">
+        <div class="card-label">可获利结果数</div>
+        <div class="card-value">${points.length} 条</div>
       </div>
     `
 
@@ -147,9 +159,11 @@ import { SITE_TITLE } from '../consts'
         (p) => `
       <tr>
         <td class="col-yield"><span class="yield-pill ${yieldClass(p.yieldPercent)}">${p.yieldPercent}%</span></td>
+        <td class="col-lots">${p.sharesToSell.toLocaleString('zh-CN')} 股</td>
         <td class="col-price">${formatCurrency(p.sellPrice)}</td>
-        <td class="col-total">${formatCurrency(p.sellTotal)}</td>
-        <td class="col-profit"><span class="${profitClass(p.profitPercent)}">${p.profitPercent > 0 ? '+' : ''}${formatPercent(p.profitPercent)}</span></td>
+        <td class="col-cost">${formatCurrency(p.dilutedCost)}</td>
+        <td class="col-remain">${p.remainingShares.toLocaleString('zh-CN')} 股</td>
+        <td class="col-profit"><span class="profit-pos">+${formatPercent(p.profitPercent)}</span></td>
       </tr>
     `,
       )
@@ -366,7 +380,7 @@ import { SITE_TITLE } from '../consts'
   }
 
   .col-yield {
-    min-width: 80px;
+    min-width: 90px;
     text-align: center;
   }
 
@@ -374,15 +388,35 @@ import { SITE_TITLE } from '../consts'
     text-align: center;
   }
 
-  .col-price,
-  .col-total {
+  .col-lots {
     text-align: right;
-    min-width: 120px;
+    min-width: 80px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  th.col-lots {
+    text-align: right;
+  }
+
+  .col-price,
+  .col-cost {
+    text-align: right;
+    min-width: 110px;
     font-variant-numeric: tabular-nums;
   }
 
   th.col-price,
-  th.col-total {
+  th.col-cost {
+    text-align: right;
+  }
+
+  .col-remain {
+    text-align: right;
+    min-width: 90px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  th.col-remain {
     text-align: right;
   }
 
