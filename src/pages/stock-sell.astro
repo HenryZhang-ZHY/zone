@@ -1,0 +1,503 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { SITE_TITLE } from '../consts'
+---
+
+<BaseLayout title={`股票卖点计算器 | ${SITE_TITLE}`}>
+  <main>
+    <div class="page-header">
+      <h1>股票卖点计算器</h1>
+      <p class="subtitle">基于股息率计算合理卖出价格</p>
+      <p class="note">输入买入成本、持有份额和每股分红，查看 3%–10% 股息率对应的卖出价格</p>
+    </div>
+
+    <!-- Input Section -->
+    <section class="input-section">
+      <h2>参数输入</h2>
+      <div class="input-card">
+        <div class="input-grid">
+          <div class="input-group">
+            <label for="cost">买入成本（元/股）</label>
+            <input type="number" id="cost" min="0.01" step="0.01" placeholder="例如 10.00" />
+          </div>
+          <div class="input-group">
+            <label for="shares">股票份额（股）</label>
+            <input type="number" id="shares" min="1" step="1" placeholder="例如 1000" />
+          </div>
+          <div class="input-group">
+            <label for="dividend">每股分红（元）</label>
+            <input type="number" id="dividend" min="0" step="0.01" placeholder="例如 0.50" />
+          </div>
+        </div>
+        <button id="calc-btn" type="button">计算卖点</button>
+      </div>
+    </section>
+
+    <!-- Result Section -->
+    <section class="table-section" id="result-section" style="display:none;">
+      <h2>卖出价格参考</h2>
+      <div class="summary-cards" id="summary-cards"></div>
+      <div class="table-wrapper">
+        <table class="sell-table">
+          <thead>
+            <tr>
+              <th class="col-yield">股息率</th>
+              <th class="col-price">卖出价格</th>
+              <th class="col-total">卖出总额</th>
+              <th class="col-profit">盈亏比例</th>
+            </tr>
+          </thead>
+          <tbody id="result-body">
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Explanation -->
+    <section class="explain-section">
+      <h2>计算说明</h2>
+      <div class="explain-card">
+        <div class="formula-group">
+          <span class="formula-label">卖出价格</span>
+          <span class="formula-eq">= 每股分红 ÷ 目标股息率</span>
+        </div>
+        <div class="formula-group">
+          <span class="formula-label">卖出总额</span>
+          <span class="formula-eq">= 卖出价格 × 股票份额</span>
+        </div>
+        <div class="formula-group">
+          <span class="formula-label">盈亏比例</span>
+          <span class="formula-eq">= (卖出价格 − 买入成本) ÷ 买入成本 × 100%</span>
+        </div>
+        <p class="explain-note">股息率越低，对应的合理卖出价格越高。当市场价格高于某一股息率对应的卖出价格时，说明以该价格卖出后，持有现金获取的收益率将高于继续持股的股息率。</p>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  import { calcSellPoints } from '../lib/stock-sell-calc'
+
+  const costInput = document.getElementById('cost') as HTMLInputElement
+  const sharesInput = document.getElementById('shares') as HTMLInputElement
+  const dividendInput = document.getElementById('dividend') as HTMLInputElement
+  const calcBtn = document.getElementById('calc-btn') as HTMLButtonElement
+  const resultSection = document.getElementById('result-section') as HTMLElement
+  const resultBody = document.getElementById('result-body') as HTMLTableSectionElement
+  const summaryCards = document.getElementById('summary-cards') as HTMLElement
+
+  function formatCurrency(n: number): string {
+    return n.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  }
+
+  function formatPercent(n: number): string {
+    return n.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%'
+  }
+
+  function yieldClass(pct: number): string {
+    if (pct <= 4) return 'yield-low'
+    if (pct <= 6) return 'yield-mid'
+    if (pct <= 8) return 'yield-high'
+    return 'yield-max'
+  }
+
+  function profitClass(p: number): string {
+    if (p > 0) return 'profit-pos'
+    if (p < 0) return 'profit-neg'
+    return 'profit-zero'
+  }
+
+  function calculate() {
+    const cost = parseFloat(costInput.value)
+    const shares = parseFloat(sharesInput.value)
+    const dividend = parseFloat(dividendInput.value)
+
+    if (!cost || cost <= 0 || !shares || shares <= 0 || isNaN(dividend) || dividend < 0) {
+      alert('请输入有效的参数：买入成本和份额必须为正数，分红不能为负数。')
+      return
+    }
+
+    const points = calcSellPoints({ costPerShare: cost, shares, dividendPerShare: dividend })
+
+    // Summary cards
+    const low = points[points.length - 1] // 10% yield (lowest price)
+    const high = points[0] // 3% yield (highest price)
+    summaryCards.innerHTML = `
+      <div class="summary-card">
+        <div class="card-label">最低卖价（10% 股息率）</div>
+        <div class="card-value">${formatCurrency(low.sellPrice)} 元</div>
+      </div>
+      <div class="summary-card">
+        <div class="card-label">最高卖价（3% 股息率）</div>
+        <div class="card-value">${formatCurrency(high.sellPrice)} 元</div>
+      </div>
+      <div class="summary-card">
+        <div class="card-label">买入成本</div>
+        <div class="card-value">${formatCurrency(cost)} 元</div>
+      </div>
+      <div class="summary-card">
+        <div class="card-label">持有份额</div>
+        <div class="card-value">${formatCurrency(shares)} 股</div>
+      </div>
+    `
+
+    // Table rows
+    resultBody.innerHTML = points
+      .map(
+        (p) => `
+      <tr>
+        <td class="col-yield"><span class="yield-pill ${yieldClass(p.yieldPercent)}">${p.yieldPercent}%</span></td>
+        <td class="col-price">${formatCurrency(p.sellPrice)}</td>
+        <td class="col-total">${formatCurrency(p.sellTotal)}</td>
+        <td class="col-profit"><span class="${profitClass(p.profitPercent)}">${p.profitPercent > 0 ? '+' : ''}${formatPercent(p.profitPercent)}</span></td>
+      </tr>
+    `,
+      )
+      .join('')
+
+    resultSection.style.display = ''
+    resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  calcBtn.addEventListener('click', calculate)
+
+  // Also allow Enter key to trigger calculation
+  ;[costInput, sharesInput, dividendInput].forEach((input) => {
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') calculate()
+    })
+  })
+</script>
+
+<style>
+  :root {
+    --yield-low: hsl(350, 75%, 45%);
+    --yield-low-bg: hsl(350, 70%, 93%);
+    --yield-mid: hsl(18, 80%, 50%);
+    --yield-mid-bg: hsl(18, 80%, 92%);
+    --yield-high: hsl(38, 80%, 45%);
+    --yield-high-bg: hsl(38, 75%, 91%);
+    --yield-max: hsl(210, 12%, 50%);
+    --yield-max-bg: hsl(210, 15%, 92%);
+
+    --profit-pos: hsl(145, 60%, 38%);
+    --profit-neg: hsl(0, 65%, 50%);
+    --profit-zero: hsl(210, 12%, 50%);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --yield-low: hsl(350, 70%, 62%);
+      --yield-low-bg: hsl(350, 30%, 17%);
+      --yield-mid: hsl(18, 75%, 60%);
+      --yield-mid-bg: hsl(18, 35%, 16%);
+      --yield-high: hsl(38, 75%, 58%);
+      --yield-high-bg: hsl(38, 35%, 16%);
+      --yield-max: hsl(210, 15%, 65%);
+      --yield-max-bg: hsl(210, 10%, 18%);
+
+      --profit-pos: hsl(145, 55%, 55%);
+      --profit-neg: hsl(0, 65%, 62%);
+      --profit-zero: hsl(210, 15%, 65%);
+    }
+  }
+
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 6rem;
+    min-height: calc(100vh - 200px);
+  }
+
+  .page-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .page-header h1 {
+    font-size: var(--z-text-h1);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  .subtitle {
+    font-size: var(--z-text-lg);
+    color: var(--z-color-text-secondary);
+  }
+
+  .note {
+    font-size: var(--z-text-xs);
+    color: var(--z-color-text-dimmed);
+    margin-top: 0.5rem;
+  }
+
+  section {
+    margin-bottom: 3rem;
+  }
+
+  h2 {
+    font-size: var(--z-text-h2);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Input Section */
+  .input-card {
+    background: var(--z-color-black);
+    border: 1px solid var(--z-color-hairline-light);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+  }
+
+  .input-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .input-group label {
+    font-size: var(--z-text-sm);
+    font-weight: 600;
+    color: var(--z-color-text-secondary);
+  }
+
+  .input-group input {
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--z-color-hairline-light);
+    border-radius: 0.5rem;
+    font-size: var(--z-text-base);
+    background: var(--z-color-bg);
+    color: var(--z-color-text);
+    transition: border-color 0.15s;
+  }
+
+  .input-group input:focus {
+    outline: none;
+    border-color: var(--z-color-text-secondary);
+  }
+
+  #calc-btn {
+    display: inline-block;
+    padding: 0.6rem 1.5rem;
+    font-size: var(--z-text-sm);
+    font-weight: 600;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    background: var(--z-color-text);
+    color: var(--z-color-bg);
+    transition: opacity 0.15s;
+  }
+
+  #calc-btn:hover {
+    opacity: 0.85;
+  }
+
+  /* Summary Cards */
+  .summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .summary-card {
+    background: var(--z-color-black);
+    border: 1px solid var(--z-color-hairline-light);
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+  }
+
+  .card-label {
+    font-size: var(--z-text-xs);
+    color: var(--z-color-text-dimmed);
+    margin-bottom: 0.35rem;
+  }
+
+  .card-value {
+    font-size: var(--z-text-xl);
+    font-weight: 700;
+  }
+
+  /* Table */
+  .table-wrapper {
+    overflow-x: auto;
+    border: 1px solid var(--z-color-hairline-light);
+    border-radius: 0.75rem;
+  }
+
+  .sell-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--z-text-sm);
+  }
+
+  .sell-table th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    font-size: var(--z-text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--z-color-text-secondary);
+    border-bottom: 2px solid var(--z-color-hairline-light);
+    background: var(--z-color-black);
+    white-space: nowrap;
+  }
+
+  .sell-table td {
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--z-color-hairline-light);
+    white-space: nowrap;
+  }
+
+  .sell-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .sell-table tbody tr:hover {
+    background: var(--z-color-hairline-light);
+  }
+
+  .col-yield {
+    min-width: 80px;
+    text-align: center;
+  }
+
+  th.col-yield {
+    text-align: center;
+  }
+
+  .col-price,
+  .col-total {
+    text-align: right;
+    min-width: 120px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  th.col-price,
+  th.col-total {
+    text-align: right;
+  }
+
+  .col-profit {
+    text-align: right;
+    min-width: 100px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  th.col-profit {
+    text-align: right;
+  }
+
+  .yield-pill {
+    display: inline-block;
+    font-size: var(--z-text-2xs);
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 1rem;
+  }
+
+  .yield-low {
+    background: var(--yield-low-bg);
+    color: var(--yield-low);
+  }
+
+  .yield-mid {
+    background: var(--yield-mid-bg);
+    color: var(--yield-mid);
+  }
+
+  .yield-high {
+    background: var(--yield-high-bg);
+    color: var(--yield-high);
+  }
+
+  .yield-max {
+    background: var(--yield-max-bg);
+    color: var(--yield-max);
+  }
+
+  .profit-pos {
+    color: var(--profit-pos);
+    font-weight: 600;
+  }
+
+  .profit-neg {
+    color: var(--profit-neg);
+    font-weight: 600;
+  }
+
+  .profit-zero {
+    color: var(--profit-zero);
+    font-weight: 600;
+  }
+
+  /* Explanation */
+  .explain-card {
+    background: var(--z-color-black);
+    border: 1px solid var(--z-color-hairline-light);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+  }
+
+  .formula-group {
+    display: flex;
+    gap: 0.75rem;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+    padding: 0.4rem 0;
+    font-size: var(--z-text-sm);
+  }
+
+  .formula-label {
+    font-weight: 600;
+    min-width: 5rem;
+  }
+
+  .formula-eq {
+    color: var(--z-color-text-secondary);
+    font-family: var(--z-font-mono, monospace);
+  }
+
+  .explain-note {
+    margin-top: 1rem;
+    font-size: var(--z-text-xs);
+    color: var(--z-color-text-dimmed);
+    line-height: 1.6;
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    main {
+      padding: 2rem 1rem 4rem;
+    }
+
+    .page-header h1 {
+      font-size: var(--z-text-xl);
+    }
+
+    h2 {
+      font-size: var(--z-text-xl);
+    }
+
+    .summary-cards {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .input-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .formula-group {
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+  }
+</style>
