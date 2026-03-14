@@ -1,5 +1,5 @@
 ---
-title: 'Separation of Concerns'
+title: '关注点分离（Separation of Concerns）'
 description: ''
 pubDate: 2025-05-31
 updatedDate: 2025-07-10
