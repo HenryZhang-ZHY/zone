@@ -4,17 +4,17 @@ description: 'A practical guide on smoothly transitioning a large codebase from 
 pubDate: 2024-08-01
 ---
 
-Over the course of 7 months, I successfully migrated a core service from Unity Container to Microsoft Dependency Injection (MS.DI). 
+Over the course of 7 months, I successfully migrated a core service from Unity Container to Microsoft Dependency Injection (MS.DI).
 
-This was a massive undertaking. The project had a giant Unity configuration file containing nearly 3,000 lines of XML, with more than 600 services registered in it. Because dependency injection is literally the backbone of the application, I had to ensure the migration was completely safe and wouldn't break anything in production. 
+This was a massive undertaking. The project had a giant Unity configuration file containing nearly 3,000 lines of XML, with more than 600 services registered in it. Because dependency injection is literally the backbone of the application, I had to ensure the migration was completely safe and wouldn't break anything in production.
 
-My core philosophy for this migration was simple: **Adopt MS.DI's `IServiceCollection` as the single source of truth for authoring registrations, and use an adapter layer to dynamically translate them into Unity while coercing the legacy container to mimic MS.DI's resolution semantics.** This decoupled our registration syntax from the underlying DI engine, preparing the app for a truly seamless container swap.
+My core philosophy for this migration was simple: **Adopt MS.DI's `IServiceCollection` as the single source of truth for authoring registrations, and build a `UnityContainerExtension` to dynamically coerce the legacy Unity container into mimicking MS.DI's resolution semantics.** This decoupled our registration syntax from the underlying DI engine, guaranteeing that when we finally flipped the switch to pure MS.DI, nothing would break.
 
 Here are the practices, challenges, and solutions I discovered along the way.
 
 ## 1. Bridging the Disparities Incrementally
 
-The most obvious difference is the service registration method. We were using Unity's XML-based service registration, while MS.DI only supports code-based registration. It is impossible to convert a 3,000-line XML file to code-based registration in one go. 
+The most obvious difference is the service registration method. We were using Unity's XML-based service registration, while MS.DI only supports code-based registration. It is impossible to convert a 3,000-line XML file to code-based registration in one go.
 
 Instead of a big bang, I came up with an incremental hybrid approach.
 
@@ -96,24 +96,124 @@ public static void LoadConfiguration(this IUnityContainer unityContainer, IServi
 Here is exactly how this adapter logic forces Unity's engine to behave like MS.DI:
 
 1. **Isolating Keyed Services**: If we simply mapped MS.DI Keyed Services to Unity Named Services, Unity's `ResolveAll<T>()` would still pull them in, which breaks MS.DI's strict separation rule (MS.DI completely hides keyed services from normal `IEnumerable<T>` resolution). By wrapping keyed services in a custom generic form (like `Keyed<T>`), we change their fundamental registration type in Unity. This cleanly hides them from standard `IEnumerable<T>` queries, flawlessly mirroring MS.DI's isolation.
+
+   To achieve this at runtime, I introduced a lightweight generic wrapper. When reading from the `ServiceCollection`, Unity registers a `KeyedService<T>` instead of `T`. Later, when our extensions need to resolve the keyed instance, they resolve the wrapper and invoke `Unwrap()`:
+
+   ```csharp
+   abstract class KeyedService
+   {
+       protected KeyedService(object service)
+       {
+           this.service = service ?? throw new ArgumentNullException(nameof(service));
+       }
+
+       readonly object service;
+
+       object Unwrap()
+       {
+           return service;
+       }
+
+       public static Type MakeGenericType(Type type)
+       {
+           return typeof(KeyedService<>).MakeGenericType(type);
+       }
+
+       public static object Unwrap(object keyedServiceObject)
+       {
+           if (keyedServiceObject is not KeyedService keyedService)
+           {
+               throw new ArgumentException($"The provided object is not of type {nameof(KeyedService)}.", nameof(keyedServiceObject));
+           }
+
+           return keyedService.Unwrap();
+       }
+   }
+
+   sealed class KeyedService<T> : KeyedService where T : notnull
+   {
+       public KeyedService(T service) : base(service)
+       {
+       }
+   }
+   ```
+
+   But wrapping the registrations is only half the battle. We also need Unity to understand MS.DI's `[FromKeyedServices]` attribute during construction so it correctly injects the requested services. To bridge this, I created a custom `UnityContainerExtension` that intercepts Unity's default constructor selector, looks for the attribute, and dynamically resolves and unwraps our `KeyedService<T>`:
+
+   ```csharp
+   public sealed class MicrosoftDependencyInjectionAdapterExtension : UnityContainerExtension
+   {
+       protected override void Initialize()
+       {
+           Context.Policies.SetDefault<IConstructorSelectorPolicy>(new ConstructorSelectorPolicy());
+
+           Context.Container.RegisterType<IServiceProvider, UnityContainerServiceProvider>();
+       }
+
+       sealed class ConstructorSelectorPolicy : DefaultUnityConstructorSelectorPolicy
+       {
+           protected override IResolverPolicy CreateResolver(ParameterInfo parameter)
+           {
+               var fromKeyedServicesAttribute = parameter.GetCustomAttribute<FromKeyedServicesAttribute>();
+               if (fromKeyedServicesAttribute?.Key is not null)
+               {
+                   return new KeyedServiceDependencyResolverPolicy(
+                       parameter.ParameterType, 
+                       ServiceKeyHelper.ConvertToServiceName(fromKeyedServicesAttribute.Key)
+                   );
+               }
+
+               return base.CreateResolver(parameter);
+           }
+       }
+
+       sealed class KeyedServiceDependencyResolverPolicy : IResolverPolicy
+       {
+           public KeyedServiceDependencyResolverPolicy(Type type, string name)
+           {
+               this.type = type;
+               this.name = name;
+           }
+
+           readonly Type type;
+           readonly string name;
+
+           public object Resolve(IBuilderContext context)
+           {
+               var keyedServiceType = KeyedService.MakeGenericType(type);
+               return context.Container.IsRegistered(keyedServiceType, name) 
+                   ? KeyedService.Unwrap(context.NewBuildUp(keyedServiceType, name)) 
+                   : context.NewBuildUp(type, name);
+           }
+       }
+   }
+   ```
+
 2. **Handling Single Unkeyed Services**: If there is exactly one unkeyed registration for a type, it is registered plainly without a name, serving as the default implementation.
 3. **Auto-naming Multiple Unkeyed Services**: This is the magic trick. When the logic detects multiple unkeyed services for the same type, instead of letting Unity overwrite them, we secretly assign each of them an **auto-generated unique name**. Because Unity implements `IEnumerable<T>` by collecting *all named registrations* of `T`, injecting these unique names ensures that when the app resolves `IEnumerable<T>`, it gets the full list of implementations—just like calling `.GetServices<T>()` in native MS.DI.
 
 ## 2. Practices for Safe Migration
 
-### Construct Safety Nets: Migrate Tests First
+### Construct Safety Nets: Built on a Cornerstone of Dual-Kernel Tests
 
-Before the final migration, I spent some time constructing safety nets. I duplicated the existing integration tests for DI registration so they would run against both Unity and MS.DI simultaneously. This helped me identify behavioral differences early on and made the actual migration process much smoother.
+How did I discover all the nuanced behavioral differences to build a perfect Unity extension? In the early stages of the project, I built a comprehensive suite of tests covering every single DI Container use case in our application.
+
+I ran these tests against two kernels simultaneously: native MS.DI, and Unity Container augmented with my custom extension. This dual-kernel test suite was the absolute cornerstone of the project's success. It ensured right from the start that my extension perfectly fulfilled my core philosophy of behavioral consistency, serving as an impenetrable safety net that made the rest of the migration process completely predictable.
+
+#### Migrate Tests First
+
+Before the final application migration, I spent some time expanding these safety nets. I duplicated the existing product integration tests for DI registration so they would also run against both Unity and MS.DI simultaneously. This helped me identify any remaining real-world behavioral differences early on and guaranteed that the actual migration process would be much smoother.
 
 ### Snapshot Diff
 
-During the migration, the code review process became painful and error-prone. The changes were fragmented across many files. Reviewers had to jump between the legacy `unity.config` and the new C# registration files, meticulously comparing service lifetimes, implementation types, and keys. 
+During the migration, the code review process became painful and error-prone. The changes were fragmented across many files. Reviewers had to jump between the legacy `unity.config` and the new C# registration files, meticulously comparing service lifetimes, implementation types, and keys.
 
 This manual process led to easily missed mistakes—in my case, two defects slipped through because of tiny service registration typos.
 
 To solve this, I created a **Snapshot Diff Tool**. When a PR is created, I generate a human-readable text snapshot of the container state before and after the migration, and then run a diff to highlight the differences. This snapshot includes all registered services, their lifetimes, implementation types, keys, and the dependencies they resolve.
 
 With this tool:
+
 - All effective container changes are gathered in one place.
 - Reviewers can easily spot differences (e.g., a new keyed service, or a service name automatically changed) and focus their energy on high-risk changes.
 - Change-makers can verify their own PRs to ensure total correctness before requesting a review.
@@ -126,6 +226,7 @@ After introducing this tool, I caught every registration mistake and introduced 
 Once you move away from a giant XML file, you don't want to end up with a single giant C# file. To prevent making all implementation types public, I structured the registrations modularly. Each module provides an extension method that adds its own registrations to the `IServiceCollection`.
 
 I structured them in a hierarchical tree:
+
 1. **Actual Module**: A DLL providing an extension method to register its internal services.
 2. **Logical Module**: A logical grouping that aggregates multiple Actual Modules or other Logical Modules.
 3. **Composition Root**: The entry point of the application that gathers all Logical Modules and registers them into the master container.
@@ -134,6 +235,6 @@ This structured approach makes the new code-based DI significantly more organize
 
 ## Conclusion
 
-Migrating a core infrastructure tool like a dependency injection container in a massive, legacy application is never just about swapping out a library. By adopting MS.DI as our single source of truth, building a smart adapter to bridge runtime behaviors, constructing robust test nets, and innovating with tools like the Snapshot Diff, we turned a high-risk refactoring into a smooth, predictable process. 
+Migrating a core infrastructure tool like a dependency injection container in a massive, legacy application is never just about swapping out a library. By adopting MS.DI as our single source of truth, building a smart adapter to bridge runtime behaviors, constructing robust test nets, and innovating with tools like the Snapshot Diff, we turned a high-risk refactoring into a smooth, predictable process.
 
 After 7 months of deliberate, chunk-by-chunk migration, the codebase was fully decoupled from its legacy roots. When the day finally came to pull the plug on Unity Container and flip the switch to pure MS.DI, the transition was completely seamless—and most importantly, zero new defects were introduced to production.
