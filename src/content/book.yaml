@@ -23,6 +23,16 @@
   ogUrl: "https://book.douban.com/subject/25963524/"
   ogImage: "/books/s27414803.jpg"
 
+- id: "9787521712056"
+  title: "俞军产品方法论"
+  ogUrl: "https://book.douban.com/subject/34907971/"
+  ogImage: "/books/s33543538.jpg"
+
+- id: "9787559644183"
+  title: "像火箭科学家一样思考"
+  ogUrl: "https://book.douban.com/subject/35228079/"
+  ogImage: "/books/s33742618.jpg"
+
 - id: "9787115216878"
   title: "Clean Code"
   ogUrl: "https://book.douban.com/subject/4199741/"
