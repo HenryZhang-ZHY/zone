@@ -8,6 +8,11 @@ import { SITE_TITLE } from '../consts'
 		<div class="brand">
 			<a href="/">{SITE_TITLE}</a>
 		</div>
+		<button class="hamburger" type="button" aria-label="Toggle navigation" aria-expanded="false">
+			<span class="hamburger-line"></span>
+			<span class="hamburger-line"></span>
+			<span class="hamburger-line"></span>
+		</button>
 		<ul class="nav-links">
 			<HeaderLink href="/">Writing</HeaderLink>
 			<HeaderLink href="/reading">Reading</HeaderLink>
@@ -15,6 +20,17 @@ import { SITE_TITLE } from '../consts'
 		</ul>
 	</nav>
 </header>
+
+<script>
+	const hamburger = document.querySelector('.hamburger')!
+	const navLinks = document.querySelector('.nav-links')!
+
+	hamburger.addEventListener('click', () => {
+		const expanded = hamburger.getAttribute('aria-expanded') === 'true'
+		hamburger.setAttribute('aria-expanded', String(!expanded))
+		navLinks.classList.toggle('open')
+	})
+</script>
 
 <style>
 	.header {
@@ -32,6 +48,7 @@ import { SITE_TITLE } from '../consts'
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		flex-wrap: wrap;
 
 		margin: 0 auto;
 
@@ -47,11 +64,49 @@ import { SITE_TITLE } from '../consts'
 		font-size: var(--z-text-base);
 	}
 
-	.nav-links {
+	.hamburger {
 		display: flex;
-		align-items: center;
+		flex-direction: column;
+		justify-content: center;
+		gap: 4px;
 
-		gap: 1rem;
+		background: none;
+		border: none;
+		cursor: pointer;
+		padding: 0.25rem;
+	}
+
+	.hamburger-line {
+		display: block;
+		width: 1.25rem;
+		height: 2px;
+		background-color: var(--z-color-white);
+		border-radius: 1px;
+		transition: transform 0.2s, opacity 0.2s;
+	}
+
+	.hamburger[aria-expanded="true"] .hamburger-line:nth-child(1) {
+		transform: translateY(6px) rotate(45deg);
+	}
+
+	.hamburger[aria-expanded="true"] .hamburger-line:nth-child(2) {
+		opacity: 0;
+	}
+
+	.hamburger[aria-expanded="true"] .hamburger-line:nth-child(3) {
+		transform: translateY(-6px) rotate(-45deg);
+	}
+
+	.nav-links {
+		display: none;
+		flex-direction: column;
+		width: 100%;
+		gap: 0.5rem;
+		padding-top: 0.75rem;
+	}
+
+	.nav-links.open {
+		display: flex;
 	}
 
 	.nav-links a {
@@ -68,7 +123,12 @@ import { SITE_TITLE } from '../consts'
 
 	/* md	48rem (768px) */
 	@media (width >= 48rem) {
+		.hamburger {
+			display: none;
+		}
+
 		.nav {
+			flex-wrap: nowrap;
 			padding: 1rem 1.5rem;
 		}
 
@@ -77,6 +137,12 @@ import { SITE_TITLE } from '../consts'
 		}
 
 		.nav-links {
+			display: flex;
+			flex-direction: row;
+			width: auto;
+			align-items: center;
+			padding-top: 0;
+
 			gap: 1.5rem;
 		}
 
