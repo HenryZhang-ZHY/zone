@@ -10,6 +10,8 @@ const today = new Date()
 </footer>
 
 <style>
+	@reference "tailwindcss";
+
 	.footer {
 		display: flex;
 		flex-direction: column;
@@ -21,6 +23,14 @@ const today = new Date()
 		border-top: 1px solid var(--z-color-white);
 
 		font-size: var(--z-text-sm);
+
+		@media (width >= theme(--breakpoint-md)) {
+			font-size: var(--z-text-base);
+		}
+
+		@media (width >= theme(--breakpoint-lg)) {
+			font-size: var(--z-text-lg);
+		}
 	}
 
 	.footer ul {
@@ -31,26 +41,12 @@ const today = new Date()
 		color: var(--z-color-text-secondary);
 
 		font-size: var(--z-text-2xs);
-	}
 
-	/* md	48rem (768px) */
-	@media (width >= 48rem) {
-		.footer {
-			font-size: var(--z-text-base);
-		}
-
-		.copyright {
+		@media (width >= theme(--breakpoint-md)) {
 			font-size: var(--z-text-xs);
 		}
-	}
 
-	/* lg	64rem (1024px) */
-	@media (width >= 64rem) {
-		.footer {
-			font-size: var(--z-text-lg);
-		}
-
-		.copyright {
+		@media (width >= theme(--breakpoint-lg)) {
 			font-size: var(--z-text-sm);
 		}
 	}

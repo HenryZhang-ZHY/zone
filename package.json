@@ -15,9 +15,10 @@
     "@astrojs/sitemap": "^3.6.0",
     "@fontsource/ibm-plex-mono": "^5.2.7",
     "@fontsource/lxgw-wenkai": "^5.2.5",
+    "@tailwindcss/vite": "^4.2.2",
     "astro": "^5.16.6",
     "astro-expressive-code": "^0.41.5",
-    "normalize.css": "^8.0.1"
+    "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
     "tsx": "^4.21.0",

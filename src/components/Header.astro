@@ -13,11 +13,11 @@ import { SITE_TITLE } from '../consts'
 			<span class="hamburger-line"></span>
 			<span class="hamburger-line"></span>
 		</button>
-		<ul class="nav-links">
+		<div class="nav-links">
 			<HeaderLink href="/">Writing</HeaderLink>
 			<HeaderLink href="/reading">Reading</HeaderLink>
 			<HeaderLink href="/listening">Listening</HeaderLink>
-		</ul>
+		</div>
 	</nav>
 </header>
 
@@ -30,9 +30,19 @@ import { SITE_TITLE } from '../consts'
 		hamburger.setAttribute('aria-expanded', String(!expanded))
 		navLinks.classList.toggle('open')
 	})
+
+	const mdBreakpoint = window.matchMedia('(min-width: 48rem)')
+	mdBreakpoint.addEventListener('change', (e) => {
+		if (e.matches) {
+			navLinks.classList.remove('open')
+			hamburger.setAttribute('aria-expanded', 'false')
+		}
+	})
 </script>
 
 <style>
+	@reference "tailwindcss";
+
 	.header {
 		position: sticky;
 		top: 0;
@@ -55,6 +65,15 @@ import { SITE_TITLE } from '../consts'
 		max-width: 96rem;
 
 		padding: 0.75rem 1rem;
+
+		@media (width >= theme(--breakpoint-md)) {
+			flex-wrap: nowrap;
+			padding: 1rem 1.5rem;
+		}
+
+		@media (width >= theme(--breakpoint-lg)) {
+			padding: 1.25rem 2rem;
+		}
 	}
 
 	.brand a {
@@ -62,31 +81,46 @@ import { SITE_TITLE } from '../consts'
 		letter-spacing: -0.02em;
 
 		font-size: var(--z-text-base);
+
+		@media (width >= theme(--breakpoint-md)) {
+			font-size: var(--z-text-lg);
+		}
+
+		@media (width >= theme(--breakpoint-lg)) {
+			font-size: var(--z-text-xl);
+		}
 	}
 
 	.hamburger {
+		--line-height: 2px;
+		--line-gap: 4px;
+		--line-offset: calc(var(--line-gap) + var(--line-height));
+
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
-		gap: 4px;
+		gap: var(--line-gap);
 
 		background: none;
 		border: none;
 		cursor: pointer;
 		padding: 0.25rem;
+
+		@media (width >= theme(--breakpoint-md)) {
+			display: none;
+		}
 	}
 
 	.hamburger-line {
 		display: block;
 		width: 1.25rem;
-		height: 2px;
+		height: var(--line-height);
 		background-color: var(--z-color-white);
-		border-radius: 1px;
 		transition: transform 0.2s, opacity 0.2s;
 	}
 
 	.hamburger[aria-expanded="true"] .hamburger-line:nth-child(1) {
-		transform: translateY(6px) rotate(45deg);
+		transform: translateY(var(--line-offset)) rotate(45deg);
 	}
 
 	.hamburger[aria-expanded="true"] .hamburger-line:nth-child(2) {
@@ -94,7 +128,7 @@ import { SITE_TITLE } from '../consts'
 	}
 
 	.hamburger[aria-expanded="true"] .hamburger-line:nth-child(3) {
-		transform: translateY(-6px) rotate(-45deg);
+		transform: translateY(calc(-1 * var(--line-offset))) rotate(-45deg);
 	}
 
 	.nav-links {
@@ -103,6 +137,20 @@ import { SITE_TITLE } from '../consts'
 		width: 100%;
 		gap: 0.5rem;
 		padding-top: 0.75rem;
+
+		@media (width >= theme(--breakpoint-md)) {
+			display: flex;
+			flex-direction: row;
+			width: auto;
+			align-items: center;
+			padding-top: 0;
+
+			gap: 1.5rem;
+		}
+
+		@media (width >= theme(--breakpoint-lg)) {
+			gap: 2rem;
+		}
 	}
 
 	.nav-links.open {
@@ -114,59 +162,18 @@ import { SITE_TITLE } from '../consts'
 		color: var(--z-color-text-secondary);
 
 		font-size: var(--z-text-sm);
+
+		@media (width >= theme(--breakpoint-md)) {
+			font-size: var(--z-text-base);
+		}
+
+		@media (width >= theme(--breakpoint-lg)) {
+			font-size: var(--z-text-lg);
+		}
 	}
 
 	.nav-links a:hover,
 	.nav-links a.active {
 		color: var(--z-color-text-accent);
-	}
-
-	/* md	48rem (768px) */
-	@media (width >= 48rem) {
-		.hamburger {
-			display: none;
-		}
-
-		.nav {
-			flex-wrap: nowrap;
-			padding: 1rem 1.5rem;
-		}
-
-		.brand a {
-			font-size: var(--z-text-lg);
-		}
-
-		.nav-links {
-			display: flex;
-			flex-direction: row;
-			width: auto;
-			align-items: center;
-			padding-top: 0;
-
-			gap: 1.5rem;
-		}
-
-		.nav-links a {
-			font-size: var(--z-text-base);
-		}
-	}
-
-	/* lg	64rem (1024px) */
-	@media (width >= 64rem) {
-		.nav {
-			padding: 1.25rem 2rem;
-		}
-
-		.brand a {
-			font-size: var(--z-text-xl);
-		}
-
-		.nav-links {
-			gap: 2rem;
-		}
-
-		.nav-links a {
-			font-size: var(--z-text-lg);
-		}
 	}
 </style>
