@@ -23,6 +23,11 @@
   ogUrl: "https://book.douban.com/subject/25963524/"
   ogImage: "/books/s27414803.jpg"
 
+- id: "9781492082798"
+  title: "Software Engineering at Google"
+  ogUrl: "https://book.douban.com/subject/34875994/"
+  ogImage: "/books/s35043704.jpg"
+
 - id: "9787521712056"
   title: "俞军产品方法论"
   ogUrl: "https://book.douban.com/subject/34907971/"
