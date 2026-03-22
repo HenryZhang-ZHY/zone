@@ -2,9 +2,52 @@
 const today = new Date()
 ---
 
-<footer class="flex flex-col items-center bg-(--z-color-black) border-t border-(--z-color-white) [font-size:var(--z-text-sm)] md:[font-size:var(--z-text-base)] lg:[font-size:var(--z-text-lg)]">
-	<ul class="list-none">
-		<li><a href="/rss.xml">RSS Feed</a></li>
+<footer class="footer">
+	<ul>
+		<li><a href="/rss.xml" class="rss-footer-link">RSS Feed</a></li>
 	</ul>
-	<p class="text-(--z-color-text-secondary) [font-size:var(--z-text-2xs)] md:[font-size:var(--z-text-xs)] lg:[font-size:var(--z-text-sm)]">&copy; {today.getFullYear()} shuzhi.zone All rights reserved.</p>
+	<p class="copyright">&copy; {today.getFullYear()} shuzhi.zone All rights reserved.</p>
 </footer>
+
+<style>
+	@reference "tailwindcss";
+
+	.footer {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+
+		background-color: var(--z-color-black);
+
+		border-color: var(--z-color-border);
+		border-top: 1px solid var(--z-color-white);
+
+		font-size: var(--z-text-sm);
+
+		@media (width >= theme(--breakpoint-md)) {
+			font-size: var(--z-text-base);
+		}
+
+		@media (width >= theme(--breakpoint-lg)) {
+			font-size: var(--z-text-lg);
+		}
+	}
+
+	.footer ul {
+		list-style: none;
+	}
+
+	.copyright {
+		color: var(--z-color-text-secondary);
+
+		font-size: var(--z-text-2xs);
+
+		@media (width >= theme(--breakpoint-md)) {
+			font-size: var(--z-text-xs);
+		}
+
+		@media (width >= theme(--breakpoint-lg)) {
+			font-size: var(--z-text-sm);
+		}
+	}
+</style>
