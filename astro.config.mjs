@@ -2,16 +2,12 @@
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
-import tailwindcss from '@tailwindcss/vite';
 
 import expressiveCode from 'astro-expressive-code';
 import { addClassName } from 'astro-expressive-code/hast';
 
 // https://astro.build/config
 export default defineConfig({
-  vite: {
-    plugins: [tailwindcss()],
-  },
   site: 'https://shuzhi.zone',
   integrations: [
     expressiveCode({
