@@ -1,44 +1,155 @@
 ---
 import type { CollectionEntry } from 'astro:content'
+import type { MarkdownHeading } from 'astro'
 import FormattedDate from '../components/FormattedDate.astro'
 import BaseLayout from '../layouts/BaseLayout.astro'
 
-type Props = CollectionEntry<'blog'>['data']
+type Props = CollectionEntry<'blog'>['data'] & {
+	headings?: MarkdownHeading[]
+}
 
-const { title, description, pubDate, updatedDate } = Astro.props
+const { title, description, pubDate, updatedDate, headings = [] } = Astro.props
+
+const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3)
 ---
 
 <BaseLayout title={title} description={description}>
-	<main>
-		<article>
-			<header class="article-header">
-				<h1 class="article-title">{title}</h1>
-				<div class="article-meta">
-					<time class="publish-date">
-						<FormattedDate date={pubDate} />
-					</time>
-					{
-						updatedDate && (
-							<div class="updated-date">
-								Updated on <FormattedDate date={updatedDate} />
-							</div>
-						)
-					}
+	<div class="blog-layout">
+		<main>
+			<article>
+				<header class="article-header">
+					<h1 class="article-title">{title}</h1>
+					<div class="article-meta">
+						<time class="publish-date">
+							<FormattedDate date={pubDate} />
+						</time>
+						{
+							updatedDate && (
+								<div class="updated-date">
+									Updated on <FormattedDate date={updatedDate} />
+								</div>
+							)
+						}
+					</div>
+				</header>
+
+				{tocHeadings.length > 0 && (
+					<nav class="toc toc-mobile" aria-label="Table of contents">
+						<details>
+							<summary class="toc-title">Table of Contents</summary>
+							<ul class="toc-list">
+								{tocHeadings.map((heading) => (
+									<li class:list={['toc-item', `toc-depth-${heading.depth}`]}>
+										<a href={`#${heading.slug}`} class="toc-link">{heading.text}</a>
+									</li>
+								))}
+							</ul>
+						</details>
+					</nav>
+				)}
+
+				<div class="z-markdown-content">
+					<slot />
 				</div>
-			</header>
-			<div class="z-markdown-content">
-				<slot />
-			</div>
-		</article>
-	</main>
+			</article>
+		</main>
+
+		{tocHeadings.length > 0 && (
+			<aside class="toc toc-desktop" aria-label="Table of contents">
+				<div class="toc-sticky">
+					<p class="toc-title">Table of Contents</p>
+					<ul class="toc-list">
+						{tocHeadings.map((heading) => (
+							<li class:list={['toc-item', `toc-depth-${heading.depth}`]}>
+								<a href={`#${heading.slug}`} class="toc-link">{heading.text}</a>
+							</li>
+						))}
+					</ul>
+				</div>
+			</aside>
+		)}
+	</div>
 </BaseLayout>
 
+<script>
+	function initToc() {
+		const tocLinks = document.querySelectorAll<HTMLAnchorElement>('.toc-link')
+		if (tocLinks.length === 0) return
+
+		const headingIds = Array.from(tocLinks).map((link) =>
+			link.getAttribute('href')!.slice(1)
+		)
+		const headingElements = headingIds
+			.map((id) => document.getElementById(id))
+			.filter((el): el is HTMLElement => el !== null)
+
+		if (headingElements.length === 0) return
+
+		function setActive(id: string) {
+			tocLinks.forEach((link) => {
+				const linkId = link.getAttribute('href')!.slice(1)
+				link.classList.toggle('active', linkId === id)
+			})
+		}
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				// Find the topmost visible heading
+				const visible = entries
+					.filter((e) => e.isIntersecting)
+					.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
+
+				if (visible.length > 0) {
+					setActive(visible[0].target.id)
+					return
+				}
+
+				// If no heading is visible, find the last heading above the viewport
+				const scrollY = window.scrollY
+				let currentId = headingIds[0]
+				for (const el of headingElements) {
+					if (el.offsetTop <= scrollY + 100) {
+						currentId = el.id
+					} else {
+						break
+					}
+				}
+				setActive(currentId)
+			},
+			{ rootMargin: '-80px 0px -70% 0px', threshold: 0 }
+		)
+
+		headingElements.forEach((el) => observer.observe(el))
+
+		// Set initial active state
+		const scrollY = window.scrollY
+		let currentId = headingIds[0]
+		for (const el of headingElements) {
+			if (el.offsetTop <= scrollY + 100) {
+				currentId = el.id
+			} else {
+				break
+			}
+		}
+		setActive(currentId)
+	}
+
+	// Run on initial load and after Astro page transitions
+	initToc()
+	document.addEventListener('astro:after-swap', initToc)
+</script>
+
 <style>
-	main {
+	.blog-layout {
 		max-width: 960px;
 		margin: 0 auto;
 		padding: 4rem 2rem 6rem;
 		min-height: calc(100vh - 200px);
+		position: relative;
+	}
+
+	main {
+		width: 100%;
 	}
 
 	article {
@@ -80,9 +191,73 @@ const { title, description, pubDate, updatedDate } = Astro.props
 		font-size: var(--z-text-xs);
 	}
 
+	/* --- TOC shared styles --- */
+	.toc-title {
+		font-size: var(--z-text-sm);
+		font-weight: 600;
+		color: var(--z-color-text);
+		margin: 0 0 0.75rem 0;
+	}
+
+	.toc-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.toc-item {
+		line-height: 1.5;
+	}
+
+	.toc-depth-3 {
+		padding-inline-start: 1rem;
+	}
+
+	.toc-link {
+		display: block;
+		padding: 0.2rem 0.5rem;
+		font-size: var(--z-text-xs);
+		color: var(--z-color-text-dimmed);
+		border-inline-start: 2px solid transparent;
+		transition: color 0.15s, border-color 0.15s;
+		text-decoration: none;
+	}
+
+	.toc-link:hover {
+		color: var(--z-color-text);
+	}
+
+	.toc-link:global(.active) {
+		color: var(--z-color-text-accent);
+		border-inline-start-color: var(--z-color-text-accent);
+	}
+
+	/* --- Mobile TOC (collapsible, at top) --- */
+	.toc-mobile {
+		margin-bottom: 2rem;
+		border: 1px solid var(--z-color-hairline-light);
+		padding: 0.75rem 1rem;
+	}
+
+	.toc-mobile .toc-title {
+		cursor: pointer;
+		margin: 0;
+		user-select: none;
+		font-size: var(--z-text-sm);
+	}
+
+	.toc-mobile .toc-list {
+		margin-top: 0.75rem;
+	}
+
+	/* --- Desktop TOC (sticky sidebar) --- */
+	.toc-desktop {
+		display: none;
+	}
+
 	/* Responsive Design */
 	@media (max-width: 768px) {
-		main {
+		.blog-layout {
 			padding: 2rem 1.5rem 4rem;
 			max-width: 100%;
 		}
@@ -105,7 +280,7 @@ const { title, description, pubDate, updatedDate } = Astro.props
 	}
 
 	@media (max-width: 480px) {
-		main {
+		.blog-layout {
 			padding: 1.5rem 1rem 3rem;
 		}
 
@@ -115,15 +290,35 @@ const { title, description, pubDate, updatedDate } = Astro.props
 		}
 	}
 
-	/* Large screens */
+	/* Large screens: show desktop TOC, hide mobile TOC */
 	@media (min-width: 1200px) {
-		main {
+		.blog-layout {
 			max-width: 960px;
 			padding: 5rem 2rem 8rem;
 		}
 
 		.article-header {
 			margin-bottom: 4rem;
+		}
+
+		.toc-mobile {
+			display: none;
+		}
+
+		.toc-desktop {
+			display: block;
+			position: absolute;
+			top: 5rem;
+			bottom: 0;
+			left: calc(100% + 2rem);
+			width: 14rem;
+		}
+
+		.toc-sticky {
+			position: sticky;
+			top: calc(var(--z-nav-height) + 2rem);
+			max-height: calc(100vh - var(--z-nav-height) - 4rem);
+			overflow-y: auto;
 		}
 	}
 </style>

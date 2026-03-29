@@ -16,9 +16,9 @@ const post = Astro.props
 if (post.data.redirect) {
 	return Astro.redirect(post.data.redirect)
 }
-const { Content } = await render(post)
+const { Content, headings } = await render(post)
 ---
 
-<BlogPost {...post.data}>
+<BlogPost {...post.data} headings={headings}>
 	<Content />
 </BlogPost>
