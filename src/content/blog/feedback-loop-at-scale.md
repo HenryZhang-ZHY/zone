@@ -1,16 +1,20 @@
 ---
-title: "Build, Test, and CI at Scale"
-description: "Deriving build system, automated testing, and CI best practices from first principles for large-scale trunk-based development."
+title: "Feedback Loop at Scale = Build + Test + CI"
+description: "A software engineering perspective on why build, test, and CI jointly determine the feedback loop of large-scale development."
 pubDate: 2026-03-29
 ---
 
-In a large-scale software project with hundreds or thousands of engineers committing changes every day, how do you keep the codebase healthy?
+In a large-scale software project, iteration speed is ultimately constrained by the quality of the feedback loop.
+
+If build is slow, developers wait a long time to learn whether a change even compiles. If tests are weak or flaky, the feedback is untrustworthy. If CI is missing or weak, the feedback is not consistently enforced at integration time. At scale, you do not get to do only one or two of these well: **build, test, and CI must all be strong, because all three jointly determine whether the organization can iterate quickly and safely.**
 
 This post focuses on **large-scale, trunk-based development** — where hundreds of engineers commit to a shared codebase daily — and is scoped to build systems, automated testing, and CI. Release engineering (CD, feature flags, canary, rollback) is a separate topic. Many of the practices discussed here are responses to challenges that only emerge at this scale; smaller teams may find them useful as guiding principles rather than prescriptions.
 
-Each topic is examined in two parts: *why* it is necessary, derived from the constraints that scale imposes; and *how* to address it, drawing on engineering solutions that have been widely validated in practice.
+This post is organized around a single idea: **build, test, and CI are not three separate engineering topics. They are three parts of one feedback system.** Build turns source code into verifiable artifacts. Test tells you whether those artifacts are safe. CI makes that verification automatic and mandatory at the point of integration.
 
-## The Fundamental Problem
+## The Real Constraint: Feedback Loop
+
+In a large-scale software organization, the hardest problem is not merely "keeping the codebase healthy." It is preserving a **fast and trustworthy feedback loop** while hundreds or thousands of engineers make changes in parallel.
 
 Large-scale software development has two intertwined tensions:
 
@@ -18,17 +22,19 @@ Large-scale software development has two intertwined tensions:
 
 **Tension 2: Thoroughness of verification vs. speed of verification.** A clean build of a large codebase can take hours. A full test suite can take hours more. But developers need fast feedback to stay productive. We need frequent, thorough verification, yet a single round of full verification is extremely expensive.
 
-The fundamental goal is: **enable hundreds of engineers to safely and frequently integrate changes into the trunk, while keeping the trunk in a working — ideally releasable — state.**
+The fundamental goal is: **enable hundreds of engineers to safely and frequently integrate changes into the trunk while preserving a fast, trustworthy feedback loop and keeping the trunk in a working — ideally releasable — state.**
 
-Build, test, and CI each address a different layer of this goal:
+Build, test, and CI each determine a different property of that feedback loop:
 
-- **Build** transforms source code into verifiable artifacts. Without a build, there is nothing to test.
-- **Test** verifies that the artifacts behave as expected. Without tests, there is no way to judge whether a change is safe.
-- **CI** automatically runs build and test on every integration as a quality gate. Without CI, verification depends on individual discipline, which does not scale.
+- **Build** determines whether feedback can be produced quickly and deterministically. Without a build, there is nothing to test.
+- **Test** determines whether the feedback means anything. Without tests, speed just helps you ship regressions faster.
+- **CI** determines whether the feedback is applied consistently at the integration boundary. Without CI, verification depends on individual discipline, which does not scale.
 
 These three are a logical chain, not three independent topics. And as we will see, at scale the quality of your build system is a key constraint on what your testing and CI can achieve.
 
 ## Why You Need a Build System
+
+Build is the first stage of the feedback loop. Before you can ask "is this change safe?", you first need to answer "what changed, what depends on it, and what must be rebuilt?"
 
 For a single-file project, a manual compile command suffices. But when the codebase grows to millions of lines across thousands of modules, the nature of the problem changes.
 
@@ -97,6 +103,8 @@ These properties are not four parallel features — they have strict prerequisit
 Invest in the foundations first. Without a correct dependency graph, incremental compilation produces wrong results. Without hermeticity, caches become unreliable.
 
 ## Why You Need Automated Testing
+
+Fast builds alone do not create useful feedback. They only tell you that the code can be assembled. To decide whether a change is actually safe, you need tests.
 
 Software defects are inevitable. No matter how experienced the engineer or how rigorous the code review, changes can and will introduce regressions. The question is not whether defects will occur, but how quickly they are caught — and at what stage of development.
 
@@ -176,7 +184,9 @@ Low-ROI tests tend to be: end-to-end tests verifying UI styling details — slow
 
 ## Why You Need CI
 
-We now have a build system and automated tests. The next question: **who runs them, and when?**
+We now have a build system and automated tests. That is still not enough. If build and test are not run automatically, consistently, and at the integration boundary, the feedback loop remains incomplete.
+
+The next question is: **who runs them, and when?**
 
 Relying on developers to run them locally breaks down in practice:
 
@@ -190,7 +200,7 @@ CI is a **trusted, automated quality gate** that runs build and test in a standa
 - **Standardized environment**: eliminates "works on my machine."
 - **Mandatory enforcement**: no merge without passing CI, no exceptions.
 - **Merge-candidate verification**: CI does not just verify the branch in isolation — it verifies the candidate state of the change merged with the current trunk. This catches integration conflicts that per-branch testing would miss. (A merge queue, discussed later, takes this further by accounting for other queued changes.)
-- **Feedback loop**: developers learn quickly whether their change is safe.
+- **Feedback loop closure**: developers learn quickly whether their change is safe in the same standardized integration context that governs everyone else.
 
 For large-scale projects, **pre-merge CI is essential**. If the trunk breaks, it blocks hundreds of engineers — everyone loses a correct baseline to work from. The cost of fixing a broken trunk far exceeds the cost of waiting for pre-merge verification.
 
@@ -227,7 +237,7 @@ A merge queue solves this by verifying each change **on top of the trunk plus al
 
 ### Test Selection Depends on Build System Quality
 
-This is a critical cross-cutting insight: **the precision and reliability of test selection is bounded by the quality of your build system.**
+This is a critical cross-cutting insight: **the precision and reliability of test selection is bounded by the quality of your build system.** This is why build, test, and CI cannot be optimized independently.
 
 Precise test selection requires answering: "which tests are affected by this code change?" To answer accurately:
 
@@ -295,10 +305,20 @@ With these metrics, you can diagnose problems: CI is slow? Check p95 duration an
 
 ## Conclusion
 
-Build, test, and CI are not three independent optimization problems. They form a chain with a clear dependency structure:
+The central point is simple: **in large-scale software development, build, test, and CI all determine the quality of the feedback loop, and therefore all determine iteration speed.**
+
+- If build is slow or non-hermetic, feedback is late and unreliable.
+- If tests are weak or flaky, feedback is noisy or false.
+- If CI is weak, feedback is optional, uneven, and disconnected from real integration.
+
+That is why build, test, and CI are not separate nice-to-have investments where you can afford to neglect one. They are a chain. The whole system is limited by its weakest link.
+
+They still form a chain with a clear dependency structure:
 
 1. The **build system** provides the dependency graph and hermeticity — the foundation that everything else rests on.
 2. **Automated testing** uses the build system's artifacts to verify behavior and provide confidence in changes.
 3. **CI** orchestrates build and test as a critical quality gate, and its efficiency is bounded by the quality of the build system and the reliability of the test suite.
 
-Every engineering practice discussed in this post — incremental compilation, build caching, the test pyramid, test selection, merge queues, flaky test governance, observability — is a response to the same fundamental tension: **verification must be thorough, but it must also be fast.** The art is in finding the right trade-offs, and the foundation is getting your build system right.
+Every engineering practice discussed in this post — incremental compilation, build caching, the test pyramid, test selection, merge queues, flaky test governance, observability — exists for the same reason: to make the feedback loop both **fast** and **trustworthy**.
+
+In a small project, you can sometimes compensate for weakness in one layer with extra effort elsewhere. At scale, that stops working. If you want a large team to iterate efficiently, you need all three done well: build, test, and CI. Missing any one of them eventually shows up as slower iteration, lower confidence, or a broken trunk.
