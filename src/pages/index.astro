@@ -8,13 +8,13 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueO
 ---
 
 <BaseLayout>
-	<main>
-		<section class="posts-container">
+	<main class="z-main z-main--narrow">
+		<section class="posts-container z-stack-list">
 			{
 				posts.length > 0 ? (
 					posts.map((post) => (
-						<article class="post-item">
-							<a href={post.data.redirect || `/blog/${post.id}/`} class="post-link">
+						<article class="post-item z-stack-item">
+							<a href={post.data.redirect || `/blog/${post.id}/`} class="post-link z-link-reset">
 								<h2 class="post-title">{post.data.title}</h2>
 								{post.data.description && <p class="post-excerpt">{post.data.description}</p>}
 								<div class="post-meta">
@@ -26,7 +26,7 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueO
 						</article>
 					))
 				) : (
-					<div class="empty-state">
+					<div class="empty-state z-empty-state">
 						<h3>No posts yet</h3>
 						<p>Check back later for new content.</p>
 					</div>
@@ -39,34 +39,6 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueO
 <style>
 	* {
 		box-sizing: border-box;
-	}
-
-	main {
-		max-width: 960px;
-		margin: 0 auto;
-		padding: 4rem 2rem 6rem;
-		min-height: calc(100vh - 200px);
-	}
-
-	.posts-container {
-		display: flex;
-		flex-direction: column;
-		gap: 0;
-	}
-
-	.post-item {
-		padding: 2rem 0;
-		border-bottom: 1px solid var(--z-color-hairline-light);
-	}
-
-	.post-item:last-child {
-		border-bottom: none;
-	}
-
-	.post-link {
-		display: block;
-		text-decoration: none;
-		color: inherit;
 	}
 
 	.post-title {
@@ -113,30 +85,8 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueO
 		color: var(--z-color-text-dimmed);
 	}
 
-	/* Empty state */
-	.empty-state {
-		text-align: center;
-		padding: 4rem 0;
-		color: var(--z-color-text-secondary);
-	}
-
-	.empty-state h3 {
-		font-size: var(--z-text-h4);
-		margin: 0 0 1rem 0;
-		color: var(--z-color-text);
-	}
-
 	/* Responsive Design */
 	@media (max-width: 768px) {
-		main {
-			padding: 2rem 1.5rem 4rem;
-			max-width: 100%;
-		}
-
-		.post-item {
-			padding: 1.5rem 0;
-		}
-
 		.post-title {
 			font-size: var(--z-text-2xl);
 			margin-bottom: 0.5rem;
@@ -153,14 +103,6 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueO
 	}
 
 	@media (max-width: 480px) {
-		main {
-			padding: 1.5rem 1rem 3rem;
-		}
-
-		.post-item {
-			padding: 1.25rem 0;
-		}
-
 		.post-title {
 			font-size: var(--z-text-xl);
 			line-height: 1.25;
@@ -174,15 +116,6 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueO
 
 	/* Large screens */
 	@media (min-width: 1200px) {
-		main {
-			max-width: 960px;
-			padding: 5rem 2rem 8rem;
-		}
-
-		.hero-section {
-			margin-bottom: 5rem;
-		}
-
 		.post-item {
 			padding: 2.5rem 0;
 		}

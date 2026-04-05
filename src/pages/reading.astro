@@ -9,7 +9,7 @@ const books = await getCollection('book')
 ---
 
 <BaseLayout title={`Reading List | ${SITE_TITLE}`}>
-  <main>
+  <main class="z-main z-main--wide">
     <section class="books-container">
       {
         books.map((book, index) => (
@@ -29,13 +29,6 @@ const books = await getCollection('book')
 <style>
   * {
     box-sizing: border-box;
-  }
-
-  main {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 4rem 2rem 6rem;
-    min-height: calc(100vh - 200px);
   }
 
   .books-container {
@@ -73,10 +66,6 @@ const books = await getCollection('book')
 
   /* Responsive Design */
   @media (max-width: 768px) {
-    main {
-      padding: 2rem 1.5rem 4rem;
-    }
-
     .books-container {
       grid-template-columns: repeat(3, 1fr);
       gap: 2.5rem 1.5rem;
@@ -84,10 +73,6 @@ const books = await getCollection('book')
   }
 
   @media (max-width: 480px) {
-    main {
-      padding: 1.5rem 1rem 3rem;
-    }
-
     .books-container {
       grid-template-columns: repeat(2, 1fr);
       gap: 2rem 1.25rem;

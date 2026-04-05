@@ -14,7 +14,7 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3)
 ---
 
 <BaseLayout title={title} description={description}>
-	<div class="blog-layout">
+	<div class="blog-layout z-main z-main--article">
 		<main>
 			<article>
 				<header class="article-header">
@@ -140,14 +140,6 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3)
 </script>
 
 <style>
-	.blog-layout {
-		max-width: 960px;
-		margin: 0 auto;
-		padding: 4rem 2rem 6rem;
-		min-height: calc(100vh - 200px);
-		position: relative;
-	}
-
 	main {
 		width: 100%;
 	}
@@ -257,11 +249,6 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3)
 
 	/* Responsive Design */
 	@media (max-width: 768px) {
-		.blog-layout {
-			padding: 2rem 1.5rem 4rem;
-			max-width: 100%;
-		}
-
 		.article-header {
 			margin-bottom: 2rem;
 			padding-bottom: 1.5rem;
@@ -280,10 +267,6 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3)
 	}
 
 	@media (max-width: 480px) {
-		.blog-layout {
-			padding: 1.5rem 1rem 3rem;
-		}
-
 		.article-title {
 			font-size: var(--z-text-3xl);
 			line-height: 1.2;
@@ -292,11 +275,6 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3)
 
 	/* Large screens: show desktop TOC, hide mobile TOC */
 	@media (min-width: 1200px) {
-		.blog-layout {
-			max-width: 960px;
-			padding: 5rem 2rem 8rem;
-		}
-
 		.article-header {
 			margin-bottom: 4rem;
 		}

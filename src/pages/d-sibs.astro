@@ -148,18 +148,18 @@ function typeLabel(type: string) {
 ---
 
 <BaseLayout title={`系统重要性银行名单 | ${SITE_TITLE}`}>
-  <main>
-    <div class="page-header">
-      <h1>中国系统重要性银行</h1>
-      <p class="subtitle">2021–2025 历年名单及变化追踪</p>
-      <p class="note">数据来源：<a href="https://www.pbc.gov.cn/huobizhengceersi/214481/3868581/3868587/index.html" target="_blank" rel="noopener noreferrer">中国人民银行宏观审慎管理局</a></p>
+  <main class="z-main z-main--medium">
+    <div class="page-header z-page-header">
+      <h1 class="z-page-title">中国系统重要性银行</h1>
+      <p class="subtitle z-page-subtitle">2021–2025 历年名单及变化追踪</p>
+      <p class="note z-page-note">数据来源：<a href="https://www.pbc.gov.cn/huobizhengceersi/214481/3868581/3868587/index.html" target="_blank" rel="noopener noreferrer">中国人民银行宏观审慎管理局</a></p>
     </div>
 
     <!-- Detailed Table -->
-    <section class="table-section">
-      <h2>历年分组详情</h2>
-      <div class="table-wrapper">
-        <table class="bank-table">
+    <section class="table-section z-section">
+      <h2 class="z-section-title">历年分组详情</h2>
+      <div class="table-wrapper z-table-wrapper">
+        <table class="bank-table z-data-table">
           <thead>
             <tr>
               <th class="col-name">银行</th>
@@ -236,8 +236,8 @@ function typeLabel(type: string) {
     <SparklinePopover />
 
     <!-- Changes Timeline -->
-    <section class="changes-section">
-      <h2>历年变化</h2>
+    <section class="changes-section z-section">
+      <h2 class="z-section-title">历年变化</h2>
       <div class="timeline">
         {
           changes.map((c) => {
@@ -307,8 +307,8 @@ function typeLabel(type: string) {
     </section>
 
     <!-- Group composition per year -->
-    <section class="composition-section">
-      <h2>各年度分组构成</h2>
+    <section class="composition-section z-section">
+      <h2 class="z-section-title">各年度分组构成</h2>
       <div class="composition-grid">
         {
           yearStats.map((s) => (
@@ -395,45 +395,6 @@ function typeLabel(type: string) {
     }
   }
 
-  main {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 3rem 1.5rem 6rem;
-    min-height: calc(100vh - 200px);
-  }
-
-  .page-header {
-    margin-bottom: 1.5rem;
-  }
-
-  .page-header h1 {
-    font-size: var(--z-text-h1);
-    letter-spacing: -0.02em;
-    margin-bottom: 0.5rem;
-  }
-
-  .subtitle {
-    font-size: var(--z-text-lg);
-    color: var(--z-color-text-secondary);
-  }
-
-  .note {
-    font-size: var(--z-text-xs);
-    color: var(--z-color-text-dimmed);
-    margin-top: 0.5rem;
-  }
-
-  /* Section common */
-  section {
-    margin-bottom: 3rem;
-  }
-
-  h2 {
-    font-size: var(--z-text-h2);
-    letter-spacing: -0.02em;
-    margin-bottom: 0.5rem;
-  }
-
   /* Sparkline */
   .col-spark {
     min-width: 90px;
@@ -482,45 +443,6 @@ function typeLabel(type: string) {
   }
   .spark-dot.spark-city {
     fill: var(--t-city);
-  }
-
-  /* Table */
-  .table-wrapper {
-    overflow-x: auto;
-    border: 1px solid var(--z-color-white);
-  }
-
-  .bank-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: var(--z-text-sm);
-  }
-
-  .bank-table th {
-    text-align: left;
-    padding: 0.75rem 1rem;
-    font-weight: 600;
-    font-size: var(--z-text-xs);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--z-color-text-secondary);
-    border-bottom: 1px solid var(--z-color-white);
-    background: var(--z-color-black);
-    white-space: nowrap;
-  }
-
-  .bank-table td {
-    padding: 0.6rem 1rem;
-    border-bottom: 1px solid var(--z-color-hairline-light);
-    white-space: nowrap;
-  }
-
-  .bank-table tbody tr:last-child td {
-    border-bottom: none;
-  }
-
-  .bank-table tbody tr:hover {
-    background: var(--z-color-hairline-light);
   }
 
   .col-name {
@@ -808,24 +730,12 @@ function typeLabel(type: string) {
 
   /* Responsive */
   @media (max-width: 640px) {
-    main {
-      padding: 2rem 1rem 4rem;
-    }
-
-    .page-header h1 {
-      font-size: var(--z-text-xl);
-    }
-
     .summary-cards {
       grid-template-columns: repeat(2, 1fr);
     }
 
     .card-total {
       font-size: var(--z-text-3xl);
-    }
-
-    h2 {
-      font-size: var(--z-text-xl);
     }
 
     .composition-grid {

@@ -4,16 +4,16 @@ import { SITE_TITLE } from '../consts'
 ---
 
 <BaseLayout title={`股票卖点计算器 | ${SITE_TITLE}`}>
-  <main>
-    <div class="page-header">
-      <h1>股票卖点计算器</h1>
-      <p class="subtitle">基于股息率计算合理卖出价格</p>
-      <p class="note">输入买入成本、持有份额和每股分红，计算卖出部分仓位以将剩余持仓摊薄成本降至目标股息率（4%–100%）所需的卖出价格</p>
+  <main class="z-main z-main--medium">
+    <div class="page-header z-page-header">
+      <h1 class="z-page-title">股票卖点计算器</h1>
+      <p class="subtitle z-page-subtitle">基于股息率计算合理卖出价格</p>
+      <p class="note z-page-note">输入买入成本、持有份额和每股分红，计算卖出部分仓位以将剩余持仓摊薄成本降至目标股息率（4%–100%）所需的卖出价格</p>
     </div>
 
     <!-- Input Section -->
-    <section class="input-section">
-      <h2>参数输入</h2>
+    <section class="input-section z-section">
+      <h2 class="z-section-title">参数输入</h2>
       <div class="input-card">
         <div class="input-grid">
           <div class="input-group">
@@ -34,11 +34,11 @@ import { SITE_TITLE } from '../consts'
     </section>
 
     <!-- Result Section -->
-    <section class="table-section" id="result-section" style="display:none;">
-      <h2>卖出价格参考</h2>
+    <section class="table-section z-section" id="result-section" style="display:none;">
+      <h2 class="z-section-title">卖出价格参考</h2>
       <div class="summary-cards" id="summary-cards"></div>
-      <div class="table-wrapper">
-        <table class="sell-table">
+      <div class="table-wrapper z-table-wrapper">
+        <table class="sell-table z-data-table">
           <thead>
             <tr>
               <th class="col-yield">目标股息率</th>
@@ -56,8 +56,8 @@ import { SITE_TITLE } from '../consts'
     </section>
 
     <!-- Explanation -->
-    <section class="explain-section">
-      <h2>计算说明</h2>
+    <section class="explain-section z-section">
+      <h2 class="z-section-title">计算说明</h2>
       <div class="explain-card">
         <div class="formula-group">
           <span class="formula-label">目标摊薄成本</span>
@@ -216,44 +216,6 @@ import { SITE_TITLE } from '../consts'
     }
   }
 
-  main {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 3rem 1.5rem 6rem;
-    min-height: calc(100vh - 200px);
-  }
-
-  .page-header {
-    margin-bottom: 1.5rem;
-  }
-
-  .page-header h1 {
-    font-size: var(--z-text-h1);
-    letter-spacing: -0.02em;
-    margin-bottom: 0.5rem;
-  }
-
-  .subtitle {
-    font-size: var(--z-text-lg);
-    color: var(--z-color-text-secondary);
-  }
-
-  .note {
-    font-size: var(--z-text-xs);
-    color: var(--z-color-text-dimmed);
-    margin-top: 0.5rem;
-  }
-
-  section {
-    margin-bottom: 3rem;
-  }
-
-  h2 {
-    font-size: var(--z-text-h2);
-    letter-spacing: -0.02em;
-    margin-bottom: 0.5rem;
-  }
-
   /* Input Section */
   .input-card {
     background: var(--z-color-black);
@@ -333,45 +295,6 @@ import { SITE_TITLE } from '../consts'
   .card-value {
     font-size: var(--z-text-xl);
     font-weight: 700;
-  }
-
-  /* Table */
-  .table-wrapper {
-    overflow-x: auto;
-    border: 1px solid var(--z-color-white);
-  }
-
-  .sell-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: var(--z-text-sm);
-  }
-
-  .sell-table th {
-    text-align: left;
-    padding: 0.75rem 1rem;
-    font-weight: 600;
-    font-size: var(--z-text-xs);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--z-color-text-secondary);
-    border-bottom: 1px solid var(--z-color-white);
-    background: var(--z-color-black);
-    white-space: nowrap;
-  }
-
-  .sell-table td {
-    padding: 0.6rem 1rem;
-    border-bottom: 1px solid var(--z-color-hairline-light);
-    white-space: nowrap;
-  }
-
-  .sell-table tbody tr:last-child td {
-    border-bottom: none;
-  }
-
-  .sell-table tbody tr:hover {
-    background: var(--z-color-hairline-light);
   }
 
   .col-yield {
@@ -503,18 +426,6 @@ import { SITE_TITLE } from '../consts'
 
   /* Responsive */
   @media (max-width: 640px) {
-    main {
-      padding: 2rem 1rem 4rem;
-    }
-
-    .page-header h1 {
-      font-size: var(--z-text-xl);
-    }
-
-    h2 {
-      font-size: var(--z-text-xl);
-    }
-
     .summary-cards {
       grid-template-columns: repeat(2, 1fr);
     }

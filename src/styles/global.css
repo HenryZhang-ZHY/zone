@@ -5,8 +5,10 @@
 	--z-font-system-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
 	--__z-font: 'IBM Plex Mono', 'LXGW WenKai', var(--z-font-system-mono);
+	--z-font-mono: var(--z-font-system-mono);
 
 	--z-line-height: 1.6875;
+	--z-line-height-headings: 1.3;
 
 	--z-color-white: light-dark(hsl(224, 10%, 10%), hsl(0, 0%, 100%));
 	--z-color-black: light-dark(hsl(0, 0%, 100%), hsl(224, 10%, 10%));
@@ -19,9 +21,9 @@
 	--z-color-gray-6: light-dark(hsl(224, 20%, 94%), hsl(224, 14%, 16%));
 
 	--z-hue-orange: 41;
-	--z-color-orange-high: light-dark((var(--z-hue-orange), 80%, 25%), hsl(var(--z-hue-orange), 39%, 22%));
-	--z-color-orange: light-dark((var(--z-hue-orange), 90%, 60%), hsl(var(--z-hue-orange), 82%, 63%));
-	--z-color-orange-low: light-dark((var(--z-hue-orange), 90%, 88%), hsl(var(--z-hue-orange), 82%, 87%));
+	--z-color-orange-high: light-dark(hsl(var(--z-hue-orange), 80%, 25%), hsl(var(--z-hue-orange), 39%, 22%));
+	--z-color-orange: light-dark(hsl(var(--z-hue-orange), 90%, 60%), hsl(var(--z-hue-orange), 82%, 63%));
+	--z-color-orange-low: light-dark(hsl(var(--z-hue-orange), 90%, 88%), hsl(var(--z-hue-orange), 82%, 87%));
 
 	--z-hue-green: 101;
 	--z-color-green-high: light-dark(hsl(var(--z-hue-green), 80%, 22%), hsl(var(--z-hue-green), 39%, 22%));
@@ -47,13 +49,16 @@
 	--z-color-accent: light-dark(hsl(234, 90%, 60%), hsl(224, 100%, 60%));
 	--z-color-accent-low: light-dark(hsl(234, 88%, 90%), hsl(224, 100%, 85%));
 
-	--z-color-text: light-dark(var(--z--whitcolore), var(--z-color-gray-2));
+	--z-color-text: light-dark(var(--z-color-gray-1), var(--z-color-gray-2));
 	--z-color-text-accent: light-dark(var(--z-color-accent), var(--z-color-accent-high));
 	--z-color-text-invert: light-dark(var(--z-color-black), var(--z-color-accent-low));
 
 	--z-color-text-secondary: var(--z-color-gray-3);
 	--z-color-text-dimmed: var(--z-color-gray-4);
 
+	--z-color-bg: var(--z-color-black);
+	--z-color-border: var(--z-color-hairline-light);
+	--z-color-gray-7: light-dark(hsl(224, 20%, 98%), hsl(224, 18%, 12%));
 	--z-color-bg-nav: light-dark(var(--z-color-gray-7), var(--z-color-gray-6));
 	--z-color-bg-sidebar: light-dark(var(--z-color-bg), var(--z-color-gray-6));
 	--z-color-bg-inline-code: light-dark(var(--z-color-gray-6), var(--z-color-gray-5));
@@ -61,12 +66,13 @@
 
 	--z-color-hairline-light: light-dark(var(--z-color-gray-6), var(--z-color-gray-5));
 	--z-color-hairline-shade: light-dark(var(--z-color-gray-6), var(--z-color-black));
+	--z-color-hairline: var(--z-color-hairline-light);
 
 	--z-color-backdrop-overlay: light-dark(hsla(225, 9%, 36%, .66), hsla(223, 13%, 10%, .66));
 
 	--z-shadow-sm: 0px 1px 1px light-dark(hsla(0, 0%, 0%, .06), hsla(0, 0%, 0%, .12)), 0px 2px 1px light-dark(hsla(0, 0%, 0%, .06), hsla(0, 0%, 0%, .24));
-	--z-shadow-md: 0px 8px 4px light-dark(hsla(0, 0%, 0%, .03), hsla(0, 0%, 0%, .08)), 0px 5px 2px light0dark(hsla(0, 0%, 0%, .03), hsla(0, 0%, 0%, .12)), 0px 3px 2px light-dark(hsla(0, 0%, 0%, .06), hsla(0, 0%, 0%, .15)), 0px 1px 1px light0dark(hsla(0, 0%, 0%, .06), hsla(0, 0%, 0%, .15));
-	--z-shadow-lg: 0px 25px 7px light-dark(rgba(0, 0, 0, .01), hsla(0, 0%, 0%, .03)), 0px 16px 6px light0dark(hsla(0, 0%, 0%, .03), hsla(0, 0%, 0%, .1)), 0px 9px 5px light-dark(hsla(223, 13%, 10%, .08), hsla(223, 13%, 10%, .33)), 0px 4px 4px light-dark(hsla(0, 0%, 0%, .16), hsla(0, 0%, 0%, .75)), 0px 4px 2px light-dark(hsla(0, 0%, 0%, .04), hsla(0, 0%, 0%, .25));
+	--z-shadow-md: 0px 8px 4px light-dark(hsla(0, 0%, 0%, .03), hsla(0, 0%, 0%, .08)), 0px 5px 2px light-dark(hsla(0, 0%, 0%, .03), hsla(0, 0%, 0%, .12)), 0px 3px 2px light-dark(hsla(0, 0%, 0%, .06), hsla(0, 0%, 0%, .15)), 0px 1px 1px light-dark(hsla(0, 0%, 0%, .06), hsla(0, 0%, 0%, .15));
+	--z-shadow-lg: 0px 25px 7px light-dark(rgba(0, 0, 0, .01), hsla(0, 0%, 0%, .03)), 0px 16px 6px light-dark(hsla(0, 0%, 0%, .03), hsla(0, 0%, 0%, .1)), 0px 9px 5px light-dark(hsla(223, 13%, 10%, .08), hsla(223, 13%, 10%, .33)), 0px 4px 4px light-dark(hsla(0, 0%, 0%, .16), hsla(0, 0%, 0%, .75)), 0px 4px 2px light-dark(hsla(0, 0%, 0%, .04), hsla(0, 0%, 0%, .25));
 
 	--z-text-2xs: 0.75rem;
 	/* 12px */
@@ -96,6 +102,9 @@
 	--z-text-h3: 1.5rem;
 	--z-text-h4: var(--z-text-xl);
 	--z-text-h5: var(--z-text-lg);
+	--z-text-h6: var(--z-text-base);
+	--z-text-code: var(--z-text-sm);
+	--z-text-code-sm: var(--z-text-xs);
 
 	--z-nav-height: 3.5rem;
 	--z-nav-pad-x: 1rem;
@@ -162,4 +171,191 @@ a:hover,
 a:active,
 a.active {
 	color: var(--z-color-text-accent);
+}
+
+/* Shared layout primitives */
+.z-main {
+	margin: 0 auto;
+	padding: 4rem 2rem 6rem;
+	min-height: calc(100vh - 200px);
+}
+
+.z-main--narrow {
+	max-width: 960px;
+}
+
+.z-main--medium {
+	max-width: 1100px;
+	padding: 3rem 1.5rem 6rem;
+}
+
+.z-main--wide {
+	max-width: 1400px;
+}
+
+.z-main--article {
+	max-width: 960px;
+	position: relative;
+}
+
+.z-page-header {
+	margin-bottom: 1.5rem;
+}
+
+.z-page-title {
+	font-size: var(--z-text-h1);
+	letter-spacing: -0.02em;
+	margin-bottom: 0.5rem;
+}
+
+.z-page-subtitle {
+	font-size: var(--z-text-lg);
+	color: var(--z-color-text-secondary);
+}
+
+.z-page-note {
+	font-size: var(--z-text-xs);
+	color: var(--z-color-text-dimmed);
+	margin-top: 0.5rem;
+}
+
+.z-section {
+	margin-bottom: 3rem;
+}
+
+.z-section-title {
+	font-size: var(--z-text-h2);
+	letter-spacing: -0.02em;
+	margin-bottom: 0.5rem;
+}
+
+.z-link-reset {
+	display: block;
+	text-decoration: none;
+	color: inherit;
+}
+
+.z-stack-list {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+}
+
+.z-stack-item {
+	padding: 2rem 0;
+	border-bottom: 1px solid var(--z-color-hairline-light);
+}
+
+.z-stack-item:last-child {
+	border-bottom: none;
+}
+
+.z-stack-item--roomy {
+	padding: 2rem 0;
+	border-bottom: 1px solid var(--z-color-hairline-light);
+}
+
+.z-stack-item--roomy:last-child {
+	border-bottom: none;
+}
+
+.z-empty-state {
+	text-align: center;
+	padding: 4rem 0;
+	color: var(--z-color-text-secondary);
+}
+
+.z-empty-state h3 {
+	font-size: var(--z-text-h4);
+	margin: 0 0 1rem 0;
+	color: var(--z-color-text);
+}
+
+.z-table-wrapper {
+	overflow-x: auto;
+	border: 1px solid var(--z-color-white);
+}
+
+.z-data-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: var(--z-text-sm);
+}
+
+.z-data-table th {
+	text-align: left;
+	padding: 0.75rem 1rem;
+	font-weight: 600;
+	font-size: var(--z-text-xs);
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: var(--z-color-text-secondary);
+	border-bottom: 1px solid var(--z-color-white);
+	background: var(--z-color-black);
+	white-space: nowrap;
+}
+
+.z-data-table td {
+	padding: 0.6rem 1rem;
+	border-bottom: 1px solid var(--z-color-hairline-light);
+	white-space: nowrap;
+}
+
+.z-data-table tbody tr:last-child td {
+	border-bottom: none;
+}
+
+.z-data-table tbody tr:hover {
+	background: var(--z-color-hairline-light);
+}
+
+@media (max-width: 768px) {
+	.z-main {
+		padding: 2rem 1.5rem 4rem;
+	}
+
+	.z-main--narrow,
+	.z-main--article {
+		max-width: 100%;
+	}
+
+	.z-stack-item {
+		padding: 1.5rem 0;
+	}
+
+	.z-stack-item--roomy {
+		padding: 1.5rem 0;
+	}
+}
+
+@media (max-width: 640px) {
+	.z-main--medium {
+		padding: 2rem 1rem 4rem;
+	}
+
+	.z-page-title,
+	.z-section-title {
+		font-size: var(--z-text-xl);
+	}
+}
+
+@media (max-width: 480px) {
+	.z-main {
+		padding: 1.5rem 1rem 3rem;
+	}
+
+	.z-stack-item {
+		padding: 1.25rem 0;
+	}
+
+	.z-stack-item--roomy {
+		padding: 1.5rem 0;
+	}
+}
+
+@media (min-width: 1200px) {
+	.z-main--narrow,
+	.z-main--article {
+		padding: 5rem 2rem 8rem;
+	}
 }
