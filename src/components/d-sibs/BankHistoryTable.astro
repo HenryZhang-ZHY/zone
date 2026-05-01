@@ -1,0 +1,102 @@
+---
+import {
+  type BankHistory,
+  groupLabels,
+  typeClass,
+  typeLabel,
+} from '../../lib/d-sibs'
+import BankSparkline from './BankSparkline.astro'
+
+interface Props {
+  years: string[]
+  banks: BankHistory[]
+}
+
+const { years, banks } = Astro.props
+---
+
+<section class="table-section z-section">
+  <h2 class="z-section-title">历年分组详情</h2>
+  <div class="table-wrapper z-table-wrapper">
+    <table class="bank-table z-data-table">
+      <thead>
+        <tr>
+          <th class="col-name">银行</th>
+          <th class="col-type">类型</th>
+          {years.map((year) => <th class="col-year">{year}</th>)}
+          <th class="col-spark">变迁</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          banks.map((bank) => (
+            <tr data-bank={bank.name}>
+              <td class="col-name">{bank.name}</td>
+              <td class="col-type">
+                <span class={`z-tag type-tag ${typeClass(bank.latestType, 'tag')}`}>{typeLabel(bank.latestType)}</span>
+              </td>
+              {years.map((year) => {
+                const info = bank.years[year]
+                return <td class="col-year">{info ? <span class={`z-tag group-tag z-tag--g${info.group}`}>{groupLabels[info.group]}</span> : <span class="not-listed">—</span>}</td>
+              })}
+              <td
+                class="col-spark"
+                tabindex="0"
+                aria-describedby="spark-popover"
+                data-bank-name={bank.name}
+                data-bank-type={typeClass(bank.latestType, '')}
+                data-trajectory={JSON.stringify(
+                  years.map((year) => {
+                    const info = bank.years[year]
+                    return info ? { year, group: info.group, type: info.type } : { year, group: null, type: null }
+                  }),
+                )}
+              >
+                <BankSparkline years={years} history={bank.years} latestType={bank.latestType} />
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<style>
+  .col-name {
+    font-weight: 600;
+    min-width: 140px;
+  }
+
+  .col-type {
+    min-width: 70px;
+  }
+
+  .col-year {
+    text-align: center;
+    min-width: 80px;
+  }
+
+  th.col-year {
+    text-align: center;
+  }
+
+  .col-spark {
+    min-width: 90px;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .col-spark:focus-visible {
+    outline: var(--z-focus-ring);
+    outline-offset: var(--z-focus-offset);
+  }
+
+  th.col-spark {
+    text-align: center;
+  }
+
+  .not-listed {
+    color: var(--z-color-text-dimmed);
+  }
+</style>

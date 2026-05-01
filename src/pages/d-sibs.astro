@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import BankHistoryTable from '../components/d-sibs/BankHistoryTable.astro'
+import ChangesTimeline from '../components/d-sibs/ChangesTimeline.astro'
+import SparklinePopover from '../components/d-sibs/SparklinePopover.astro'
+import YearCompositionGrid from '../components/d-sibs/YearCompositionGrid.astro'
+import { SITE_TITLE } from '../consts'
+import { getCollection } from 'astro:content'
+import { buildDsibsViewModel } from '../lib/d-sibs'
+
+const rawEntries = await getCollection('dsibs')
+const { years, sortedBanks, yearStats, changes } = buildDsibsViewModel(
+  rawEntries.map((entry) => entry.data),
+)
+---
+
+<BaseLayout title={`系统重要性银行名单 | ${SITE_TITLE}`}>
+  <main class="z-main z-main--medium">
+    <div class="page-header z-page-header">
+      <h1 class="z-page-title">中国系统重要性银行</h1>
+      <p class="subtitle z-page-subtitle">2021–2025 历年名单及变化追踪</p>
+      <p class="note z-page-note">数据来源：<a href="https://www.pbc.gov.cn/huobizhengceersi/214481/3868581/3868587/index.html" target="_blank" rel="noopener noreferrer">中国人民银行宏观审慎管理局</a></p>
+    </div>
+
+    <BankHistoryTable years={years} banks={sortedBanks} />
+    <SparklinePopover />
+    <ChangesTimeline changes={changes} />
+    <YearCompositionGrid yearStats={yearStats} />
+  </main>
+</BaseLayout>
+

@@ -1,0 +1,95 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+
+import { Image } from 'astro:assets'
+import { SITE_TITLE } from '../consts'
+import { getCollection } from 'astro:content'
+
+const books = await getCollection('book')
+---
+
+<BaseLayout title={`Reading List | ${SITE_TITLE}`}>
+  <main class="z-main z-main--wide">
+    <section class="books-container">
+      {
+        books.map((book, index) => (
+          <article class="book-item">
+            <a href={book.data.ogUrl} class="book-link" title={book.data.title} target="_blank" rel="noopener noreferrer">
+              <div class="book-cover">
+                <Image src={book.data.ogImage} alt={`Cover of ${book.data.title}`} loading={index < 12 ? 'eager' : 'lazy'} width={140} height={210} />
+              </div>
+            </a>
+          </article>
+        ))
+      }
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  .books-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3rem 2rem;
+  }
+
+  .book-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .book-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .book-cover {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: var(--z-color-surface-muted);
+    border: 1px solid var(--z-color-hairline-light);
+  }
+
+  .book-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    background: var(--z-color-surface-muted);
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .books-container {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem 1.5rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .books-container {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem 1.25rem;
+    }
+  }
+
+  /* Large screens */
+  @media (min-width: 1024px) {
+    .books-container {
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4rem 3rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .books-container {
+      grid-template-columns: repeat(6, 1fr);
+    }
+  }
+</style>

@@ -1,0 +1,132 @@
+---
+import { type YearStats, groupLabels, typeClass } from '../../lib/d-sibs'
+
+interface Props {
+  yearStats: YearStats[]
+}
+
+const { yearStats } = Astro.props
+---
+
+<section class="composition-section z-section">
+  <h2 class="z-section-title">各年度分组构成</h2>
+  <div class="composition-grid">
+    {
+      yearStats.map((stats) => (
+        <div class="composition-year">
+          <h3>
+            <a href={stats.link} target="_blank" rel="noopener noreferrer">
+              {stats.year}年
+            </a>{' '}
+            <span class="comp-total">（共{stats.total}家）</span>
+          </h3>
+          {[4, 3, 2, 1].map(
+            (group) =>
+              stats.groups[group].length > 0 && (
+                <div class="comp-group">
+                  <div class={`comp-header comp-header--g${group}`}>
+                    <span class="comp-label">{groupLabels[group]}</span>
+                    <span class="comp-line" />
+                    <span class="comp-count">{stats.groups[group].length}家</span>
+                  </div>
+                  <div class="comp-banks">
+                    {stats.groups[group].map((entry) => (
+                      <span class={`z-tag comp-bank ${typeClass(entry.type, 'tag')}`}>{entry.name}</span>
+                    ))}
+                  </div>
+                </div>
+              ),
+          )}
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .composition-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--z-space-6);
+  }
+
+  .composition-year {
+    background: var(--z-color-surface-soft);
+    border: 1px solid var(--z-color-border-subtle);
+    border-radius: var(--z-radius-sm);
+    padding: var(--z-space-7) var(--z-space-8);
+  }
+
+  .composition-year h3 {
+    font-size: var(--z-text-lg);
+    font-weight: 700;
+    margin-bottom: var(--z-space-4);
+  }
+
+  .composition-year h3 a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .composition-year h3 a:hover {
+    color: var(--z-color-text-accent);
+    text-decoration: underline;
+  }
+
+  .comp-total {
+    font-weight: 400;
+    font-size: var(--z-text-sm);
+    color: var(--z-color-text-secondary);
+  }
+
+  .comp-group {
+    margin-bottom: var(--z-space-8);
+  }
+
+  .comp-group:last-child {
+    margin-bottom: 0;
+  }
+
+  .comp-header {
+    font-size: var(--z-text-xs);
+    font-weight: 600;
+    padding: 0 0 var(--z-space-2);
+    margin-bottom: var(--z-space-2);
+    display: flex;
+    align-items: center;
+    gap: var(--z-space-2);
+    border-bottom: 1px solid var(--z-color-hairline-light);
+  }
+
+  .comp-header--g1 { color: var(--z-data-g1); }
+  .comp-header--g2 { color: var(--z-data-g2); }
+  .comp-header--g3 { color: var(--z-data-g3); }
+  .comp-header--g4 { color: var(--z-data-g4); }
+
+  .comp-label,
+  .comp-count {
+    white-space: nowrap;
+  }
+
+  .comp-count {
+    font-weight: 400;
+    font-size: var(--z-text-2xs);
+    color: var(--z-color-text-dimmed);
+  }
+
+  .comp-line {
+    flex: 1;
+  }
+
+  .comp-banks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--z-space-2);
+  }
+
+  @media (max-width: 640px) {
+    .composition-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

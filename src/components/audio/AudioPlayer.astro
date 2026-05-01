@@ -1,0 +1,176 @@
+---
+interface Props {
+  src: string
+}
+
+const { src } = Astro.props
+---
+
+<div class="audio-player" data-audio-src={src}>
+  <button class="play-button" aria-label="Play">
+    <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M8 5v14l11-7z" />
+    </svg>
+    <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+    </svg>
+  </button>
+  <span class="time-current">0:00</span>
+  <div class="progress-bar">
+    <div class="progress-fill"></div>
+    <input type="range" class="progress-slider" min="0" max="100" value="0" step="0.1" aria-label="Seek" />
+  </div>
+  <span class="time-duration">0:00</span>
+  <audio preload="none">
+    <source src={src} type="audio/mpeg" />
+  </audio>
+</div>
+
+<script>
+  import '../../scripts/audio-player'
+</script>
+
+<style>
+  .audio-player {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .audio-player audio {
+    display: none;
+  }
+
+  .play-button {
+    flex-shrink: 0;
+    height: 32px;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    color: var(--z-color-text);
+  }
+
+  .play-button svg {
+    height: 16px;
+  }
+
+  .pause-icon {
+    display: none;
+  }
+
+  .play-button.playing .play-icon {
+    display: none;
+  }
+
+  .play-button.playing .pause-icon {
+    display: block;
+  }
+
+  .time-current,
+  .time-duration {
+    font-size: var(--z-text-xs);
+    color: var(--z-color-text-secondary);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    min-width: 40px;
+    text-align: center;
+  }
+
+  .progress-bar {
+    flex: 1;
+    height: 20px;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .progress-bar::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    height: 2px;
+    background-color: var(--z-color-gray-5);
+    z-index: 0;
+  }
+
+  .progress-fill {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 2px;
+    background-color: var(--z-color-accent);
+    width: 0%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .progress-slider {
+    width: 100%;
+    height: 20px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    outline: none;
+    margin: 0;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+  }
+
+  .progress-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 0;
+    height: 0;
+    background: transparent;
+    cursor: pointer;
+    border: none;
+  }
+
+  .progress-slider::-moz-range-thumb {
+    width: 0;
+    height: 0;
+    background: transparent;
+    cursor: pointer;
+    border: none;
+    border-radius: 0;
+  }
+
+  @media (max-width: 768px) {
+    .audio-player audio {
+      height: 36px;
+    }
+
+    .play-button {
+      width: 28px;
+      height: 28px;
+    }
+
+    .play-button svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .time-current,
+    .time-duration {
+      min-width: 35px;
+      font-size: 11px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .audio-player {
+      width: 100%;
+    }
+  }
+</style>

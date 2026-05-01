@@ -1,0 +1,17 @@
+---
+import StockSellCalculator from '../components/stock-sell/StockSellCalculator.astro'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { SITE_TITLE } from '../consts'
+---
+
+<BaseLayout title={`股票卖点计算器 | ${SITE_TITLE}`}>
+  <main class="z-main z-main--medium">
+    <div class="page-header z-page-header">
+      <h1 class="z-page-title">股票卖点计算器</h1>
+      <p class="subtitle z-page-subtitle">基于股息率计算合理卖出价格</p>
+      <p class="note z-page-note">输入买入成本、持有份额和每股分红，计算卖出部分仓位以将剩余持仓摊薄成本降至目标股息率（4%–100%）所需的卖出价格</p>
+    </div>
+
+    <StockSellCalculator />
+  </main>
+</BaseLayout>

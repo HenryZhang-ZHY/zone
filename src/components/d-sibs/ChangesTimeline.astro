@@ -1,0 +1,122 @@
+---
+import { type YearChange, groupLabels } from '../../lib/d-sibs'
+
+interface Props {
+  changes: YearChange[]
+}
+
+const { changes } = Astro.props
+---
+
+<section class="changes-section z-section">
+  <h2 class="z-section-title">历年变化</h2>
+  <div class="timeline z-timeline">
+    {
+      changes.map((change) => {
+        const hasChanges = change.entered.length > 0 || change.exited.length > 0 || change.upgraded.length > 0 || change.downgraded.length > 0
+        return (
+          <div class="timeline-item z-timeline-item">
+            <div class="timeline-marker z-timeline-marker" />
+            <div class="timeline-content">
+              <h3>
+                {change.from} → {change.to}
+              </h3>
+              {!hasChanges && <p class="no-change">无变化</p>}
+              {change.entered.length > 0 && (
+                <div class="change-group z-status-card z-status-card--enter">
+                  <span class="change-icon z-status-icon">＋</span>
+                  <div>
+                    <strong>新增入选</strong>
+                    {change.entered.map(([name, group]) => (
+                      <span class="change-banks">
+                        {name}：{groupLabels[group]}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {change.exited.length > 0 && (
+                <div class="change-group z-status-card z-status-card--exit">
+                  <span class="change-icon z-status-icon">－</span>
+                  <div>
+                    <strong>退出名单</strong>
+                    <span class="change-banks">{change.exited.join('、')}</span>
+                  </div>
+                </div>
+              )}
+              {change.upgraded.length > 0 && (
+                <div class="change-group z-status-card z-status-card--up">
+                  <span class="change-icon z-status-icon">↑</span>
+                  <div>
+                    <strong>组别上升</strong>
+                    {change.upgraded.map(([name, from, to]) => (
+                      <span class="change-banks">
+                        {name}：{groupLabels[from]} → {groupLabels[to]}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {change.downgraded.length > 0 && (
+                <div class="change-group z-status-card z-status-card--down">
+                  <span class="change-icon z-status-icon">↓</span>
+                  <div>
+                    <strong>组别下降</strong>
+                    {change.downgraded.map(([name, from, to]) => (
+                      <span class="change-banks">
+                        {name}：{groupLabels[from]} → {groupLabels[to]}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )
+      })
+    }
+  </div>
+</section>
+
+<style>
+  .timeline-content h3 {
+    font-size: var(--z-text-lg);
+    font-weight: 700;
+    margin-bottom: var(--z-space-3);
+  }
+
+  .change-group strong {
+    display: block;
+    margin-bottom: var(--z-space-1);
+  }
+
+  .change-banks {
+    display: block;
+    color: var(--z-color-text-secondary);
+  }
+
+  .change-enter .change-icon,
+  .z-status-card--enter .change-icon {
+    color: var(--z-color-green-high);
+  }
+
+  .change-exit .change-icon,
+  .z-status-card--exit .change-icon {
+    color: var(--z-color-red-high);
+  }
+
+  .change-up .change-icon,
+  .z-status-card--up .change-icon {
+    color: var(--z-color-orange-high);
+  }
+
+  .change-down .change-icon,
+  .z-status-card--down .change-icon {
+    color: var(--z-color-blue-high);
+  }
+
+  .no-change {
+    color: var(--z-color-text-dimmed);
+    font-size: var(--z-text-sm);
+  }
+</style>

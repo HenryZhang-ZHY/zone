@@ -1,0 +1,387 @@
+:root {
+	color-scheme: light dark;
+
+	/* Font stack — kept from original */
+	--z-font-system: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+	--z-font-system-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+	--__z-font: 'IBM Plex Mono', 'LXGW WenKai', var(--z-font-system-mono);
+	--z-font-mono: var(--z-font-system-mono);
+
+	--z-line-height: 1.6875;
+	--z-line-height-headings: 1.3;
+
+	/* === PRIMARY & TEXT === */
+	--z-color-white:  light-dark(#213547, #E5E7EB);   /* Brand Navy / Pale Gray */
+	--z-color-black:  light-dark(#FFFFFF, #111827);   /* White / Deep Slate */
+	--z-color-text:   light-dark(#213547, #E5E7EB);   /* Brand Navy */
+	--z-color-text-secondary: light-dark(#374151, #9CA3AF);  /* Medium Gray / Light Gray */
+	--z-color-text-dimmed:    light-dark(#4B5563, #737373);  /* Subdued Gray / Dark Neutral */
+	--z-color-text-accent:    light-dark(#0095FF, #0095FF);  /* Electric Blue */
+	--z-color-text-invert:    #FFFFFF;
+
+	/* === ACCENT COLORS === */
+	--z-color-accent:      #0095FF;   /* Electric Blue */
+	--z-color-accent-high: #0077CC;   /* Darkened Blue */
+	--z-color-accent-low:  rgba(0, 149, 255, 0.1);
+
+	--z-color-red:         #ED3C50;   /* Coral Red */
+	--z-color-red-high:    #C7283A;
+	--z-color-red-low:     #FFF5F7;
+
+	--z-color-orange:      #FFC517;   /* Warning Yellow */
+	--z-color-orange-high: #D9A000;
+	--z-color-orange-low:  #FFF8E0;
+
+	--z-color-green:       #10B981;   /* Timeline enter */
+	--z-color-green-high:  #059669;
+	--z-color-green-low:   #D1FAE5;
+
+	--z-color-blue:        #3B82F6;   /* Timeline downgrade */
+	--z-color-blue-high:   #2563EB;
+	--z-color-blue-low:    #DBEAFE;
+
+	--z-color-purple:       #8B5CF6;  /* D-SIBs city */
+	--z-color-purple-high:  #7C3AED;
+	--z-color-purple-low:   #EDE9FE;
+
+	/* === GRAYS & BORDERS === */
+	--z-color-gray-1: light-dark(#111827, #F9FAFB);
+	--z-color-gray-2: light-dark(#374151, #E5E7EB);
+	--z-color-gray-3: light-dark(#4B5563, #D1D5DB);
+	--z-color-gray-4: light-dark(#9CA3AF, #9CA3AF);
+	--z-color-gray-5: light-dark(#D1D5DB, #4B5563);
+	--z-color-gray-6: light-dark(#E5E7EB, #374151);
+	--z-color-gray-7: light-dark(#FAF7F5, #1F2937);
+
+	--z-color-border:            light-dark(#E5E7EB, #374151);
+	--z-color-hairline-light:    light-dark(#E5E7EB, #374151);
+	--z-color-hairline-shade:    light-dark(#D1D5DB, #111827);
+	--z-color-hairline:          var(--z-color-hairline-light);
+
+	--z-color-backdrop-overlay: light-dark(rgba(0,0,0,0.45), rgba(0,0,0,0.66));
+
+	/* === SURFACE & BACKGROUND === */
+	--z-color-bg:             light-dark(#FFFFFF, #111827);
+	--z-color-bg-nav:         light-dark(#FFFFFF, #111827);
+	--z-color-bg-sidebar:     light-dark(#FAF7F5, #1F2937);
+	--z-color-bg-inline-code: light-dark(#E5E7EB, #374151);
+	--z-color-bg-accent:      #0095FF;
+
+	/* === SEMANTIC SURFACES === */
+	--z-color-surface: light-dark(#FFFFFF, #1F2937);
+	--z-color-surface-soft: light-dark(rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.05));
+	--z-color-surface-muted: light-dark(#FAF7F5, #1F2937);
+	--z-color-border-subtle: light-dark(rgba(0, 0, 0, 0.07), rgba(255, 255, 255, 0.08));
+
+	/* === SHAPE & FOCUS === */
+	--z-radius-none: 0;
+	--z-radius-sm: 3px;
+	--z-focus-ring: 2px solid var(--z-color-accent);
+	--z-focus-offset: 2px;
+
+	/* === DATA SEMANTICS === */
+	--z-data-g1: light-dark(hsl(210, 12%, 50%), hsl(210, 15%, 65%));
+	--z-data-g1-bg: light-dark(hsl(210, 15%, 92%), hsl(210, 10%, 18%));
+	--z-data-g2: light-dark(hsl(38, 80%, 45%), hsl(38, 75%, 58%));
+	--z-data-g2-bg: light-dark(hsl(38, 75%, 91%), hsl(38, 35%, 16%));
+	--z-data-g3: light-dark(hsl(18, 80%, 50%), hsl(18, 75%, 60%));
+	--z-data-g3-bg: light-dark(hsl(18, 80%, 92%), hsl(18, 35%, 16%));
+	--z-data-g4: light-dark(hsl(350, 75%, 45%), hsl(350, 70%, 62%));
+	--z-data-g4-bg: light-dark(hsl(350, 70%, 93%), hsl(350, 30%, 17%));
+	--z-data-state: light-dark(hsl(220, 70%, 42%), hsl(220, 75%, 68%));
+	--z-data-state-bg: light-dark(hsl(220, 60%, 93%), hsl(220, 30%, 17%));
+	--z-data-joint: light-dark(hsl(170, 65%, 34%), hsl(170, 60%, 55%));
+	--z-data-joint-bg: light-dark(hsl(170, 50%, 92%), hsl(170, 25%, 16%));
+	--z-data-city: light-dark(hsl(280, 55%, 50%), hsl(280, 55%, 68%));
+	--z-data-city-bg: light-dark(hsl(280, 45%, 93%), hsl(280, 25%, 17%));
+
+	/* === ELEVATION / SHADOWS === */
+	--z-shadow-sm: 0px 1px 2px rgba(0, 0, 0, 0.05);
+	--z-shadow-md: 0px 4px 8px rgba(0, 0, 0, 0.08);
+	--z-shadow-lg: 0px 12px 24px rgba(0, 0, 0, 0.12);
+
+	/* === TYPOGRAPHY SCALE (4px-base, DESIGN.md hierarchy) === */
+	--z-text-2xs: 0.75rem;   /* 12px — Caption */
+	--z-text-xs:  0.8125rem; /* 13px */
+	--z-text-sm:  0.875rem;  /* 14px — Body Regular, Link, Button */
+	--z-text-base: 1rem;     /* 16px — Body Large */
+	--z-text-lg:  1.125rem;  /* 18px */
+	--z-text-xl:  1.25rem;   /* 20px */
+	--z-text-2xl: 1.375rem;  /* 22px */
+	--z-text-3xl: 1.75rem;   /* 28px — H3 */
+	--z-text-4xl: 2rem;      /* 32px */
+	--z-text-5xl: 2.5rem;    /* 40px */
+	--z-text-6xl: 3.25rem;   /* 52px — H1/Display */
+
+	--z-text-h1: var(--z-text-6xl);
+	--z-text-h2: var(--z-text-5xl);
+	--z-text-h3: var(--z-text-3xl);
+	--z-text-h4: var(--z-text-xl);
+	--z-text-h5: var(--z-text-lg);
+	--z-text-h6: var(--z-text-base);
+	--z-text-code: var(--z-text-sm);
+	--z-text-code-sm: var(--z-text-xs);
+
+	/* === SPACING (4px base) === */
+	--z-space-1: 0.25rem;  /*   4px */
+	--z-space-2: 0.5rem;   /*   8px */
+	--z-space-3: 0.75rem;  /*  12px */
+	--z-space-4: 1rem;     /*  16px */
+	--z-space-5: 1.25rem;  /*  20px */
+	--z-space-6: 1.5rem;   /*  24px */
+	--z-space-7: 1.75rem;  /*  28px */
+	--z-space-8: 2rem;     /*  32px */
+	--z-space-9: 2.25rem;  /*  36px */
+	--z-space-10: 2.5rem;  /*  40px */
+	--z-space-12: 3rem;    /*  48px */
+	--z-space-15: 3.75rem; /*  60px */
+	--z-space-20: 5rem;    /*  80px */
+
+	/* === LAYOUT === */
+	--z-nav-height: 3.75rem;       /* 60px per DESIGN.md */
+	--z-nav-pad-x: 2.5rem;         /* 40px */
+	--z-nav-pad-y: 0rem;
+
+	--z-mobile-toc-height: 3rem;
+
+	--z-sidebar-width: 18.75rem;
+	--z-sidebar-pad-x: 1rem;
+
+	--z-content-width: 45rem;
+	--z-content-pad-x: 1rem;
+
+	--z-menu-button-size: 2rem;
+	--z-nav-gap: var(--z-space-6);
+
+	--z-outline-offset-inside: -.1875rem;
+
+	/* === Z-INDEX === */
+	--z-z-index-toc: 4;
+	--z-z-index-menu: 5;
+	--z-z-index-navbar: 10;
+	--z-z-index-skiplink: 20;
+
+	--paragraph-spacing: 1.375rem;
+}
+
+*,
+*:before,
+*:after {
+	box-sizing: border-box;
+}
+
+* {
+	margin: 0;
+}
+
+body {
+	font-family: var(--__z-font);
+	line-height: var(--z-line-height);
+	-webkit-font-smoothing: antialiased;
+	text-underline-offset: 0.1875rem;
+
+	color: var(--z-color-text);
+	background-color: var(--z-color-bg);
+}
+
+a {
+	color: var(--z-color-text);
+	text-decoration: none;
+}
+
+a:hover,
+a:active,
+a.active {
+	color: var(--z-color-text-accent);
+}
+
+/* Shared layout primitives */
+.z-main {
+	margin: 0 auto;
+	padding: var(--z-space-20) var(--z-space-8) var(--z-space-15);
+	min-height: calc(100vh - 200px);
+}
+
+.z-main--narrow {
+	max-width: 960px;
+}
+
+.z-main--medium {
+	max-width: 1100px;
+	padding: var(--z-space-10) var(--z-space-6) var(--z-space-15);
+}
+
+.z-main--wide {
+	max-width: 1278px;
+}
+
+.z-main--article {
+	max-width: 960px;
+	position: relative;
+}
+
+.z-page-header {
+	margin-bottom: var(--z-space-6);
+}
+
+.z-page-title {
+	font-size: var(--z-text-h1);
+	font-weight: 700;
+	letter-spacing: 0;
+	margin-bottom: var(--z-space-2);
+	color: light-dark(#000000, #F9FAFB);
+}
+
+.z-page-subtitle {
+	font-size: var(--z-text-lg);
+	color: var(--z-color-text-secondary);
+}
+
+.z-page-note {
+	font-size: var(--z-text-xs);
+	color: var(--z-color-text-dimmed);
+	margin-top: var(--z-space-2);
+}
+
+.z-section {
+	margin-bottom: var(--z-space-10);
+}
+
+.z-section-title {
+	font-size: var(--z-text-h2);
+	font-weight: 700;
+	letter-spacing: 0;
+	margin-bottom: var(--z-space-2);
+}
+
+.z-link-reset {
+	display: block;
+	text-decoration: none;
+	color: inherit;
+}
+
+.z-stack-list {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+}
+
+.z-stack-item {
+	padding: var(--z-space-8) 0;
+	border-bottom: 1px solid var(--z-color-hairline-light);
+}
+
+.z-stack-item:last-child {
+	border-bottom: none;
+}
+
+.z-stack-item--roomy {
+	padding: var(--z-space-8) 0;
+	border-bottom: 1px solid var(--z-color-hairline-light);
+}
+
+.z-stack-item--roomy:last-child {
+	border-bottom: none;
+}
+
+.z-empty-state {
+	text-align: center;
+	padding: var(--z-space-12) 0;
+	color: var(--z-color-text-secondary);
+}
+
+.z-empty-state h3 {
+	font-size: var(--z-text-h4);
+	margin: 0 0 var(--z-space-4) 0;
+	color: var(--z-color-text);
+}
+
+.z-table-wrapper {
+	overflow-x: auto;
+	border: 1px solid var(--z-color-border);
+	border-radius: var(--z-radius-sm);
+	background: var(--z-color-surface);
+}
+
+.z-data-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: var(--z-text-sm);
+}
+
+.z-data-table th {
+	text-align: left;
+	padding: var(--z-space-3) var(--z-space-4);
+	font-weight: 600;
+	font-size: var(--z-text-xs);
+	letter-spacing: 0;
+	color: light-dark(#374151, #D1D5DB);
+	border-bottom: 1px solid var(--z-color-border);
+	background: var(--z-color-surface-muted);
+	white-space: nowrap;
+}
+
+.z-data-table td {
+	padding: 0.75rem 1rem;
+	border-bottom: 1px solid var(--z-color-hairline-light);
+	white-space: nowrap;
+}
+
+.z-data-table tbody tr:last-child td {
+	border-bottom: none;
+}
+
+.z-data-table tbody tr:hover {
+	background: light-dark(#F9FAFB, rgba(255,255,255,0.03));
+}
+
+@media (max-width: 768px) {
+	.z-main {
+		padding: var(--z-space-8) var(--z-space-6) var(--z-space-12);
+	}
+
+	.z-main--narrow,
+	.z-main--article {
+		max-width: 100%;
+	}
+
+	.z-stack-item {
+		padding: var(--z-space-6) 0;
+	}
+
+	.z-stack-item--roomy {
+		padding: var(--z-space-6) 0;
+	}
+}
+
+@media (max-width: 640px) {
+	.z-main--medium {
+		padding: var(--z-space-8) var(--z-space-4) var(--z-space-12);
+	}
+
+	.z-page-title,
+	.z-section-title {
+		font-size: var(--z-text-xl);
+	}
+}
+
+@media (max-width: 480px) {
+	.z-main {
+		padding: var(--z-space-6) var(--z-space-4) var(--z-space-10);
+	}
+
+	.z-stack-item {
+		padding: var(--z-space-5) 0;
+	}
+
+	.z-stack-item--roomy {
+		padding: var(--z-space-6) 0;
+	}
+}
+
+@media (min-width: 1200px) {
+	.z-main--narrow,
+	.z-main--article {
+		padding: var(--z-space-20) var(--z-space-8) var(--z-space-20);
+	}
+}
