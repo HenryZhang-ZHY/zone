@@ -188,7 +188,7 @@ Fallback: `Georgia, "Times New Roman", serif`
 #### Navigation Bar
 - **Background:** `#FFFFFF` with `1px solid #E5E7EB` bottom border
 - **Height:** 60px
-- **Padding:** `0px 40px`
+- **Padding:** `0px 32px`
 
 #### Navigation Link
 - **Font:** 14px, weight 600

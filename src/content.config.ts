@@ -21,6 +21,15 @@ const book = defineCollection({
 	}),
 });
 
+const readingList = defineCollection({
+	loader: file('./src/content/reading-list.yaml'),
+	schema: z.object({
+		title: z.string(),
+		ogUrl: z.string().url(),
+		dateRead: z.coerce.date(),
+	}),
+});
+
 const podcast = defineCollection({
 	loader: file('./src/content/podcast.yaml'),
 	schema: z.object({
@@ -48,4 +57,4 @@ const dsibs = defineCollection({
 	}),
 });
 
-export const collections = { blog, book, podcast, dsibs };
+export const collections = { blog, book, readingList, podcast, dsibs };

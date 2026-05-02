@@ -189,6 +189,18 @@ import { SITE_TITLE } from '../consts'
   }
 
   /* ── Desktop ── */
+  @media (max-width: 768px) {
+    .nav {
+      padding: 0 var(--z-space-6);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .nav {
+      padding: 0 var(--z-space-4);
+    }
+  }
+
   @media (width >= 48rem) {
     .hamburger {
       display: none;
