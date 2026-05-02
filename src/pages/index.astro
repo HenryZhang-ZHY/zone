@@ -117,7 +117,11 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueO
 	/* Large screens */
 	@media (min-width: 1200px) {
 		.post-item {
-			padding: 2.5rem 0;
+			padding-bottom: 2.5rem;
+		}
+
+		.post-item + .post-item {
+			padding-top: 2.5rem;
 		}
 	}
 </style>
