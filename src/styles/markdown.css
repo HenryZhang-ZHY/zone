@@ -32,7 +32,8 @@
 .z-markdown-content :is(h1, h2, h3, h4, h5, h6):not(:where(.not-content *)) {
   color: light-dark(#000000, #F9FAFB);
   line-height: var(--z-line-height-headings);
-  font-weight: 600
+  font-weight: 600;
+  scroll-margin-top: calc(var(--z-nav-height) + 1rem)
 }
 
 .z-markdown-content :is(img, picture, video, canvas, svg, iframe):not(:where(.not-content *)) {
