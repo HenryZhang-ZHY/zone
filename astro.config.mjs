@@ -6,6 +6,9 @@ import sitemap from '@astrojs/sitemap';
 import expressiveCode from 'astro-expressive-code';
 import { addClassName } from 'astro-expressive-code/hast';
 
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://shuzhi.zone',
@@ -22,10 +25,15 @@ export default defineConfig({
         }
       ]
     }),
-    mdx(),
+    mdx({
+      remarkPlugins: [remarkMath],
+      rehypePlugins: [rehypeKatex],
+    }),
     sitemap()
   ],
   markdown: {
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [rehypeKatex],
     shikiConfig: {
       themes: {
         light: 'github-light',

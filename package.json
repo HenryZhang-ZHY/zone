@@ -17,7 +17,10 @@
     "@fontsource/lxgw-wenkai": "^5.2.5",
     "astro": "^5.18.1",
     "astro-expressive-code": "^0.41.7",
-    "normalize.css": "^8.0.1"
+    "katex": "^0.16.47",
+    "normalize.css": "^8.0.1",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0"
   },
   "devDependencies": {
     "tsx": "^4.21.0",

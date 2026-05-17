@@ -11,6 +11,7 @@ import 'normalize.css'
 import '../styles/global.css'
 import '../styles/components.css'
 import '../styles/markdown.css'
+import '/node_modules/katex/dist/katex.min.css'
 
 import { SITE_TITLE } from '../consts'
 
@@ -23,14 +24,7 @@ interface Props {
 	enableAnalytics?: boolean
 }
 
-const {
-	title,
-	description,
-	image = '/open-graph-image.webp',
-	canonicalURL = new URL(Astro.url.pathname, Astro.site),
-	type = 'website',
-	enableAnalytics = true,
-} = Astro.props
+const { title, description, image = '/open-graph-image.webp', canonicalURL = new URL(Astro.url.pathname, Astro.site), type = 'website', enableAnalytics = true } = Astro.props
 const canonicalHref = canonicalURL.toString()
 const imageURL = new URL(image, Astro.site ?? Astro.url)
 ---
@@ -76,4 +70,4 @@ const imageURL = new URL(image, Astro.site ?? Astro.url)
 <meta property="twitter:image" content={imageURL} />
 
 <!-- Umami Analytics -->
-{enableAnalytics && <script defer src="https://umami.shuzhi.zone/script.js" data-website-id="b3d2c549-74d8-46b1-b28f-26d50f2d1f1a"></script>}
+{enableAnalytics && <script defer src="https://umami.shuzhi.zone/script.js" data-website-id="b3d2c549-74d8-46b1-b28f-26d50f2d1f1a" />}
