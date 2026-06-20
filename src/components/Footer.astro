@@ -3,6 +3,8 @@ import HeaderLink from './HeaderLink.astro'
 import { SITE_TITLE } from '../consts'
 
 const today = new Date()
+const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '')
+const isReadingActive = pathname === '/reading' || pathname.startsWith('/reading/')
 ---
 
 <footer class="footer">
@@ -13,12 +15,16 @@ const today = new Date()
 				<li><HeaderLink href="/listening">Listening</HeaderLink></li>
 			</ul>
 
-			<div class="footer-secondary-row" aria-label="Reading sections">
-				<span class="footer-secondary-label">Reading</span>
-				<ul class="footer-secondary-list">
-					<li><HeaderLink href="/reading" exact>Recents</HeaderLink></li>
-					<li><HeaderLink href="/reading/books" exact>Books</HeaderLink></li>
-				</ul>
+			<div class="footer-reading-row" aria-label="Reading sections">
+				<span class:list={['footer-primary-label', { active: isReadingActive }]}>Reading</span>
+				<div class="footer-reading-subnav">
+					<span aria-hidden="true">(</span>
+					<ul class="footer-secondary-list" aria-label="Reading pages">
+						<li><HeaderLink href="/reading" exact>Recents</HeaderLink></li>
+						<li><HeaderLink href="/reading/books" exact>Books</HeaderLink></li>
+					</ul>
+					<span aria-hidden="true">)</span>
+				</div>
 			</div>
 
 			<a href="/rss.xml" class="footer-utility-link">RSS Feed</a>
@@ -57,7 +63,8 @@ const today = new Date()
 		row-gap: var(--z-space-2);
 	}
 
-	.footer-primary-list :global(a) {
+	.footer-primary-list :global(a),
+	.footer-primary-label {
 		display: inline-flex;
 		align-items: center;
 		min-height: 36px;
@@ -74,17 +81,16 @@ const today = new Date()
 		color: var(--z-color-text-dimmed);
 	}
 
-	.footer-secondary-row {
+	.footer-reading-row {
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
 		justify-content: center;
-		column-gap: var(--z-space-3);
+		column-gap: var(--z-space-2);
 		row-gap: var(--z-space-1);
 		margin-top: var(--z-space-2);
 	}
 
-	.footer-secondary-label,
 	.footer-secondary-list :global(a),
 	.footer-utility-link {
 		color: var(--z-color-text-dimmed);
@@ -92,14 +98,16 @@ const today = new Date()
 		line-height: 1.5;
 	}
 
-	.footer-secondary-label::after {
-		content: "—";
-		margin-left: var(--z-space-3);
-		color: var(--z-color-text-dimmed);
-	}
-
 	.footer-secondary-list {
 		column-gap: var(--z-space-3);
+	}
+
+	.footer-reading-subnav {
+		display: inline-flex;
+		align-items: center;
+		color: var(--z-color-text-dimmed);
+		font-size: var(--z-text-xs);
+		line-height: 1.5;
 	}
 
 	.footer-secondary-list li + li::before {
@@ -115,6 +123,7 @@ const today = new Date()
 
 	.footer-primary-list :global(a:hover),
 	.footer-primary-list :global(a.active),
+	.footer-primary-label.active,
 	.footer-secondary-list :global(a:hover),
 	.footer-secondary-list :global(a.active),
 	.footer-utility-link:hover {
@@ -136,6 +145,7 @@ const today = new Date()
 		}
 
 		.footer-primary-list :global(a),
+		.footer-primary-label,
 		.footer-secondary-list :global(a),
 		.footer-utility-link {
 			min-height: 44px;
