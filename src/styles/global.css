@@ -145,7 +145,7 @@
 	--z-sidebar-width: 18.75rem;
 	--z-sidebar-pad-x: 1rem;
 
-	--z-content-width: 45rem;
+	--z-content-width: clamp(45rem, 58vw, 56rem);
 	--z-content-pad-x: 1rem;
 
 	--z-menu-button-size: 2rem;
