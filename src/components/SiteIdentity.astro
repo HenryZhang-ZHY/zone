@@ -1,0 +1,46 @@
+---
+import { SITE_TITLE } from '../consts'
+---
+
+<header class="site-identity" aria-label="Site identity">
+  <a href="/" class="site-identity-link">{SITE_TITLE}</a>
+</header>
+
+<style>
+  .site-identity {
+    width: min(100%, 1278px);
+    margin: 0 auto;
+    padding: var(--z-space-8) var(--z-nav-pad-x) 0;
+  }
+
+  .site-identity-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    color: light-dark(#000000, #F9FAFB);
+    font-size: var(--z-text-sm);
+    font-weight: 600;
+    line-height: 1.43;
+  }
+
+  .site-identity-link:hover {
+    color: var(--z-color-text-accent);
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .site-identity {
+      padding-inline: var(--z-space-6);
+    }
+
+    .site-identity-link {
+      min-height: 44px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .site-identity {
+      padding: var(--z-space-6) var(--z-space-4) 0;
+    }
+  }
+</style>

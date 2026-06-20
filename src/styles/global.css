@@ -138,9 +138,7 @@
 	--z-space-20: 5rem;    /*  80px */
 
 	/* === LAYOUT === */
-	--z-nav-height: 3.75rem;       /* 60px per DESIGN.md */
 	--z-nav-pad-x: var(--z-space-8); /* 2rem, matches z-main */
-	--z-nav-pad-y: 0rem;
 
 	--z-mobile-toc-height: 3rem;
 
@@ -198,7 +196,7 @@ a.active {
 /* Shared layout primitives */
 .z-main {
 	margin: 0 auto;
-	padding: var(--z-space-20) var(--z-space-8) var(--z-space-15);
+	padding: var(--z-space-12) var(--z-space-8) var(--z-space-15);
 	min-height: calc(100vh - 200px);
 }
 

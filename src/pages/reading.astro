@@ -1,10 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
-import { Image } from 'astro:assets'
 import { SITE_TITLE } from '../consts'
 import { getCollection } from 'astro:content'
 
-const books = await getCollection('book')
 const readingItems = await getCollection('readingList')
 
 const sortedReadingItems = readingItems.sort(
@@ -14,54 +12,30 @@ const sortedReadingItems = readingItems.sort(
 
 <BaseLayout title={`Reading | ${SITE_TITLE}`}>
   <main class="z-main z-main--narrow reading-page">
-    <div class="tabs" role="tablist">
-      <input type="radio" id="tab-reading-list" name="reading-tab" checked />
-      <label for="tab-reading-list" role="tab" aria-controls="panel-reading-list">Recents</label>
-      <input type="radio" id="tab-books" name="reading-tab" />
-      <label for="tab-books" role="tab" aria-controls="panel-books">Books</label>
-      <div class="tab-divider"></div>
-
-      <section class="tab-panel" id="panel-reading-list" role="tabpanel" aria-labelledby="tab-reading-list">
-        <div class="z-stack-list">
-          {sortedReadingItems.length > 0 ? (
-            sortedReadingItems.map((item) => (
-              <article class="reading-item z-stack-item--roomy">
-                <div class="reading-item-main">
-                  <h2 class="reading-item-title">
-                    <a href={item.data.ogUrl} target="_blank" rel="noopener noreferrer">
-                      {item.data.title}
-                    </a>
-                  </h2>
-                  <div class="reading-item-meta">
-                    <time class="reading-date" datetime={item.data.dateRead.toISOString().slice(0, 10)}>
-                      {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(item.data.dateRead)}
-                    </time>
-                  </div>
-                </div>
-              </article>
-            ))
-          ) : (
-            <div class="z-empty-state">
-              <h3>No articles yet</h3>
-              <p>Articles, posts, and papers I've read will appear here.</p>
+    <div class="z-stack-list">
+      {sortedReadingItems.length > 0 ? (
+        sortedReadingItems.map((item) => (
+          <article class="reading-item z-stack-item--roomy">
+            <div class="reading-item-main">
+              <h2 class="reading-item-title">
+                <a href={item.data.ogUrl} target="_blank" rel="noopener noreferrer">
+                  {item.data.title}
+                </a>
+              </h2>
+              <div class="reading-item-meta">
+                <time class="reading-date" datetime={item.data.dateRead.toISOString().slice(0, 10)}>
+                  {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(item.data.dateRead)}
+                </time>
+              </div>
             </div>
-          )}
+          </article>
+        ))
+      ) : (
+        <div class="z-empty-state">
+          <h3>No articles yet</h3>
+          <p>Articles, posts, and papers I've read will appear here.</p>
         </div>
-      </section>
-
-      <section class="tab-panel" id="panel-books" role="tabpanel" aria-labelledby="tab-books">
-        <div class="books-container">
-          {books.map((book, index) => (
-            <article class="book-item">
-              <a href={book.data.ogUrl} class="book-link" title={book.data.title} target="_blank" rel="noopener noreferrer">
-                <div class="book-cover">
-                  <Image src={book.data.ogImage} alt={`Cover of ${book.data.title}`} loading={index < 12 ? 'eager' : 'lazy'} width={140} height={210} />
-                </div>
-              </a>
-            </article>
-          ))}
-        </div>
-      </section>
+      )}
     </div>
   </main>
 </BaseLayout>
@@ -71,62 +45,11 @@ const sortedReadingItems = readingItems.sort(
     padding-top: var(--z-space-10);
   }
 
-  /* Tabs */
-  .tabs input[type="radio"] {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-  }
-
-  .tabs label {
-    display: inline-block;
-    font-size: var(--z-text-lg);
-    font-weight: 600;
-    padding: 0.5rem 1.25rem;
-    cursor: pointer;
-    color: var(--z-color-text-secondary);
-    border-bottom: 2px solid transparent;
-    transition: color 0.15s, border-color 0.15s;
-  }
-
-  .tabs label:hover {
-    color: var(--z-color-text);
-  }
-
-  .tabs input[type="radio"]:focus-visible + label {
-    outline: 2px solid var(--z-color-text-accent);
-    outline-offset: 2px;
-  }
-
-  .tabs input[type="radio"]:checked + label {
-    color: var(--z-color-text-accent);
-    border-bottom-color: var(--z-color-text-accent);
-  }
-
-  /* Tab panels */
-  .tab-panel {
-    display: none;
-    padding-top: var(--z-space-8);
-  }
-
-  #tab-reading-list:checked ~ #panel-reading-list {
-    display: block;
-  }
-
-  #tab-books:checked ~ #panel-books {
-    display: block;
-  }
-
-  /* Tab divider line */
-  .tab-divider {
-    border-top: 1px solid var(--z-color-hairline-light);
-    margin: 0 0 var(--z-space-8) 0;
+  .reading-section-title {
+    font-size: var(--z-text-h3);
+    font-weight: 700;
+    line-height: var(--z-line-height-headings);
+    margin-bottom: var(--z-space-8);
   }
 
   /* Reading list items */
@@ -162,87 +85,25 @@ const sortedReadingItems = readingItems.sort(
     color: var(--z-color-text-dimmed);
   }
 
-  /* Books grid (unchanged from original) */
-  .books-container {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 3rem 2rem;
-  }
-
-  .book-item {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .book-link {
-    text-decoration: none;
-    color: inherit;
-    display: block;
-  }
-
-  .book-cover {
-    width: 100%;
-    aspect-ratio: 3 / 4;
-    overflow: hidden;
-    background: var(--z-color-surface-muted);
-    border: 1px solid var(--z-color-hairline-light);
-  }
-
-  .book-cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: block;
-    background: var(--z-color-surface-muted);
-  }
-
   /* Responsive */
   @media (max-width: 768px) {
-    .tabs label {
-      font-size: var(--z-text-base);
-      padding: 0.5rem 1rem;
+    .reading-section-title {
+      font-size: var(--z-text-2xl);
+      margin-bottom: var(--z-space-6);
     }
 
     .reading-item-title {
       font-size: var(--z-text-lg);
     }
-
-    .books-container {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2.5rem 1.5rem;
-    }
   }
 
   @media (max-width: 480px) {
-    .tabs label {
-      font-size: var(--z-text-sm);
-      padding: 0.4rem 0.75rem;
-    }
-
     .reading-item-title {
       font-size: var(--z-text-base);
     }
 
     .reading-item-meta {
       gap: 0.5rem;
-    }
-
-    .books-container {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 2rem 1.25rem;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .books-container {
-      grid-template-columns: repeat(5, 1fr);
-      gap: 4rem 3rem;
-    }
-  }
-
-  @media (min-width: 1280px) {
-    .books-container {
-      grid-template-columns: repeat(6, 1fr);
     }
   }
 </style>

@@ -1,35 +1,154 @@
 ---
+import HeaderLink from './HeaderLink.astro'
+import { SITE_TITLE } from '../consts'
+
 const today = new Date()
 ---
 
 <footer class="footer">
-	<ul>
-		<li><a href="/rss.xml" class="rss-footer-link">RSS Feed</a></li>
-	</ul>
-	<p class="copyright">&copy; {today.getFullYear()} shuzhi.zone All rights reserved.</p>
+	<div class="footer-inner">
+		<nav class="footer-nav" aria-label="Footer navigation">
+			<ul class="footer-primary-list" aria-label="Sections">
+				<li><HeaderLink href="/">Writing</HeaderLink></li>
+				<li><HeaderLink href="/listening">Listening</HeaderLink></li>
+			</ul>
+
+			<div class="footer-secondary-row" aria-label="Reading sections">
+				<span class="footer-secondary-label">Reading</span>
+				<ul class="footer-secondary-list">
+					<li><HeaderLink href="/reading" exact>Recents</HeaderLink></li>
+					<li><HeaderLink href="/reading/books" exact>Books</HeaderLink></li>
+				</ul>
+			</div>
+
+			<a href="/rss.xml" class="footer-utility-link">RSS Feed</a>
+		</nav>
+
+		<p class="copyright">&copy; {today.getFullYear()} {SITE_TITLE}. All rights reserved.</p>
+	</div>
 </footer>
 
 <style>
 	.footer {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
 		border-top: 1px solid var(--z-color-border);
+		background: var(--z-color-bg);
+		color: var(--z-color-text);
+	}
+
+	.footer-inner {
+		width: min(100%, 1278px);
+		margin: 0 auto;
+		padding: var(--z-space-10) var(--z-nav-pad-x) var(--z-space-8);
+	}
+
+	.footer-primary-list,
+	.footer-secondary-list {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.footer-primary-list {
+		column-gap: var(--z-space-6);
+		row-gap: var(--z-space-2);
+	}
+
+	.footer-primary-list :global(a) {
+		display: inline-flex;
+		align-items: center;
+		min-height: 36px;
+		color: light-dark(#000000, #F9FAFB);
 		font-size: var(--z-text-sm);
-		padding: var(--z-space-8) 0;
+		font-weight: 600;
+		line-height: 1.43;
+		transition: color 0.15s;
+	}
+
+	.footer-primary-list li + li::before {
+		content: "·";
+		margin-right: var(--z-space-6);
 		color: var(--z-color-text-dimmed);
 	}
-	.footer ul { list-style: none; }
+
+	.footer-secondary-row {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		column-gap: var(--z-space-3);
+		row-gap: var(--z-space-1);
+		margin-top: var(--z-space-2);
+	}
+
+	.footer-secondary-label,
+	.footer-secondary-list :global(a),
+	.footer-utility-link {
+		color: var(--z-color-text-dimmed);
+		font-size: var(--z-text-xs);
+		line-height: 1.5;
+	}
+
+	.footer-secondary-label::after {
+		content: "—";
+		margin-left: var(--z-space-3);
+		color: var(--z-color-text-dimmed);
+	}
+
+	.footer-secondary-list {
+		column-gap: var(--z-space-3);
+	}
+
+	.footer-secondary-list li + li::before {
+		content: "/";
+		margin-right: var(--z-space-3);
+		color: var(--z-color-text-dimmed);
+	}
+
+	.footer-utility-link {
+		display: table;
+		margin: var(--z-space-2) auto 0;
+	}
+
+	.footer-primary-list :global(a:hover),
+	.footer-primary-list :global(a.active),
+	.footer-secondary-list :global(a:hover),
+	.footer-secondary-list :global(a.active),
+	.footer-utility-link:hover {
+		color: var(--z-color-text-accent);
+		text-decoration: underline;
+	}
+
 	.copyright {
 		color: var(--z-color-text-dimmed);
-		font-size: var(--z-text-2xs);
+		font-size: var(--z-text-xs);
+		line-height: 1.5;
+		margin-top: var(--z-space-4);
+		text-align: center;
 	}
-	@media (width >= 48rem) {
-		.footer { font-size: var(--z-text-base); }
-		.copyright { font-size: var(--z-text-xs); }
+
+	@media (max-width: 768px) {
+		.footer-inner {
+			padding-inline: var(--z-space-6);
+		}
+
+		.footer-primary-list :global(a),
+		.footer-secondary-list :global(a),
+		.footer-utility-link {
+			min-height: 44px;
+		}
 	}
-	@media (width >= 64rem) {
-		.footer { font-size: var(--z-text-lg); }
-		.copyright { font-size: var(--z-text-sm); }
+
+	@media (max-width: 480px) {
+		.footer-inner {
+			padding-inline: var(--z-space-4);
+		}
+
+		.footer-primary-list {
+			column-gap: var(--z-space-4);
+		}
 	}
 </style>
