@@ -13,8 +13,8 @@ const { title, description, pubDate, updatedDate, headings = [] } = Astro.props
 const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3)
 ---
 
-<BaseLayout title={title} description={description}>
-	<div class="blog-layout z-main z-main--article">
+<BaseLayout title={title} description={description} pageLayout="article">
+	<div class="blog-layout z-main">
 		<main>
 			<article>
 				<header class="article-header">
@@ -276,12 +276,9 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3)
 	/* Large screens: balance the right TOC with a matching left spacer column. */
 	@media (min-width: 1280px) {
 		.blog-layout {
-			--toc-column-width: clamp(10rem, 12vw, 16rem);
-
-			max-width: calc(var(--z-content-width) + (var(--toc-column-width) * 2) + 4rem + (var(--z-space-8) * 2));
 			display: grid;
-			grid-template-columns: var(--toc-column-width) minmax(0, min(100%, var(--z-content-width))) var(--toc-column-width);
-			column-gap: 2rem;
+			grid-template-columns: var(--z-article-side-column-width) minmax(0, min(100%, var(--z-content-width))) var(--z-article-side-column-width);
+			column-gap: var(--z-article-grid-column-gap);
 			align-items: start;
 		}
 

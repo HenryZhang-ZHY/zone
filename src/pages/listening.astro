@@ -9,7 +9,7 @@ const episodes = await getCollection('podcast')
 ---
 
 <BaseLayout title={`Podcast | ${SITE_TITLE}`}>
-  <main class="z-main z-main--narrow">
+  <main class="z-main">
     <section class="episodes-container z-stack-list">
       {
         episodes.map((episode, index) => (

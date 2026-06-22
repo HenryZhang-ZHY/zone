@@ -2,7 +2,7 @@
 
 ## 1. Visual Theme & Atmosphere
 
-The design system embodies a minimalist, tech-forward aesthetic that balances sophistication with accessibility. It emphasizes clean typography, generous whitespace, and a restrained color palette anchored in deep navy and pure black, punctuated by strategic use of electric blue and coral red for interactive moments. The visual language is understated yet confident, maintaining a warm, approachable tone through serif body typography and subtle, light-tinted card surfaces. The atmosphere conveys innovation, clarity, and forward-thinking design that prioritizes content and functionality over ornamental flourish.
+The design system embodies a minimalist, tech-forward aesthetic that balances sophistication with accessibility. It emphasizes clean typography, generous whitespace, and a restrained color palette anchored in deep navy and pure black, punctuated by strategic use of electric blue and coral red for interactive moments. The visual language is understated yet confident, maintaining a warm, approachable tone through a CJK-aware monospace stack and subtle, light-tinted card surfaces. The atmosphere conveys innovation, clarity, and forward-thinking design that prioritizes content and functionality over ornamental flourish.
 
 **Key Characteristics**
 - Minimalist, content-first approach with emphasis on typography
@@ -10,7 +10,7 @@ The design system embodies a minimalist, tech-forward aesthetic that balances so
 - Warm cream/off-white surfaces with subtle transparency for depth
 - Electric blue (`#0095FF`) for critical interactions and primary CTAs
 - Coral red (`#ED3C50`) for secondary emphasis and alerts
-- Monospace typography for technical precision paired with serif for readability and CJK support
+- Monospace typography for technical precision with CJK fallback support
 - Transparent or very light backgrounds for cards and containers
 - Restrained use of color—neutral grays dominate, with accent colors reserved for intentional focus
 
@@ -49,29 +49,28 @@ The design system embodies a minimalist, tech-forward aesthetic that balances so
 
 ### Font Family
 **Primary (Headings & Body):** IBM Plex Mono (monospace, geometric)
-Fallback: `ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace`
+Fallback: LXGW WenKai, then `ui-monospace`, `SFMono-Regular`, Menlo, Monaco, Consolas, `"Liberation Mono"`, `"Courier New"`, monospace
 
-**Secondary (Body & CJK):** LXGW WenKai (serif, high readability, CJK support)
-Fallback: `Georgia, "Times New Roman", serif`
+**CJK Fallback:** LXGW WenKai provides readable Chinese glyphs while preserving the site's technical, mono-forward tone.
 
-**Combined Stack:** `'IBM Plex Mono', 'LXGW WenKai', ui-monospace, serif`
+**Combined Stack:** `'IBM Plex Mono', 'LXGW WenKai', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace`
 
 ### Hierarchy
 
 | Role | Font | Size | Weight | Line Height | Letter Spacing | Notes |
 |------|------|------|--------|-------------|----------------|-------|
-| **Display / H1** | Bold | 96px | 700 | 163.2px (1.7×) | 0px | Hero headlines, max emphasis |
-| **Heading 2 / H2** | IBM Plex Mono Semibold | 64px | 700 | 108.8px (1.7×) | 0px | Section titles and major headings |
-| **Heading 3 / H3** | IBM Plex Mono Semibold | 28px | 600 | 36.4px (1.3×) | 0px | Subsection headings |
-| **Body Large** | IBM Plex Mono / LXGW WenKai | 16px | 400 | 32px (2×) | 0px | Primary body text, descriptions |
-| **Body Regular** | IBM Plex Mono / LXGW WenKai | 14px | 500 | 20px (1.43×) | 0px | Supporting text, secondary copy |
+| **Display / H1** | IBM Plex Mono Bold | 52px | 700 | 1.3× | 0px | Page and article titles, max emphasis |
+| **Heading 2 / H2** | IBM Plex Mono Bold | 40px | 700 | 1.3× | 0px | Section titles and major headings |
+| **Heading 3 / H3** | IBM Plex Mono Semibold | 28px | 600–700 | 1.3× | 0px | Subsection headings |
+| **Body Large** | IBM Plex Mono / LXGW WenKai | 16px | 400 | 1.6875× | 0px | Primary body text, descriptions |
+| **Body Regular** | IBM Plex Mono / LXGW WenKai | 14px | 400–500 | 1.43×–1.6875× | 0px | Supporting text, secondary copy |
 | **Link** | IBM Plex Mono Semibold | 14px | 600 | 20px (1.43×) | 0px | Navigation links, CTAs |
 | **Button** | IBM Plex Mono / LXGW WenKai or IBM Plex Mono Semibold | 14px | 500–600 | 20–24px | 0px | Interactive button text |
 | **Caption / Small** | IBM Plex Mono / LXGW WenKai | 12px | 400 | 18px (1.5×) | 0px | Captions, metadata, helper text |
 
 ### Principles
 - **Generous line spacing:** Aim for 1.4×–2× line height for comfortable reading and visual breathing room
-- **Monospace for precision, serif for readability:** IBM Plex Mono provides technical character; LXGW WenKai brings warmth and CJK support
+- **Mono-forward with CJK support:** IBM Plex Mono provides technical character; LXGW WenKai keeps Chinese text readable without changing the overall rhythm
 - **Weight contrast:** Bold headings (700–600) create clear visual hierarchy; body text remains light (400–500)
 - **Minimal letter spacing:** Rely on size and weight for distinction; avoid excessive spacing unless needed for legal or disclaimer text
 
@@ -226,11 +225,17 @@ Fallback: `Georgia, "Times New Roman", serif`
 
 ### Grid & Container
 
-- **Max Container Width:** 1278px (based on extracted card widths)
-- **Columns:** 12-column responsive grid
-- **Gutter:** `24px` (12px on each side of column)
-- **Section Width:** Full width to max container, centered with equal side margins
+- **Content containers:** `BaseLayout` owns the page layout via `pageLayout` and exposes shared shell tokens consumed by `.z-main`, site identity/header, and footer. Use `.z-main` for page content instead of ad hoc component widths.
+  - Narrow/article pages: `960px`
+  - Medium utility/data pages: `1100px`
+  - Wide pages: `1278px`
+  - Article content column: `clamp(45rem, 58vw, 56rem)` inside the article layout
+- **Shell alignment:** Site identity/header, main content, and footer should consume `--z-page-max-width` and `--z-page-pad-x` for the current `pageLayout`. Do not let a global shell default to `1278px` when the page body is narrower.
+- **Columns:** Use grid only where the content needs it. Blog articles use a centered content column plus symmetrical side columns so the desktop TOC does not shift the article body off center.
+- **Gutter:** `24px` default, adjusted by page layout tokens where needed
+- **Section Width:** Full width to the selected container, centered with equal side margins
 - **Breakpoints:** See Section 8 for responsive strategy
+- **Duplication rule:** Keep layout math in shared shell tokens/classes. If article TOC column width, container max width, or horizontal padding changes, header alignment must update from the same source rather than copying formulas in component-local CSS.
 
 ### Whitespace Philosophy
 
@@ -263,11 +268,12 @@ Embrace generous whitespace around headings, between sections, and within contai
 - **Embrace whitespace** — Let content breathe; negative space is part of the design
 - **Keep corners sharp** — Use `0px` border-radius on major elements for the technical, minimalist aesthetic
 - **Use transparent or very light card backgrounds** — `rgba(255, 255, 255, 0.45)` maintains visual interest without overwhelming
-- **Pair monospace headings with serif body copy** — Maintains the technical, content-forward tone
+- **Use the mono-forward stack consistently** — IBM Plex Mono establishes the technical tone while LXGW WenKai keeps CJK text readable
 - **Test for contrast** — Ensure all text meets WCAG AA standards (4.5:1 for body, 3:1 for large text)
+- **Align shell and content** — Header/site identity, main content, and footer should share the same container variant on each page
 
 ### Don't
-- **Don't mix serif and monospace carelessly** — Body must be serif (LXGW WenKai), headings must be monospace (IBM Plex Mono)
+- **Don't introduce unrelated type stacks** — Use IBM Plex Mono with LXGW WenKai fallback unless a component has a clear, documented exception
 - **Don't use drop shadows on every element** — Reserve shadows for intentional depth; rely on color and borders
 - **Don't use rounded corners on buttons or cards** — Sharp corners (`0px`) are brand-defining
 - **Don't crowd elements** — Maintain minimum `20px` spacing between major components
@@ -275,6 +281,7 @@ Embrace generous whitespace around headings, between sections, and within contai
 - **Don't use colors outside the palette** — Stick to defined hex values; custom gradients are not in scope
 - **Don't place body text in light gray** — Maintain `#213547` or `#000000` for readability; minimum contrast ratio 4.5:1
 - **Don't create hover states without visual change** — Always provide clear feedback: color shift, underline, or background change
+- **Don't duplicate layout formulas** — Avoid copying container widths, padding, or TOC grid calculations across component CSS
 
 ## 8. Responsive Behavior
 
@@ -299,7 +306,7 @@ Embrace generous whitespace around headings, between sections, and within contai
 - **Navigation:** Horizontal on desktop (14px links, `16px` padding) → Hamburger menu on tablet/mobile
 - **Cards in grid:** 3 columns (desktop) → 2 columns (tablet) → 1 column (mobile)
 - **Padding collapse:** `32px` (desktop) → `24px` (tablet) → `16px` (mobile)
-- **Font sizes:** Reduce heading sizes by `4px–8px` on mobile (H1: 96px → 72px–80px)
+- **Font sizes:** Reduce heading sizes proportionally on mobile (H1 starts at `52px`, then steps down by page context)
 - **Spacing:** Reduce vertical section gaps from `80px` → `60px` → `40px` across breakpoints
 - **Hero section:** Maintain full-width hero; adjust text alignment and sizing for readability
 

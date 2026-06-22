@@ -14,8 +14,8 @@ const { years, sortedBanks, yearStats, changes } = buildDsibsViewModel(
 )
 ---
 
-<BaseLayout title={`系统重要性银行名单 | ${SITE_TITLE}`}>
-  <main class="z-main z-main--medium">
+<BaseLayout title={`系统重要性银行名单 | ${SITE_TITLE}`} pageLayout="medium">
+  <main class="z-main">
     <div class="page-header z-page-header">
       <h1 class="z-page-title">中国系统重要性银行</h1>
       <p class="subtitle z-page-subtitle">2021–2025 历年名单及变化追踪</p>
@@ -28,4 +28,3 @@ const { years, sortedBanks, yearStats, changes } = buildDsibsViewModel(
     <YearCompositionGrid yearStats={yearStats} />
   </main>
 </BaseLayout>
-

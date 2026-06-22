@@ -42,9 +42,9 @@ const isReadingActive = pathname === '/reading' || pathname.startsWith('/reading
 	}
 
 	.footer-inner {
-		width: min(100%, 1278px);
+		width: min(100%, var(--z-page-max-width));
 		margin: 0 auto;
-		padding: var(--z-space-10) var(--z-nav-pad-x) var(--z-space-8);
+		padding: var(--z-space-10) var(--z-page-pad-x) var(--z-space-8);
 	}
 
 	.footer-primary-list,
@@ -140,10 +140,6 @@ const isReadingActive = pathname === '/reading' || pathname.startsWith('/reading
 	}
 
 	@media (max-width: 768px) {
-		.footer-inner {
-			padding-inline: var(--z-space-6);
-		}
-
 		.footer-primary-list :global(a),
 		.footer-primary-label,
 		.footer-secondary-list :global(a),
@@ -153,10 +149,6 @@ const isReadingActive = pathname === '/reading' || pathname.startsWith('/reading
 	}
 
 	@media (max-width: 480px) {
-		.footer-inner {
-			padding-inline: var(--z-space-4);
-		}
-
 		.footer-primary-list {
 			column-gap: var(--z-space-4);
 		}

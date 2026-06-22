@@ -8,7 +8,7 @@ const books = await getCollection('book')
 ---
 
 <BaseLayout title={`Books | ${SITE_TITLE}`}>
-  <main class="z-main z-main--narrow books-page">
+  <main class="z-main books-page">
     <div class="books-container">
       {books.map((book, index) => (
         <article class="book-item">
