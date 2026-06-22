@@ -14,10 +14,10 @@ const blog = defineCollection({
 
 const book = defineCollection({
 	loader: file('./src/content/book.yaml'),
-	schema: z.object({
+	schema: ({ image }) => z.object({
 		title: z.string(),
 		ogUrl: z.string().url(),
-		ogImage: z.string(),
+		ogImage: image(),
 	}),
 });
 

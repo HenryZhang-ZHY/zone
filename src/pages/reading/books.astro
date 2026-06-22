@@ -14,7 +14,7 @@ const books = await getCollection('book')
         <article class="book-item">
           <a href={book.data.ogUrl} class="book-link" title={book.data.title} target="_blank" rel="noopener noreferrer">
             <div class="book-cover">
-              <Image src={book.data.ogImage} alt={`Cover of ${book.data.title}`} loading={index < 12 ? 'eager' : 'lazy'} width={140} height={210} />
+              <Image src={book.data.ogImage} alt={`Cover of ${book.data.title}`} loading={index < 12 ? 'eager' : 'lazy'} width={140} height={210} widths={[140, 280]} sizes="140px" />
             </div>
           </a>
         </article>
