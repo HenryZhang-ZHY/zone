@@ -29,16 +29,17 @@ const books = await getCollection('book')
   }
 
   .books-page-title {
-    font-size: var(--z-text-h3);
-    font-weight: 700;
+    font-size: var(--z-text-heading-24);
+    font-weight: 600;
     line-height: var(--z-line-height-headings);
     margin-bottom: var(--z-space-8);
+    letter-spacing: var(--z-tracking-heading-24);
   }
 
   .books-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 3rem 2rem;
+    gap: var(--z-space-10) var(--z-space-8);
   }
 
   .book-item {
@@ -58,6 +59,7 @@ const books = await getCollection('book')
     overflow: hidden;
     background: var(--z-color-surface-muted);
     border: 1px solid var(--z-color-hairline-light);
+    border-radius: var(--z-radius-subtle);
   }
 
   .book-cover img {
@@ -70,27 +72,29 @@ const books = await getCollection('book')
 
   @media (max-width: 768px) {
     .books-page-title {
-      font-size: var(--z-text-2xl);
+      font-size: var(--z-text-heading-20);
+      line-height: var(--z-leading-heading-20);
+      letter-spacing: var(--z-tracking-heading-20);
       margin-bottom: var(--z-space-6);
     }
 
     .books-container {
       grid-template-columns: repeat(3, 1fr);
-      gap: 2.5rem 1.5rem;
+      gap: var(--z-space-10) var(--z-space-6);
     }
   }
 
   @media (max-width: 480px) {
     .books-container {
       grid-template-columns: repeat(2, 1fr);
-      gap: 2rem 1.25rem;
+      gap: var(--z-space-8) var(--z-space-4);
     }
   }
 
   @media (min-width: 1024px) {
     .books-container {
       grid-template-columns: repeat(5, 1fr);
-      gap: 4rem 3rem;
+      gap: var(--z-space-16) var(--z-space-10);
     }
   }
 

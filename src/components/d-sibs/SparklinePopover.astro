@@ -24,15 +24,14 @@
 </div>
 
 <style>
-  /* ── Popover container (static elements — scoped is fine) ── */
   .spark-popover {
     padding: var(--z-space-3) var(--z-space-4) var(--z-space-2);
     pointer-events: none;
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(var(--z-space-1));
     transition:
-      opacity 0.18s ease,
-      transform 0.18s ease;
+      opacity 180ms ease,
+      transform 180ms ease;
     width: 372px;
   }
 
@@ -45,19 +44,21 @@
   .pop-header {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.4rem;
+    gap: var(--z-space-2);
+    margin-bottom: var(--z-space-2);
   }
 
   .pop-name {
     font-weight: 700;
-    font-size: var(--z-text-sm);
+    font-size: var(--z-text-label-14);
+    line-height: var(--z-leading-label-14);
   }
 
   .pop-type {
-    font-size: var(--z-text-2xs);
-    padding: 0.125rem 0.4rem;
-    border-radius: var(--z-radius-sm);
+    font-size: var(--z-text-label-12);
+    line-height: var(--z-leading-label-12);
+    padding: var(--z-space-1) var(--z-space-2);
+    border-radius: var(--z-radius-subtle);
     font-weight: 600;
   }
 
@@ -80,12 +81,6 @@
     display: block;
   }
 
-  /*
-   * ── Dynamically‑created SVG children ──
-   * These elements are built via createElementNS and therefore never carry Astro's scoped
-   * data-attribute. We scope them under the static `.pop-chart` which *does* have the
-   * attribute, using :global() so Astro doesn't rewrite the child selector.
-   */
   .pop-chart :global(.pop-grid) {
     stroke: var(--z-color-hairline-light);
     stroke-width: 0.5;
@@ -93,13 +88,13 @@
   }
 
   .pop-chart :global(.pop-label-y) {
-    font-size: 9px;
+    font-size: var(--z-text-label-12);
     fill: var(--z-color-text-dimmed);
     dominant-baseline: middle;
   }
 
   .pop-chart :global(.pop-label-x) {
-    font-size: 11px;
+    font-size: var(--z-text-label-12);
     fill: var(--z-color-text-secondary);
     text-anchor: middle;
     dominant-baseline: hanging;
@@ -133,7 +128,7 @@
   }
 
   .pop-chart :global(.pop-group-label) {
-    font-size: 10px;
+    font-size: var(--z-text-label-12);
     font-weight: 600;
     dominant-baseline: middle;
   }

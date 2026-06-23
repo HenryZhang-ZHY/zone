@@ -67,12 +67,12 @@ const isReadingActive = pathname === '/reading' || pathname.startsWith('/reading
 	.footer-primary-label {
 		display: inline-flex;
 		align-items: center;
-		min-height: 36px;
-		color: light-dark(#000000, #F9FAFB);
-		font-size: var(--z-text-sm);
+		min-height: 40px;
+		color: var(--z-color-heading);
+		font-size: var(--z-text-label-14);
 		font-weight: 600;
-		line-height: 1.43;
-		transition: color 0.15s;
+		line-height: var(--z-leading-label-14);
+		transition: color 150ms ease;
 	}
 
 	.footer-primary-list li + li::before {
@@ -94,8 +94,8 @@ const isReadingActive = pathname === '/reading' || pathname.startsWith('/reading
 	.footer-secondary-list :global(a),
 	.footer-utility-link {
 		color: var(--z-color-text-dimmed);
-		font-size: var(--z-text-xs);
-		line-height: 1.5;
+		font-size: var(--z-text-label-12);
+		line-height: var(--z-leading-label-12);
 	}
 
 	.footer-secondary-list {
@@ -106,8 +106,8 @@ const isReadingActive = pathname === '/reading' || pathname.startsWith('/reading
 		display: inline-flex;
 		align-items: center;
 		color: var(--z-color-text-dimmed);
-		font-size: var(--z-text-xs);
-		line-height: 1.5;
+		font-size: var(--z-text-label-12);
+		line-height: var(--z-leading-label-12);
 	}
 
 	.footer-secondary-list li + li::before {
@@ -133,8 +133,8 @@ const isReadingActive = pathname === '/reading' || pathname.startsWith('/reading
 
 	.copyright {
 		color: var(--z-color-text-dimmed);
-		font-size: var(--z-text-xs);
-		line-height: 1.5;
+		font-size: var(--z-text-label-12);
+		line-height: var(--z-leading-label-12);
 		margin-top: var(--z-space-4);
 		text-align: center;
 	}

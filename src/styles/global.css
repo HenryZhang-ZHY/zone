@@ -1,165 +1,327 @@
 :root {
 	color-scheme: light dark;
 
-	/* Font stack — kept from original */
+	/* === FONT FAMILIES === */
 	--z-font-system: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 	--z-font-system-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-	--__z-font: 'IBM Plex Mono', 'LXGW WenKai', var(--z-font-system-mono);
-	--z-font-mono: var(--z-font-system-mono);
+	--z-font-sans: 'IBM Plex Mono', 'LXGW WenKai', var(--z-font-system-mono);
+	--z-font-mono: var(--z-font-sans);
+	--__z-font: var(--z-font-sans);
 
-	--z-line-height: 1.6875;
-	--z-line-height-headings: 1.3;
+	/* === VERCEL-COMPATIBLE COLOR TOKENS WITH ZONE OVERRIDES === */
+	--z-color-primary: light-dark(#213547, #E5E7EB);
+	--z-color-secondary: light-dark(#374151, #9CA3AF);
+	--z-color-tertiary: #0095FF;
+	--z-color-neutral: light-dark(#f2f2f2, #1a1a1a);
+	--z-color-background-100: light-dark(#ffffff, #111827);
+	--z-color-background-200: light-dark(#faf7f5, #1F2937);
 
-	/* === PRIMARY & TEXT === */
-	--z-color-white:  light-dark(#213547, #E5E7EB);   /* Brand Navy / Pale Gray */
-	--z-color-black:  light-dark(#FFFFFF, #111827);   /* White / Deep Slate */
-	--z-color-text:   light-dark(#213547, #E5E7EB);   /* Brand Navy */
-	--z-color-text-secondary: light-dark(#374151, #9CA3AF);  /* Medium Gray / Light Gray */
-	--z-color-text-dimmed:    light-dark(#4B5563, #737373);  /* Subdued Gray / Dark Neutral */
-	--z-color-text-accent:    light-dark(#0095FF, #0095FF);  /* Electric Blue */
-	--z-color-text-invert:    #FFFFFF;
+	--z-color-gray-100: light-dark(#f2f2f2, #1a1a1a);
+	--z-color-gray-200: light-dark(#ebebeb, #1f1f1f);
+	--z-color-gray-300: light-dark(#e6e6e6, #292929);
+	--z-color-gray-400: light-dark(#eaeaea, #2e2e2e);
+	--z-color-gray-500: light-dark(#c9c9c9, #454545);
+	--z-color-gray-600: light-dark(#a8a8a8, #878787);
+	--z-color-gray-700: #8f8f8f;
+	--z-color-gray-800: #7d7d7d;
+	--z-color-gray-900: light-dark(#4d4d4d, #a0a0a0);
+	--z-color-gray-1000: light-dark(#171717, #ededed);
 
-	/* === ACCENT COLORS === */
-	--z-color-accent:      #0095FF;   /* Electric Blue */
-	--z-color-accent-high: #0077CC;   /* Darkened Blue */
-	--z-color-accent-low:  rgba(0, 149, 255, 0.1);
+	--z-color-gray-alpha-100: light-dark(#0000000d, #ffffff12);
+	--z-color-gray-alpha-200: light-dark(#00000015, #ffffff17);
+	--z-color-gray-alpha-300: light-dark(#0000001a, #ffffff21);
+	--z-color-gray-alpha-400: light-dark(#00000014, #ffffff24);
+	--z-color-gray-alpha-500: light-dark(#00000036, #ffffff3d);
+	--z-color-gray-alpha-600: light-dark(#0000003d, #ffffff82);
+	--z-color-gray-alpha-700: light-dark(#00000070, #ffffff8a);
+	--z-color-gray-alpha-800: light-dark(#00000082, #ffffff78);
+	--z-color-gray-alpha-900: light-dark(#000000b3, #ffffff9c);
+	--z-color-gray-alpha-1000: light-dark(#000000e8, #ffffffeb);
 
-	--z-color-red:         #ED3C50;   /* Coral Red */
-	--z-color-red-high:    #C7283A;
-	--z-color-red-low:     #FFF5F7;
+	--z-color-blue-100: light-dark(#f0f7ff, #06193a);
+	--z-color-blue-200: light-dark(#e9f4ff, #022248);
+	--z-color-blue-300: light-dark(#dfefff, #002f62);
+	--z-color-blue-400: light-dark(#cae7ff, #003674);
+	--z-color-blue-500: light-dark(#94ccff, #00418b);
+	--z-color-blue-600: light-dark(#48aeff, #48AEFF);
+	--z-color-blue-700: #0095FF;
+	--z-color-blue-800: #0077CC;
+	--z-color-blue-900: light-dark(#005FA3, #47A8FF);
+	--z-color-blue-1000: light-dark(#002359, #eaf6ff);
 
-	--z-color-orange:      #FFC517;   /* Warning Yellow */
-	--z-color-orange-high: #D9A000;
-	--z-color-orange-low:  #FFF8E0;
+	--z-color-red-100: light-dark(#ffeeef, #330a11);
+	--z-color-red-200: light-dark(#ffe8ea, #440d13);
+	--z-color-red-300: light-dark(#ffe3e4, #5d0e17);
+	--z-color-red-400: light-dark(#ffd7d6, #6f101b);
+	--z-color-red-500: light-dark(#ffb1b3, #88151f);
+	--z-color-red-600: light-dark(#ff676d, #F56B78);
+	--z-color-red-700: #ED3C50;
+	--z-color-red-800: #C7283A;
+	--z-color-red-900: light-dark(#A91F30, #FF6B78);
+	--z-color-red-1000: light-dark(#47000c, #ffe9ed);
 
-	--z-color-green:       #10B981;   /* Timeline enter */
-	--z-color-green-high:  #059669;
-	--z-color-green-low:   #D1FAE5;
+	--z-color-amber-100: light-dark(#fff6de, #2a1700);
+	--z-color-amber-200: light-dark(#fff4cf, #361900);
+	--z-color-amber-300: light-dark(#fff1c1, #502800);
+	--z-color-amber-400: light-dark(#ffdc73, #5b3000);
+	--z-color-amber-500: light-dark(#ffc543, #703e00);
+	--z-color-amber-600: light-dark(#ffa600, #ed9a00);
+	--z-color-amber-700: #FFC517;
+	--z-color-amber-800: #D9A000;
+	--z-color-amber-900: light-dark(#aa4d00, #ff9300);
+	--z-color-amber-1000: light-dark(#561900, #fff3d5);
 
-	--z-color-blue:        #3B82F6;   /* Timeline downgrade */
-	--z-color-blue-high:   #2563EB;
-	--z-color-blue-low:    #DBEAFE;
+	--z-color-green-100: light-dark(#ecfdec, #002608);
+	--z-color-green-200: light-dark(#e5fce7, #00320b);
+	--z-color-green-300: light-dark(#d3fad1, #003a0e);
+	--z-color-green-400: light-dark(#b9f5bc, #004615);
+	--z-color-green-500: light-dark(#82eb8d, #006717);
+	--z-color-green-600: light-dark(#4ce15e, #00952d);
+	--z-color-green-700: light-dark(#28a948, #00ac3a);
+	--z-color-green-800: light-dark(#279141, #009432);
+	--z-color-green-900: light-dark(#107d32, #00ca50);
+	--z-color-green-1000: light-dark(#003a00, #d8ffe4);
 
-	--z-color-purple:       #8B5CF6;  /* D-SIBs city */
-	--z-color-purple-high:  #7C3AED;
-	--z-color-purple-low:   #EDE9FE;
+	--z-color-teal-100: light-dark(#defffb, #00231b);
+	--z-color-teal-200: light-dark(#ddfef6, #002b22);
+	--z-color-teal-300: light-dark(#ccf9f1, #003d34);
+	--z-color-teal-400: light-dark(#b1f7ec, #004035);
+	--z-color-teal-500: light-dark(#52f0db, #006354);
+	--z-color-teal-600: light-dark(#00e3c4, #009e86);
+	--z-color-teal-700: light-dark(#00ac96, #00aa95);
+	--z-color-teal-800: #00927f;
+	--z-color-teal-900: light-dark(#007f70, #00cfb7);
+	--z-color-teal-1000: light-dark(#003f34, #cbfff5);
 
-	/* === GRAYS & BORDERS === */
-	--z-color-gray-1: light-dark(#111827, #F9FAFB);
-	--z-color-gray-2: light-dark(#374151, #E5E7EB);
-	--z-color-gray-3: light-dark(#4B5563, #D1D5DB);
-	--z-color-gray-4: light-dark(#9CA3AF, #9CA3AF);
-	--z-color-gray-5: light-dark(#D1D5DB, #4B5563);
-	--z-color-gray-6: light-dark(#E5E7EB, #374151);
-	--z-color-gray-7: light-dark(#FAF7F5, #1F2937);
+	--z-color-purple-100: light-dark(#faf0ff, #290c33);
+	--z-color-purple-200: light-dark(#f9f0ff, #341142);
+	--z-color-purple-300: light-dark(#f6e8ff, #47185e);
+	--z-color-purple-400: light-dark(#f2d9ff, #541a76);
+	--z-color-purple-500: light-dark(#dfa7ff, #642290);
+	--z-color-purple-600: light-dark(#c979ff, #9440d5);
+	--z-color-purple-700: light-dark(#a000f8, #9440d5);
+	--z-color-purple-800: light-dark(#8500d1, #7d2bba);
+	--z-color-purple-900: light-dark(#7d00cc, #c472fb);
+	--z-color-purple-1000: light-dark(#2f004e, #fbecff);
 
-	--z-color-border:            light-dark(#E5E7EB, #374151);
-	--z-color-hairline-light:    light-dark(#E5E7EB, #374151);
-	--z-color-hairline-shade:    light-dark(#D1D5DB, #111827);
-	--z-color-hairline:          var(--z-color-hairline-light);
+	--z-color-pink-100: light-dark(#ffe8f6, #310d1e);
+	--z-color-pink-200: light-dark(#ffe8f3, #420c25);
+	--z-color-pink-300: light-dark(#ffdfeb, #571032);
+	--z-color-pink-400: light-dark(#ffd3e1, #5d0c34);
+	--z-color-pink-500: light-dark(#fdb3cc, #76063f);
+	--z-color-pink-600: light-dark(#f97ea7, #ba0056);
+	--z-color-pink-700: #f22782;
+	--z-color-pink-800: light-dark(#e4106e, #e7006d);
+	--z-color-pink-900: light-dark(#c41562, #ff4d8d);
+	--z-color-pink-1000: light-dark(#460523, #ffe9f4);
 
-	--z-color-backdrop-overlay: light-dark(rgba(0,0,0,0.45), rgba(0,0,0,0.66));
+	/* === SEMANTIC ALIASES USED BY THE APP === */
+	--z-color-text: var(--z-color-primary);
+	--z-color-text-secondary: var(--z-color-secondary);
+	--z-color-text-dimmed: light-dark(#4B5563, #737373);
+	--z-color-text-accent: var(--z-color-tertiary);
+	--z-color-text-invert: #ffffff;
+	--z-color-heading: var(--z-color-gray-1000);
 
-	/* === SURFACE & BACKGROUND === */
-	--z-color-bg:             light-dark(#FFFFFF, #111827);
-	--z-color-bg-nav:         light-dark(#FFFFFF, #111827);
-	--z-color-bg-sidebar:     light-dark(#FAF7F5, #1F2937);
-	--z-color-bg-inline-code: light-dark(#E5E7EB, #374151);
-	--z-color-bg-accent:      #0095FF;
+	--z-color-accent: var(--z-color-tertiary);
+	--z-color-accent-high: var(--z-color-blue-800);
+	--z-color-accent-active: var(--z-color-blue-900);
+	--z-color-accent-low: var(--z-color-blue-100);
 
-	/* === SEMANTIC SURFACES === */
-	--z-color-surface: light-dark(#FFFFFF, #1F2937);
+	--z-color-red: var(--z-color-red-700);
+	--z-color-red-high: var(--z-color-red-800);
+	--z-color-red-low: var(--z-color-red-100);
+	--z-color-orange: var(--z-color-amber-700);
+	--z-color-orange-high: var(--z-color-amber-800);
+	--z-color-orange-low: var(--z-color-amber-100);
+	--z-color-green: var(--z-color-green-700);
+	--z-color-green-high: var(--z-color-green-800);
+	--z-color-green-low: var(--z-color-green-100);
+	--z-color-blue: var(--z-color-blue-700);
+	--z-color-blue-high: var(--z-color-blue-800);
+	--z-color-blue-low: var(--z-color-blue-100);
+	--z-color-purple: var(--z-color-purple-700);
+	--z-color-purple-high: var(--z-color-purple-800);
+	--z-color-purple-low: var(--z-color-purple-100);
+
+	--z-color-bg: var(--z-color-background-100);
+	--z-color-bg-nav: var(--z-color-background-100);
+	--z-color-bg-sidebar: var(--z-color-background-200);
+	--z-color-bg-inline-code: var(--z-color-gray-200);
+	--z-color-bg-accent: var(--z-color-tertiary);
+	--z-color-surface: var(--z-color-background-100);
+	--z-color-surface-muted: var(--z-color-background-200);
 	--z-color-surface-soft: light-dark(rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.05));
-	--z-color-surface-muted: light-dark(#FAF7F5, #1F2937);
-	--z-color-border-subtle: light-dark(rgba(0, 0, 0, 0.07), rgba(255, 255, 255, 0.08));
-
-	/* === SHAPE & FOCUS === */
-	--z-radius-none: 0;
-	--z-radius-sm: 3px;
-	--z-focus-ring: 2px solid var(--z-color-accent);
-	--z-focus-offset: 2px;
+	--z-color-border: var(--z-color-gray-400);
+	--z-color-border-hover: var(--z-color-gray-500);
+	--z-color-border-active: var(--z-color-gray-600);
+	--z-color-border-subtle: var(--z-color-gray-alpha-200);
+	--z-color-hairline-light: var(--z-color-border);
+	--z-color-hairline-shade: var(--z-color-gray-500);
+	--z-color-hairline: var(--z-color-hairline-light);
+	--z-color-row-hover: var(--z-color-gray-alpha-100);
+	--z-color-backdrop-overlay: light-dark(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.66));
+	--z-color-tooltip-bg: var(--z-color-gray-900);
+	--z-color-code-mark-bg: var(--z-color-gray-alpha-100);
+	--z-color-code-ins-bg: var(--z-color-green-100);
+	--z-color-code-del-bg: var(--z-color-red-100);
 
 	/* === DATA SEMANTICS === */
-	--z-data-g1: light-dark(hsl(210, 12%, 50%), hsl(210, 15%, 65%));
-	--z-data-g1-bg: light-dark(hsl(210, 15%, 92%), hsl(210, 10%, 18%));
-	--z-data-g2: light-dark(hsl(38, 80%, 45%), hsl(38, 75%, 58%));
-	--z-data-g2-bg: light-dark(hsl(38, 75%, 91%), hsl(38, 35%, 16%));
-	--z-data-g3: light-dark(hsl(18, 80%, 50%), hsl(18, 75%, 60%));
-	--z-data-g3-bg: light-dark(hsl(18, 80%, 92%), hsl(18, 35%, 16%));
-	--z-data-g4: light-dark(hsl(350, 75%, 45%), hsl(350, 70%, 62%));
-	--z-data-g4-bg: light-dark(hsl(350, 70%, 93%), hsl(350, 30%, 17%));
-	--z-data-state: light-dark(hsl(220, 70%, 42%), hsl(220, 75%, 68%));
-	--z-data-state-bg: light-dark(hsl(220, 60%, 93%), hsl(220, 30%, 17%));
-	--z-data-joint: light-dark(hsl(170, 65%, 34%), hsl(170, 60%, 55%));
-	--z-data-joint-bg: light-dark(hsl(170, 50%, 92%), hsl(170, 25%, 16%));
-	--z-data-city: light-dark(hsl(280, 55%, 50%), hsl(280, 55%, 68%));
-	--z-data-city-bg: light-dark(hsl(280, 45%, 93%), hsl(280, 25%, 17%));
+	--z-data-g1: var(--z-color-gray-900);
+	--z-data-g1-bg: var(--z-color-gray-100);
+	--z-data-g2: var(--z-color-amber-900);
+	--z-data-g2-bg: var(--z-color-amber-100);
+	--z-data-g3: var(--z-color-red-900);
+	--z-data-g3-bg: var(--z-color-red-100);
+	--z-data-g4: var(--z-color-red-700);
+	--z-data-g4-bg: var(--z-color-red-200);
+	--z-data-state: var(--z-color-blue-700);
+	--z-data-state-bg: var(--z-color-blue-100);
+	--z-data-joint: var(--z-color-teal-700);
+	--z-data-joint-bg: var(--z-color-teal-100);
+	--z-data-city: var(--z-color-purple-700);
+	--z-data-city-bg: var(--z-color-purple-100);
 
-	/* === ELEVATION / SHADOWS === */
-	--z-shadow-sm: 0px 1px 2px rgba(0, 0, 0, 0.05);
-	--z-shadow-md: 0px 4px 8px rgba(0, 0, 0, 0.08);
-	--z-shadow-lg: 0px 12px 24px rgba(0, 0, 0, 0.12);
+	/* === TYPOGRAPHY TOKENS === */
+	--z-text-heading-72: 4.5rem;
+	--z-text-heading-64: 4rem;
+	--z-text-heading-56: 3.5rem;
+	--z-text-heading-48: 3rem;
+	--z-text-heading-40: 2.5rem;
+	--z-text-heading-32: 2rem;
+	--z-text-heading-24: 1.5rem;
+	--z-text-heading-20: 1.25rem;
+	--z-text-heading-16: 1rem;
+	--z-text-heading-14: 0.875rem;
+	--z-text-button-16: 1rem;
+	--z-text-button-14: 0.875rem;
+	--z-text-button-12: 0.75rem;
+	--z-text-label-20: 1.25rem;
+	--z-text-label-18: 1.125rem;
+	--z-text-label-16: 1rem;
+	--z-text-label-14: 0.875rem;
+	--z-text-label-13: 0.8125rem;
+	--z-text-label-12: 0.75rem;
+	--z-text-copy-24: 1.5rem;
+	--z-text-copy-20: 1.25rem;
+	--z-text-copy-18: 1.125rem;
+	--z-text-copy-16: 1rem;
+	--z-text-copy-14: 0.875rem;
+	--z-text-copy-13: 0.8125rem;
 
-	/* === TYPOGRAPHY SCALE (4px-base, DESIGN.md hierarchy) === */
-	--z-text-2xs: 0.75rem;   /* 12px — Caption */
-	--z-text-xs:  0.8125rem; /* 13px */
-	--z-text-sm:  0.875rem;  /* 14px — Body Regular, Link, Button */
-	--z-text-base: 1rem;     /* 16px — Body Large */
-	--z-text-lg:  1.125rem;  /* 18px */
-	--z-text-xl:  1.25rem;   /* 20px */
-	--z-text-2xl: 1.375rem;  /* 22px */
-	--z-text-3xl: 1.75rem;   /* 28px — H3 */
-	--z-text-4xl: 2rem;      /* 32px */
-	--z-text-5xl: 2.5rem;    /* 40px */
-	--z-text-6xl: 3.25rem;   /* 52px — H1/Display */
+	--z-leading-heading-72: 4.5rem;
+	--z-leading-heading-64: 4rem;
+	--z-leading-heading-56: 3.5rem;
+	--z-leading-heading-48: 3.5rem;
+	--z-leading-heading-40: 3rem;
+	--z-leading-heading-32: 2.5rem;
+	--z-leading-heading-24: 2rem;
+	--z-leading-heading-20: 1.625rem;
+	--z-leading-heading-16: 1.5rem;
+	--z-leading-heading-14: 1.25rem;
+	--z-leading-button-16: 1.25rem;
+	--z-leading-button-14: 1.25rem;
+	--z-leading-button-12: 1rem;
+	--z-leading-label-20: 2rem;
+	--z-leading-label-18: 1.25rem;
+	--z-leading-label-16: 1.25rem;
+	--z-leading-label-14: 1.25rem;
+	--z-leading-label-13: 1rem;
+	--z-leading-label-12: 1rem;
+	--z-leading-copy-24: 2.25rem;
+	--z-leading-copy-20: 2.25rem;
+	--z-leading-copy-18: 1.75rem;
+	--z-leading-copy-16: 1.5rem;
+	--z-leading-copy-14: 1.25rem;
+	--z-leading-copy-13: 1.125rem;
 
-	--z-text-h1: var(--z-text-6xl);
-	--z-text-h2: var(--z-text-5xl);
-	--z-text-h3: var(--z-text-3xl);
-	--z-text-h4: var(--z-text-xl);
-	--z-text-h5: var(--z-text-lg);
-	--z-text-h6: var(--z-text-base);
-	--z-text-code: var(--z-text-sm);
-	--z-text-code-sm: var(--z-text-xs);
+	--z-tracking-heading-72: -4.32px;
+	--z-tracking-heading-64: -3.84px;
+	--z-tracking-heading-56: -3.36px;
+	--z-tracking-heading-48: -2.88px;
+	--z-tracking-heading-40: -2.4px;
+	--z-tracking-heading-32: -1.28px;
+	--z-tracking-heading-24: -0.96px;
+	--z-tracking-heading-20: -0.4px;
+	--z-tracking-heading-16: -0.32px;
+	--z-tracking-heading-14: -0.28px;
 
-	/* === SPACING (4px base) === */
-	--z-space-1: 0.25rem;  /*   4px */
-	--z-space-2: 0.5rem;   /*   8px */
-	--z-space-3: 0.75rem;  /*  12px */
-	--z-space-4: 1rem;     /*  16px */
-	--z-space-5: 1.25rem;  /*  20px */
-	--z-space-6: 1.5rem;   /*  24px */
-	--z-space-7: 1.75rem;  /*  28px */
-	--z-space-8: 2rem;     /*  32px */
-	--z-space-9: 2.25rem;  /*  36px */
-	--z-space-10: 2.5rem;  /*  40px */
-	--z-space-12: 3rem;    /*  48px */
-	--z-space-15: 3.75rem; /*  60px */
-	--z-space-20: 5rem;    /*  80px */
+	/* Backward-compatible aliases used in existing markup. */
+	--z-text-2xs: var(--z-text-label-12);
+	--z-text-xs: var(--z-text-label-13);
+	--z-text-sm: var(--z-text-copy-14);
+	--z-text-base: var(--z-text-copy-16);
+	--z-text-lg: var(--z-text-copy-18);
+	--z-text-xl: var(--z-text-heading-20);
+	--z-text-2xl: var(--z-text-heading-24);
+	--z-text-3xl: var(--z-text-heading-32);
+	--z-text-4xl: var(--z-text-heading-40);
+	--z-text-5xl: var(--z-text-heading-48);
+	--z-text-6xl: var(--z-text-heading-56);
+	--z-text-h1: var(--z-text-heading-40);
+	--z-text-h2: var(--z-text-heading-32);
+	--z-text-h3: var(--z-text-heading-24);
+	--z-text-h4: var(--z-text-heading-20);
+	--z-text-h5: var(--z-text-heading-16);
+	--z-text-h6: var(--z-text-heading-14);
+	--z-text-code: var(--z-text-copy-14);
+	--z-text-code-sm: var(--z-text-copy-13);
+	--z-line-height: 1.5;
+	--z-line-height-headings: 1.2;
+
+	/* === SPACING TOKENS === */
+	--z-space-1: 0.25rem;
+	--z-space-2: 0.5rem;
+	--z-space-3: 0.75rem;
+	--z-space-4: 1rem;
+	--z-space-6: 1.5rem;
+	--z-space-8: 2rem;
+	--z-space-10: 2.5rem;
+	--z-space-16: 4rem;
+	--z-space-24: 6rem;
+	--z-space-base: var(--z-space-1);
+
+	/* Legacy spacing aliases kept for existing compiled content and third-party overrides. */
+	--z-space-5: var(--z-space-6);
+	--z-space-7: var(--z-space-8);
+	--z-space-9: var(--z-space-10);
+	--z-space-12: var(--z-space-16);
+	--z-space-15: var(--z-space-16);
+	--z-space-20: var(--z-space-16);
+
+	/* === SHAPE, FOCUS, ELEVATION === */
+	--z-radius-none: 0;
+	--z-radius-subtle: 3px;
+	--z-radius-sm: 6px;
+	--z-radius-md: 12px;
+	--z-radius-lg: 16px;
+	--z-radius-full: 9999px;
+	--z-focus-ring: 2px solid var(--z-color-tertiary);
+	--z-focus-offset: 2px;
+	--z-focus-ring-shadow: 0 0 0 2px var(--z-color-background-100), 0 0 0 4px var(--z-color-tertiary);
+	--z-shadow-sm-color: light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.16));
+	--z-shadow-md-color: light-dark(rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.18));
+	--z-shadow-lg-color: light-dark(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.22));
+	--z-shadow-sm: 0px 1px 2px var(--z-shadow-sm-color);
+	--z-shadow-md: 0px 4px 8px var(--z-shadow-md-color);
+	--z-shadow-lg: 0px 12px 24px var(--z-shadow-lg-color);
 
 	/* === LAYOUT === */
 	--z-mobile-toc-height: 3rem;
-
 	--z-sidebar-width: 18.75rem;
-	--z-sidebar-pad-x: 1rem;
-
+	--z-sidebar-pad-x: var(--z-space-4);
 	--z-content-width: clamp(45rem, 58vw, 56rem);
-	--z-content-pad-x: 1rem;
+	--z-content-pad-x: var(--z-space-4);
 	--z-article-side-column-width: clamp(10rem, 12vw, 16rem);
-	--z-article-grid-column-gap: 2rem;
-
+	--z-article-grid-column-gap: var(--z-space-8);
 	--z-menu-button-size: 2rem;
 	--z-nav-gap: var(--z-space-6);
-
-	--z-outline-offset-inside: -.1875rem;
-
-	/* === Z-INDEX === */
+	--z-outline-offset-inside: -0.1875rem;
 	--z-z-index-toc: 4;
 	--z-z-index-menu: 5;
 	--z-z-index-navbar: 10;
 	--z-z-index-skiplink: 20;
-
-	--paragraph-spacing: 1.375rem;
+	--paragraph-spacing: var(--z-space-6);
 }
 
 *,
@@ -175,11 +337,11 @@
 body {
 	--z-page-max-width: 960px;
 	--z-page-pad-x: var(--z-space-8);
-	--z-page-main-pad-block-start: var(--z-space-12);
-	--z-page-main-pad-block-end: var(--z-space-15);
+	--z-page-main-pad-block-start: var(--z-space-10);
+	--z-page-main-pad-block-end: var(--z-space-16);
 	--z-shell-content-offset-x: 0px;
 
-	font-family: var(--__z-font);
+	font-family: var(--z-font-sans);
 	line-height: var(--z-line-height);
 	-webkit-font-smoothing: antialiased;
 	text-underline-offset: 0.1875rem;
@@ -209,6 +371,11 @@ a.active {
 	color: var(--z-color-text-accent);
 }
 
+:focus-visible {
+	outline: var(--z-focus-ring);
+	outline-offset: var(--z-focus-offset);
+}
+
 /* Shared layout primitives */
 .z-main {
 	margin: 0 auto;
@@ -226,20 +393,23 @@ a.active {
 }
 
 .z-page-title {
-	font-size: var(--z-text-h1);
-	font-weight: 700;
-	letter-spacing: 0;
+	font-size: var(--z-text-heading-40);
+	font-weight: 600;
+	letter-spacing: var(--z-tracking-heading-40);
+	line-height: var(--z-leading-heading-40);
 	margin-bottom: var(--z-space-2);
-	color: light-dark(#000000, #F9FAFB);
+	color: var(--z-color-heading);
 }
 
 .z-page-subtitle {
-	font-size: var(--z-text-lg);
+	font-size: var(--z-text-copy-18);
+	line-height: var(--z-leading-copy-18);
 	color: var(--z-color-text-secondary);
 }
 
 .z-page-note {
-	font-size: var(--z-text-xs);
+	font-size: var(--z-text-copy-13);
+	line-height: var(--z-leading-copy-13);
 	color: var(--z-color-text-dimmed);
 	margin-top: var(--z-space-2);
 }
@@ -249,10 +419,12 @@ a.active {
 }
 
 .z-section-title {
-	font-size: var(--z-text-h2);
-	font-weight: 700;
-	letter-spacing: 0;
-	margin-bottom: var(--z-space-2);
+	font-size: var(--z-text-heading-24);
+	font-weight: 600;
+	letter-spacing: var(--z-tracking-heading-24);
+	line-height: var(--z-leading-heading-24);
+	margin-bottom: var(--z-space-4);
+	color: var(--z-color-heading);
 }
 
 .z-link-reset {
@@ -295,43 +467,46 @@ a.active {
 
 .z-empty-state {
 	text-align: center;
-	padding: var(--z-space-12) 0;
+	padding: var(--z-space-16) 0;
 	color: var(--z-color-text-secondary);
 }
 
 .z-empty-state h3 {
-	font-size: var(--z-text-h4);
+	font-size: var(--z-text-heading-20);
+	line-height: var(--z-leading-heading-20);
 	margin: 0 0 var(--z-space-4) 0;
-	color: var(--z-color-text);
+	color: var(--z-color-heading);
 }
 
 .z-table-wrapper {
 	overflow-x: auto;
 	border: 1px solid var(--z-color-border);
-	border-radius: var(--z-radius-sm);
+	border-radius: var(--z-radius-subtle);
 	background: var(--z-color-surface);
 }
 
 .z-data-table {
 	width: 100%;
 	border-collapse: collapse;
-	font-size: var(--z-text-sm);
+	font-size: var(--z-text-copy-14);
+	line-height: var(--z-leading-copy-14);
 }
 
 .z-data-table th {
 	text-align: left;
 	padding: var(--z-space-3) var(--z-space-4);
 	font-weight: 600;
-	font-size: var(--z-text-xs);
+	font-size: var(--z-text-label-12);
+	line-height: var(--z-leading-label-12);
 	letter-spacing: 0;
-	color: light-dark(#374151, #D1D5DB);
+	color: var(--z-color-text-secondary);
 	border-bottom: 1px solid var(--z-color-border);
 	background: var(--z-color-surface-muted);
 	white-space: nowrap;
 }
 
 .z-data-table td {
-	padding: 0.75rem 1rem;
+	padding: var(--z-space-3) var(--z-space-4);
 	border-bottom: 1px solid var(--z-color-hairline-light);
 	white-space: nowrap;
 }
@@ -341,14 +516,14 @@ a.active {
 }
 
 .z-data-table tbody tr:hover {
-	background: light-dark(#F9FAFB, rgba(255,255,255,0.03));
+	background: var(--z-color-row-hover);
 }
 
 @media (max-width: 768px) {
 	.z-page-shell {
 		--z-page-pad-x: var(--z-space-6);
 		--z-page-main-pad-block-start: var(--z-space-8);
-		--z-page-main-pad-block-end: var(--z-space-12);
+		--z-page-main-pad-block-end: var(--z-space-10);
 	}
 
 	.z-stack-item {
@@ -373,9 +548,16 @@ a.active {
 		--z-page-pad-x: var(--z-space-4);
 	}
 
-	.z-page-title,
+	.z-page-title {
+		font-size: var(--z-text-heading-24);
+		letter-spacing: var(--z-tracking-heading-24);
+		line-height: var(--z-leading-heading-24);
+	}
+
 	.z-section-title {
-		font-size: var(--z-text-xl);
+		font-size: var(--z-text-heading-20);
+		letter-spacing: var(--z-tracking-heading-20);
+		line-height: var(--z-leading-heading-20);
 	}
 }
 
@@ -387,11 +569,11 @@ a.active {
 	}
 
 	.z-stack-item {
-		padding-bottom: var(--z-space-5);
+		padding-bottom: var(--z-space-6);
 	}
 
 	.z-stack-item + .z-stack-item {
-		padding-top: var(--z-space-5);
+		padding-top: var(--z-space-6);
 	}
 
 	.z-stack-item--roomy {
@@ -406,8 +588,8 @@ a.active {
 @media (min-width: 1200px) {
 	.z-page-shell--narrow,
 	.z-page-shell--article {
-		--z-page-main-pad-block-start: var(--z-space-20);
-		--z-page-main-pad-block-end: var(--z-space-20);
+		--z-page-main-pad-block-start: var(--z-space-16);
+		--z-page-main-pad-block-end: var(--z-space-16);
 	}
 }
 

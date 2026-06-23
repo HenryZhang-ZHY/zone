@@ -1,105 +1,105 @@
 ---
 version: alpha
 name: Zone
-description: Zone's design system, using Vercel-compatible token definitions with mono-forward typography, sharp geometry, and restrained electric accents.
+description: Zone's dark design system, using Vercel-compatible token definitions with mono-forward typography, sharp geometry, and restrained electric accents.
 colors:
-  # Zone semantic anchors on top of the Vercel-compatible scale.
-  primary: "#213547"
-  secondary: "#374151"
+  # Zone semantic anchors on top of the Vercel-compatible dark scale.
+  primary: "#E5E7EB"
+  secondary: "#9CA3AF"
   tertiary: "#0095FF"
-  neutral: "#f2f2f2"
-  background-100: "#ffffff"
-  background-200: "#faf7f5"
-  gray-100: "#f2f2f2"
-  gray-200: "#ebebeb"
-  gray-300: "#e6e6e6"
-  gray-400: "#eaeaea"
-  gray-500: "#c9c9c9"
-  gray-600: "#a8a8a8"
+  neutral: "#1a1a1a"
+  background-100: "#111827"
+  background-200: "#1F2937"
+  gray-100: "#1a1a1a"
+  gray-200: "#1f1f1f"
+  gray-300: "#292929"
+  gray-400: "#2e2e2e"
+  gray-500: "#454545"
+  gray-600: "#878787"
   gray-700: "#8f8f8f"
   gray-800: "#7d7d7d"
-  gray-900: "#4d4d4d"
-  gray-1000: "#171717"
-  gray-alpha-100: "#0000000d"
-  gray-alpha-200: "#00000015"
-  gray-alpha-300: "#0000001a"
-  gray-alpha-400: "#00000014"
-  gray-alpha-500: "#00000036"
-  gray-alpha-600: "#0000003d"
-  gray-alpha-700: "#00000070"
-  gray-alpha-800: "#00000082"
-  gray-alpha-900: "#000000b3"
-  gray-alpha-1000: "#000000e8"
-  blue-100: "#f0f7ff"
-  blue-200: "#e9f4ff"
-  blue-300: "#dfefff"
-  blue-400: "#cae7ff"
-  blue-500: "#94ccff"
-  blue-600: "#48aeff"
+  gray-900: "#a0a0a0"
+  gray-1000: "#ededed"
+  gray-alpha-100: "#ffffff12"
+  gray-alpha-200: "#ffffff17"
+  gray-alpha-300: "#ffffff21"
+  gray-alpha-400: "#ffffff24"
+  gray-alpha-500: "#ffffff3d"
+  gray-alpha-600: "#ffffff82"
+  gray-alpha-700: "#ffffff8a"
+  gray-alpha-800: "#ffffff78"
+  gray-alpha-900: "#ffffff9c"
+  gray-alpha-1000: "#ffffffeb"
+  blue-100: "#06193a"
+  blue-200: "#022248"
+  blue-300: "#002f62"
+  blue-400: "#003674"
+  blue-500: "#00418b"
+  blue-600: "#48AEFF"
   blue-700: "#0095FF"
   blue-800: "#0077CC"
-  blue-900: "#005FA3"
-  blue-1000: "#002359"
-  red-100: "#ffeeef"
-  red-200: "#ffe8ea"
-  red-300: "#ffe3e4"
-  red-400: "#ffd7d6"
-  red-500: "#ffb1b3"
-  red-600: "#ff676d"
+  blue-900: "#47A8FF"
+  blue-1000: "#eaf6ff"
+  red-100: "#330a11"
+  red-200: "#440d13"
+  red-300: "#5d0e17"
+  red-400: "#6f101b"
+  red-500: "#88151f"
+  red-600: "#F56B78"
   red-700: "#ED3C50"
   red-800: "#C7283A"
-  red-900: "#A91F30"
-  red-1000: "#47000c"
-  amber-100: "#fff6de"
-  amber-200: "#fff4cf"
-  amber-300: "#fff1c1"
-  amber-400: "#ffdc73"
-  amber-500: "#ffc543"
-  amber-600: "#ffa600"
+  red-900: "#FF6B78"
+  red-1000: "#ffe9ed"
+  amber-100: "#2a1700"
+  amber-200: "#361900"
+  amber-300: "#502800"
+  amber-400: "#5b3000"
+  amber-500: "#703e00"
+  amber-600: "#ed9a00"
   amber-700: "#FFC517"
   amber-800: "#D9A000"
-  amber-900: "#aa4d00"
-  amber-1000: "#561900"
-  green-100: "#ecfdec"
-  green-200: "#e5fce7"
-  green-300: "#d3fad1"
-  green-400: "#b9f5bc"
-  green-500: "#82eb8d"
-  green-600: "#4ce15e"
-  green-700: "#28a948"
-  green-800: "#279141"
-  green-900: "#107d32"
-  green-1000: "#003a00"
-  teal-100: "#defffb"
-  teal-200: "#ddfef6"
-  teal-300: "#ccf9f1"
-  teal-400: "#b1f7ec"
-  teal-500: "#52f0db"
-  teal-600: "#00e3c4"
-  teal-700: "#00ac96"
+  amber-900: "#ff9300"
+  amber-1000: "#fff3d5"
+  green-100: "#002608"
+  green-200: "#00320b"
+  green-300: "#003a0e"
+  green-400: "#004615"
+  green-500: "#006717"
+  green-600: "#00952d"
+  green-700: "#00ac3a"
+  green-800: "#009432"
+  green-900: "#00ca50"
+  green-1000: "#d8ffe4"
+  teal-100: "#00231b"
+  teal-200: "#002b22"
+  teal-300: "#003d34"
+  teal-400: "#004035"
+  teal-500: "#006354"
+  teal-600: "#009e86"
+  teal-700: "#00aa95"
   teal-800: "#00927f"
-  teal-900: "#007f70"
-  teal-1000: "#003f34"
-  purple-100: "#faf0ff"
-  purple-200: "#f9f0ff"
-  purple-300: "#f6e8ff"
-  purple-400: "#f2d9ff"
-  purple-500: "#dfa7ff"
-  purple-600: "#c979ff"
-  purple-700: "#a000f8"
-  purple-800: "#8500d1"
-  purple-900: "#7d00cc"
-  purple-1000: "#2f004e"
-  pink-100: "#ffe8f6"
-  pink-200: "#ffe8f3"
-  pink-300: "#ffdfeb"
-  pink-400: "#ffd3e1"
-  pink-500: "#fdb3cc"
-  pink-600: "#f97ea7"
-  pink-700: "#f22782"
-  pink-800: "#e4106e"
-  pink-900: "#c41562"
-  pink-1000: "#460523"
+  teal-900: "#00cfb7"
+  teal-1000: "#cbfff5"
+  purple-100: "#290c33"
+  purple-200: "#341142"
+  purple-300: "#47185e"
+  purple-400: "#541a76"
+  purple-500: "#642290"
+  purple-600: "#9440d5"
+  purple-700: "#9440d5"
+  purple-800: "#7d2bba"
+  purple-900: "#c472fb"
+  purple-1000: "#fbecff"
+  pink-100: "#310d1e"
+  pink-200: "#420c25"
+  pink-300: "#571032"
+  pink-400: "#5d0c34"
+  pink-500: "#76063f"
+  pink-600: "#ba0056"
+  pink-700: "#f12b82"
+  pink-800: "#e7006d"
+  pink-900: "#ff4d8d"
+  pink-1000: "#ffe9f4"
 fontFamilies:
   sans: "'IBM Plex Mono', 'LXGW WenKai', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
   mono: "'IBM Plex Mono', 'LXGW WenKai', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
@@ -297,7 +297,7 @@ layout:
 components:
   button-primary:
     backgroundColor: "{colors.tertiary}"
-    textColor: "{colors.background-100}"
+    textColor: "#ffffff"
     typography: "{typography.button-14}"
     rounded: "{rounded.none}"
     padding: "0 10px"
@@ -309,7 +309,7 @@ components:
     rounded: "{rounded.none}"
     padding: "0 10px"
     height: 40px
-    border: "1px solid {colors.gray-300}"
+    border: "1px solid {colors.gray-alpha-400}"
   button-tertiary:
     textColor: "{colors.primary}"
     typography: "{typography.button-14}"
@@ -340,7 +340,7 @@ components:
     rounded: "{rounded.subtle}"
     padding: "0 12px"
     height: 40px
-    border: "1px solid {colors.gray-500}"
+    border: "1px solid {colors.gray-alpha-400}"
     focusBorder: "2px solid {colors.tertiary}"
   input-small:
     typography: "{typography.label-14}"
@@ -353,7 +353,7 @@ components:
     padding: "0 12px"
     height: 48px
   card-translucent:
-    backgroundColor: "rgba(255, 255, 255, 0.45)"
+    backgroundColor: "rgba(255, 255, 255, 0.05)"
     textColor: "{colors.primary}"
     typography: "{typography.copy-16}"
     rounded: "{rounded.subtle}"
@@ -365,13 +365,13 @@ components:
 
 ## Overview
 
-Zone uses Vercel's design-token vocabulary and scale structure, then applies a small set of brand-specific overrides: brand navy for primary text, electric blue for interaction, coral red for destructive or error states, IBM Plex Mono with LXGW WenKai for the mono-forward CJK-aware voice, and sharp corners on major UI.
+Zone Dark uses the same Vercel-compatible token vocabulary as the light theme, then remaps the values for a deep, low-glare interface. The theme keeps Zone's key overrides: pale text on deep navy surfaces, electric blue for interaction, coral red for destructive or error states, IBM Plex Mono with LXGW WenKai for the mono-forward CJK-aware voice, and sharp corners on major UI.
 
-Treat the frontmatter tokens as the design source of truth. The implementation maps these ideas into CSS variables in `src/styles/global.css`; `BaseLayout`, `.z-main`, `SiteIdentity`, and `Footer` share page-shell tokens for alignment.
+This is the Dark theme. The Light theme uses the same token names with different values and lives at `/DESIGN.md`. The implementation maps these ideas into CSS variables in `src/styles/global.css`; `BaseLayout`, `.z-main`, `SiteIdentity`, and `Footer` share page-shell tokens for alignment.
 
 ## Colors
 
-The color system follows Vercel's scale model. Each non-background scale runs 10 steps (`100`-`1000`), and the step encodes intent:
+The color system follows Vercel's dark scale model. Each non-background scale runs 10 steps (`100`-`1000`), and the step encodes intent:
 
 - `100` default background
 - `200` hover background
@@ -384,13 +384,13 @@ The color system follows Vercel's scale model. Each non-background scale runs 10
 - `900` secondary text and icons
 - `1000` primary text and icons
 
-Zone keeps the same token names but changes the key semantic anchors. `primary` is Brand Navy (`#213547`), `secondary` is Medium Gray (`#374151`), and `tertiary` is Electric Blue (`#0095FF`). Use `background-100` for the page and card surface; use `background-200` as the warm secondary surface. `gray-alpha-*` tokens are translucent and layer well over any surface, so prefer them for subtle borders, dividers, hover fills, and overlays.
+Zone keeps the same token names but changes the key semantic anchors for dark mode. `primary` is Pale Gray (`#E5E7EB`), `secondary` is Light Gray (`#9CA3AF`), and `tertiary` remains Electric Blue (`#0095FF`). Use `background-100` for the primary page surface and `background-200` for muted panels, sidebars, and cards that need subtle separation. `gray-alpha-*` tokens are translucent light overlays, so they layer well over dark surfaces for borders, dividers, hover fills, and overlays.
 
-Accent meaning stays strict: `blue-700`/`tertiary` is the primary CTA, link hover, active navigation, focus, and checked state; `red-700`/`red-800` is for errors and destructive actions; `amber-700` is for warnings. Keep decorative color rare.
+Accent meaning stays strict: `blue-700`/`tertiary` is the primary CTA, link hover, active navigation, focus, and checked state; `red-700`/`red-800` is for errors and destructive actions; `amber-700` is for warnings. Keep decorative color rare so the dark theme stays calm and readable.
 
 ## Typography
 
-Zone reuses Vercel's typography token set and metrics, but replaces the font family with the Zone stack:
+Zone Dark reuses Vercel's typography token set and metrics, but replaces the font family with the Zone stack:
 
 `'IBM Plex Mono', 'LXGW WenKai', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace`
 
@@ -418,17 +418,17 @@ Header/site identity, main content, and footer must consume `--z-page-max-width`
 
 ## Elevation & Depth
 
-Hierarchy should come from typography, whitespace, surfaces, and borders before shadows. Most Zone components use no shadow. When depth is needed, keep it soft:
+Hierarchy should come from typography, whitespace, tonal surfaces, and translucent borders before shadows. Most Zone Dark components use no shadow. When depth is needed, keep it soft:
 
-- Raised cards: `0 1px 2px rgba(0, 0, 0, 0.05)`
-- Floating panels: `0 4px 8px rgba(0, 0, 0, 0.08)`
-- Modals and overlays: `0 12px 24px rgba(0, 0, 0, 0.12)`
+- Raised cards: `0 1px 2px rgba(0, 0, 0, 0.16)`
+- Floating panels: `0 4px 8px rgba(0, 0, 0, 0.18)`
+- Modals and overlays: `0 12px 24px rgba(0, 0, 0, 0.22)`
 
-Prefer a subtle border over a shadow. Avoid combining both unless a floating element needs clear separation.
+Prefer a translucent border over a shadow. Avoid combining both unless a floating element needs clear separation from a similarly dark surface.
 
 ## Motion
 
-Use motion only when it clarifies a change. Most hover and active states should be instant color, underline, or border changes. When motion helps, keep it short: roughly 120-150ms for controls, 180-220ms for menus and popovers, and up to 300ms for overlays. Honor `prefers-reduced-motion` by removing nonessential animation.
+Use motion only when it clarifies a change. Most hover and active states should be instant color, underline, border, or translucent fill changes. When motion helps, keep it short: roughly 120-150ms for controls, 180-220ms for menus and popovers, and up to 300ms for overlays. Honor `prefers-reduced-motion` by removing nonessential animation.
 
 ## Shapes
 
@@ -436,16 +436,16 @@ The `rounded` section keeps Vercel's `sm`, `md`, `lg`, and `full` tokens, with Z
 
 ## Components
 
-The `components` tokens preserve Vercel's component shape while applying Zone's key style decisions:
+The `components` tokens preserve Vercel's component shape while applying Zone's dark-theme style decisions:
 
 - Primary button: electric-blue fill, white text, 40px height, sharp corners.
-- Secondary button: white fill, brand-navy text, subtle gray border, sharp corners.
-- Tertiary button: transparent, brand-navy text, sharp corners, subtle hover fill.
+- Secondary button: dark surface fill, pale text, translucent border, sharp corners.
+- Tertiary button: transparent, pale text, sharp corners, subtle translucent hover fill.
 - Error button: coral-red fill with white text, reserved for destructive actions.
-- Inputs: white surface, brand-navy text, 3px radius, gray border, electric-blue focus border.
-- Translucent cards: white at 45% opacity, brand-navy text, subtle border, 3px radius.
+- Inputs: dark surface, pale text, 3px radius, translucent border, electric-blue focus border.
+- Translucent cards: white at 5% opacity, pale text, translucent border, 3px radius.
 
-Hover and active states should step through the relevant scale: blue primary actions move from `blue-700` to `blue-800` to `blue-900`; borders move from `gray-400` to `gray-500` to `gray-600`; subtle fills use `gray-alpha-*`. Disabled controls use a pale neutral fill, `gray-700` text, and a not-allowed cursor. Focus must stay visible on every interactive element.
+Hover and active states should step through the relevant scale: blue primary actions move from `blue-700` to `blue-800` and use `blue-900` for high-visibility focus or text; borders move from `gray-alpha-300` to `gray-alpha-400` to `gray-alpha-500`; subtle fills use `gray-alpha-*`. Disabled controls use `gray-100` fill, `gray-700` text, and a not-allowed cursor. Focus must stay visible on every interactive element; use an electric-blue ring or border with enough contrast against `background-100`.
 
 ## Responsive Behavior
 
@@ -467,8 +467,8 @@ Use numerals for counts and measurements. Keep body copy sentence case; use titl
 ## Do's and Don'ts
 
 - Use Vercel-compatible token names for colors, typography, spacing, and rounded values.
-- Keep Zone's key overrides: Brand Navy primary text, Electric Blue interaction, Coral Red errors, IBM Plex Mono/LXGW WenKai typography, and sharp major UI.
-- Use the gray scale to rank information: primary text, secondary text, disabled text, borders, and subtle fills should come from the scale.
+- Keep Zone's dark-theme overrides: Pale Gray primary text, Electric Blue interaction, Coral Red errors, IBM Plex Mono/LXGW WenKai typography, deep navy surfaces, and sharp major UI.
+- Use the gray scale and `gray-alpha-*` overlays to rank information, borders, disabled states, and subtle fills.
 - Apply typography tokens instead of hand-setting font size, line height, or weight.
 - Use `.z-main`, `pageLayout`, `--z-page-max-width`, and `--z-page-pad-x` for shell alignment.
 - Show a visible focus treatment on every interactive element.
@@ -479,10 +479,10 @@ Use numerals for counts and measurements. Keep body copy sentence case; use titl
 
 ## Agent Prompt Guide
 
-When generating or reviewing UI for Zone:
+When generating or reviewing dark UI for Zone:
 
 1. Start from the Vercel-compatible token names in this file.
-2. Preserve Zone's key style overrides: `primary`, `secondary`, `tertiary`, `fontFamilies`, `rounded.none`, and `rounded.subtle`.
+2. Preserve Zone's key dark style overrides: `primary`, `secondary`, `tertiary`, `background-100`, `background-200`, `fontFamilies`, `rounded.none`, and `rounded.subtle`.
 3. Use `copy-16`, `copy-14`, `label-14`, and `button-14` for most UI.
 4. Use the spacing scale only: 8px for tight groups, 16px for related items, 24-32px for component and grid gaps, and 40-64px for sections.
 5. Use electric blue for primary interactions and focus; use coral red only for destructive or error states.

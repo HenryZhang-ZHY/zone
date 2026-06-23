@@ -80,8 +80,10 @@ const { changes } = Astro.props
 
 <style>
   .timeline-content h3 {
-    font-size: var(--z-text-lg);
-    font-weight: 700;
+    font-size: var(--z-text-heading-20);
+    font-weight: 600;
+    line-height: var(--z-leading-heading-20);
+    letter-spacing: var(--z-tracking-heading-20);
     margin-bottom: var(--z-space-3);
   }
 
@@ -117,6 +119,7 @@ const { changes } = Astro.props
 
   .no-change {
     color: var(--z-color-text-dimmed);
-    font-size: var(--z-text-sm);
+    font-size: var(--z-text-copy-14);
+    line-height: var(--z-leading-copy-14);
   }
 </style>
