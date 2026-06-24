@@ -1,11 +1,30 @@
 <div data-stock-sell-calculator>
+  <section class="explain-section z-section">
+    <h2 class="z-section-title">计算说明</h2>
+    <div class="explain-card z-panel">
+      <div class="formula-group">
+        <span class="formula-label">目标摊薄成本</span>
+        <span class="formula-eq">= 每股分红 ÷ 目标股息率</span>
+      </div>
+      <div class="formula-group">
+        <span class="formula-label">卖出价格 P</span>
+        <span class="formula-eq">= (持仓总成本 − 剩余份额 × 目标摊薄成本) ÷ 卖出份额</span>
+      </div>
+      <div class="formula-group">
+        <span class="formula-label">盈利比例</span>
+        <span class="formula-eq">= (卖出价格 − 买入成本) ÷ 买入成本 × 100%</span>
+      </div>
+      <p class="explain-note">策略：以高于买入成本的价格卖出部分仓位，利用卖出收益冲减剩余持仓的账面成本，使剩余股票的每股成本下降至目标股息率对应价位。结果仅是数学目标，不构成投资建议。</p>
+    </div>
+  </section>
+
   <section class="input-section z-section">
     <h2 class="z-section-title">参数输入</h2>
     <div class="input-card z-panel">
       <div class="input-grid">
         <div class="input-group z-field">
           <label for="cost">买入成本（元/股）</label>
-          <input type="number" id="cost" min="0.01" step="0.01" placeholder="例如 10.00" aria-describedby="calculator-error" />
+          <input type="number" id="cost" min="0.01" step="0.01" placeholder="例如 10.00" aria-describedby="calculator-error natural-yield-value" />
         </div>
         <div class="input-group z-field">
           <label for="shares">股票份额（股）</label>
@@ -13,7 +32,19 @@
         </div>
         <div class="input-group z-field">
           <label for="dividend">每股分红（元）</label>
-          <input type="number" id="dividend" min="0" step="0.01" placeholder="例如 0.50" aria-describedby="calculator-error" />
+          <input type="number" id="dividend" min="0" step="0.01" placeholder="例如 0.50" aria-describedby="calculator-error natural-yield-value" />
+        </div>
+      </div>
+      <div class="input-insights">
+        <div class="natural-yield-card">
+          <span class="insight-label">自然股息率</span>
+          <strong id="natural-yield-value" class="insight-value">—</strong>
+          <span class="insight-note">基于买入成本和每股分红</span>
+        </div>
+        <div class="assumption-list" aria-label="策略假设">
+          <span>100 股为最小卖出单位</span>
+          <span>只展示高于买入成本的卖出点</span>
+          <span>目标股息率范围 4%–100%</span>
         </div>
       </div>
       <p id="calculator-error" class="calculator-error" role="alert" hidden></p>
@@ -22,8 +53,7 @@
   </section>
 
   <section class="table-section z-section" id="result-section" hidden>
-    <h2 class="z-section-title">卖出价格参考</h2>
-    <div class="summary-cards z-metric-grid" id="summary-cards"></div>
+    <h2 class="z-section-title">全部可获利卖点</h2>
     <div class="table-wrapper z-table-wrapper">
       <table class="sell-table z-data-table">
         <thead>
@@ -40,25 +70,6 @@
       </table>
     </div>
   </section>
-
-  <section class="explain-section z-section">
-    <h2 class="z-section-title">计算说明</h2>
-    <div class="explain-card z-panel">
-      <div class="formula-group">
-        <span class="formula-label">目标摊薄成本</span>
-        <span class="formula-eq">= 每股分红 ÷ 目标股息率</span>
-      </div>
-      <div class="formula-group">
-        <span class="formula-label">卖出价格 P</span>
-        <span class="formula-eq">= (持仓总成本 − 剩余份额 × 目标摊薄成本) ÷ 卖出份额</span>
-      </div>
-      <div class="formula-group">
-        <span class="formula-label">盈利比例</span>
-        <span class="formula-eq">= (卖出价格 − 买入成本) ÷ 买入成本 × 100%</span>
-      </div>
-      <p class="explain-note">策略：以高于买入成本的价格卖出部分仓位，利用卖出收益冲减剩余持仓的账面成本，使剩余股票的每股成本下降至目标股息率对应的价位。表中仅展示卖出价格高于买入成本（可获利）的结果。卖出股数以 100 股为最小单位穷举，目标股息率范围 4%–100%。</p>
-    </div>
-  </section>
 </div>
 
 <script>
@@ -73,6 +84,56 @@
     margin-bottom: var(--z-space-6);
   }
 
+  .input-insights {
+    display: grid;
+    grid-template-columns: minmax(180px, 0.7fr) minmax(260px, 1.3fr);
+    gap: var(--z-space-4);
+    align-items: stretch;
+    margin-bottom: var(--z-space-6);
+  }
+
+  .natural-yield-card,
+  .assumption-list {
+    border: 1px solid var(--z-color-border-subtle);
+    border-radius: var(--z-radius-subtle);
+    background: color-mix(in srgb, var(--z-color-background-100) 66%, transparent);
+  }
+
+  .natural-yield-card {
+    padding: var(--z-space-4);
+  }
+
+  .insight-label,
+  .insight-note,
+  .assumption-list span {
+    color: var(--z-color-text-dimmed);
+    font-size: var(--z-text-label-12);
+    line-height: var(--z-leading-label-12);
+  }
+
+  .insight-value {
+    display: block;
+    margin: var(--z-space-1) 0;
+    color: var(--z-color-accent-high);
+    font-size: var(--z-text-heading-24);
+    font-weight: 600;
+    letter-spacing: var(--z-tracking-heading-24);
+    line-height: var(--z-leading-heading-24);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .assumption-list {
+    display: grid;
+    gap: var(--z-space-2);
+    padding: var(--z-space-4);
+  }
+
+  .assumption-list span::before {
+    content: '•';
+    margin-right: var(--z-space-2);
+    color: var(--z-color-accent);
+  }
+
   .calculator-error {
     color: var(--z-color-red);
     font-size: var(--z-text-copy-14);
@@ -82,8 +143,34 @@
 
   .profit-pos,
   :global(.profit-pos) {
-    color: var(--z-color-green);
-    font-weight: 600;
+    color: var(--z-color-primary);
+    font-weight: 500;
+  }
+
+  :global(.yield-pill) {
+    background: transparent;
+    color: var(--z-color-text-secondary);
+    border-color: var(--z-color-border-subtle);
+  }
+
+  :global(.yield-low) {
+    border-color: color-mix(in srgb, var(--z-color-accent) 28%, transparent);
+    color: var(--z-color-accent-high);
+  }
+
+  :global(.yield-mid) {
+    border-color: color-mix(in srgb, var(--z-color-accent) 36%, transparent);
+    color: var(--z-color-accent-high);
+  }
+
+  :global(.yield-high) {
+    border-color: color-mix(in srgb, var(--z-color-orange-high) 32%, transparent);
+    color: var(--z-color-orange-high);
+  }
+
+  :global(.yield-max) {
+    border-color: color-mix(in srgb, var(--z-color-orange-high) 46%, transparent);
+    color: var(--z-color-orange-high);
   }
 
   .col-yield {
@@ -188,11 +275,11 @@
   }
 
   @media (max-width: 640px) {
-    .summary-cards {
-      grid-template-columns: repeat(2, 1fr);
+    .input-grid {
+      grid-template-columns: 1fr;
     }
 
-    .input-grid {
+    .input-insights {
       grid-template-columns: 1fr;
     }
 

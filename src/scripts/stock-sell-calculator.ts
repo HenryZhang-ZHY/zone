@@ -9,10 +9,10 @@ function formatPercent(n: number): string {
 }
 
 function yieldClass(pct: number): string {
-  if (pct <= 10) return 'z-tag--g4 yield-low'
-  if (pct <= 20) return 'z-tag--g3 yield-mid'
-  if (pct <= 40) return 'z-tag--g2 yield-high'
-  return 'z-tag--g1 yield-max'
+  if (pct <= 10) return 'yield-low'
+  if (pct <= 20) return 'yield-mid'
+  if (pct <= 40) return 'yield-high'
+  return 'yield-max'
 }
 
 function appendText(parent: HTMLElement, className: string, text: string, tagName = 'div'): HTMLElement {
@@ -21,14 +21,6 @@ function appendText(parent: HTMLElement, className: string, text: string, tagNam
   element.textContent = text
   parent.appendChild(element)
   return element
-}
-
-function appendSummaryCard(parent: HTMLElement, label: string, value: string): void {
-  const card = document.createElement('div')
-  card.className = 'summary-card z-metric-card'
-  appendText(card, 'card-label z-metric-label', label)
-  appendText(card, 'card-value z-metric-value', value)
-  parent.appendChild(card)
 }
 
 function appendResultRow(parent: HTMLTableSectionElement, point: SellPoint): void {
@@ -67,10 +59,22 @@ function initStockSellCalculator(): void {
   const calcBtn = root.querySelector<HTMLButtonElement>('#calc-btn')
   const resultSection = root.querySelector<HTMLElement>('#result-section')
   const resultBody = root.querySelector<HTMLTableSectionElement>('#result-body')
-  const summaryCards = root.querySelector<HTMLElement>('#summary-cards')
   const errorEl = root.querySelector<HTMLElement>('#calculator-error')
+  const naturalYieldEl = root.querySelector<HTMLElement>('#natural-yield-value')
 
-  if (!costInput || !sharesInput || !dividendInput || !calcBtn || !resultSection || !resultBody || !summaryCards || !errorEl) return
+  if (!costInput || !sharesInput || !dividendInput || !calcBtn || !resultSection || !resultBody || !errorEl || !naturalYieldEl) return
+
+  function updateNaturalYield(): void {
+    const cost = Number.parseFloat(costInput.value)
+    const dividend = Number.parseFloat(dividendInput.value)
+
+    if (!cost || cost <= 0 || Number.isNaN(dividend) || dividend < 0) {
+      naturalYieldEl.textContent = '—'
+      return
+    }
+
+    naturalYieldEl.textContent = formatPercent((dividend / cost) * 100)
+  }
 
   function calculate(): void {
     const cost = Number.parseFloat(costInput.value)
@@ -92,17 +96,7 @@ function initStockSellCalculator(): void {
     }
 
     setError(errorEl, '')
-
-    const naturalYield = dividend > 0 ? (dividend / cost) * 100 : 0
-    const minPrice = Math.min(...points.map((point) => point.sellPrice))
-    const maxPrice = Math.max(...points.map((point) => point.sellPrice))
-
-    summaryCards.replaceChildren()
-    appendSummaryCard(summaryCards, '买入成本', `${formatCurrency(cost)} 元`)
-    appendSummaryCard(summaryCards, '自然股息率（基于成本）', formatPercent(naturalYield))
-    appendSummaryCard(summaryCards, '最低卖出价格', `${formatCurrency(minPrice)} 元`)
-    appendSummaryCard(summaryCards, '最高卖出价格', `${formatCurrency(maxPrice)} 元`)
-    appendSummaryCard(summaryCards, '可获利结果数', `${points.length} 条`)
+    updateNaturalYield()
 
     resultBody.replaceChildren()
     points.forEach((point) => appendResultRow(resultBody, point))
@@ -113,11 +107,13 @@ function initStockSellCalculator(): void {
 
   calcBtn.addEventListener('click', calculate)
   ;[costInput, sharesInput, dividendInput].forEach((input) => {
+    input.addEventListener('input', updateNaturalYield)
     input.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') calculate()
     })
   })
 
+  updateNaturalYield()
   root.dataset.ready = 'true'
 }
 
