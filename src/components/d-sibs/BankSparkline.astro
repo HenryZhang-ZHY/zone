@@ -1,13 +1,12 @@
 ---
-import { type BankHistory, type BankType, typeClass } from '../../lib/d-sibs'
+import { type BankHistory } from '../../lib/d-sibs'
 
 interface Props {
   years: string[]
   history: BankHistory['years']
-  latestType: BankType | ''
 }
 
-const { years, history, latestType } = Astro.props
+const { years, history } = Astro.props
 const n = years.length
 const points = years
   .map((year, index) => {
@@ -15,9 +14,9 @@ const points = years
     if (!info) return null
     const x = n === 1 ? 40 : (index / (n - 1)) * 68 + 6
     const y = 32 - ((info.group - 0.5) / 4) * 32
-    return { x, y, type: info.type }
+    return { x, y, group: info.group }
   })
-  .filter((point): point is { x: number; y: number; type: BankType } => point !== null)
+  .filter((point): point is { x: number; y: number; group: number } => point !== null)
 ---
 
 <svg class="sparkline" viewBox="0 0 80 32" preserveAspectRatio="none">
@@ -25,10 +24,10 @@ const points = years
     <line x1="0" y1={32 - ((g - 0.5) / 4) * 32} x2="80" y2={32 - ((g - 0.5) / 4) * 32} class="spark-grid" />
   ))}
 
-  {points.length >= 2 && <polyline points={points.map((point) => `${point.x},${point.y}`).join(' ')} class={`spark-line ${typeClass(latestType, 'spark')}`} />}
+  {points.length >= 2 && <polyline points={points.map((point) => `${point.x},${point.y}`).join(' ')} class="spark-line" />}
 
   {points.map((point) => (
-    <circle cx={point.x} cy={point.y} r="2.5" class={`spark-dot ${typeClass(point.type, 'spark')}`} />
+    <circle cx={point.x} cy={point.y} r="2.5" class={`spark-dot spark-g${point.group}`} />
   ))}
 </svg>
 
@@ -47,15 +46,19 @@ const points = years
 
   .spark-line {
     fill: none;
+    stroke: var(--z-color-hairline-shade);
     stroke-width: 1.5;
     stroke-linecap: round;
     stroke-linejoin: round;
   }
 
-  .spark-line.spark-state { stroke: var(--z-data-state); }
-  .spark-line.spark-joint { stroke: var(--z-data-joint); }
-  .spark-line.spark-city { stroke: var(--z-data-city); }
-  .spark-dot.spark-state { fill: var(--z-data-state); }
-  .spark-dot.spark-joint { fill: var(--z-data-joint); }
-  .spark-dot.spark-city { fill: var(--z-data-city); }
+  .spark-dot {
+    stroke: var(--z-color-background-100);
+    stroke-width: 0.75;
+  }
+
+  .spark-dot.spark-g1 { fill: var(--z-data-g1); }
+  .spark-dot.spark-g2 { fill: var(--z-data-g2); }
+  .spark-dot.spark-g3 { fill: var(--z-data-g3); }
+  .spark-dot.spark-g4 { fill: var(--z-data-g4); }
 </style>

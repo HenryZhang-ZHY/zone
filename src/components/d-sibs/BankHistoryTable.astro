@@ -41,18 +41,24 @@ const { years, banks } = Astro.props
               })}
               <td
                 class="col-spark"
-                tabindex="0"
-                aria-describedby="spark-popover"
-                data-bank-name={bank.name}
-                data-bank-type={typeClass(bank.latestType, '')}
-                data-trajectory={JSON.stringify(
-                  years.map((year) => {
-                    const info = bank.years[year]
-                    return info ? { year, group: info.group, type: info.type } : { year, group: null, type: null }
-                  }),
-                )}
               >
-                <BankSparkline years={years} history={bank.years} latestType={bank.latestType} />
+                <button
+                  type="button"
+                  class="spark-trigger"
+                  aria-haspopup="dialog"
+                  aria-expanded="false"
+                  aria-controls="spark-popover"
+                  aria-label={`${bank.name} 变迁详情`}
+                  data-bank-name={bank.name}
+                  data-trajectory={JSON.stringify(
+                    years.map((year) => {
+                      const info = bank.years[year]
+                      return info ? { year, group: info.group, type: info.type } : { year, group: null, type: null }
+                    }),
+                  )}
+                >
+                  <BankSparkline years={years} history={bank.years} />
+                </button>
               </td>
             </tr>
           ))
@@ -84,10 +90,32 @@ const { years, banks } = Astro.props
   .col-spark {
     min-width: 90px;
     text-align: center;
+  }
+
+  .spark-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 92px;
+    min-height: 40px;
+    padding: var(--z-space-1);
+    border: 1px solid transparent;
+    border-radius: var(--z-radius-subtle);
+    background: transparent;
     cursor: pointer;
   }
 
-  .col-spark:focus-visible {
+  .spark-trigger:hover {
+    background: var(--z-color-row-hover);
+    border-color: var(--z-color-border-subtle);
+  }
+
+  .spark-trigger[aria-expanded='true'] {
+    background: var(--z-color-accent-low);
+    border-color: color-mix(in srgb, var(--z-color-accent) 34%, transparent);
+  }
+
+  .spark-trigger:focus-visible {
     outline: none;
     box-shadow: var(--z-focus-ring-shadow);
   }

@@ -1,160 +1,203 @@
----
-/**
- * SparklinePopover — hover/click a sparkline cell to show an enlarged trajectory chart.
- *
- * Usage: drop `<SparklinePopover />` anywhere in the page.
- * It automatically binds to every `td.col-spark[data-trajectory]` found in the DOM.
- *
- * Required data-attributes on each `<td class="col-spark">`:
- *   data-bank-name   — display name
- *   data-bank-type   — CSS suffix like "-state" / "-joint" / "-city"
- *   data-trajectory  — JSON array of { year, group, type } (group/type may be null)
- *
- * Color variables (--z-data-g1…g4, --z-data-state, --z-data-joint, --z-data-city, etc.)
- * are defined in src/styles/global.css.
- */
----
-
-<div id="spark-popover" class="spark-popover z-popover" role="tooltip" aria-hidden="true">
-  <div class="pop-header z-popover-header">
-    <span class="pop-name"></span>
-    <span class="pop-type"></span>
+<div id="spark-popover" class="spark-popover z-popover" role="dialog" aria-modal="false" aria-labelledby="spark-popover-title" aria-hidden="true" tabindex="-1">
+  <div class="pop-header">
+    <div class="pop-heading">
+      <span class="pop-kicker">银行变迁</span>
+      <strong id="spark-popover-title" class="pop-name"></strong>
+    </div>
+    <div class="pop-badges">
+      <span class="pop-type"></span>
+      <span class="pop-current"></span>
+    </div>
   </div>
-  <svg class="pop-chart" viewBox="0 0 340 200"></svg>
+  <p class="pop-summary"></p>
+  <div class="pop-track" aria-label="年度组别轨道"></div>
+  <svg class="pop-chart" viewBox="0 0 360 128" aria-hidden="true"></svg>
 </div>
 
 <style>
   .spark-popover {
-    padding: var(--z-space-3) var(--z-space-4) var(--z-space-2);
+    width: min(420px, calc(100vw - var(--z-space-4) * 2));
+    padding: var(--z-space-4);
     pointer-events: none;
     opacity: 0;
+    visibility: hidden;
     transform: translateY(var(--z-space-1));
     transition:
-      opacity 180ms ease,
-      transform 180ms ease;
-    width: 372px;
+      opacity 160ms ease,
+      transform 160ms ease,
+      visibility 160ms ease;
   }
 
   .spark-popover[aria-hidden='false'] {
     opacity: 1;
+    visibility: visible;
     transform: translateY(0);
     pointer-events: auto;
   }
 
+  .spark-popover[data-mode='pinned'] {
+    border-color: color-mix(in srgb, var(--z-color-accent) 38%, var(--z-color-border));
+  }
+
   .pop-header {
     display: flex;
-    align-items: center;
-    gap: var(--z-space-2);
-    margin-bottom: var(--z-space-2);
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--z-space-4);
+    margin-bottom: var(--z-space-3);
+  }
+
+  .pop-heading {
+    min-width: 0;
+  }
+
+  .pop-kicker {
+    display: block;
+    margin-bottom: var(--z-space-1);
+    color: var(--z-color-text-dimmed);
+    font-size: var(--z-text-label-12);
+    font-weight: 600;
+    line-height: var(--z-leading-label-12);
   }
 
   .pop-name {
-    font-weight: 700;
-    font-size: var(--z-text-label-14);
-    line-height: var(--z-leading-label-14);
+    display: block;
+    color: var(--z-color-heading);
+    font-size: var(--z-text-heading-16);
+    font-weight: 600;
+    letter-spacing: var(--z-tracking-heading-16);
+    line-height: var(--z-leading-heading-16);
+  }
+
+  .pop-badges {
+    display: flex;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--z-space-2);
   }
 
   .pop-type {
-    font-size: var(--z-text-label-12);
-    line-height: var(--z-leading-label-12);
+    display: inline-block;
     padding: var(--z-space-1) var(--z-space-2);
+    border: 1px solid transparent;
     border-radius: var(--z-radius-subtle);
+    color: var(--z-color-text-secondary);
+    font-size: var(--z-text-label-12);
     font-weight: 600;
+    line-height: var(--z-leading-label-12);
   }
 
   .pop-type.-state {
-    background: var(--z-data-state-bg);
-    color: var(--z-data-state);
+    border-color: color-mix(in srgb, var(--z-data-state) 34%, transparent);
   }
+
   .pop-type.-joint {
-    background: var(--z-data-joint-bg);
-    color: var(--z-data-joint);
+    border-color: color-mix(in srgb, var(--z-data-joint) 34%, transparent);
   }
+
   .pop-type.-city {
-    background: var(--z-data-city-bg);
-    color: var(--z-data-city);
+    border-color: color-mix(in srgb, var(--z-data-city) 34%, transparent);
+  }
+
+  .pop-summary {
+    margin-bottom: var(--z-space-3);
+    color: var(--z-color-text-secondary);
+    font-size: var(--z-text-copy-13);
+    line-height: var(--z-leading-copy-13);
+  }
+
+  .pop-track {
+    display: grid;
+    grid-template-columns: repeat(var(--track-count), minmax(0, 1fr));
+    gap: var(--z-space-2);
+    margin-bottom: var(--z-space-3);
+  }
+
+  .pop-track-item {
+    min-width: 0;
+    padding: var(--z-space-2);
+    border: 1px solid var(--z-color-border-subtle);
+    border-radius: var(--z-radius-subtle);
+    background: var(--z-color-surface-soft);
+  }
+
+  .pop-track-item.is-current {
+    border-color: color-mix(in srgb, var(--z-color-accent) 36%, var(--z-color-border));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--z-color-accent) 18%, transparent);
+  }
+
+  .pop-track-item.is-empty {
+    color: var(--z-color-text-dimmed);
+  }
+
+  .pop-track-year {
+    display: block;
+    margin-bottom: var(--z-space-1);
+    color: var(--z-color-text-dimmed);
+    font-size: var(--z-text-label-12);
+    line-height: var(--z-leading-label-12);
+  }
+
+  .pop-track-empty {
+    display: inline-block;
+    color: var(--z-color-text-dimmed);
+    font-size: var(--z-text-label-12);
+    line-height: var(--z-leading-label-12);
   }
 
   .pop-chart {
-    width: 340px;
-    height: 200px;
     display: block;
+    width: 100%;
+    height: 128px;
   }
 
   .pop-chart :global(.pop-grid) {
     stroke: var(--z-color-hairline-light);
-    stroke-width: 0.5;
     stroke-dasharray: 3 3;
+    stroke-width: 0.5;
   }
 
-  .pop-chart :global(.pop-label-y) {
-    font-size: var(--z-text-label-12);
-    fill: var(--z-color-text-dimmed);
+  .pop-chart :global(.pop-group-label) {
     dominant-baseline: middle;
-  }
-
-  .pop-chart :global(.pop-label-x) {
+    fill: var(--z-color-text-dimmed);
     font-size: var(--z-text-label-12);
-    fill: var(--z-color-text-secondary);
-    text-anchor: middle;
-    dominant-baseline: hanging;
   }
 
   .pop-chart :global(.pop-line) {
     fill: none;
-    stroke-width: 2.5;
+    stroke: var(--z-color-hairline-shade);
     stroke-linecap: round;
     stroke-linejoin: round;
+    stroke-width: 2.25;
   }
 
-  .pop-chart :global(.pop-line.-state) {
-    stroke: var(--z-data-state);
-  }
-  .pop-chart :global(.pop-line.-joint) {
-    stroke: var(--z-data-joint);
-  }
-  .pop-chart :global(.pop-line.-city) {
-    stroke: var(--z-data-city);
+  .pop-chart :global(.pop-dot) {
+    stroke: var(--z-color-background-100);
+    stroke-width: 1.5;
   }
 
-  .pop-chart :global(.pop-dot.-state) {
-    fill: var(--z-data-state);
-  }
-  .pop-chart :global(.pop-dot.-joint) {
-    fill: var(--z-data-joint);
-  }
-  .pop-chart :global(.pop-dot.-city) {
-    fill: var(--z-data-city);
+  .pop-chart :global(.pop-dot.is-current) {
+    stroke: var(--z-color-accent);
+    stroke-width: 2;
   }
 
-  .pop-chart :global(.pop-group-label) {
-    font-size: var(--z-text-label-12);
-    font-weight: 600;
-    dominant-baseline: middle;
-  }
-
-  .pop-chart :global(.pop-group-label.pg1) {
-    fill: var(--z-data-g1);
-  }
-  .pop-chart :global(.pop-group-label.pg2) {
-    fill: var(--z-data-g2);
-  }
-  .pop-chart :global(.pop-group-label.pg3) {
-    fill: var(--z-data-g3);
-  }
-  .pop-chart :global(.pop-group-label.pg4) {
-    fill: var(--z-data-g4);
-  }
+  .pop-chart :global(.pg1) { fill: var(--z-data-g1); }
+  .pop-chart :global(.pg2) { fill: var(--z-data-g2); }
+  .pop-chart :global(.pg3) { fill: var(--z-data-g3); }
+  .pop-chart :global(.pg4) { fill: var(--z-data-g4); }
 </style>
 
 <script>
   const popover = document.getElementById('spark-popover')!
   const popName = popover.querySelector<HTMLElement>('.pop-name')!
   const popType = popover.querySelector<HTMLElement>('.pop-type')!
+  const popCurrent = popover.querySelector<HTMLElement>('.pop-current')!
+  const popSummary = popover.querySelector<HTMLElement>('.pop-summary')!
+  const popTrack = popover.querySelector<HTMLElement>('.pop-track')!
   const popChart = popover.querySelector<SVGSVGElement>('.pop-chart')!
 
   const SVG_NS = 'http://www.w3.org/2000/svg'
-
   const GROUP_LABELS: Record<number, string> = { 1: '第一组', 2: '第二组', 3: '第三组', 4: '第四组' }
   const TYPE_LABELS: Record<string, string> = {
     国有商业银行: '国有',
@@ -167,13 +210,12 @@
     城市商业银行: '-city',
   }
 
-  // Chart geometry
-  const PAD_L = 38
-  const PAD_R = 12
+  const PAD_L = 42
+  const PAD_R = 14
   const PAD_T = 12
-  const PAD_B = 26
-  const CW = 340
-  const CH = 160
+  const PAD_B = 14
+  const CW = 360
+  const CH = 128
   const plotW = CW - PAD_L - PAD_R
   const plotH = CH - PAD_T - PAD_B
 
@@ -183,111 +225,11 @@
     type: string | null
   }
 
-  function yForGroup(g: number): number {
-    return PAD_T + plotH - ((g - 0.5) / 4) * plotH
-  }
+  let activeTrigger: HTMLButtonElement | null = null
+  let isPinned = false
 
-  /* ── Build the enlarged SVG chart ── */
-  function buildChart(traj: DataPoint[], bankType: string): void {
-    popChart.innerHTML = ''
-
-    // Horizontal grid lines + Y‑axis group labels
-    for (let g = 1; g <= 4; g++) {
-      const y = yForGroup(g)
-
-      const line = document.createElementNS(SVG_NS, 'line')
-      line.setAttribute('x1', String(PAD_L))
-      line.setAttribute('x2', String(CW - PAD_R))
-      line.setAttribute('y1', String(y))
-      line.setAttribute('y2', String(y))
-      line.classList.add('pop-grid')
-      popChart.appendChild(line)
-
-      const label = document.createElementNS(SVG_NS, 'text')
-      label.setAttribute('x', String(PAD_L - 8))
-      label.setAttribute('y', String(y))
-      label.setAttribute('text-anchor', 'end')
-      label.classList.add('pop-group-label', `pg${g}`)
-      label.textContent = GROUP_LABELS[g]
-      popChart.appendChild(label)
-    }
-
-    // X‑axis year labels
-    const years = traj.map((t) => t.year)
-    const n = years.length
-    const xPos = years.map((_, i) => PAD_L + (n === 1 ? plotW / 2 : (i / (n - 1)) * plotW))
-
-    years.forEach((yr, i) => {
-      const label = document.createElementNS(SVG_NS, 'text')
-      label.setAttribute('x', String(xPos[i]))
-      label.setAttribute('y', String(CH - 4))
-      label.classList.add('pop-label-x')
-      label.textContent = yr
-      popChart.appendChild(label)
-    })
-
-    // Connecting polyline
-    const pts: string[] = []
-    traj.forEach((t, i) => {
-      if (t.group != null) pts.push(`${xPos[i]},${yForGroup(t.group)}`)
-    })
-    if (pts.length >= 2) {
-      const poly = document.createElementNS(SVG_NS, 'polyline')
-      poly.setAttribute('points', pts.join(' '))
-      poly.classList.add('pop-line', TYPE_CSS[bankType] || '-state')
-      popChart.appendChild(poly)
-    }
-
-    // Data‑point dots + G‑labels
-    traj.forEach((t, i) => {
-      if (t.group == null) return
-      const cx = xPos[i]
-      const cy = yForGroup(t.group)
-
-      const dot = document.createElementNS(SVG_NS, 'circle')
-      dot.setAttribute('cx', String(cx))
-      dot.setAttribute('cy', String(cy))
-      dot.setAttribute('r', '5')
-      dot.classList.add('pop-dot', TYPE_CSS[t.type!] || '-state')
-      popChart.appendChild(dot)
-    })
-  }
-
-  /* ── Positioning ── */
-  function positionPopover(target: HTMLElement): void {
-    const rect = target.getBoundingClientRect()
-    const pw = 372
-    const ph = 210
-    let left = rect.left + rect.width / 2 - pw / 2
-    let top = rect.top - ph - 8
-
-    if (top < 4) top = rect.bottom + 8
-    if (left < 4) left = 4
-    if (left + pw > window.innerWidth - 4) left = window.innerWidth - pw - 4
-
-    popover.style.left = `${left}px`
-    popover.style.top = `${top}px`
-  }
-
-  /* ── Show / hide ── */
-  function show(cell: HTMLElement): void {
-    const name = cell.dataset.bankName || ''
-    const traj = parseTrajectory(cell.dataset.trajectory)
-    if (traj.length === 0) return
-
-    const latestType = [...traj].reverse().find((t) => t.type)?.type || ''
-
-    popName.textContent = name
-    popType.textContent = TYPE_LABELS[latestType] || latestType
-    popType.className = 'pop-type ' + (TYPE_CSS[latestType] || '')
-
-    buildChart(traj, latestType)
-    positionPopover(cell)
-    popover.setAttribute('aria-hidden', 'false')
-  }
-
-  function hide(): void {
-    popover.setAttribute('aria-hidden', 'true')
+  function yForGroup(group: number): number {
+    return PAD_T + plotH - ((group - 0.5) / 4) * plotH
   }
 
   function parseTrajectory(value: string | undefined): DataPoint[] {
@@ -302,72 +244,267 @@
         const candidate = point as DataPoint
         return typeof candidate.year === 'string' && (candidate.group === null || typeof candidate.group === 'number')
       })
-    } catch {
+    } catch (error) {
+      console.warn('Invalid D-SIBs trajectory payload', error)
       return []
     }
   }
 
-  /* ── Event binding ── */
-  let activeTd: HTMLElement | null = null
-  let isLocked = false
+  function getListedPoints(traj: DataPoint[]): DataPoint[] {
+    return traj.filter((point): point is DataPoint & { group: number } => point.group !== null)
+  }
 
-  document.querySelectorAll<HTMLElement>('td.col-spark[data-trajectory]').forEach((td) => {
-    td.addEventListener('mouseenter', () => {
-      if (!isLocked) {
-        activeTd = td
-        show(td)
-      }
-    })
-    td.addEventListener('mouseleave', () => {
-      if (!isLocked) {
-        activeTd = null
-        hide()
-      }
-    })
-    td.addEventListener('click', (e) => {
-      e.stopPropagation()
-      if (isLocked && activeTd === td) {
-        isLocked = false
-        hide()
-        activeTd = null
+  function latestListedPoint(traj: DataPoint[]): (DataPoint & { group: number }) | null {
+    return getListedPoints(traj).at(-1) ?? null
+  }
+
+  function setExpanded(trigger: HTMLButtonElement | null, expanded: boolean): void {
+    trigger?.setAttribute('aria-expanded', String(expanded))
+  }
+
+  function renderBadges(latest: (DataPoint & { group: number }) | null): void {
+    const latestType = latest?.type ?? ''
+
+    popType.textContent = TYPE_LABELS[latestType] || latestType || '未知类型'
+    popType.className = `pop-type ${TYPE_CSS[latestType] || ''}`
+
+    popCurrent.replaceChildren()
+    if (!latest) {
+      popCurrent.textContent = '暂无组别'
+      return
+    }
+
+    const tag = document.createElement('span')
+    tag.className = `z-tag z-tag--g${latest.group}`
+    tag.textContent = GROUP_LABELS[latest.group] ?? `第${latest.group}组`
+    popCurrent.appendChild(tag)
+  }
+
+  function renderSummary(traj: DataPoint[]): void {
+    const listed = getListedPoints(traj)
+    const first = listed[0]
+    const latest = listed.at(-1)
+
+    if (!first || !latest) {
+      popSummary.textContent = '暂无可展示的年度组别记录。'
+      return
+    }
+
+    const delta = latest.group - first.group
+    const trend = delta > 0 ? `累计上升 ${delta} 组` : delta < 0 ? `累计下降 ${Math.abs(delta)} 组` : '组别保持不变'
+    const missingCount = traj.length - listed.length
+    const missingText = missingCount > 0 ? `；${missingCount} 个年份未入选` : ''
+    popSummary.textContent = `${first.year} ${GROUP_LABELS[first.group]} → ${latest.year} ${GROUP_LABELS[latest.group]}，${trend}${missingText}`
+  }
+
+  function renderTrack(traj: DataPoint[]): void {
+    const latest = latestListedPoint(traj)
+    popTrack.replaceChildren()
+    popTrack.style.setProperty('--track-count', String(Math.max(traj.length, 1)))
+
+    traj.forEach((point) => {
+      const item = document.createElement('div')
+      item.className = 'pop-track-item'
+      if (point.group === null) item.classList.add('is-empty')
+      if (latest && point.year === latest.year) item.classList.add('is-current')
+
+      const year = document.createElement('span')
+      year.className = 'pop-track-year'
+      year.textContent = point.year
+      item.appendChild(year)
+
+      if (point.group === null) {
+        const empty = document.createElement('span')
+        empty.className = 'pop-track-empty'
+        empty.textContent = '未入选'
+        item.appendChild(empty)
       } else {
-        isLocked = true
-        activeTd = td
-        show(td)
+        const tag = document.createElement('span')
+        tag.className = `z-tag z-tag--g${point.group}`
+        tag.textContent = GROUP_LABELS[point.group] ?? `第${point.group}组`
+        item.appendChild(tag)
       }
+
+      popTrack.appendChild(item)
     })
-    td.addEventListener('focus', () => {
-      activeTd = td
-      show(td)
-    })
-    td.addEventListener('blur', () => {
-      if (!isLocked) {
-        activeTd = null
-        hide()
+  }
+
+  function appendSvg<K extends keyof SVGElementTagNameMap>(tagName: K): SVGElementTagNameMap[K] {
+    const element = document.createElementNS(SVG_NS, tagName)
+    popChart.appendChild(element)
+    return element
+  }
+
+  function renderChart(traj: DataPoint[]): void {
+    popChart.replaceChildren()
+
+    for (let group = 1; group <= 4; group++) {
+      const y = yForGroup(group)
+
+      const line = appendSvg('line')
+      line.setAttribute('x1', String(PAD_L))
+      line.setAttribute('x2', String(CW - PAD_R))
+      line.setAttribute('y1', String(y))
+      line.setAttribute('y2', String(y))
+      line.classList.add('pop-grid')
+
+      const label = appendSvg('text')
+      label.setAttribute('x', String(PAD_L - 8))
+      label.setAttribute('y', String(y))
+      label.setAttribute('text-anchor', 'end')
+      label.classList.add('pop-group-label')
+      label.textContent = GROUP_LABELS[group]
+    }
+
+    const xPos = traj.map((_, index) => PAD_L + (traj.length === 1 ? plotW / 2 : (index / (traj.length - 1)) * plotW))
+    const latest = latestListedPoint(traj)
+    let segment: string[] = []
+
+    function flushSegment(): void {
+      if (segment.length < 2) {
+        segment = []
+        return
       }
+
+      const polyline = appendSvg('polyline')
+      polyline.setAttribute('points', segment.join(' '))
+      polyline.classList.add('pop-line')
+      segment = []
+    }
+
+    traj.forEach((point, index) => {
+      if (point.group === null) {
+        flushSegment()
+        return
+      }
+
+      segment.push(`${xPos[index]},${yForGroup(point.group)}`)
+    })
+    flushSegment()
+
+    traj.forEach((point, index) => {
+      if (point.group === null) return
+
+      const dot = appendSvg('circle')
+      dot.setAttribute('cx', String(xPos[index]))
+      dot.setAttribute('cy', String(yForGroup(point.group)))
+      dot.setAttribute('r', latest && point.year === latest.year ? '5.5' : '4.5')
+      dot.classList.add('pop-dot', `pg${point.group}`)
+      if (latest && point.year === latest.year) dot.classList.add('is-current')
+    })
+  }
+
+  function renderCard(trigger: HTMLButtonElement): boolean {
+    const traj = parseTrajectory(trigger.dataset.trajectory)
+    if (traj.length === 0) return false
+
+    const latest = latestListedPoint(traj)
+    popName.textContent = trigger.dataset.bankName || ''
+    renderBadges(latest)
+    renderSummary(traj)
+    renderTrack(traj)
+    renderChart(traj)
+    return true
+  }
+
+  function positionPopover(trigger: HTMLElement): void {
+    const margin = 8
+    const rect = trigger.getBoundingClientRect()
+    const popoverWidth = popover.offsetWidth
+    const popoverHeight = popover.offsetHeight
+
+    let left = rect.left + rect.width / 2 - popoverWidth / 2
+    let top = rect.top - popoverHeight - margin
+
+    if (top < margin) {
+      top = rect.bottom + margin
+    }
+
+    left = Math.max(margin, Math.min(left, window.innerWidth - popoverWidth - margin))
+    top = Math.max(margin, Math.min(top, window.innerHeight - popoverHeight - margin))
+
+    popover.style.left = `${left}px`
+    popover.style.top = `${top}px`
+  }
+
+  function open(trigger: HTMLButtonElement, pinned: boolean): void {
+    if (!renderCard(trigger)) return
+
+    setExpanded(activeTrigger, false)
+    activeTrigger = trigger
+    isPinned = pinned
+    popover.dataset.mode = pinned ? 'pinned' : 'preview'
+    popover.setAttribute('aria-hidden', 'false')
+    setExpanded(trigger, pinned)
+    positionPopover(trigger)
+  }
+
+  function close(): void {
+    setExpanded(activeTrigger, false)
+    activeTrigger = null
+    isPinned = false
+    popover.setAttribute('aria-hidden', 'true')
+    popover.removeAttribute('data-mode')
+  }
+
+  document.querySelectorAll<HTMLButtonElement>('.spark-trigger[data-trajectory]').forEach((trigger) => {
+    trigger.addEventListener('pointerenter', () => {
+      if (!isPinned) open(trigger, false)
+    })
+
+    trigger.addEventListener('pointerleave', () => {
+      if (!isPinned) close()
+    })
+
+    trigger.addEventListener('focus', () => {
+      if (!isPinned) open(trigger, false)
+    })
+
+    trigger.addEventListener('blur', () => {
+      if (!isPinned) close()
+    })
+
+    trigger.addEventListener('click', (event) => {
+      event.stopPropagation()
+
+      if (isPinned && activeTrigger === trigger) {
+        close()
+        return
+      }
+
+      open(trigger, true)
     })
   })
 
-  document.addEventListener('click', () => {
-    if (isLocked) {
-      isLocked = false
-      hide()
-      activeTd = null
-    }
+  document.addEventListener('click', (event) => {
+    if (!isPinned) return
+    const target = event.target
+    if (!(target instanceof Node)) return
+    if (popover.contains(target) || activeTrigger?.contains(target)) return
+
+    close()
   })
 
   document.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape') return
-    isLocked = false
-    activeTd = null
-    hide()
+    close()
   })
 
   window.addEventListener('resize', () => {
-    if (activeTd && popover.getAttribute('aria-hidden') === 'false') {
-      positionPopover(activeTd)
-    }
+    if (activeTrigger && popover.getAttribute('aria-hidden') === 'false') positionPopover(activeTrigger)
   })
 
-  popover.addEventListener('click', (e) => e.stopPropagation())
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!activeTrigger || popover.getAttribute('aria-hidden') === 'true') return
+      if (!isPinned) {
+        close()
+        return
+      }
+
+      positionPopover(activeTrigger)
+    },
+    true,
+  )
 </script>

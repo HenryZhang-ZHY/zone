@@ -6,72 +6,138 @@ interface Props {
 }
 
 const { changes } = Astro.props
+
+function changeCount(change: YearChange): number {
+  return change.entered.length + change.exited.length + change.upgraded.length + change.downgraded.length
+}
+
+function spanLabel(change: YearChange): string {
+  const span = Number(change.to) - Number(change.from)
+  if (!Number.isFinite(span) || span <= 1) return ''
+
+  return `相隔 ${span} 年发布`
+}
+
+function summary(change: YearChange): string {
+  const parts = [
+    change.entered.length > 0 ? `新增 ${change.entered.length} 家` : '',
+    change.exited.length > 0 ? `退出 ${change.exited.length} 家` : '无退出',
+    change.upgraded.length > 0 ? `上升 ${change.upgraded.length} 家` : '',
+    change.downgraded.length > 0 ? `下降 ${change.downgraded.length} 家` : '',
+  ].filter(Boolean)
+
+  return parts.length > 0 ? parts.join('，') : '无名单变化'
+}
+
+const orderedChanges = [...changes].sort((a, b) => {
+  const countDelta = Number(changeCount(b) > 0) - Number(changeCount(a) > 0)
+  if (countDelta !== 0) return countDelta
+
+  return Number(a.from) - Number(b.from)
+})
 ---
 
 <section class="changes-section z-section">
   <h2 class="z-section-title">历年变化</h2>
-  <div class="timeline z-timeline">
+  <div class="change-years">
     {
-      changes.map((change) => {
-        const hasChanges = change.entered.length > 0 || change.exited.length > 0 || change.upgraded.length > 0 || change.downgraded.length > 0
+      orderedChanges.map((change) => {
+        const total = changeCount(change)
+        const hasChanges = total > 0
+        const span = spanLabel(change)
+
         return (
-          <div class="timeline-item z-timeline-item">
-            <div class="timeline-marker z-timeline-marker" />
-            <div class="timeline-content">
-              <h3>
-                {change.from} → {change.to}
-              </h3>
-              {!hasChanges && <p class="no-change">无变化</p>}
-              {change.entered.length > 0 && (
-                <div class="change-group z-status-card z-status-card--enter">
-                  <span class="change-icon z-status-icon">＋</span>
-                  <div>
-                    <strong>新增入选</strong>
-                    {change.entered.map(([name, group]) => (
-                      <span class="change-banks">
-                        {name}：{groupLabels[group]}
-                      </span>
-                    ))}
+          <article class={`change-year ${hasChanges ? 'has-changes' : 'is-muted'}`}>
+            <header class="change-year-header">
+              <div>
+                <h3>{change.from} → {change.to}</h3>
+                {span && <p class="change-span">{span}</p>}
+              </div>
+              <span class={`change-total ${hasChanges ? '' : 'is-zero'}`}>{hasChanges ? `${total} 项变化` : '无变化'}</span>
+            </header>
+
+            <p class="change-summary">{summary(change)}</p>
+
+            {hasChanges && (
+              <div class="change-details">
+                {change.entered.length > 0 && (
+                  <div class="change-kind change-kind--enter">
+                    <div class="change-kind-header">
+                      <span class="change-icon">＋</span>
+                      <strong>新增入选</strong>
+                    </div>
+                    <div class="change-rows">
+                      {change.entered.map(([name, group]) => (
+                        <div class="change-row">
+                          <span class="bank-name">{name}</span>
+                          <span class={`z-tag z-tag--g${group}`}>{groupLabels[group]}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-              {change.exited.length > 0 && (
-                <div class="change-group z-status-card z-status-card--exit">
-                  <span class="change-icon z-status-icon">－</span>
-                  <div>
-                    <strong>退出名单</strong>
-                    <span class="change-banks">{change.exited.join('、')}</span>
+                )}
+
+                {change.exited.length > 0 && (
+                  <div class="change-kind change-kind--exit">
+                    <div class="change-kind-header">
+                      <span class="change-icon">－</span>
+                      <strong>退出名单</strong>
+                    </div>
+                    <div class="change-rows">
+                      {change.exited.map((name) => (
+                        <div class="change-row">
+                          <span class="bank-name">{name}</span>
+                          <span class="exit-label">退出</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-              {change.upgraded.length > 0 && (
-                <div class="change-group z-status-card z-status-card--up">
-                  <span class="change-icon z-status-icon">↑</span>
-                  <div>
-                    <strong>组别上升</strong>
-                    {change.upgraded.map(([name, from, to]) => (
-                      <span class="change-banks">
-                        {name}：{groupLabels[from]} → {groupLabels[to]}
-                      </span>
-                    ))}
+                )}
+
+                {change.upgraded.length > 0 && (
+                  <div class="change-kind change-kind--up">
+                    <div class="change-kind-header">
+                      <span class="change-icon">↑</span>
+                      <strong>组别上升</strong>
+                    </div>
+                    <div class="change-rows">
+                      {change.upgraded.map(([name, from, to]) => (
+                        <div class="change-row">
+                          <span class="bank-name">{name}</span>
+                          <span class="group-flow">
+                            <span class={`z-tag z-tag--g${from}`}>{groupLabels[from]}</span>
+                            <span class="flow-arrow">→</span>
+                            <span class={`z-tag z-tag--g${to}`}>{groupLabels[to]}</span>
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-              {change.downgraded.length > 0 && (
-                <div class="change-group z-status-card z-status-card--down">
-                  <span class="change-icon z-status-icon">↓</span>
-                  <div>
-                    <strong>组别下降</strong>
-                    {change.downgraded.map(([name, from, to]) => (
-                      <span class="change-banks">
-                        {name}：{groupLabels[from]} → {groupLabels[to]}
-                      </span>
-                    ))}
+                )}
+
+                {change.downgraded.length > 0 && (
+                  <div class="change-kind change-kind--down">
+                    <div class="change-kind-header">
+                      <span class="change-icon">↓</span>
+                      <strong>组别下降</strong>
+                    </div>
+                    <div class="change-rows">
+                      {change.downgraded.map(([name, from, to]) => (
+                        <div class="change-row">
+                          <span class="bank-name">{name}</span>
+                          <span class="group-flow">
+                            <span class={`z-tag z-tag--g${from}`}>{groupLabels[from]}</span>
+                            <span class="flow-arrow">→</span>
+                            <span class={`z-tag z-tag--g${to}`}>{groupLabels[to]}</span>
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
-          </div>
+                )}
+              </div>
+            )}
+          </article>
         )
       })
     }
@@ -79,47 +145,178 @@ const { changes } = Astro.props
 </section>
 
 <style>
-  .timeline-content h3 {
+  .change-years {
+    display: grid;
+    gap: var(--z-space-4);
+  }
+
+  .change-year {
+    position: relative;
+    overflow: hidden;
+    padding: var(--z-space-6);
+    border: 1px solid var(--z-color-border-subtle);
+    border-radius: var(--z-radius-subtle);
+    background: var(--z-color-surface-soft);
+  }
+
+  .change-year.has-changes::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3px;
+    background: var(--z-color-accent);
+  }
+
+  .change-year.is-muted {
+    padding-block: var(--z-space-4);
+    background: transparent;
+  }
+
+  .change-year-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--z-space-4);
+    margin-bottom: var(--z-space-2);
+  }
+
+  .change-year h3 {
+    color: var(--z-color-heading);
     font-size: var(--z-text-heading-20);
     font-weight: 600;
-    line-height: var(--z-leading-heading-20);
     letter-spacing: var(--z-tracking-heading-20);
-    margin-bottom: var(--z-space-3);
+    line-height: var(--z-leading-heading-20);
   }
 
-  .change-group strong {
-    display: block;
-    margin-bottom: var(--z-space-1);
-  }
-
-  .change-banks {
-    display: block;
-    color: var(--z-color-text-secondary);
-  }
-
-  .change-enter .change-icon,
-  .z-status-card--enter .change-icon {
-    color: var(--z-color-green-high);
-  }
-
-  .change-exit .change-icon,
-  .z-status-card--exit .change-icon {
-    color: var(--z-color-red-high);
-  }
-
-  .change-up .change-icon,
-  .z-status-card--up .change-icon {
-    color: var(--z-color-orange-high);
-  }
-
-  .change-down .change-icon,
-  .z-status-card--down .change-icon {
-    color: var(--z-color-blue-high);
-  }
-
-  .no-change {
+  .change-span {
+    margin-top: var(--z-space-1);
     color: var(--z-color-text-dimmed);
+    font-size: var(--z-text-label-12);
+    line-height: var(--z-leading-label-12);
+  }
+
+  .change-total {
+    flex-shrink: 0;
+    padding: var(--z-space-1) var(--z-space-2);
+    border: 1px solid color-mix(in srgb, var(--z-color-accent) 34%, transparent);
+    border-radius: var(--z-radius-subtle);
+    color: var(--z-color-accent-high);
+    font-size: var(--z-text-label-12);
+    font-weight: 600;
+    line-height: var(--z-leading-label-12);
+  }
+
+  .change-total.is-zero {
+    border-color: var(--z-color-border-subtle);
+    color: var(--z-color-text-dimmed);
+  }
+
+  .change-summary {
+    margin-bottom: var(--z-space-4);
+    color: var(--z-color-text-secondary);
     font-size: var(--z-text-copy-14);
     line-height: var(--z-leading-copy-14);
+  }
+
+  .change-year.is-muted .change-summary {
+    margin-bottom: 0;
+    color: var(--z-color-text-dimmed);
+  }
+
+  .change-details {
+    display: grid;
+    gap: var(--z-space-3);
+  }
+
+  .change-kind {
+    padding: var(--z-space-3);
+    border: 1px solid var(--z-color-border-subtle);
+    border-radius: var(--z-radius-subtle);
+    background: color-mix(in srgb, var(--z-color-background-100) 66%, transparent);
+  }
+
+  .change-kind-header {
+    display: flex;
+    align-items: center;
+    gap: var(--z-space-2);
+    margin-bottom: var(--z-space-2);
+    font-size: var(--z-text-label-12);
+    line-height: var(--z-leading-label-12);
+  }
+
+  .change-kind-header strong {
+    font-weight: 600;
+  }
+
+  .change-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: var(--z-radius-subtle);
+    background: var(--z-color-surface-soft);
+    font-weight: 600;
+  }
+
+  .change-kind--enter .change-icon { color: var(--z-color-green-high); }
+  .change-kind--exit .change-icon { color: var(--z-color-red-high); }
+  .change-kind--up .change-icon { color: var(--z-color-orange-high); }
+  .change-kind--down .change-icon { color: var(--z-color-blue-high); }
+
+  .change-rows {
+    display: grid;
+    gap: var(--z-space-2);
+  }
+
+  .change-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--z-space-3);
+    min-width: 0;
+    color: var(--z-color-text-secondary);
+    font-size: var(--z-text-copy-13);
+    line-height: var(--z-leading-copy-13);
+  }
+
+  .bank-name {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--z-color-primary);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .group-flow {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: var(--z-space-1);
+  }
+
+  .flow-arrow {
+    color: var(--z-color-text-dimmed);
+  }
+
+  .exit-label {
+    flex-shrink: 0;
+    color: var(--z-color-red-high);
+    font-size: var(--z-text-label-12);
+    font-weight: 600;
+    line-height: var(--z-leading-label-12);
+  }
+
+  @media (max-width: 640px) {
+    .change-year {
+      padding: var(--z-space-4);
+    }
+
+    .change-year-header,
+    .change-row {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: var(--z-space-2);
+    }
+
   }
 </style>

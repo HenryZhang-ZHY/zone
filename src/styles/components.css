@@ -207,42 +207,53 @@
   font-weight: 600;
   line-height: var(--z-leading-label-12);
   padding: var(--z-space-1) var(--z-space-2);
+  border: 1px solid transparent;
   border-radius: var(--z-radius-subtle);
 }
 
-.z-tag--state {
-  background: var(--z-data-state-bg);
-  color: var(--z-data-state);
+.z-tag--state,
+.tag-state {
+  background: transparent;
+  color: var(--z-color-text-secondary);
+  border-color: color-mix(in srgb, var(--z-data-state) 34%, transparent);
 }
 
-.z-tag--joint {
-  background: var(--z-data-joint-bg);
-  color: var(--z-data-joint);
+.z-tag--joint,
+.tag-joint {
+  background: transparent;
+  color: var(--z-color-text-secondary);
+  border-color: color-mix(in srgb, var(--z-data-joint) 34%, transparent);
 }
 
-.z-tag--city {
-  background: var(--z-data-city-bg);
-  color: var(--z-data-city);
+.z-tag--city,
+.tag-city {
+  background: transparent;
+  color: var(--z-color-text-secondary);
+  border-color: color-mix(in srgb, var(--z-data-city) 34%, transparent);
 }
 
 .z-tag--g1 {
   background: var(--z-data-g1-bg);
   color: var(--z-data-g1);
+  border-color: color-mix(in srgb, var(--z-data-g1) 24%, transparent);
 }
 
 .z-tag--g2 {
   background: var(--z-data-g2-bg);
   color: var(--z-data-g2);
+  border-color: color-mix(in srgb, var(--z-data-g2) 30%, transparent);
 }
 
 .z-tag--g3 {
   background: var(--z-data-g3-bg);
   color: var(--z-data-g3);
+  border-color: color-mix(in srgb, var(--z-data-g3) 32%, transparent);
 }
 
 .z-tag--g4 {
   background: var(--z-data-g4-bg);
   color: var(--z-data-g4);
+  border-color: color-mix(in srgb, var(--z-data-g4) 38%, transparent);
 }
 
 /* === TIMELINE & STATUS === */
@@ -296,18 +307,26 @@
 }
 
 .z-status-card--enter {
+  background: color-mix(in srgb, var(--z-color-green-low) 55%, var(--z-color-surface));
+  border-color: color-mix(in srgb, var(--z-color-green-high) 28%, transparent);
   border-left-color: var(--z-color-green-high);
 }
 
 .z-status-card--exit {
+  background: color-mix(in srgb, var(--z-color-red-low) 55%, var(--z-color-surface));
+  border-color: color-mix(in srgb, var(--z-color-red-high) 28%, transparent);
   border-left-color: var(--z-color-red-high);
 }
 
 .z-status-card--up {
+  background: color-mix(in srgb, var(--z-color-orange-low) 55%, var(--z-color-surface));
+  border-color: color-mix(in srgb, var(--z-color-orange-high) 28%, transparent);
   border-left-color: var(--z-color-orange-high);
 }
 
 .z-status-card--down {
+  background: color-mix(in srgb, var(--z-color-blue-low) 55%, var(--z-color-surface));
+  border-color: color-mix(in srgb, var(--z-color-blue-high) 28%, transparent);
   border-left-color: var(--z-color-blue-high);
 }
 
