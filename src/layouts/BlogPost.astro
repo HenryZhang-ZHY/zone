@@ -214,17 +214,22 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3)
 		line-height: var(--z-leading-label-12);
 		color: var(--z-color-text-dimmed);
 		border-inline-start: 2px solid transparent;
-		transition: color 150ms ease, border-color 150ms ease;
+		background: transparent;
+		transition: color 150ms ease, border-color 150ms ease, background-color 150ms ease;
 		text-decoration: none;
 	}
 
-	.toc-link:hover {
-		color: var(--z-color-text);
+	.toc-link:hover,
+	.toc-link:focus-visible {
+		color: var(--z-color-text-accent);
+		border-inline-start-color: color-mix(in srgb, var(--z-color-text-accent) 40%, transparent);
+		background-color: var(--z-color-row-hover);
 	}
 
 	.toc-link:global(.active) {
 		color: var(--z-color-text-accent);
 		border-inline-start-color: var(--z-color-text-accent);
+		background-color: var(--z-color-row-hover);
 	}
 
 	.toc-mobile {

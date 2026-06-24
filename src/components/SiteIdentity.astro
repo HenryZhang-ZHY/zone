@@ -22,11 +22,19 @@ import { SITE_TITLE } from '../consts'
     font-weight: 600;
     line-height: var(--z-leading-label-14);
     margin-inline-start: var(--z-shell-content-offset-x);
+    text-decoration: none;
+    transition: color 150ms ease;
   }
 
   .site-identity-link:hover {
     color: var(--z-color-text-accent);
+  }
+
+  .site-identity-link:focus-visible {
+    color: var(--z-color-text-accent);
     text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
   }
 
   @media (max-width: 768px) {

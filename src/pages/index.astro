@@ -48,10 +48,17 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueO
 		margin: 0 0 var(--z-space-3) 0;
 		letter-spacing: var(--z-tracking-heading-20);
 		color: var(--z-color-heading);
+		text-decoration: underline;
+		text-decoration-color: transparent;
+		text-decoration-thickness: 1px;
+		text-underline-offset: 0.2em;
+		transition: color 150ms ease, text-decoration-color 150ms ease;
 	}
 
-	.post-link:hover .post-title {
+	.post-link:hover .post-title,
+	.post-link:focus-visible .post-title {
 		color: var(--z-color-text-accent);
+		text-decoration-color: currentColor;
 	}
 
 	.post-excerpt {
