@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
+import { unified } from '@astrojs/markdown-remark';
 import sitemap from '@astrojs/sitemap';
 
 import expressiveCode from 'astro-expressive-code';
@@ -8,6 +9,11 @@ import { addClassName } from 'astro-expressive-code/hast';
 
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+
+const markdownProcessor = unified({
+  remarkPlugins: [remarkMath],
+  rehypePlugins: [rehypeKatex],
+});
 
 // https://astro.build/config
 export default defineConfig({
@@ -25,15 +31,11 @@ export default defineConfig({
         }
       ]
     }),
-    mdx({
-      remarkPlugins: [remarkMath],
-      rehypePlugins: [rehypeKatex],
-    }),
+    mdx(),
     sitemap()
   ],
   markdown: {
-    remarkPlugins: [remarkMath],
-    rehypePlugins: [rehypeKatex],
+    processor: markdownProcessor,
     shikiConfig: {
       themes: {
         light: 'github-light',
