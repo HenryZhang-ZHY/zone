@@ -123,8 +123,7 @@
   }
 
   .pop-track-item.is-current {
-    border-color: color-mix(in srgb, var(--z-color-accent) 36%, var(--z-color-border));
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--z-color-accent) 18%, transparent);
+    border-color: var(--z-color-border-active);
   }
 
   .pop-track-item.is-empty {
@@ -178,8 +177,8 @@
   }
 
   .pop-chart :global(.pop-dot.is-current) {
-    stroke: var(--z-color-accent);
-    stroke-width: 2;
+    stroke: var(--z-color-background-100);
+    stroke-width: 2.5;
   }
 
   .pop-chart :global(.pg1) { fill: var(--z-data-g1); }
