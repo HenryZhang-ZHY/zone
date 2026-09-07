@@ -12,9 +12,11 @@ const rawEntries = await getCollection('dsibs')
 const { years, sortedBanks, yearStats, changes } = buildDsibsViewModel(
   rawEntries.map((entry) => entry.data),
 )
+
+const description = '汇总中国人民银行发布的 2021—2025 年中国系统重要性银行名单，按附加监管要求分组展示，并追踪历年入选、分组调整及名单变化。'
 ---
 
-<BaseLayout title={`系统重要性银行名单 | ${SITE_TITLE}`} pageLayout="medium">
+<BaseLayout title={`系统重要性银行名单 | ${SITE_TITLE}`} description={description} lang="zh-CN" pageLayout="medium">
   <main class="z-main">
     <div class="page-header z-page-header">
       <h1 class="z-page-title">中国系统重要性银行</h1>
