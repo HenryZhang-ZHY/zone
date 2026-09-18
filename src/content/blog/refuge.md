@@ -1,45 +1,33 @@
 ---
-title: 'Refuge：给 Git 仓库一个可恢复的避难所'
-description: '从两个本地文件管理方案出发，记录我为什么做 Refuge，以及它目前如何备份和恢复 Git 仓库。'
+title: 'Refuge：不是另一个 Git Server'
+description: '我为什么做 Refuge：让不适合放上公共 Git 平台的仓库，也能方便地备份和恢复。'
 pubDate: 2026-09-18
 outline: |
-  - L1 用 Git 管理文件，关键是划清本地状态与持久数据的边界
-    - L2 之前的两次实践分别处理同步目录和共享仓库中的本地文件
-      - L3 bare repository 只让 OneDrive 同步提交历史
-      - L3 全局 ignore 和 git clean exclude 保留个人开发配置
-  - L1 Refuge 把这条思路做成可恢复的 Git 服务
-    - L2 活跃仓库留在本地 runtime，可迁移数据写入 Backup
-      - L3 支持标准 Git Smart HTTP 和 Git LFS
-      - L3 每次 push 生成经过校验的不可变快照
-      - L3 空 runtime 能从最新有效快照自动恢复
-  - L1 这是一篇随着真实使用持续修订的活文档
-    - L2 当前设计来自部署中实际遇到的问题
-      - L3 runtime 与 Backup 已分离，避免 bind mount 的 Git 所有者检查
+  - L1 有些资料需要 Git，却不适合交给公共 Git 托管平台
+    - L2 同步工作目录会把临时文件也带进云端
+      - L3 Beancount、Obsidian 和工作项目都会产生缓存、虚拟环境等本地文件
+    - L2 同步 bare repository 仍然缺少可靠的恢复保证
+      - L3 活跃仓库由许多持续变化的小文件组成，同步完成不等于能够恢复
+  - L1 Refuge 把 Git 的日常使用与灾难恢复分开
+    - L2 本地机器或私人 Server 保存唯一可写的仓库
+      - L3 客户端仍然使用普通的 Git push 和 pull
+    - L2 同步盘只接收经过校验的不可变快照
+      - L3 新机器可以从最新的有效快照重建仓库
+  - L1 Refuge 只解决私人仓库的托管、备份与恢复
+    - L2 Server 是一种使用方式，而不是产品目的
+      - L3 它不提供协作平台功能，也不备份未提交文件
 ---
 
-我之前写过两篇和 Git 管理文件有关的文章。一篇把 [Beancount 的 bare repository 放进 OneDrive](/blog/using-a-git-bare-repository-to-backup-beancount-files-in-onedrive/)，只同步提交历史，把工作目录、虚拟环境和临时文件留在本地；另一篇记录如何在[共享仓库里保留个人配置文件](/blog/how-to-manage-local-files-in-a-shared-git-repository/)，既不提交，也不让 `git clean` 删除。
+我有一些很适合用 Git 管理、却不适合放上 GitHub 的资料：个人财务记录、Obsidian 笔记，以及只能留在公司设备和公司 OneDrive 里的工作项目。它们需要版本历史，也需要在硬盘损坏或电脑更换后能够恢复。
 
-这两件事其实在处理同一个问题：哪些状态应该进入 Git，哪些只属于当前机器，以及真正需要恢复时应该保留什么。
+直接把工作目录放进同步盘并不好用。缓存、虚拟环境和临时文件也会被同步，不仅浪费空间，还会制造冲突。于是我曾经把 [bare repository 放进 OneDrive](/blog/using-a-git-bare-repository-to-backup-beancount-files-in-onedrive/)，把工作目录留在本地。这个办法隔离了临时文件，却留下了更重要的问题：同步软件面对的是一个正在变化的 Git 仓库；文件显示“已同步”，并不代表远端一定是一份完整、可恢复的仓库。
 
-## Refuge 是什么
+这就是我做 [Refuge](https://github.com/HenryZhang-ZHY/refuge) 想解决的问题：**在不依赖公共 Git 托管平台的前提下，让私人仓库既好用，又真的能够恢复。**
 
-[Refuge](https://github.com/HenryZhang-ZHY/refuge) 是我沿着这条思路做的一个单用户 Git 服务。客户端使用普通的 Git Smart HTTP 和 Git LFS；每次 push 后，Refuge 会把仓库发布成经过校验的不可变快照。
+Refuge 把两件事分开了：本地机器或自己的 Server 保存正在使用的 bare repository，是唯一可写的数据源；OneDrive 等同步目录只接收经过校验的不可变快照。平时我仍然使用普通的 `git push` 和 `git pull`。每次 push 后，Refuge 会生成包含完整 Git 历史的快照；如果仓库使用 Git LFS，对应对象也会一起保存。
 
-它现在把存储明确分成两部分：
+这样，备份不再是“复制了一个目录，希望它还能用”，而是一条明确的恢复路径：原来的机器丢失后，在新机器上保留备份目录，Refuge 会校验快照，并从最新的有效版本重建仓库。备份暂时失败也不会阻止本地 Git 使用，之后可以重试。
 
-- **Runtime** 保存正在提供服务的 bare repositories 和备份队列，放在 Docker 管理的本地 volume 中。
-- **Backup** 只保存可验证、可迁移的快照，可以挂载到 NAS 或定期同步的目录。
+Refuge 可以只在一台电脑上运行，也可以作为私人 Server 供多台设备访问。后者只是使用方式，不是它存在的理由。它不打算替代 GitHub，不做 pull request、issue 或 CI，也不备份尚未提交的文件；它只想把一件小事做完整：给不能放到公共平台的 Git 历史，留下一条可信的退路。
 
-迁移 Server 时，我不需要复制正在运行的 Git 仓库。只要保留 Backup 和独立管理的 owner secret，新 Server 就能用空 runtime 启动，并从每个仓库最新的有效快照自动恢复。
-
-## 为什么不直接同步 bare repository
-
-把 bare repository 直接放进同步盘很简单，我也确实这样用过。但活跃 Git 仓库会持续修改很多小文件，同步工具和容器 bind mount 还会引入一致性、文件权限与 Git 所有者检查等问题。
-
-Refuge 选择让运行数据保持本地，把同步边界收窄到不可变快照。它只验证本地 Backup 是否完整；异地副本是否真的上传成功，仍由同步工具负责。
-
-## 这是一篇活文档
-
-Refuge 目前仍在实际使用中迭代。比如 runtime 与 Backup 的分离，就是在部署中遇到 Git 权限问题后重新设计的。
-
-我会随着使用继续更新这篇文章：补充真实的恢复记录、失败案例和运维成本，也会修正现在看起来合理、以后证明并不合理的判断。这里记录的是当前状态，不是最终结论。
+目前 Refuge 校验的是本地生成的快照；它不会假装知道 OneDrive 是否已经把文件成功上传。云端同步仍由同步工具负责，这也是它现在清楚保留的一条边界。
