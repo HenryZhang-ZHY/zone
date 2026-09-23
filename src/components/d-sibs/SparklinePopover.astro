@@ -21,11 +21,15 @@
     pointer-events: none;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(var(--z-space-1));
+    transform: translateY(var(--z-space-1)) scale(0.97);
     transition:
-      opacity 160ms ease,
-      transform 160ms ease,
-      visibility 160ms ease;
+      opacity 200ms var(--z-ease-out),
+      transform 200ms var(--z-ease-out),
+      visibility 200ms;
+  }
+
+  .spark-popover[data-placement='below'][aria-hidden='true'] {
+    transform: translateY(calc(var(--z-space-1) * -1)) scale(0.97);
   }
 
   .spark-popover[aria-hidden='false'] {
@@ -37,6 +41,26 @@
 
   .spark-popover[data-mode='pinned'] {
     border-color: color-mix(in srgb, var(--z-color-accent) 38%, var(--z-color-border));
+  }
+
+  .spark-popover[data-mode='preview'],
+  .spark-popover[data-instant] {
+    transition: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spark-popover,
+    .spark-popover[data-placement='below'][aria-hidden='true'] {
+      transform: none;
+      transition:
+        opacity 125ms var(--z-ease-out),
+        visibility 125ms;
+    }
+
+    .spark-popover[data-mode='preview'],
+    .spark-popover[data-instant] {
+      transition: none;
+    }
   }
 
   .pop-header {
@@ -415,43 +439,50 @@
     let left = rect.left + rect.width / 2 - popoverWidth / 2
     let top = rect.top - popoverHeight - margin
 
-    if (top < margin) {
+    const placement = top < margin ? 'below' : 'above'
+    if (placement === 'below') {
       top = rect.bottom + margin
     }
 
     left = Math.max(margin, Math.min(left, window.innerWidth - popoverWidth - margin))
     top = Math.max(margin, Math.min(top, window.innerHeight - popoverHeight - margin))
 
+    const originX = Math.max(12, Math.min(rect.left + rect.width / 2 - left, popoverWidth - 12))
+    popover.dataset.placement = placement
+    popover.style.transformOrigin = `${originX}px ${placement === 'above' ? '100%' : '0%'}`
     popover.style.left = `${left}px`
     popover.style.top = `${top}px`
   }
 
-  function open(trigger: HTMLButtonElement, pinned: boolean): void {
+  function open(trigger: HTMLButtonElement, pinned: boolean, immediate = false): void {
     if (!renderCard(trigger)) return
 
     setExpanded(activeTrigger, false)
     activeTrigger = trigger
     isPinned = pinned
+    popover.toggleAttribute('data-instant', immediate)
     popover.dataset.mode = pinned ? 'pinned' : 'preview'
     popover.setAttribute('aria-hidden', 'false')
     setExpanded(trigger, pinned)
     positionPopover(trigger)
   }
 
-  function close(): void {
+  function close(immediate = false): void {
     setExpanded(activeTrigger, false)
     activeTrigger = null
     isPinned = false
+    popover.toggleAttribute('data-instant', immediate)
     popover.setAttribute('aria-hidden', 'true')
-    popover.removeAttribute('data-mode')
   }
 
   document.querySelectorAll<HTMLButtonElement>('.spark-trigger[data-trajectory]').forEach((trigger) => {
-    trigger.addEventListener('pointerenter', () => {
+    trigger.addEventListener('pointerenter', (event) => {
+      if (event.pointerType !== 'mouse' || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return
       if (!isPinned) open(trigger, false)
     })
 
-    trigger.addEventListener('pointerleave', () => {
+    trigger.addEventListener('pointerleave', (event) => {
+      if (event.pointerType !== 'mouse') return
       if (!isPinned) close()
     })
 
@@ -467,11 +498,11 @@
       event.stopPropagation()
 
       if (isPinned && activeTrigger === trigger) {
-        close()
+        close(event.detail === 0)
         return
       }
 
-      open(trigger, true)
+      open(trigger, true, event.detail === 0)
     })
   })
 
@@ -486,7 +517,7 @@
 
   document.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape') return
-    close()
+    close(true)
   })
 
   window.addEventListener('resize', () => {

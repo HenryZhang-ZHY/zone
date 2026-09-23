@@ -14,19 +14,19 @@
   border: none;
   border-radius: var(--z-radius-none);
   cursor: pointer;
-  background: var(--z-color-tertiary);
+  background: var(--z-color-action-fill);
   color: var(--z-color-text-invert);
   transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
 }
 
 .z-btn-primary:hover,
 .z-button:hover {
-  background: var(--z-color-blue-800);
+  background: var(--z-color-action-hover);
 }
 
 .z-btn-primary:active,
 .z-button:active {
-  background: var(--z-color-blue-900);
+  background: var(--z-color-action-active);
 }
 
 .z-btn-primary:disabled,
@@ -92,14 +92,14 @@
 .z-btn-tertiary:hover,
 .z-btn-ghost:hover {
   background: var(--z-color-gray-alpha-100);
-  color: var(--z-color-tertiary);
+  color: var(--z-color-text-accent);
   text-decoration: underline;
 }
 
 .z-btn-tertiary:active,
 .z-btn-ghost:active {
   background: var(--z-color-gray-alpha-200);
-  color: var(--z-color-blue-800);
+  color: var(--z-color-text-accent-hover);
 }
 
 .z-btn-icon {

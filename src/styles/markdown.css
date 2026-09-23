@@ -1,3 +1,9 @@
+.z-markdown-content {
+  font-size: var(--z-text-copy-16);
+  line-height: 1.65;
+  overflow-wrap: break-word;
+}
+
 .z-markdown-content :not(a, strong, em, del, span, input, code, br)+:not(a, strong, em, del, span, input, code, br, :where(.not-content *)) {
   margin-top: var(--z-space-4)
 }
@@ -67,11 +73,15 @@
 }
 
 .z-markdown-content a:not(:where(.not-content *)) {
-  color: var(--z-color-text-accent)
+  color: var(--z-color-text-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em
 }
 
 .z-markdown-content a:hover:not(:where(.not-content *)) {
-  color: var(--z-color-blue-800);
+  color: var(--z-color-text-accent-hover);
+  text-decoration-thickness: 2px;
 }
 
 .z-markdown-content code:not(:where(.not-content *)) {

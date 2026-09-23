@@ -7,9 +7,9 @@ import FormattedDate from '../components/FormattedDate.astro'
 const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
 ---
 
-<BaseLayout>
+<BaseLayout editorial>
 	<main class="z-main">
-		<section class="posts-container z-stack-list">
+		<section class="posts-container z-stack-list z-editorial-column">
 			{
 				posts.length > 0 ? (
 					posts.map((post) => (
@@ -56,7 +56,8 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueO
 	}
 
 	.post-link:hover .post-title,
-	.post-link:focus-visible .post-title {
+	.post-link:focus-visible .post-title,
+	.post-link:active .post-title {
 		color: var(--z-color-text-accent);
 		text-decoration-color: currentColor;
 	}
@@ -108,8 +109,8 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueO
 		}
 
 		.post-meta {
-			font-size: var(--z-text-label-12);
-			line-height: var(--z-leading-label-12);
+			font-size: var(--z-text-label-13);
+			line-height: var(--z-leading-label-13);
 		}
 	}
 

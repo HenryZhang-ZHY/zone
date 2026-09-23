@@ -1,75 +1,79 @@
 <div data-stock-sell-calculator>
-  <section class="explain-section z-section">
-    <h2 class="z-section-title">计算说明</h2>
-    <div class="explain-card z-panel">
-      <div class="formula-group">
-        <span class="formula-label">目标摊薄成本</span>
-        <span class="formula-eq">= 每股分红 ÷ 目标股息率</span>
-      </div>
-      <div class="formula-group">
-        <span class="formula-label">卖出价格 P</span>
-        <span class="formula-eq">= (持仓总成本 − 剩余份额 × 目标摊薄成本) ÷ 卖出份额</span>
-      </div>
-      <div class="formula-group">
-        <span class="formula-label">盈利比例</span>
-        <span class="formula-eq">= (卖出价格 − 买入成本) ÷ 买入成本 × 100%</span>
-      </div>
-      <p class="explain-note">策略：以高于买入成本的价格卖出部分仓位，利用卖出收益冲减剩余持仓的账面成本，使剩余股票的每股成本下降至目标股息率对应价位。结果仅是数学目标，不构成投资建议。</p>
-    </div>
-  </section>
-
   <section class="input-section z-section">
-    <h2 class="z-section-title">参数输入</h2>
+    <h2 class="z-section-title">输入持仓数据</h2>
     <div class="input-card z-panel">
       <div class="input-grid">
         <div class="input-group z-field">
-          <label for="cost">买入成本（元/股）</label>
-          <input type="number" id="cost" min="0.01" step="0.01" placeholder="例如 10.00" aria-describedby="calculator-error natural-yield-value" />
+          <label for="cost">每股买入成本 <span class="field-unit">元/股</span></label>
+          <input type="number" id="cost" min="0.01" step="any" inputmode="decimal" placeholder="例如 10.00" aria-describedby="calculator-error" />
         </div>
         <div class="input-group z-field">
-          <label for="shares">股票份额（股）</label>
-          <input type="number" id="shares" min="1" step="1" placeholder="例如 1000" aria-describedby="calculator-error" />
+          <label for="shares">持有股数 <span class="field-unit">股</span></label>
+          <input type="number" id="shares" min="1" step="1" inputmode="numeric" placeholder="例如 1000" aria-describedby="calculator-error" />
         </div>
         <div class="input-group z-field">
-          <label for="dividend">每股分红（元）</label>
-          <input type="number" id="dividend" min="0" step="0.01" placeholder="例如 0.50" aria-describedby="calculator-error natural-yield-value" />
+          <label for="dividend">每股分红 <span class="field-unit">元/股</span></label>
+          <input type="number" id="dividend" min="0" step="any" inputmode="decimal" placeholder="例如 0.50" aria-describedby="calculator-error" />
         </div>
       </div>
       <div class="input-insights">
         <div class="natural-yield-card">
-          <span class="insight-label">自然股息率</span>
+          <span class="insight-label">当前成本对应的股息率</span>
           <strong id="natural-yield-value" class="insight-value">—</strong>
-          <span class="insight-note">基于买入成本和每股分红</span>
+          <span class="insight-note">每股分红 ÷ 每股买入成本</span>
         </div>
         <div class="assumption-list" aria-label="策略假设">
-          <span>100 股为最小卖出单位</span>
-          <span>只展示高于买入成本的卖出点</span>
-          <span>目标股息率范围 4%–100%</span>
+          <span>每次卖出 100 股的整数倍，且至少保留 100 股</span>
+          <span>只显示卖出价格高于买入成本的结果</span>
+          <span>目标股息率按 4%–100%，每 1% 计算一次</span>
         </div>
       </div>
       <p id="calculator-error" class="calculator-error" role="alert" hidden></p>
-      <button id="calc-btn" class="z-btn-primary" type="button">计算卖点</button>
+      <button id="calc-btn" class="z-btn-primary" type="button">计算卖出价格</button>
+      <p id="calculator-status" class="calculator-status" role="status" aria-live="polite"></p>
     </div>
   </section>
 
   <section class="table-section z-section" id="result-section" hidden>
-    <h2 class="z-section-title">全部可获利卖点</h2>
-    <div class="table-wrapper z-table-wrapper">
-      <table class="sell-table z-data-table">
+    <h2 class="z-section-title" id="result-title" tabindex="-1">可获利卖点</h2>
+    <p id="result-summary" class="result-summary"></p>
+    <p class="scroll-hint">表格可左右滑动，查看全部数据。</p>
+    <div class="table-wrapper z-table-wrapper" tabindex="0" role="region" aria-label="卖点结果表格，可左右滚动查看更多列">
+      <table class="sell-table z-data-table" aria-describedby="result-summary">
         <thead>
           <tr>
             <th class="col-yield">目标股息率</th>
             <th class="col-lots">卖出股数</th>
-            <th class="col-price">卖出价格</th>
-            <th class="col-cost">目标摊薄成本</th>
-            <th class="col-remain">剩余份额</th>
-            <th class="col-profit">盈利比例</th>
+            <th class="col-price">卖出价格（元/股）</th>
+            <th class="col-cost">摊薄成本（元/股）</th>
+            <th class="col-remain">剩余股数</th>
+            <th class="col-profit">相对买入成本涨幅</th>
           </tr>
         </thead>
         <tbody id="result-body"></tbody>
       </table>
     </div>
   </section>
+
+  <details class="explain-section z-section">
+    <summary>计算方法与注意事项</summary>
+    <div class="explain-card z-panel">
+      <p class="explain-intro">卖出部分持仓后，将卖出所得冲减原持仓总成本，再用剩余成本除以剩余股数，得到摊薄成本。下表列出使摊薄成本对应目标股息率的卖出价格。</p>
+      <div class="formula-group">
+        <span class="formula-label">目标摊薄成本</span>
+        <span class="formula-eq">= 每股分红 ÷ 目标股息率</span>
+      </div>
+      <div class="formula-group">
+        <span class="formula-label">卖出价格</span>
+        <span class="formula-eq">= (持仓总成本 − 剩余股数 × 目标摊薄成本) ÷ 卖出股数</span>
+      </div>
+      <div class="formula-group">
+        <span class="formula-label">相对买入成本涨幅</span>
+        <span class="formula-eq">= (卖出价格 − 每股买入成本) ÷ 每股买入成本 × 100%</span>
+      </div>
+      <p class="explain-note">未计入交易费用、税费和未来分红变化；表中价格是数学目标，并非实际成交价格。若每股分红为 0，目标摊薄成本也为 0。</p>
+    </div>
+  </details>
 </div>
 
 <script>
@@ -77,16 +81,35 @@
 </script>
 
 <style>
+  .input-card {
+    background: var(--z-color-surface-muted);
+  }
+
   .input-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: var(--z-space-6);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--z-space-4);
     margin-bottom: var(--z-space-6);
+  }
+
+  .field-unit {
+    color: var(--z-color-text-secondary);
+    font-weight: 400;
+  }
+
+  .input-group input {
+    font-size: var(--z-text-label-16);
+    height: 48px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .input-group input[aria-invalid='true'] {
+    border-color: var(--z-color-red-900);
   }
 
   .input-insights {
     display: grid;
-    grid-template-columns: minmax(180px, 0.7fr) minmax(260px, 1.3fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
     gap: var(--z-space-4);
     align-items: stretch;
     margin-bottom: var(--z-space-6);
@@ -96,7 +119,7 @@
   .assumption-list {
     border: 1px solid var(--z-color-border-subtle);
     border-radius: var(--z-radius-subtle);
-    background: color-mix(in srgb, var(--z-color-background-100) 66%, transparent);
+    background: var(--z-color-surface);
   }
 
   .natural-yield-card {
@@ -106,15 +129,15 @@
   .insight-label,
   .insight-note,
   .assumption-list span {
-    color: var(--z-color-text-dimmed);
-    font-size: var(--z-text-label-12);
-    line-height: var(--z-leading-label-12);
+    color: var(--z-color-text-secondary);
+    font-size: var(--z-text-copy-14);
+    line-height: var(--z-leading-copy-14);
   }
 
   .insight-value {
     display: block;
     margin: var(--z-space-1) 0;
-    color: var(--z-color-accent-high);
+    color: var(--z-color-text-accent);
     font-size: var(--z-text-heading-24);
     font-weight: 600;
     letter-spacing: var(--z-tracking-heading-24);
@@ -126,25 +149,54 @@
     display: grid;
     gap: var(--z-space-2);
     padding: var(--z-space-4);
+    align-content: center;
   }
 
   .assumption-list span::before {
     content: '•';
     margin-right: var(--z-space-2);
-    color: var(--z-color-accent);
+    color: var(--z-color-text-accent);
   }
 
   .calculator-error {
-    color: var(--z-color-red);
+    color: var(--z-color-red-900);
     font-size: var(--z-text-copy-14);
     line-height: var(--z-leading-copy-14);
     margin-bottom: var(--z-space-4);
   }
 
-  .profit-pos,
+  .calculator-status,
+  .result-summary,
+  .scroll-hint {
+    color: var(--z-color-text-secondary);
+    font-size: var(--z-text-copy-14);
+    line-height: var(--z-leading-copy-14);
+  }
+
+  .calculator-status:not(:empty) {
+    margin-top: var(--z-space-3);
+  }
+
+  .result-summary {
+    margin-bottom: var(--z-space-4);
+  }
+
+  .scroll-hint {
+    display: none;
+  }
+
+  .sell-table {
+    min-width: 800px;
+  }
+
+  .table-wrapper:focus-visible {
+    outline: 2px solid var(--z-color-tertiary);
+    outline-offset: 2px;
+  }
+
   :global(.profit-pos) {
     color: var(--z-color-primary);
-    font-weight: 500;
+    font-weight: 600;
   }
 
   :global(.yield-pill) {
@@ -155,26 +207,26 @@
 
   :global(.yield-low) {
     border-color: color-mix(in srgb, var(--z-color-accent) 28%, transparent);
-    color: var(--z-color-accent-high);
+    color: var(--z-color-text-accent);
   }
 
   :global(.yield-mid) {
     border-color: color-mix(in srgb, var(--z-color-accent) 36%, transparent);
-    color: var(--z-color-accent-high);
+    color: var(--z-color-text-accent);
   }
 
   :global(.yield-high) {
     border-color: color-mix(in srgb, var(--z-color-orange-high) 32%, transparent);
-    color: var(--z-color-orange-high);
+    color: var(--z-color-text-secondary);
   }
 
   :global(.yield-max) {
     border-color: color-mix(in srgb, var(--z-color-orange-high) 46%, transparent);
-    color: var(--z-color-orange-high);
+    color: var(--z-color-text-secondary);
   }
 
   .col-yield {
-    min-width: 90px;
+    min-width: 110px;
     text-align: center;
   }
 
@@ -191,23 +243,6 @@
     font-variant-numeric: tabular-nums;
   }
 
-  .col-lots {
-    min-width: 80px;
-  }
-
-  .col-price,
-  .col-cost {
-    min-width: 110px;
-  }
-
-  .col-remain {
-    min-width: 90px;
-  }
-
-  .col-profit {
-    min-width: 100px;
-  }
-
   th.col-lots,
   th.col-price,
   th.col-cost,
@@ -217,7 +252,7 @@
   }
 
   :global(.col-yield) {
-    min-width: 90px;
+    min-width: 110px;
     text-align: center;
   }
 
@@ -228,23 +263,6 @@
   :global(.col-profit) {
     text-align: right;
     font-variant-numeric: tabular-nums;
-  }
-
-  :global(.col-lots) {
-    min-width: 80px;
-  }
-
-  :global(.col-price),
-  :global(.col-cost) {
-    min-width: 110px;
-  }
-
-  :global(.col-remain) {
-    min-width: 90px;
-  }
-
-  :global(.col-profit) {
-    min-width: 100px;
   }
 
   .formula-group {
@@ -259,19 +277,51 @@
 
   .formula-label {
     font-weight: 600;
-    min-width: 5rem;
+    min-width: 10rem;
   }
 
   .formula-eq {
     color: var(--z-color-text-secondary);
     font-family: var(--z-font-mono);
+    overflow-wrap: anywhere;
+  }
+
+  .explain-section summary {
+    color: var(--z-color-text-accent);
+    font-size: var(--z-text-heading-16);
+    line-height: var(--z-leading-heading-16);
+    font-weight: 600;
+    cursor: pointer;
+    width: fit-content;
+    padding: var(--z-space-2) 0;
+  }
+
+  .explain-section summary:focus-visible {
+    outline: 2px solid var(--z-color-tertiary);
+    outline-offset: 3px;
+  }
+
+  .explain-card {
+    margin-top: var(--z-space-4);
+  }
+
+  .explain-intro {
+    font-size: var(--z-text-copy-14);
+    line-height: var(--z-leading-copy-14);
+    margin-bottom: var(--z-space-4);
   }
 
   .explain-note {
     margin-top: var(--z-space-4);
-    font-size: var(--z-text-copy-13);
-    line-height: var(--z-leading-copy-13);
-    color: var(--z-color-text-dimmed);
+    font-size: var(--z-text-copy-14);
+    line-height: var(--z-leading-copy-14);
+    color: var(--z-color-text-secondary);
+  }
+
+  @media (max-width: 850px) {
+    .input-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
   @media (max-width: 640px) {
@@ -281,6 +331,27 @@
 
     .input-insights {
       grid-template-columns: 1fr;
+    }
+
+    .input-card,
+    .explain-card {
+      padding: var(--z-space-4);
+    }
+
+    #calc-btn {
+      width: 100%;
+      min-height: 48px;
+    }
+
+    .scroll-hint {
+      display: block;
+      margin-bottom: var(--z-space-2);
+    }
+
+    .table-wrapper {
+      margin-right: calc(-1 * var(--z-page-pad-x));
+      border-right: 0;
+      border-radius: var(--z-radius-subtle) 0 0 var(--z-radius-subtle);
     }
 
     .formula-group {

@@ -118,12 +118,16 @@
 	/* === SEMANTIC ALIASES USED BY THE APP === */
 	--z-color-text: var(--z-color-primary);
 	--z-color-text-secondary: var(--z-color-secondary);
-	--z-color-text-dimmed: light-dark(#4B5563, #737373);
-	--z-color-text-accent: var(--z-color-tertiary);
+	--z-color-text-dimmed: light-dark(#4B5563, #9CA3AF);
+	--z-color-text-accent: var(--z-color-blue-900);
+	--z-color-text-accent-hover: light-dark(#0077CC, #eaf6ff);
 	--z-color-text-invert: #ffffff;
 	--z-color-heading: var(--z-color-gray-1000);
 
 	--z-color-accent: var(--z-color-tertiary);
+	--z-color-action-fill: var(--z-color-blue-800);
+	--z-color-action-hover: #005FA3;
+	--z-color-action-active: #002359;
 	--z-color-accent-high: var(--z-color-blue-800);
 	--z-color-accent-active: var(--z-color-blue-900);
 	--z-color-accent-low: var(--z-color-blue-100);
@@ -173,7 +177,7 @@
 	--z-data-g2-bg: var(--z-color-amber-100);
 	--z-data-g3: var(--z-color-red-900);
 	--z-data-g3-bg: var(--z-color-red-100);
-	--z-data-g4: var(--z-color-red-700);
+	--z-data-g4: light-dark(#C7283A, #FF6B78);
 	--z-data-g4-bg: var(--z-color-red-200);
 	--z-data-state: var(--z-color-blue-700);
 	--z-data-state-bg: var(--z-color-blue-100);
@@ -299,6 +303,7 @@
 	--z-focus-ring: 2px solid var(--z-color-tertiary);
 	--z-focus-offset: 2px;
 	--z-focus-ring-shadow: 0 0 0 2px var(--z-color-background-100), 0 0 0 4px var(--z-color-tertiary);
+	--z-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 	--z-shadow-sm-color: light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.16));
 	--z-shadow-md-color: light-dark(rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.18));
 	--z-shadow-lg-color: light-dark(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.22));
@@ -310,10 +315,8 @@
 	--z-mobile-toc-height: 3rem;
 	--z-sidebar-width: 18.75rem;
 	--z-sidebar-pad-x: var(--z-space-4);
-	--z-content-width: clamp(45rem, 58vw, 56rem);
+	--z-article-reading-width: 72ch;
 	--z-content-pad-x: var(--z-space-4);
-	--z-article-side-column-width: clamp(10rem, 12vw, 16rem);
-	--z-article-grid-column-gap: var(--z-space-8);
 	--z-menu-button-size: 2rem;
 	--z-nav-gap: var(--z-space-6);
 	--z-outline-offset-inside: -0.1875rem;
@@ -335,11 +338,10 @@
 }
 
 body {
-	--z-page-max-width: 960px;
+	--z-page-max-width: 1100px;
 	--z-page-pad-x: var(--z-space-8);
 	--z-page-main-pad-block-start: var(--z-space-10);
 	--z-page-main-pad-block-end: var(--z-space-16);
-	--z-shell-content-offset-x: 0px;
 
 	font-family: var(--z-font-sans);
 	line-height: var(--z-line-height);
@@ -352,7 +354,6 @@ body {
 
 .z-page-shell--medium {
 	--z-page-max-width: 1100px;
-	--z-page-pad-x: var(--z-space-6);
 	--z-page-main-pad-block-start: var(--z-space-10);
 }
 
@@ -384,8 +385,38 @@ a.active {
 	min-height: calc(100vh - 200px);
 }
 
-.z-page-shell--article .z-main {
-	position: relative;
+.z-editorial-column {
+	max-width: var(--z-article-reading-width);
+	margin-inline: auto;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation-duration: 180ms;
+	animation-timing-function: ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation: none;
+	}
+}
+
+@media (prefers-reduced-transparency: reduce) {
+	:root {
+		--z-color-surface-soft: var(--z-color-background-100);
+	}
+}
+
+@media (prefers-contrast: more) {
+	:root {
+		--z-color-border-subtle: var(--z-color-gray-600);
+	}
 }
 
 .z-page-header {
@@ -543,8 +574,8 @@ a.active {
 	}
 }
 
-@media (max-width: 640px) {
-	.z-page-shell--medium {
+@media (max-width: 599px) {
+	.z-page-shell {
 		--z-page-pad-x: var(--z-space-4);
 	}
 
@@ -563,7 +594,6 @@ a.active {
 
 @media (max-width: 480px) {
 	.z-page-shell {
-		--z-page-pad-x: var(--z-space-4);
 		--z-page-main-pad-block-start: var(--z-space-6);
 		--z-page-main-pad-block-end: var(--z-space-10);
 	}
@@ -590,12 +620,5 @@ a.active {
 	.z-page-shell--article {
 		--z-page-main-pad-block-start: var(--z-space-16);
 		--z-page-main-pad-block-end: var(--z-space-16);
-	}
-}
-
-@media (min-width: 1280px) {
-	.z-page-shell--article {
-		--z-page-max-width: calc(var(--z-content-width) + (var(--z-article-side-column-width) * 2) + (var(--z-article-grid-column-gap) * 2) + (var(--z-page-pad-x) * 2));
-		--z-shell-content-offset-x: calc(var(--z-article-side-column-width) + var(--z-article-grid-column-gap));
 	}
 }

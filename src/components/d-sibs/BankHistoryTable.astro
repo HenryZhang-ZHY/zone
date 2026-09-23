@@ -16,28 +16,35 @@ const { years, banks } = Astro.props
 ---
 
 <section class="table-section z-section">
-  <h2 class="z-section-title">历年分组详情</h2>
-  <div class="table-wrapper z-table-wrapper">
+  <div class="table-heading">
+    <div>
+      <p class="section-kicker">02 / DIRECTORY</p>
+      <h2 class="z-section-title">银行明细</h2>
+    </div>
+    <p>银行按最新一期组别排序 · 年份由早到晚 · 点击轨迹查看银行变迁</p>
+  </div>
+  <div class="table-wrapper z-table-wrapper" role="region" aria-label="银行历年分组明细，可横向滚动" tabindex="0">
     <table class="bank-table z-data-table">
+      <caption class="sr-only">各银行在已收录公告年份的入选组别；破折号表示该年未入选</caption>
       <thead>
         <tr>
-          <th class="col-name">银行</th>
-          <th class="col-type">类型</th>
-          {years.map((year) => <th class="col-year">{year}</th>)}
-          <th class="col-spark">变迁</th>
+          <th scope="col" class="col-name">银行</th>
+          <th scope="col" class="col-type">类型</th>
+          {years.map((year, index) => <th scope="col" class:list={['col-year', { 'is-latest': index === years.length - 1 }]}>{year}</th>)}
+          <th scope="col" class="col-spark">轨迹</th>
         </tr>
       </thead>
       <tbody>
         {
           banks.map((bank) => (
             <tr data-bank={bank.name}>
-              <td class="col-name">{bank.name}</td>
+              <th scope="row" class="col-name">{bank.name}</th>
               <td class="col-type">
                 <span class={`z-tag type-tag ${typeClass(bank.latestType, 'tag')}`}>{typeLabel(bank.latestType)}</span>
               </td>
-              {years.map((year) => {
+              {years.map((year, index) => {
                 const info = bank.years[year]
-                return <td class="col-year">{info ? <span class={`z-tag group-tag z-tag--g${info.group}`}>{groupLabels[info.group]}</span> : <span class="not-listed">—</span>}</td>
+                return <td class:list={['col-year', { 'is-latest': index === years.length - 1 }]}>{info ? <span class={`z-tag group-tag z-tag--g${info.group}`}>{groupLabels[info.group]}</span> : <span class="not-listed">—<span class="sr-only">未入选</span></span>}</td>
               })}
               <td
                 class="col-spark"
@@ -69,9 +76,75 @@ const { years, banks } = Astro.props
 </section>
 
 <style>
+  .table-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--z-space-4);
+    margin-bottom: var(--z-space-6);
+  }
+
+  .table-heading .z-section-title { margin-bottom: 0; }
+  .section-kicker {
+    color: var(--z-color-text-dimmed);
+    font-size: var(--z-text-label-13);
+    font-weight: 600;
+    line-height: var(--z-leading-label-13);
+    margin-bottom: var(--z-space-2);
+  }
+
+  .table-heading > p {
+    color: var(--z-color-text-secondary);
+    font-size: var(--z-text-copy-13);
+    line-height: var(--z-leading-copy-13);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .table-wrapper:focus-visible {
+    outline: var(--z-focus-ring);
+    outline-offset: var(--z-focus-offset);
+  }
+
+  .bank-table {
+    min-width: 790px;
+  }
+
+  .bank-table tbody th {
+    padding: var(--z-space-3) var(--z-space-4);
+    border-bottom: 1px solid var(--z-color-hairline-light);
+    text-align: start;
+  }
+
+  .bank-table tbody tr:last-child th {
+    border-bottom: none;
+  }
+
   .col-name {
     font-weight: 600;
-    min-width: 140px;
+    min-width: 148px;
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--z-color-surface);
+    border-inline-end: 1px solid var(--z-color-border);
+    white-space: normal;
+  }
+
+  thead .col-name {
+    z-index: 2;
+    background: var(--z-color-surface-muted);
+  }
+
+  .bank-table tbody tr:hover .col-name {
+    background: var(--z-color-surface-muted);
   }
 
   .col-type {
@@ -81,6 +154,11 @@ const { years, banks } = Astro.props
   .col-year {
     text-align: center;
     min-width: 80px;
+  }
+
+  .col-year.is-latest {
+    background: var(--z-color-surface-muted);
+    font-weight: 600;
   }
 
   th.col-year {
@@ -126,5 +204,11 @@ const { years, banks } = Astro.props
 
   .not-listed {
     color: var(--z-color-text-dimmed);
+  }
+
+  @media (max-width: 640px) {
+    .table-heading { flex-direction: column; align-items: flex-start; gap: var(--z-space-2); }
+    .col-name { min-width: 120px; }
+    .spark-trigger { min-height: 44px; }
   }
 </style>

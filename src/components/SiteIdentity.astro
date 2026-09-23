@@ -3,7 +3,9 @@ import { SITE_TITLE } from '../consts'
 ---
 
 <header class="site-identity" aria-label="Site identity">
-  <a href="/" class="site-identity-link">{SITE_TITLE}</a>
+  <div class="site-identity-inner">
+    <a href="/" class="site-identity-link">{SITE_TITLE}</a>
+  </div>
 </header>
 
 <style>
@@ -11,6 +13,11 @@ import { SITE_TITLE } from '../consts'
     width: min(100%, var(--z-page-max-width));
     margin: 0 auto;
     padding: var(--z-space-8) var(--z-page-pad-x) 0;
+  }
+
+  :global(.z-page-shell--editorial) .site-identity-inner {
+    max-width: var(--z-article-reading-width);
+    margin-inline: auto;
   }
 
   .site-identity-link {
@@ -21,7 +28,6 @@ import { SITE_TITLE } from '../consts'
     font-size: var(--z-text-label-14);
     font-weight: 600;
     line-height: var(--z-leading-label-14);
-    margin-inline-start: var(--z-shell-content-offset-x);
     text-decoration: none;
     transition: color 150ms ease;
   }

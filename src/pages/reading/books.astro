@@ -9,98 +9,100 @@ const books = await getCollection('book')
 
 <BaseLayout title={`Books | ${SITE_TITLE}`}>
   <main class="z-main books-page">
-    <div class="books-container">
+    <header class="z-page-header">
+      <h1 class="z-page-title">Books</h1>
+      <p class="z-page-subtitle">Books that shaped me</p>
+    </header>
+    <ul class="books-container">
       {books.map((book, index) => (
-        <article class="book-item">
-          <a href={book.data.ogUrl} class="book-link" title={book.data.title} target="_blank" rel="noopener noreferrer">
+        <li class="book-item">
+          <a href={book.data.ogUrl} class="book-link" target="_blank" rel="noopener noreferrer">
             <div class="book-cover">
-              <Image src={book.data.ogImage} alt={`Cover of ${book.data.title}`} loading={index < 12 ? 'eager' : 'lazy'} width={140} height={210} widths={[140, 280]} sizes="140px" />
+              <Image src={book.data.ogImage} alt="" loading={index < 8 ? 'eager' : 'lazy'} width={240} height={360} widths={[160, 320, 480]} sizes="(max-width: 480px) 45vw, (max-width: 768px) 30vw, 210px" />
             </div>
+            <h2 class="book-title">{book.data.title}</h2>
           </a>
-        </article>
+        </li>
       ))}
-    </div>
+    </ul>
   </main>
 </BaseLayout>
 
 <style>
-  .books-page {
-    padding-top: var(--z-space-10);
-  }
-
-  .books-page-title {
-    font-size: var(--z-text-heading-24);
-    font-weight: 600;
-    line-height: var(--z-line-height-headings);
-    margin-bottom: var(--z-space-8);
-    letter-spacing: var(--z-tracking-heading-24);
+  .books-page .z-page-header {
+    margin-bottom: var(--z-space-10);
   }
 
   .books-container {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--z-space-10) var(--z-space-8);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--z-space-10) var(--z-space-6);
+    list-style: none;
+    padding: 0;
   }
 
   .book-item {
-    display: flex;
-    flex-direction: column;
+    min-width: 0;
   }
 
   .book-link {
+    display: block;
     text-decoration: none;
     color: inherit;
-    display: block;
   }
 
   .book-cover {
     width: 100%;
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 2 / 3;
     overflow: hidden;
     background: var(--z-color-surface-muted);
     border: 1px solid var(--z-color-hairline-light);
     border-radius: var(--z-radius-subtle);
+    box-shadow: var(--z-shadow-sm);
   }
 
-  .book-cover img {
+  .book-cover :global(img) {
     width: 100%;
     height: 100%;
     object-fit: contain;
     display: block;
-    background: var(--z-color-surface-muted);
+  }
+
+  .book-title {
+    margin-top: var(--z-space-3);
+    font-size: var(--z-text-heading-14);
+    line-height: var(--z-leading-heading-14);
+    font-weight: 500;
+    overflow-wrap: anywhere;
   }
 
   @media (max-width: 768px) {
-    .books-page-title {
-      font-size: var(--z-text-heading-20);
-      line-height: var(--z-leading-heading-20);
-      letter-spacing: var(--z-tracking-heading-20);
-      margin-bottom: var(--z-space-6);
-    }
-
     .books-container {
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--z-space-10) var(--z-space-6);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 
   @media (max-width: 480px) {
     .books-container {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: var(--z-space-8) var(--z-space-4);
     }
   }
 
-  @media (min-width: 1024px) {
-    .books-container {
-      grid-template-columns: repeat(5, 1fr);
-      gap: var(--z-space-16) var(--z-space-10);
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .book-cover {
+      transition: transform 150ms var(--z-ease-out);
+    }
+
+    .book-link:hover .book-cover {
+      transform: translateY(-2px);
     }
   }
 
-  @media (min-width: 1280px) {
-    .books-container {
-      grid-template-columns: repeat(6, 1fr);
-    }
+  .book-link:hover .book-title,
+  .book-link:focus-visible .book-title {
+    color: var(--z-color-text-accent);
+    text-decoration: underline;
+    text-underline-offset: 0.1875rem;
   }
 </style>

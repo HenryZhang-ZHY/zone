@@ -10,10 +10,10 @@ type Props = CollectionEntry<'blog'>['data'] & {
 
 const { title, description, pubDate, updatedDate, headings = [] } = Astro.props
 
-const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3)
+const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3 && h.slug !== 'footnote-label')
 ---
 
-<BaseLayout title={title} description={description} pageLayout="article">
+<BaseLayout title={title} description={description} pageLayout="article" editorial>
 	<div class="blog-layout z-main">
 		<main>
 			<article>
@@ -72,13 +72,16 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3)
 </BaseLayout>
 
 <script>
+	let disposeToc: (() => void) | undefined
+
 	function initToc() {
+		disposeToc?.()
 		const tocLinks = document.querySelectorAll<HTMLAnchorElement>('.toc-link')
 		if (tocLinks.length === 0) return
 
-		const headingIds = Array.from(tocLinks).map((link) =>
-			link.getAttribute('href')!.slice(1)
-		)
+		const headingIds = [...new Set(
+			Array.from(tocLinks, (link) => link.getAttribute('href')!.slice(1))
+		)]
 		const headingElements = headingIds
 			.map((id) => document.getElementById(id))
 			.filter((el): el is HTMLElement => el !== null)
@@ -88,50 +91,80 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3)
 		function setActive(id: string) {
 			tocLinks.forEach((link) => {
 				const linkId = link.getAttribute('href')!.slice(1)
-				link.classList.toggle('active', linkId === id)
+				const active = linkId === id
+				link.classList.toggle('active', active)
+				if (active) link.setAttribute('aria-current', 'location')
+				else link.removeAttribute('aria-current')
 			})
 		}
 
-		const observer = new IntersectionObserver(
-			(entries) => {
-				// Find the topmost visible heading
-				const visible = entries
-					.filter((e) => e.isIntersecting)
-					.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
+		let frame = 0
+		let anchorFrame = 0
+		let pinnedId: string | null = null
+		let pinnedScrollY = 0
 
-				if (visible.length > 0) {
-					setActive(visible[0].target.id)
-					return
-				}
-
-				// If no heading is visible, find the last heading above the viewport
-				const scrollY = window.scrollY
-				let currentId = headingIds[0]
-				for (const el of headingElements) {
-					if (el.offsetTop <= scrollY + 100) {
-						currentId = el.id
-					} else {
-						break
-					}
-				}
-				setActive(currentId)
-			},
-			{ rootMargin: '-80px 0px -70% 0px', threshold: 0 }
-		)
-
-		headingElements.forEach((el) => observer.observe(el))
-
-		// Set initial active state
-		const scrollY = window.scrollY
-		let currentId = headingIds[0]
-		for (const el of headingElements) {
-			if (el.offsetTop <= scrollY + 100) {
-				currentId = el.id
-			} else {
-				break
+		function update() {
+			frame = 0
+			if (pinnedId && Math.abs(window.scrollY - pinnedScrollY) <= 1) {
+				setActive(pinnedId)
+				return
 			}
+
+			pinnedId = null
+			let currentId = headingElements[0].id
+			for (const heading of headingElements) {
+				if (heading.getBoundingClientRect().top <= 100) currentId = heading.id
+				else break
+			}
+			if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2) {
+				currentId = headingElements.at(-1)!.id
+			}
+			setActive(currentId)
 		}
-		setActive(currentId)
+
+		function scheduleUpdate() {
+			if (!frame) frame = requestAnimationFrame(update)
+		}
+
+		function selectHash() {
+			const link = Array.from(tocLinks).find((item) => item.hash === window.location.hash)
+			if (!link) {
+				scheduleUpdate()
+				return
+			}
+			pinnedId = link.getAttribute('href')!.slice(1)
+			pinnedScrollY = window.scrollY
+			setActive(pinnedId)
+		}
+
+		const onLinkClick = (event: Event) => {
+			const link = event.currentTarget as HTMLAnchorElement
+			const id = link.getAttribute('href')!.slice(1)
+			pinnedId = id
+			pinnedScrollY = window.scrollY
+			setActive(id)
+			if (anchorFrame) cancelAnimationFrame(anchorFrame)
+			anchorFrame = requestAnimationFrame(() => {
+				anchorFrame = 0
+				if (pinnedId !== id) return
+				pinnedScrollY = window.scrollY
+				setActive(id)
+			})
+		}
+
+		tocLinks.forEach((link) => link.addEventListener('click', onLinkClick))
+		window.addEventListener('scroll', scheduleUpdate, { passive: true })
+		window.addEventListener('resize', scheduleUpdate)
+		window.addEventListener('hashchange', selectHash)
+		selectHash()
+		disposeToc = () => {
+			if (frame) cancelAnimationFrame(frame)
+			if (anchorFrame) cancelAnimationFrame(anchorFrame)
+			tocLinks.forEach((link) => link.removeEventListener('click', onLinkClick))
+			window.removeEventListener('scroll', scheduleUpdate)
+			window.removeEventListener('resize', scheduleUpdate)
+			window.removeEventListener('hashchange', selectHash)
+		}
 	}
 
 	// Run on initial load and after Astro page transitions
@@ -142,25 +175,28 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3)
 <style>
 	main {
 		width: 100%;
+		max-width: var(--z-article-reading-width);
+		margin-inline: auto;
 	}
 
 	article {
 		width: 100%;
+		max-width: var(--z-article-reading-width);
 	}
 
 	.article-header {
-		margin-bottom: var(--z-space-16);
-		padding-bottom: var(--z-space-8);
+		margin-bottom: var(--z-space-8);
+		padding-bottom: var(--z-space-6);
 		border-bottom: 1px solid var(--z-color-hairline-light);
 		text-align: left;
 	}
 
 	.article-title {
-		font-size: var(--z-text-heading-48);
+		font-size: var(--z-text-heading-40);
 		font-weight: 600;
-		line-height: var(--z-leading-heading-48);
+		line-height: var(--z-leading-heading-40);
 		margin: 0 0 var(--z-space-6) 0;
-		letter-spacing: var(--z-tracking-heading-48);
+		letter-spacing: var(--z-tracking-heading-40);
 		color: var(--z-color-heading);
 	}
 
@@ -210,8 +246,8 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3)
 	.toc-link {
 		display: block;
 		padding: var(--z-space-1) var(--z-space-2);
-		font-size: var(--z-text-label-12);
-		line-height: var(--z-leading-label-12);
+		font-size: var(--z-text-label-13);
+		line-height: var(--z-leading-label-13);
 		color: var(--z-color-text-dimmed);
 		border-inline-start: 2px solid transparent;
 		background: transparent;
@@ -256,6 +292,18 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3)
 	}
 
 	@media (max-width: 768px) {
+		.toc-mobile .toc-title {
+			display: flex;
+			align-items: center;
+			min-height: 44px;
+		}
+
+		.toc-mobile .toc-link {
+			display: flex;
+			align-items: center;
+			min-height: 44px;
+		}
+
 		.article-header {
 			margin-bottom: var(--z-space-8);
 			padding-bottom: var(--z-space-6);
@@ -283,22 +331,9 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3)
 		}
 	}
 
-	/* Large screens: balance the right TOC with a matching left spacer column. */
 	@media (min-width: 1280px) {
 		.blog-layout {
-			display: grid;
-			grid-template-columns: var(--z-article-side-column-width) minmax(0, min(100%, var(--z-content-width))) var(--z-article-side-column-width);
-			column-gap: var(--z-article-grid-column-gap);
-			align-items: start;
-		}
-
-		.blog-layout > main {
-			grid-column: 2;
-			min-width: 0;
-		}
-
-		.article-header {
-			margin-bottom: var(--z-space-16);
+			position: relative;
 		}
 
 		.toc-mobile {
@@ -306,11 +341,12 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3)
 		}
 
 		.toc-desktop {
-			align-self: stretch;
 			display: block;
-			grid-column: 3;
-			grid-row: 1;
-			min-width: 0;
+			position: absolute;
+			inset-inline-start: calc(50% + var(--z-article-reading-width) / 2 + var(--z-space-8));
+			top: var(--z-page-main-pad-block-start);
+			bottom: var(--z-page-main-pad-block-end);
+			width: 12rem;
 		}
 
 		.toc-sticky {

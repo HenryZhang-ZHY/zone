@@ -8,9 +8,9 @@ import { SITE_TITLE } from '../consts'
 const episodes = await getCollection('podcast')
 ---
 
-<BaseLayout title={`Podcast | ${SITE_TITLE}`}>
+<BaseLayout title={`Podcast | ${SITE_TITLE}`} editorial>
   <main class="z-main">
-    <section class="episodes-container z-stack-list">
+    <section class="episodes-container z-stack-list z-editorial-column">
       {
         episodes.map((episode, index) => (
           <article class="episode-item z-stack-item--roomy">
@@ -77,7 +77,9 @@ const episodes = await getCollection('podcast')
     text-decoration: none;
   }
 
-  .episode-link:hover {
+  .episode-link:hover,
+  .episode-link:active,
+  .episode-link:focus-visible {
     color: var(--z-color-text-accent);
   }
 
@@ -108,18 +110,16 @@ const episodes = await getCollection('podcast')
 
   @media (max-width: 480px) {
     .episode-content {
-      flex-direction: column;
-      gap: var(--z-space-4);
+      gap: var(--z-space-3);
     }
 
     .episode-image {
-      width: 100%;
-      height: auto;
-      aspect-ratio: 1;
+      width: 64px;
+      height: 64px;
     }
 
     .episode-info {
-      width: 100%;
+      min-width: 0;
     }
 
     .episode-title {

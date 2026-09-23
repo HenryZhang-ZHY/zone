@@ -10,9 +10,9 @@ const sortedReadingItems = readingItems.sort(
 )
 ---
 
-<BaseLayout title={`Reading | ${SITE_TITLE}`}>
+<BaseLayout title={`Reading | ${SITE_TITLE}`} editorial>
   <main class="z-main reading-page">
-    <div class="z-stack-list">
+    <div class="z-stack-list z-editorial-column">
       {sortedReadingItems.length > 0 ? (
         sortedReadingItems.map((item) => (
           <article class="reading-item z-stack-item--roomy">
@@ -41,10 +41,6 @@ const sortedReadingItems = readingItems.sort(
 </BaseLayout>
 
 <style>
-  .reading-page {
-    padding-top: var(--z-space-10);
-  }
-
   .reading-section-title {
     font-size: var(--z-text-heading-24);
     font-weight: 600;
@@ -72,7 +68,9 @@ const sortedReadingItems = readingItems.sort(
     text-decoration: none;
   }
 
-  .reading-item-title a:hover {
+  .reading-item-title a:hover,
+  .reading-item-title a:active,
+  .reading-item-title a:focus-visible {
     color: var(--z-color-text-accent);
   }
 

@@ -284,7 +284,7 @@ rounded:
   full: 9999px
 layout:
   page:
-    narrow: 960px
+    narrow: 1100px
     medium: 1100px
     wide: 1278px
     articleContent: "clamp(45rem, 58vw, 56rem)"
@@ -296,7 +296,7 @@ layout:
     mobile: "{spacing.4}"
 components:
   button-primary:
-    backgroundColor: "{colors.tertiary}"
+    backgroundColor: "{colors.blue-800}"
     textColor: "{colors.background-100}"
     typography: "{typography.button-14}"
     rounded: "{rounded.none}"
@@ -386,7 +386,9 @@ The color system follows Vercel's scale model. Each non-background scale runs 10
 
 Zone keeps the same token names but changes the key semantic anchors. `primary` is Brand Navy (`#213547`), `secondary` is Medium Gray (`#374151`), and `tertiary` is Electric Blue (`#0095FF`). Use `background-100` for the page and card surface; use `background-200` as the warm secondary surface. `gray-alpha-*` tokens are translucent and layer well over any surface, so prefer them for subtle borders, dividers, hover fills, and overlays.
 
-Accent meaning stays strict: `blue-700`/`tertiary` is the primary CTA, link hover, active navigation, focus, and checked state; `red-700`/`red-800` is for errors and destructive actions; `amber-700` is for warnings. Keep decorative color rare.
+Accent meaning stays strict: `blue-700`/`tertiary` is the brand accent and focus/checked state; `red-700`/`red-800` is for errors and destructive actions; `amber-700` is for warnings. Keep decorative color rare.
+
+For text on light surfaces, use the darker `blue-900` via `--z-color-text-accent`; keep `blue-700` for non-text accents and focus indicators. For small white button labels, use `blue-800` as the fill so the label has sufficient contrast. Give inline article links an underline so they remain recognizable without color. Long-form article content, including its headings, shares a 72ch maximum measure with `copy-16` and relaxed leading; compact metadata should not drop below `label-13` where space permits.
 
 ## Typography
 
@@ -409,12 +411,11 @@ Spacing reuses Vercel's 4px scale: 4, 8, 12, 16, 24, 32, 40, 64, and 96px. Keep 
 
 `BaseLayout` owns the page shell through `pageLayout`. Page content should use `.z-main` rather than local max-width rules:
 
-- `narrow`: 960px for articles and focused pages.
-- `medium`: 1100px for utility and data pages.
+- `narrow` and `medium`: the same 1100px outer shell for writing, reading, listening, utility, and data pages, so site identity, content origin, and footer do not shift on navigation.
 - `wide`: 1278px for broad layouts.
-- `article`: a centered `clamp(45rem, 58vw, 56rem)` content column with symmetrical side columns for desktop table-of-contents space.
+- `article`: the same 1100px outer shell with a centered `72ch` reading column. Writing, reading recents, and listening lists use that same centered column and align the site identity to it. The desktop table of contents floats to its right without moving the reading column; the title, divider, and body share its center line.
 
-Header/site identity, main content, and footer must consume `--z-page-max-width` and `--z-page-pad-x`. Do not duplicate container widths, article TOC math, or horizontal padding in component-local CSS.
+Header/site identity, main content, and footer must consume `--z-page-max-width` and `--z-page-pad-x`. Do not duplicate the reading-width token or horizontal padding in component-local CSS.
 
 ## Elevation & Depth
 
@@ -428,7 +429,7 @@ Prefer a subtle border over a shadow. Avoid combining both unless a floating ele
 
 ## Motion
 
-Use motion only when it clarifies a change. Most hover and active states should be instant color, underline, or border changes. When motion helps, keep it short: roughly 120-150ms for controls, 180-220ms for menus and popovers, and up to 300ms for overlays. Honor `prefers-reduced-motion` by removing nonessential animation.
+Use motion only when it clarifies a change. Same-origin page navigation uses a 180ms cross-fade in browsers supporting cross-document view transitions, with an instant fallback and no animation when reduced motion is preferred. Most hover and active states should be instant color, underline, or border changes. When motion helps, keep it short: roughly 120-150ms for controls, 180-220ms for menus and popovers, and up to 300ms for overlays. The shared `--z-ease-out` token is `cubic-bezier(0.23, 1, 0.32, 1)` for deliberate entrances and exits.
 
 ## Shapes
 
@@ -438,14 +439,14 @@ The `rounded` section keeps Vercel's `sm`, `md`, `lg`, and `full` tokens, with Z
 
 The `components` tokens preserve Vercel's component shape while applying Zone's key style decisions:
 
-- Primary button: electric-blue fill, white text, 40px height, sharp corners.
+- Primary button: deeper electric-blue fill, white text, 40px height, sharp corners.
 - Secondary button: white fill, brand-navy text, subtle gray border, sharp corners.
 - Tertiary button: transparent, brand-navy text, sharp corners, subtle hover fill.
 - Error button: coral-red fill with white text, reserved for destructive actions.
 - Inputs: white surface, brand-navy text, 3px radius, gray border, electric-blue focus border.
 - Translucent cards: white at 45% opacity, brand-navy text, subtle border, 3px radius.
 
-Hover and active states should step through the relevant scale: blue primary actions move from `blue-700` to `blue-800` to `blue-900`; borders move from `gray-400` to `gray-500` to `gray-600`; subtle fills use `gray-alpha-*`. Disabled controls use a pale neutral fill, `gray-700` text, and a not-allowed cursor. Focus must stay visible on every interactive element.
+Hover and active states should step through the relevant scale: blue primary actions move from `blue-800` to `blue-900` to `blue-1000` to retain contrast with white labels; borders move from `gray-400` to `gray-500` to `gray-600`; subtle fills use `gray-alpha-*`. Disabled controls use a pale neutral fill, `gray-700` text, and a not-allowed cursor. Focus must stay visible on every interactive element.
 
 ## Responsive Behavior
 
@@ -456,7 +457,7 @@ Design mobile-first, then expand layout complexity:
 - Desktop (`1024px-1439px`): full navigation, selected page shell width, and 64-96px major section gaps.
 - Wide (`1440px+`): center content in the selected `pageLayout` width with balanced side margins.
 
-Collapse grids from 3 columns to 2 to 1. Page padding should move from 32px to 24px to 16px. Article pages must keep the reading column centered even when a desktop table of contents appears.
+Collapse grids from 3 columns to 2 to 1. Page padding should move from 32px to 24px to 16px. Article pages and editorial lists share the same centered reading-column origin and measure; the desktop table of contents sits to the right without shifting that column.
 
 ## Voice & Content
 
@@ -485,7 +486,7 @@ When generating or reviewing UI for Zone:
 2. Preserve Zone's key style overrides: `primary`, `secondary`, `tertiary`, `fontFamilies`, `rounded.none`, and `rounded.subtle`.
 3. Use `copy-16`, `copy-14`, `label-14`, and `button-14` for most UI.
 4. Use the spacing scale only: 8px for tight groups, 16px for related items, 24-32px for component and grid gaps, and 40-64px for sections.
-5. Use electric blue for primary interactions and focus; use coral red only for destructive or error states.
+5. Use contrast-safe blue for primary actions and electric blue for focus; use coral red only for destructive or error states.
 6. Keep major controls sharp and subtle containers at 3px.
 7. Preserve shared page-shell alignment through `BaseLayout`, `.z-main`, `SiteIdentity`, and `Footer`.
 8. Check responsive collapse: 3 columns to 2 to 1, page padding 32px to 24px to 16px, and touch targets at least 44px on mobile.

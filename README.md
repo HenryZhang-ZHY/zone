@@ -38,9 +38,11 @@ src/
 ## Content Collections
 
 - `blog`: Markdown/MDX posts with title, description, publish date, optional update date, and optional redirect.
-- `book`: Reading-list entries loaded from `src/content/book.yaml`.
+- `book`: Bookshelf entries loaded from `src/content/book.yaml`; `/reading/books/` shows cover and title links to their source pages.
 - `podcast`: Listening-list entries loaded from `src/content/podcast.yaml`.
 - `dsibs`: Systemically important bank data loaded from `src/content/d-sibs.yaml`.
+
+The D-SIBs page shows the latest published list first, followed by per-publication comparisons, a chronologically ordered bank history table, and changes between adjacent published lists. Each publication year links to its original announcement. Missing publication years are not interpolated.
 
 ## Architecture Conventions
 

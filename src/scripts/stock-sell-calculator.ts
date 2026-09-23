@@ -59,16 +59,19 @@ function initStockSellCalculator(): void {
   const calcBtn = root.querySelector<HTMLButtonElement>('#calc-btn')
   const resultSection = root.querySelector<HTMLElement>('#result-section')
   const resultBody = root.querySelector<HTMLTableSectionElement>('#result-body')
+  const resultTitle = root.querySelector<HTMLElement>('#result-title')
+  const resultSummary = root.querySelector<HTMLElement>('#result-summary')
   const errorEl = root.querySelector<HTMLElement>('#calculator-error')
+  const statusEl = root.querySelector<HTMLElement>('#calculator-status')
   const naturalYieldEl = root.querySelector<HTMLElement>('#natural-yield-value')
 
-  if (!costInput || !sharesInput || !dividendInput || !calcBtn || !resultSection || !resultBody || !errorEl || !naturalYieldEl) return
+  if (!costInput || !sharesInput || !dividendInput || !calcBtn || !resultSection || !resultBody || !resultTitle || !resultSummary || !errorEl || !statusEl || !naturalYieldEl) return
 
   function updateNaturalYield(): void {
     const cost = Number.parseFloat(costInput.value)
     const dividend = Number.parseFloat(dividendInput.value)
 
-    if (!cost || cost <= 0 || Number.isNaN(dividend) || dividend < 0) {
+    if (!costInput.value || !dividendInput.value || !Number.isFinite(cost) || cost <= 0 || !Number.isFinite(dividend) || dividend < 0) {
       naturalYieldEl.textContent = '—'
       return
     }
@@ -77,21 +80,35 @@ function initStockSellCalculator(): void {
   }
 
   function calculate(): void {
-    const cost = Number.parseFloat(costInput.value)
-    const shares = Number.parseInt(sharesInput.value, 10)
-    const dividend = Number.parseFloat(dividendInput.value)
+    const cost = Number(costInput.value)
+    const shares = Number(sharesInput.value)
+    const dividend = Number(dividendInput.value)
 
-    if (!cost || cost <= 0 || !shares || shares <= 0 || Number.isNaN(dividend) || dividend < 0) {
-      setError(errorEl, '请输入有效的参数：买入成本和份额必须为正数，分红不能为负数。')
+    const invalidField = !costInput.value || !Number.isFinite(cost) || cost <= 0
+      ? { input: costInput, message: '请输入大于 0 的每股买入成本。' }
+      : !sharesInput.value || !Number.isSafeInteger(shares) || shares <= 0
+        ? { input: sharesInput, message: '请输入大于 0 的整数持有股数。' }
+        : !dividendInput.value || !Number.isFinite(dividend) || dividend < 0
+          ? { input: dividendInput, message: '请输入大于或等于 0 的每股分红。' }
+          : null
+
+    if (invalidField) {
+      invalidField.input.setAttribute('aria-invalid', 'true')
+      setError(errorEl, invalidField.message)
       resultSection.hidden = true
+      statusEl.textContent = ''
+      invalidField.input.focus()
       return
     }
 
     const points = calcSellPoints({ costPerShare: cost, shares, dividendPerShare: dividend })
 
     if (points.length === 0) {
-      setError(errorEl, '没有找到可获利的卖点。请确认持仓份额至少 200 股，或调整买入成本和分红参数。')
+      setError(errorEl, shares < 200
+        ? '没有可计算的卖点：至少需要持有 200 股，才能卖出 100 股并保留 100 股。'
+        : '没有找到高于买入成本的卖点。可调整买入成本或每股分红后重试。')
       resultSection.hidden = true
+      statusEl.textContent = ''
       return
     }
 
@@ -101,13 +118,25 @@ function initStockSellCalculator(): void {
     resultBody.replaceChildren()
     points.forEach((point) => appendResultRow(resultBody, point))
 
+    resultSummary.textContent = `共 ${points.length.toLocaleString('zh-CN')} 个结果，按目标股息率、卖出股数从小到大排列。价格和成本单位均为元/股。`
     resultSection.hidden = false
-    resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    statusEl.textContent = `已找到 ${points.length.toLocaleString('zh-CN')} 个卖点，结果见下方。`
+    resultSection.scrollIntoView({
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+      block: 'start',
+    })
+    resultTitle.focus({ preventScroll: true })
   }
 
   calcBtn.addEventListener('click', calculate)
   ;[costInput, sharesInput, dividendInput].forEach((input) => {
-    input.addEventListener('input', updateNaturalYield)
+    input.addEventListener('input', () => {
+      input.removeAttribute('aria-invalid')
+      setError(errorEl, '')
+      statusEl.textContent = ''
+      resultSection.hidden = true
+      updateNaturalYield()
+    })
     input.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') calculate()
     })

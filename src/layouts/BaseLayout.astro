@@ -11,11 +11,12 @@ interface Props {
   image?: string
   lang?: string
   pageLayout?: 'narrow' | 'medium' | 'wide' | 'article'
+  editorial?: boolean
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 
-const { title, description, image = '/open-graph-image.webp', lang = 'en', pageLayout = 'narrow' } = Astro.props
+const { title, description, image = '/open-graph-image.webp', lang = 'en', pageLayout = 'narrow', editorial = false } = Astro.props
 ---
 
 <!doctype html>
@@ -28,7 +29,7 @@ const { title, description, image = '/open-graph-image.webp', lang = 'en', pageL
       canonicalURL={canonicalURL}
     />
   </head>
-  <body class:list={['z-page-shell', `z-page-shell--${pageLayout}`]}>
+  <body class:list={['z-page-shell', `z-page-shell--${pageLayout}`, { 'z-page-shell--editorial': editorial }]}>
     <SiteIdentity />
     <slot />
 

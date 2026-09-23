@@ -29,7 +29,7 @@ describe('link interaction taxonomy', () => {
     const titleRule = ruleBody(source, /\.post-title\s*\{([\s\S]*?)\n\s*\}/)
     const interactiveRule = ruleBody(
       source,
-      /\.post-link:hover \.post-title,\s*\n\s*\.post-link:focus-visible \.post-title\s*\{([\s\S]*?)\n\s*\}/,
+      /\.post-link:hover \.post-title,\s*\n\s*\.post-link:focus-visible \.post-title,\s*\n\s*\.post-link:active \.post-title\s*\{([\s\S]*?)\n\s*\}/,
     )
 
     expect(titleRule).toContain('text-decoration-color: transparent')

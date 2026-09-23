@@ -19,4 +19,16 @@ describe('SparklinePopover current-state emphasis', () => {
     expect(currentTrack).not.toContain('--z-color-accent')
     expect(currentDot).not.toContain('--z-color-accent')
   })
+
+  it('keeps frequent previews instant and offers a non-spatial reduced-motion state', () => {
+    const preview = cssRule('.spark-popover[data-instant]')
+
+    expect(preview).toContain('transition: none')
+    expect(source).toContain(".spark-popover[data-mode='preview']")
+    expect(source).toContain("event.pointerType !== 'mouse'")
+    expect(source).toContain("event.detail === 0")
+    expect(source).toContain('@media (prefers-reduced-motion: reduce)')
+    expect(source).toContain(".spark-popover[data-placement='below'][aria-hidden='true']")
+    expect(source).toContain('transform: none')
+  })
 })
