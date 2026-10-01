@@ -10,7 +10,10 @@ const sortedReadingItems = readingItems.sort(
 )
 ---
 
-<BaseLayout title={`Reading | ${SITE_TITLE}`} editorial>
+<BaseLayout editorial
+  title={`Reading | ${SITE_TITLE}`}
+  description="A running list of the articles, blog posts and papers I have read, newest first, mostly on software engineering, economics and investing."
+>
   <main class="z-main reading-page">
     <div class="z-stack-list z-editorial-column">
       {sortedReadingItems.length > 0 ? (

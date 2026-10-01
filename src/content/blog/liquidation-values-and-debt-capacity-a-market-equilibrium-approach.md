@@ -1,6 +1,6 @@
 ---
 title: '[中英对照] Liquidation Values and Debt Capacity: A Market Equilibrium Approach 清算价值与债务容量：一种市场均衡方法'
-description: ''
+description: "[中英对照] Shleifer 与 Vishny 1992 年的论文：从资产买家的角度解释清算价值的决定因素，以及资产非流动性如何影响企业的债务容量与资本结构。"
 pubDate: 2026-05-17
 updatedDate: 2026-05-17
 ---

@@ -7,7 +7,7 @@ import FormattedDate from '../components/FormattedDate.astro'
 const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
 ---
 
-<BaseLayout editorial>
+<BaseLayout description="Notes on software engineering, investing and economics by Hongyu Zhang, with bilingual translations and open-source tools such as dowse and refuge." editorial>
 	<main class="z-main">
 		<section class="posts-container z-stack-list z-editorial-column">
 			{

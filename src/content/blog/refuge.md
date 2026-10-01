@@ -1,6 +1,7 @@
 ---
 title: 'refuge：让 OneDrive 成为私人 Git 仓库的存储层'
-description: '我为什么做 refuge：不部署私有 Git host，也能备份、恢复和跨设备使用自己的私人仓库。'
+description: "我为什么做 refuge：不部署 Gitea、GitLab 这类私有 Git host，也能把 OneDrive 当作存储层，备份、恢复并跨设备使用自己的私人 Git 仓库。"
+lang: zh-CN
 pubDate: 2026-09-18
 outline: |
   - L1 我有一些需要 Git 但不适合放上公共平台的仓库

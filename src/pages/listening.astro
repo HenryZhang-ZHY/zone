@@ -8,7 +8,10 @@ import { SITE_TITLE } from '../consts'
 const episodes = await getCollection('podcast')
 ---
 
-<BaseLayout title={`Podcast | ${SITE_TITLE}`} editorial>
+<BaseLayout editorial
+  title={`Podcast | ${SITE_TITLE}`}
+  description="Podcast episodes I listen to, collected in one place with an inline player, newest first."
+>
   <main class="z-main">
     <section class="episodes-container z-stack-list z-editorial-column">
       {

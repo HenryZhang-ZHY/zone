@@ -1,6 +1,6 @@
 ---
 title: How to fix a bug
-description: ''
+description: "The steps I follow when a bug report arrives: reproduce it, find the root cause, search for the same pattern elsewhere, and close the test gap."
 pubDate: 2025-10-22
 ---
 

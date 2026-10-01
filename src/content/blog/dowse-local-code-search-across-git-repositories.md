@@ -1,6 +1,6 @@
 ---
 title: 'dowse 1.0: A Local Alternative to Sourcegraph and GitHub Code Search'
-description: 'dowse is a free, open-source desktop app and CLI, built on Microsoft''s tgrep trigram index, that searches code across all your local Git repositories with GitHub code search syntax. A local alternative to Sourcegraph, Zoekt and GitHub code search for Windows, macOS and Linux.'
+description: "dowse is a free, open-source desktop app and CLI that searches code across every Git repository on your disk, with GitHub code search syntax and no server."
 pubDate: 2026-09-27
 outline: |
   - L1 Code search tools either search a server's copy of your code or a single project

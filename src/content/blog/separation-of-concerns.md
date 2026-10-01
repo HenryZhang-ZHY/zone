@@ -1,6 +1,7 @@
 ---
 title: '关注点分离（Separation of Concerns）'
-description: ''
+description: "关注点分离（Separation of Concerns）是什么，以及它如何落地：从网页的内容与样式分离，到分层架构与模块划分，用分离降低系统复杂度。"
+lang: zh-CN
 pubDate: 2025-05-31
 updatedDate: 2025-07-10
 ---

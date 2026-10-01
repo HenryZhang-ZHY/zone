@@ -8,12 +8,12 @@ type Props = CollectionEntry<'blog'>['data'] & {
 	headings?: MarkdownHeading[]
 }
 
-const { title, description, pubDate, updatedDate, headings = [] } = Astro.props
+const { title, description, pubDate, updatedDate, lang = 'en', headings = [] } = Astro.props
 
 const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3 && h.slug !== 'footnote-label')
 ---
 
-<BaseLayout title={title} description={description} pageLayout="article" editorial>
+<BaseLayout title={title} description={description} lang={lang} pageLayout="article" editorial>
 	<div class="blog-layout z-main">
 		<main>
 			<article>

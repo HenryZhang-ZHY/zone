@@ -1,6 +1,7 @@
 ---
 title: "用 GSM 框架构建支撑决策的指标体系"
 description: '如何通过 GSM 框架（Goals-Signals-Metrics）科学地构建业务测量体系，真正让数据为业务决策提供客观的指导与支撑。'
+lang: zh-CN
 pubDate: 2026-03-22
 threeLevelNote: |
   - L1 用数据支撑决策的前提是“测量值得做”

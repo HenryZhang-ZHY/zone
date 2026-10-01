@@ -1,6 +1,6 @@
 ---
 title: Content Negotiation Between Browser and ASP.NET Core
-description: ''
+description: "Why ASP.NET Core returns text/plain even though the browser's Accept header prefers application/json, and how to return JSON instead."
 pubDate: 2026-1-7
 ---
 

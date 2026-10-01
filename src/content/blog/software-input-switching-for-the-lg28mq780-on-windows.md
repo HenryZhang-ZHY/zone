@@ -1,6 +1,6 @@
 ---
 title: 'Software Input Switching for the LG 28MQ780 on Windows'
-description: ''
+description: "How to switch the LG 28MQ780 input with one keyboard shortcut on Windows, when OnScreen Control, Dual Controller and ControlMyMonitor all fall short."
 pubDate: 2025-07-31
 ---
 

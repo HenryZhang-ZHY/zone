@@ -4,7 +4,12 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 import { SITE_TITLE } from '../consts'
 ---
 
-<BaseLayout title={`股票卖点计算器 | ${SITE_TITLE}`} pageLayout="medium">
+<BaseLayout
+  title={`股票卖点计算器 | ${SITE_TITLE}`}
+  description="股票卖点计算器：输入持仓股数与每股分红，按目标股息率估算卖出部分持仓所需的每股价格；结果仅供估算，不构成投资建议。"
+  lang="zh-CN"
+  pageLayout="medium"
+>
   <main class="z-main">
     <div class="page-header z-page-header">
       <h1 class="z-page-title">股票卖点计算器</h1>

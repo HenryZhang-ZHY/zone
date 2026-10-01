@@ -1,6 +1,6 @@
 ---
 title: DevOps Reading List
-description: ''
+description: "A curated DevOps and CI engineering reading list: Prow and ChatOps references, GitHub Actions and agentic workflows, and .NET build and deployment docs."
 pubDate: 2026-07-15
 ---
 
