@@ -38,7 +38,7 @@ outline: |
 
 [dowse](https://github.com/HenryZhang-ZHY/dowse) searches code across many Git repositories at once, from a desktop app or the command line. It does for the clones on your own disk what [GitHub code search](https://github.com/features/code-search) and [grep.app](https://grep.app) do for GitHub: one search box, every repository, results in milliseconds. It uses the same query syntax as GitHub code search, runs on [tgrep](https://github.com/microsoft/tgrep), Microsoft's trigram-indexed grep, with one index per repository in the manner of [Zoekt](https://github.com/sourcegraph/zoekt), and needs no server.
 
-![dowse searching 12 public repositories as the query is typed: results in milliseconds, then narrowed to Rust with a facet and shown as a table](/images/dowse/dowse-search.webp)
+![dowse searching 12 public repositories as the query is typed: results in milliseconds, then narrowed to Rust with a facet and shown as a table](./imgs/dowse/dowse-search.webp)
 
 Version 1.0 is out today for Windows, macOS and Linux. It is free and MIT-licensed.
 
