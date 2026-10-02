@@ -4,6 +4,10 @@ description: "How to switch the LG 28MQ780 input with one keyboard shortcut on W
 pubDate: 2025-07-31
 ---
 
+**Update (2026-10-02):** I've since built [tarsier](https://github.com/HenryZhang-ZHY/tarsier), a tray app that wraps this whole flow in a hotkey. It handles the LG private channel automatically, adds brightness control. If you want a permanent solution rather than a bare command-line call, that's the place to start.
+
+---
+
 My **LG 28MQ780** is connected to two computers and I want to toggle its input with a single keyboard shortcut.
 
 I installed **OnScreen Control** and **Dual Controller** from [LG’s site](https://www.lg.com/cn/support/software-firmware); neither exposes a hotkey to switch inputs.
