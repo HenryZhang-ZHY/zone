@@ -42,7 +42,7 @@ outline: |
 
 Version 1.0 is out today for Windows, macOS and Linux. It is free and MIT-licensed.
 
-**[Download dowse 1.0](https://github.com/HenryZhang-ZHY/dowse/releases/tag/v1.0.0)**
+**[Download the latest version](https://github.com/HenryZhang-ZHY/dowse/releases)**
 
 ## The code you need is rarely in one repository
 
@@ -164,15 +164,16 @@ The output is designed for coding agents such as Claude Code, Codex and Cursor a
 
 The short version: if you want the fastest grep in one repository from a terminal, tgrep is it. If your team needs shared, organization-wide code search in a browser, use Sourcegraph or run Zoekt. If your code is all on GitHub and the default branch is enough, GitHub code search is already there. If you want to search every repository on your own machine, on whatever branch it is on, from one app and from your agent's terminal, without running a server, that is what dowse is for.
 
-## Download dowse 1.0
+## Download dowse
 
-Each [release](https://github.com/HenryZhang-ZHY/dowse/releases/latest) has builds ready to run, with checksums in `SHA256SUMS`:
+The [releases page](https://github.com/HenryZhang-ZHY/dowse/releases) always has the newest builds ready to run, with checksums in `SHA256SUMS`. Pick your platform — the version number is in the file name, `v1.2.0` at the time of writing:
 
-| Platform | Download |
+| Platform | Asset |
 | --- | --- |
-| Windows (x64) | `dowse-v1.0.0-windows-x86_64.zip` |
-| macOS 11+ (Apple silicon and Intel) | `dowse-v1.0.0-macos-universal.zip` |
-| Linux (x64, arm64) | `dowse-v1.0.0-linux-x86_64.tar.gz`, `dowse-v1.0.0-linux-aarch64.tar.gz` |
+| Windows (x64) | `dowse-*-windows-x86_64.zip` |
+| macOS 11+ (Apple silicon and Intel) | `dowse-*-macos-universal.zip` |
+| Linux (x64) | `dowse-*-linux-x86_64.tar.gz` |
+| Linux (arm64) | `dowse-*-linux-aarch64.tar.gz` |
 
 Then add the folders that hold your repositories:
 
