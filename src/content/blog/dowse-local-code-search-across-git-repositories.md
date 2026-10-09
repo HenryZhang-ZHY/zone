@@ -1,5 +1,5 @@
 ---
-title: 'dowse: A Local Alternative to Sourcegraph and GitHub Code Search'
+title: "dowse: A Local Alternative to Sourcegraph and GitHub Code Search"
 description: "dowse is a free, open-source desktop app and CLI that searches code across every Git repository on your disk, with GitHub code search syntax and no server."
 pubDate: 2026-09-27
 outline: |
@@ -153,14 +153,14 @@ The output is designed for coding agents such as Claude Code, Codex and Cursor a
 
 ## dowse compared with tgrep, Sourcegraph, Zoekt, GitHub code search and Entrian Source Search
 
-|  | dowse | tgrep | GitHub code search | Sourcegraph | Zoekt | Entrian Source Search |
-| --- | --- | --- | --- | --- | --- | --- |
-| Runs | on your machine | on your machine | on github.com | on a server you deploy | on a server you deploy | inside Visual Studio |
-| Searches | many local clones, any branch, uncommitted edits | one directory tree | GitHub repositories, default branch | connected code hosts | repositories you index | files in your solution |
-| Query syntax | GitHub code search | regex, grep-style | GitHub code search | Sourcegraph | Zoekt | Entrian |
-| Index | trigram (tgrep), kept fresh by a watcher | trigram | GitHub's | Zoekt | trigram | full-text |
-| Interface | desktop app and CLI | CLI and server | web | web | web and API | IDE panel |
-| Price | free, MIT | free, MIT | included with GitHub | commercial | free, Apache-2.0 | per-developer licence |
+|              | dowse                                            | tgrep              | GitHub code search                  | Sourcegraph            | Zoekt                  | Entrian Source Search  |
+| ------------ | ------------------------------------------------ | ------------------ | ----------------------------------- | ---------------------- | ---------------------- | ---------------------- |
+| Runs         | on your machine                                  | on your machine    | on github.com                       | on a server you deploy | on a server you deploy | inside Visual Studio   |
+| Searches     | many local clones, any branch, uncommitted edits | one directory tree | GitHub repositories, default branch | connected code hosts   | repositories you index | files in your solution |
+| Query syntax | GitHub code search                               | regex, grep-style  | GitHub code search                  | Sourcegraph            | Zoekt                  | Entrian                |
+| Index        | trigram (tgrep), kept fresh by a watcher         | trigram            | GitHub's                            | Zoekt                  | trigram                | full-text              |
+| Interface    | desktop app and CLI                              | CLI and server     | web                                 | web                    | web and API            | IDE panel              |
+| Price        | free, MIT                                        | free, MIT          | included with GitHub                | commercial             | free, Apache-2.0       | per-developer licence  |
 
 The short version: if you want the fastest grep in one repository from a terminal, tgrep is it. If your team needs shared, organization-wide code search in a browser, use Sourcegraph or run Zoekt. If your code is all on GitHub and the default branch is enough, GitHub code search is already there. If you want to search every repository on your own machine, on whatever branch it is on, from one app and from your agent's terminal, without running a server, that is what dowse is for.
 
@@ -168,12 +168,12 @@ The short version: if you want the fastest grep in one repository from a termina
 
 The [releases page](https://github.com/HenryZhang-ZHY/dowse/releases) always has the newest builds ready to run, with checksums in `SHA256SUMS`. Each asset starts with `dowse`, then the version, then your platform:
 
-| Platform | Asset |
-| --- | --- |
-| Windows (x64) | `…-windows-x86_64.zip` |
-| macOS 11+ (Apple silicon and Intel) | `…-macos-universal.zip` |
-| Linux (x64) | `…-linux-x86_64.tar.gz` |
-| Linux (arm64) | `…-linux-aarch64.tar.gz` |
+| Platform                            | Asset                    |
+| ----------------------------------- | ------------------------ |
+| Windows (x64)                       | `…-windows-x86_64.zip`   |
+| macOS 11+ (Apple silicon and Intel) | `…-macos-universal.zip`  |
+| Linux (x64)                         | `…-linux-x86_64.tar.gz`  |
+| Linux (arm64)                       | `…-linux-aarch64.tar.gz` |
 
 Then add the folders that hold your repositories:
 

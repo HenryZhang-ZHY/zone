@@ -1,6 +1,6 @@
 ---
-title: 'How to manage local files in a shared git repository'
-description: 'A guide to keep local files untracked in a shared git repository and prevent them from being deleted by git clean.'
+title: "How to manage local files in a shared git repository"
+description: "A guide to keep local files untracked in a shared git repository and prevent them from being deleted by git clean."
 pubDate: 2025-07-24
 updatedDate: 2025-08-08
 ---
@@ -17,7 +17,6 @@ I also often run `git clean -fxd` to create a pristine working directory to test
 
 1. Add the file to `~/.config/git/ignore` to prevent it from being tracked by git. This way, it won't show up in `git status` or be included in commits. [^1]
 2. Add `-e "*.local.*"` to the `git clean` command to exclude files matching this pattern from being deleted. This allows you to keep your local configuration files intact while still using `git clean -fxd` to remove other untracked files. [^2]
-
 
 [^1]: [Git - gitignore Documentation](https://git-scm.com/docs/gitignore#_description)
 

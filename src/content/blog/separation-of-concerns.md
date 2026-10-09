@@ -1,5 +1,5 @@
 ---
-title: '关注点分离（Separation of Concerns）'
+title: "关注点分离（Separation of Concerns）"
 description: "关注点分离（Separation of Concerns）是什么，以及它如何落地：从网页的内容与样式分离，到分层架构与模块划分，用分离降低系统复杂度。"
 lang: zh-CN
 pubDate: 2025-05-31
@@ -18,20 +18,20 @@ updatedDate: 2025-07-10
 
 ```css
 .highlight {
-    color: red;
-    font-size: 18px;
+  color: red;
+  font-size: 18px;
 }
 .reference {
-    color: grey;
-    font-size: 16px;
+  color: grey;
+  font-size: 16px;
 }
 ```
 
 ```html
 <p class="highlight">Neque porro quisquam</p>
 <ul>
-    <li class="highlight">qui dolorem ipsum quia</li>
-    <li class="reference">consectetur, adipisci</li>
+  <li class="highlight">qui dolorem ipsum quia</li>
+  <li class="reference">consectetur, adipisci</li>
 </ul>
 ```
 
@@ -40,8 +40,8 @@ updatedDate: 2025-07-10
 ```html
 <p style="color: red; font-size: 18px;">Neque porro quisquam</p>
 <ul>
-    <li style="color: red; font-size: 18px;">qui dolorem ipsum quia</li>
-    <li style="color: grey; font-size: 16px;">consectetur, adipisci</li>
+  <li style="color: red; font-size: 18px;">qui dolorem ipsum quia</li>
+  <li style="color: grey; font-size: 16px;">consectetur, adipisci</li>
 </ul>
 ```
 
@@ -101,6 +101,7 @@ fn main() {
 ```
 
 我们通过以下重构来实现关注点分离：
+
 1. 创建 `ExecutionResult` 枚举来表示命令执行的结果。
 2. 将子命令的执行逻辑提取到 `execute_command` 函数中，返回 `ExecutionResult`。
 3. 将结果输出逻辑分别提取到 `print_json` 和 `print_text` 函数中，各自根据 `ExecutionResult` 的类型进行不同的处理。
@@ -112,7 +113,7 @@ fn main() {
     let format = parse_format_option();
 
     let execution_result = execute_command(sub_command);
-    
+
     match format {
         "json" => print_json(execution_result),
         _ => print_text(execution_result),
@@ -175,7 +176,6 @@ fn print_text(result: ExecutionResult) {
 如果换个角度分析，从“如何把这些关注点分离开”转为思考“假设这些关注点已经分离，我该如何把分离的部分连接起来”，就更容易想出解决方案。因为编程时大部分工作就是把不同的组件组合起来，我们已经充分练习过“连接分离的部分”这件事，做起来更加得心应手。
 
 这其实是对“倒推法”的应用，从预期的结果出发，假设各个关注点已经被分离开，把“分离”的任务变成我们更加熟悉的“组合”任务，问题的难度就会大大降低。
-
 
 [^1]: [E.W. Dijkstra Archive: On the role of scientific thought (EWD447)](https://www.cs.utexas.edu/~EWD/transcriptions/EWD04xx/EWD447.html)
 

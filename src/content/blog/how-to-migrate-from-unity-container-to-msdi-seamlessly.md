@@ -1,6 +1,6 @@
 ---
 title: How to migrate from Unity Container to MS.DI seamlessly
-description: 'A practical guide on smoothly transitioning a large codebase from Unity Container to Microsoft Dependency Injection.'
+description: "A practical guide on smoothly transitioning a large codebase from Unity Container to Microsoft Dependency Injection."
 pubDate: 2024-08-01
 ---
 
@@ -34,7 +34,7 @@ This allowed me to use the existing Unity container at runtime while gradually m
 
 ### Handling Named vs. Keyed Services
 
-Unity uses *Named Services*, while MS.DI recently introduced *Keyed Services*. They sound similar, but their behaviors differ drastically when resolving multiple services of the same type (`IEnumerable<T>`).
+Unity uses _Named Services_, while MS.DI recently introduced _Keyed Services_. They sound similar, but their behaviors differ drastically when resolving multiple services of the same type (`IEnumerable<T>`).
 
 In MS.DI, registering multiple services of the same type is straightforward, and resolving them returns all implementations:
 
@@ -158,7 +158,7 @@ Here is exactly how this adapter logic forces Unity's engine to behave like MS.D
                if (fromKeyedServicesAttribute?.Key is not null)
                {
                    return new KeyedServiceDependencyResolverPolicy(
-                       parameter.ParameterType, 
+                       parameter.ParameterType,
                        ServiceKeyHelper.ConvertToServiceName(fromKeyedServicesAttribute.Key)
                    );
                }
@@ -181,8 +181,8 @@ Here is exactly how this adapter logic forces Unity's engine to behave like MS.D
            public object Resolve(IBuilderContext context)
            {
                var keyedServiceType = KeyedService.MakeGenericType(type);
-               return context.Container.IsRegistered(keyedServiceType, name) 
-                   ? KeyedService.Unwrap(context.NewBuildUp(keyedServiceType, name)) 
+               return context.Container.IsRegistered(keyedServiceType, name)
+                   ? KeyedService.Unwrap(context.NewBuildUp(keyedServiceType, name))
                    : context.NewBuildUp(type, name);
            }
        }
@@ -190,7 +190,7 @@ Here is exactly how this adapter logic forces Unity's engine to behave like MS.D
    ```
 
 2. **Handling Single Unkeyed Services**: If there is exactly one unkeyed registration for a type, it is registered plainly without a name, serving as the default implementation.
-3. **Auto-naming Multiple Unkeyed Services**: This is the magic trick. When the logic detects multiple unkeyed services for the same type, instead of letting Unity overwrite them, we secretly assign each of them an **auto-generated unique name**. Because Unity implements `IEnumerable<T>` by collecting *all named registrations* of `T`, injecting these unique names ensures that when the app resolves `IEnumerable<T>`, it gets the full list of implementations—just like calling `.GetServices<T>()` in native MS.DI.
+3. **Auto-naming Multiple Unkeyed Services**: This is the magic trick. When the logic detects multiple unkeyed services for the same type, instead of letting Unity overwrite them, we secretly assign each of them an **auto-generated unique name**. Because Unity implements `IEnumerable<T>` by collecting _all named registrations_ of `T`, injecting these unique names ensures that when the app resolves `IEnumerable<T>`, it gets the full list of implementations—just like calling `.GetServices<T>()` in native MS.DI.
 
 ## 2. Practices for Safe Migration
 

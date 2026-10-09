@@ -1,5 +1,5 @@
 ---
-title: '[中英对照] Liquidation Values and Debt Capacity: A Market Equilibrium Approach 清算价值与债务容量：一种市场均衡方法'
+title: "[中英对照] Liquidation Values and Debt Capacity: A Market Equilibrium Approach 清算价值与债务容量：一种市场均衡方法"
 description: "[中英对照] Shleifer 与 Vishny 1992 年的论文：从资产买家的角度解释清算价值的决定因素，以及资产非流动性如何影响企业的债务容量与资本结构。"
 pubDate: 2026-05-17
 updatedDate: 2026-05-17
@@ -107,26 +107,25 @@ Assumption S1: Investment in prosperity has negative net present value:
 
 假设S1：繁荣期的投资具有负净现值：
 
- $$ R^{P}<I^{P}. $$
+$$ R^{P}<I^{P}. $$
 
 Assumption S2: Period 1 cash flow is higher in prosperity even net of the investment:
 
 假设S2：即使扣除投资，繁荣期的第1期现金流也更高：
 
- $$ Y_{1}^{D}<Y_{1}^{P}-I^{P}. $$
+$$ Y_{1}^{D}<Y_{1}^{P}-I^{P}. $$
 
 Assumption S3: The overall cash flow is higher in prosperity than in the depression even net of the negative NPV investment:
 
 假设S3：即使扣除负净现值投资，繁荣期的总体现金流也高于萧条期：
 
- $$ Y_{1}^{P}+Y_{2}^{P}+R^{P}-I^{P}>Y_{2}^{D}+Y_{1}^{D}. $$
+$$ Y_{1}^{P}+Y_{2}^{P}+R^{P}-I^{P}>Y_{2}^{D}+Y_{1}^{D}. $$
 
 Assumption S1 represents the agency problem and creates the need to use capital structure to control self-interested investments by management. Without S1, there is no need to use debt in the model. Assumptions S2 and S3 both say that prosperity is a much better state of the world than depression. Together they imply that a capital structure which is stringent enough to constrain managers from making bad investments in prosperity will actually put the firm into financial difficulty in the depression. If these assumptions do not hold, there will exist a capital structure that alleviates the agency costs in prosperity without entailing any distress costs in the depression. For example, if S3 holds but S2 does not, the optimal capital structure will call for a level of short-term debt that prevents the investment in prosperity but is still low enough that the firm can repay the short-term debt out of period 1 cash flow in depression. Conversely, if S2 holds but S3 does not, the first best can be obtained using long-term debt to constrain investment.
 
 假设S1代表了代理问题，并创造了利用资本结构控制管理层自利投资的需要。没有S1，模型中就不需要使用债务。假设S2和S3都表明繁荣期是远比萧条期更好的世界状态。它们共同意味着，在繁荣期足以约束管理者进行不良投资的严格资本结构，实际上会使企业在萧条期陷入财务困境。如果这些假设不成立，将存在一种资本结构，既能减轻繁荣期的代理成本，又不会在萧条期带来任何财务困境成本。例如，如果S3成立但S2不成立，最优资本结构将要求一个短期债务水平，它既能在繁荣期阻止投资，又足够低，使得企业能在萧条期用第1期现金流偿还短期债务。反之，如果S2成立但S3不成立，则可以通过长期债务来约束投资以实现最优结果。
 
 ![Figure 1. Timing for the seller. R is the future payoff from the investment, I is the cost of the investment, and Y is cash flow from existing assets. Superscripts denote states (either prosperity or depression) and subscripts denote time periods.](./imgs/liquidation-values-and-debt-capacity-a-market-equilibrium-approach/1.png)
-
 
 Hart (1991) studies the optimal period 0 capital structure when complete state-contingent contracts cannot be written. He shows that the capital structure that maximizes the wealth of period 0 shareholders, under Assumptions S1–S3, consists of senior debt $ D_{2} $ due in period 2 and debt $ D_{1} $ due in period 1. The function of junior short-term debt is to bring the firm to the capital market in period 1 rather than let it invest from the internal cash flow. Hart (1991) assumes that this debt cannot be rescheduled; we discuss this assumption in Section III. The function of senior long-term debt is to create debt overhang, so that a firm with a negative NPV investment opportunity cannot raise more money by issuing new securities. Both the long-term and the short-term debt, then, are used to discipline the management.
 
@@ -196,7 +195,7 @@ Condition
 
 条件
 
- $$ L^{D}=Y_{2}^{D}-\frac{\prod^{P}}{\prod^{D}}(I^{P}-R^{P}). $$
+$$ L^{D}=Y_{2}^{D}-\frac{\prod^{P}}{\prod^{D}}(I^{P}-R^{P}). $$
 
 Note that liquidation in this model may well take place at a price below the value of second period cash flow under the incumbent, $ Y_{2}^{D} $, for reasons of debt overhang.
 
@@ -218,13 +217,13 @@ Assumption B1: Investment in prosperity has negative net present value:
 
 假设B1：繁荣期的投资具有负净现值：
 
- $$ r^{P}<i^{P}. $$
+$$ r^{P}<i^{P}. $$
 
 Assumption B3: The overall cash flow is higher in prosperity than in the depression even net of the negative NPV investment:
 
 假设B3：即使扣除负净现值投资，繁荣期的总体现金流也高于萧条期：
 
- $$ y_{1}^{P}+y_{2}^{P}+r^{P}-i^{P}>y_{2}^{D}+y_{1}^{D}. $$
+$$ y_{1}^{P}+y_{2}^{P}+r^{P}-i^{P}>y_{2}^{D}+y_{1}^{D}. $$
 
 However, Assumption S2 for the seller is now replaced by:
 

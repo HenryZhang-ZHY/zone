@@ -1,5 +1,5 @@
 ---
-title: 'Software Input Switching for the LG 28MQ780 on Windows'
+title: "Software Input Switching for the LG 28MQ780 on Windows"
 description: "How to switch the LG 28MQ780 input with one keyboard shortcut on Windows, when OnScreen Control, Dual Controller and ControlMyMonitor all fall short."
 pubDate: 2025-07-31
 ---
@@ -22,5 +22,4 @@ Thankfully, I can use [kaleb422/NVapi-write-value-to-monitor: Send commands to m
 
 For instance, `.\writeValueToDisplay.exe 0 0xD2 0xF4 0x50`, means sending command `oxF4`(Switch input) with value `0xD2`(MONITOR_USB_C) to the I²C address `0x50`, you can find more commands and values [here](https://github.com/rockowitz/ddcutil/wiki/Switching-input-source-on-LG-monitors#theoretically-supported).
 
-
-[^1]: [Switching input source on LG monitors · rockowitz/ddcutil Wiki](https://github.com/rockowitz/ddcutil/wiki/Switching-input-source-on-LG-monitors#:~:text=Some%20of%20these%20monitors%20might%20support%20an%20alternative%20and%20non%2Dstandard%20channel%20to%20switch%20the%20input%2C%20namely%20the%20service/factory/manufacturer%20sidechannel%20%22DDC2AB%22%20(0x50%20instead%20of%200x51).)
+[^1]: [Switching input source on LG monitors · rockowitz/ddcutil Wiki](<https://github.com/rockowitz/ddcutil/wiki/Switching-input-source-on-LG-monitors#:~:text=Some%20of%20these%20monitors%20might%20support%20an%20alternative%20and%20non%2Dstandard%20channel%20to%20switch%20the%20input%2C%20namely%20the%20service/factory/manufacturer%20sidechannel%20%22DDC2AB%22%20(0x50%20instead%20of%200x51).>)

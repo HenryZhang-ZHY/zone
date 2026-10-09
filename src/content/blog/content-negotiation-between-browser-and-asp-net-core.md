@@ -25,7 +25,7 @@ public IActionResult GetData()
 
 This is the default behavior description of ASP.NET Core when it detects that the request is coming from a web browser. [^1]
 
-> Unlike typical API clients, web browsers supply Accept headers. Web browsers specify many formats, including wildcards. 
+> Unlike typical API clients, web browsers supply Accept headers. Web browsers specify many formats, including wildcards.
 >
 > By default, when the framework detects that the request is coming from a browser:
 >

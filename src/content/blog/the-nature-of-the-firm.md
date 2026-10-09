@@ -1,11 +1,11 @@
 ---
-title: '[中英对照] The Nature of the Firm 企业的性质'
-description: 'R. H. Coase, Economica, November 1937 / 罗纳德·科斯，载《经济学》1937年11月号'
+title: "[中英对照] The Nature of the Firm 企业的性质"
+description: "R. H. Coase, Economica, November 1937 / 罗纳德·科斯，载《经济学》1937年11月号"
 pubDate: 2026-09-25
 updatedDate: 2026-09-25
 ---
 
-> 本文译自 R. H. Coase 的论文 "The Nature of the Firm"，原载 *Economica*, New Series, Vol. 4, No. 16 (November 1937), pp. 386–405。  
+> 本文译自 R. H. Coase 的论文 "The Nature of the Firm"，原载 _Economica_, New Series, Vol. 4, No. 16 (November 1937), pp. 386–405。  
 > 作者：R. H. Coase（罗纳德·哈里·科斯）  
 > 英文原文依据上传的 PDF 版式重新录入并作了少量排印订正；中文为逐段对照翻译。  
 > 脚注在原刊中位于页脚，此处按出现顺序编号，集中放在每一节正文之后（编号在每一节内重新起算）。
@@ -20,11 +20,11 @@ ECONOMIC theory has suffered in the past from a failure to state clearly its ass
 
 过去，经济理论一直因未能清楚地说明其假设而备受困扰。经济学家在构建理论时，常常忽略了对理论赖以建立的基础进行考察。然而，这种考察不仅必不可少——它可以防止因不了解理论所依据的假设而产生的误解与无谓争论——而且因为对于经济学而言，在相互竞争的假设集合之间作出良好判断具有极端的重要性。例如，有人提出，经济学中"企业"（firm）一词的用法，可能不同于"普通人"对这一术语的用法。既然经济理论显然存在一种从个体企业而非产业出发开始分析的趋向，那么就更加有必要不仅给出"企业"一词的明确定义，而且要说明它与"现实世界"中的企业之间的差别（如果这种差别存在的话）。罗宾逊夫人曾说："对经济学中的一组假设要问的两个问题是：它们是否易于处理？以及：它们是否与现实世界相符？"尽管正如罗宾逊夫人所指出的，"更常见的情形是一组假设易于处理，而另一组贴近现实"，但在某些理论分支中，假设完全可能既易于处理又贴近现实。本文希望表明，我们能够得到一个关于企业的定义：它既贴近现实——与人们在现实世界中所指的企业相吻合——又易于处理，可以用马歇尔所发展出的两个最强有力的经济学分析工具来处理，即边际的概念与替代的概念，二者合起来便给出"边际上的替代"这一观念。当然，我们的定义必须"关涉那些能够被精确设想的正式关系"。
 
-> 1. Joan Robinson, *Economics is a Serious Subject*, p. 12.
-> 2. See N. Kaldor, "The Equilibrium of the Firm," *Economic Journal*, March, 1934.
+> 1. Joan Robinson, _Economics is a Serious Subject_, p. 12.
+> 2. See N. Kaldor, "The Equilibrium of the Firm," _Economic Journal_, March, 1934.
 > 3. Op. cit., p. 6.
-> 4. J. M. Keynes, *Essays in Biography*, pp. 223–4.
-> 5. L. Robbins, *Nature and Significance of Economic Science*, p. 63.
+> 4. J. M. Keynes, _Essays in Biography_, pp. 223–4.
+> 5. L. Robbins, _Nature and Significance of Economic Science_, p. 63.
 
 ## I
 
@@ -40,11 +40,11 @@ Of course, this fact has not been ignored by economists. Marshall introduces org
 
 当然，经济学家并没有忽视这一事实。马歇尔把组织列为第四种生产要素；J. B. 克拉克把协调职能赋予企业家；奈特教授引入了进行协调的管理者。正如 D. H. 罗伯逊所指出的，我们发现"在这片无意识合作的海洋中，存在着若干有意识权力的岛屿，就像一桶酪乳中凝结出的一块块黄油"。但既然通常的论点是协调将由价格机制完成，为什么这种组织是必要的？为什么会有这些"有意识权力的岛屿"？在企业外部，价格变动引导生产，生产通过市场上的一系列交换交易得到协调。在企业内部，这些市场交易被取消，替代含有交换交易的复杂市场结构的是指挥生产的企业家—协调者。显然，这是协调生产的两种不同方法。然而，考虑到如果生产由价格变动来调节，生产原本可以在完全没有任何组织的情况下进行，我们完全可以追问：为什么还会存在任何组织？
 
-> 1. This description is quoted with approval by D. H. Robertson, *Control of Industry*, p. 85, and by Professor Arnold Plant, "Trends in Business Administration," *ECONOMICA*, February, 1932. It appears in *Allied Shipping Control*, pp. 16–17.
-> 2. See F. A. Hayek, "The Trend of Economic Thinking," *ECONOMICA*, May, 1933; and F. A. Hayek, op. cit.
+> 1. This description is quoted with approval by D. H. Robertson, _Control of Industry_, p. 85, and by Professor Arnold Plant, "Trends in Business Administration," _ECONOMICA_, February, 1932. It appears in _Allied Shipping Control_, pp. 16–17.
+> 2. See F. A. Hayek, "The Trend of Economic Thinking," _ECONOMICA_, May, 1933; and F. A. Hayek, op. cit.
 > 3. Op. cit., p. 85.
 > 4. In the rest of this paper I shall use the term entrepreneur to refer to the person or persons who, in a competitive system, take the place of the price mechanism in the direction of resources.
-> 5. *Survey of Textile Industries*, p. 26.
+> 5. _Survey of Textile Industries_, p. 26.
 
 Of course, the degree to which the price mechanism is superseded varies greatly. In a department store, the allocation of the different sections to the various locations in the building may be done by the controlling authority or it may be the result of competitive price bidding for space. In the Lancashire cotton industry, a weaver can rent power and shop-room and can obtain looms and yarn on credit. This co-ordination of the various factors of production is, however, normally carried out without the intervention of the price mechanism. As is evident, the amount of "vertical" integration, involving as it does the supersession of the price mechanism, varies greatly from industry to industry and from firm to firm.
 
@@ -55,13 +55,13 @@ It can, I think, be assumed that the distinguishing mark of the firm is the supe
 我认为可以这样假定：企业的显著标志就是对价格机制的取代。当然，正如罗宾斯教授所指出的，它与"外部的相对价格与成本网络"相关联，但弄清这种关系的准确性质十分重要。莫里斯·多布先生在讨论亚当·斯密的资本家概念时，非常生动地描述了企业内部资源配置与经济体系内资源配置之间的这一区别："人们开始看到，还有比每个由企业主（undertaker）统领的工厂或单位内部的关系更为重要的东西；那就是企业主与其直接活动范围之外的其余经济世界之间的关系……企业主忙于每个企业内部的劳动分工，他有意识地进行计划和安排"，但"他与那种大得多的经济专业化体系相关联，而他自己不过是其中一个专业化的单位而已。在这里，他作为一个更大有机体中的单个细胞发挥着自己的作用，对于自己所承担的更宽广的角色基本上是无意识的。"
 
 > 1. Op. cit., p. 71.
-> 2. *Capitalist Enterprise and Social Progress*, p. 20. Cf., also, Henderson, *Supply and Demand*, pp. 3–5.
+> 2. _Capitalist Enterprise and Social Progress_, p. 20. Cf., also, Henderson, _Supply and Demand_, pp. 3–5.
 
 In view of the fact that while economists treat the price mechanism as a co-ordinating instrument, they also admit the co-ordinating function of the "entrepreneur," it is surely important to enquire why co-ordination is the work of the price mechanism in one case and of the entrepreneur in another. The purpose of this paper is to bridge what appears to be a gap in economic theory between the assumption (made for some purposes) that resources are allocated by means of the price mechanism and the assumption (made for other purposes) that this allocation is dependent on the entrepreneur-co-ordinator. We have to explain the basis on which, in practice, this choice between alternatives is effected.
 
 既然经济学家一方面把价格机制视为一种协调工具，另一方面又承认"企业家"的协调职能，那么探究下述问题无疑是重要的：为什么在一种情形下协调是价格机制的工作，而在另一种情形下却是企业家的工作。本文的目的，是在经济理论中弥合一道看似存在的鸿沟：一边是（出于某些目的而作出的）假设——资源通过价格机制得到配置；另一边是（出于另一些目的而作出的）假设——这种配置取决于企业家—协调者。我们必须解释：在实践中，这种在备选方案之间的选择究竟依据什么而作出。
 
-> 1. It is easy to see when the State takes over the direction of an industry that, in planning it, it is doing something which was previously done by the price mechanism. What is usually not realised is that any business man in organising the relations between his departments is also doing something which could be organised through the price mechanism. There is therefore point in Mr. Durbin's answer to those who emphasise the problems involved in economic planning that the same problems have to be solved by business men in the competitive system. (See "Economic Calculus in a Planned Economy," *Economic Journal*, December, 1936.) The important difference between these two cases is that economic planning is imposed on industry while firms arise voluntarily because they represent a more efficient method of organising production. In a competitive system, there is an "optimum" amount of planning!
+> 1. It is easy to see when the State takes over the direction of an industry that, in planning it, it is doing something which was previously done by the price mechanism. What is usually not realised is that any business man in organising the relations between his departments is also doing something which could be organised through the price mechanism. There is therefore point in Mr. Durbin's answer to those who emphasise the problems involved in economic planning that the same problems have to be solved by business men in the competitive system. (See "Economic Calculus in a Planned Economy," _Economic Journal_, December, 1936.) The important difference between these two cases is that economic planning is imposed on industry while firms arise voluntarily because they represent a more efficient method of organising production. In a competitive system, there is an "optimum" amount of planning!
 
 ## II
 
@@ -101,12 +101,12 @@ These, then, are the reasons why organisations such as firms exist in a speciali
 
 以上这些，就是在一个通常假定资源配置由价格机制"组织"的专业化交换经济中，像企业这样的组织之所以存在的原因。因此，企业由这样一种关系体系构成：当资源的流向取决于一位企业家时，这种关系体系便产生了。
 
-> 1. Cf. Harry Dawes, "Labour Mobility in the Steel Industry," *Economic Journal*, March, 1934, who instances "the trek to retail shopkeeping and insurance work by the better paid of skilled men due to the desire (often the main aim in life of a worker) to be independent" (p. 86).
+> 1. Cf. Harry Dawes, "Labour Mobility in the Steel Industry," _Economic Journal_, March, 1934, who instances "the trek to retail shopkeeping and insurance work by the better paid of skilled men due to the desire (often the main aim in life of a worker) to be independent" (p. 86).
 > 2. None the less, this is not altogether fanciful. Some small shopkeepers are said to earn less than their assistants.
-> 3. G. F. Shove, "The Imperfection of the Market: a Further Note," *Economic Journal*, March, 1933, p. 116, note 1, points out that such preferences may exist, although the example he gives is almost the reverse of the instance given in the text.
-> 4. According to N. Kaldor, "A Classificatory Note of the Determinateness of Equilibrium," *Review of Economic Studies*, February, 1934, it is one of the assumptions of static theory that "All the relevant prices are known to all individuals." But this is clearly not true of the real world.
-> 5. This influence was noted by Professor Usher when discussing the development of capitalism. He says: "The successive buying and selling of partly finished products were sheer waste of energy." (*Introduction to the Industrial History of England*, p. 13). But he does not develop the idea nor consider why it is that buying and selling operations still exist.
-> 6. It would be possible for no limits to the powers of the entrepreneur to be fixed. This would be voluntary slavery. According to Professor Batt, *The Law of Master and Servant*, p. 18, such a contract would be void and unenforceable.
+> 3. G. F. Shove, "The Imperfection of the Market: a Further Note," _Economic Journal_, March, 1933, p. 116, note 1, points out that such preferences may exist, although the example he gives is almost the reverse of the instance given in the text.
+> 4. According to N. Kaldor, "A Classificatory Note of the Determinateness of Equilibrium," _Review of Economic Studies_, February, 1934, it is one of the assumptions of static theory that "All the relevant prices are known to all individuals." But this is clearly not true of the real world.
+> 5. This influence was noted by Professor Usher when discussing the development of capitalism. He says: "The successive buying and selling of partly finished products were sheer waste of energy." (_Introduction to the Industrial History of England_, p. 13). But he does not develop the idea nor consider why it is that buying and selling operations still exist.
+> 6. It would be possible for no limits to the powers of the entrepreneur to be fixed. This would be voluntary slavery. According to Professor Batt, _The Law of Master and Servant_, p. 18, such a contract would be void and unenforceable.
 > 7. Of course, it is not possible to draw a hard and fast line which determines whether there is a firm or not. There may be more or less direction. It is similar to the legal question of whether there is the relationship of master and servant or principal and agent. See the discussion of this problem below.
 > 8. The views of Professor Knight are examined below in more detail.
 
@@ -130,10 +130,10 @@ First, as a firm gets larger, there may be decreasing returns to the entrepreneu
 
 第一，随着企业变大，企业家职能可能出现报酬递减，也就是说，在企业内部组织追加交易的成本可能上升。自然地，必然会有某一点，在这一点上，企业内部组织一笔额外交易的成本等于在公开市场上完成这笔交易的成本，或等于由另一位企业家来组织的成本。第二，可能随着被组织的交易增多，企业家未能把生产要素置于其价值最大的用途上，也就是说，未能最好地利用生产要素。同样，必然会有某一点，在这一点上，资源浪费所造成的损失等于公开市场上该交换交易的市场成本，或等于该交易由另一位企业家组织时的损失。最后，一种或多种生产要素的供给价格可能上升，因为小企业的"其他优势"大于大企业。当然，企业扩张实际停止的那一点，可能是由上述各因素的组合决定的。所列的前两个原因，很可能就对应于经济学家所说的"管理上的报酬递减"。
 
-> 1. *Risk, Uncertainty and Profit*, Preface to the Re-issue, London School of Economics Series of Reprints, No. 16, 1933.
+> 1. _Risk, Uncertainty and Profit_, Preface to the Re-issue, London School of Economics Series of Reprints, No. 16, 1933.
 > 2. There are certain marketing costs which could only be eliminated by the abolition of "consumers' choice" and these are the costs of retailing. It is conceivable that these costs might be so high that people would be willing to accept rations because the extra product obtained was worth the loss of their choice.
 > 3. This argument assumes that exchange transactions on a market can be considered as homogeneous; this complication is taken into account below. It is clearly untrue in fact.
-> 4. For a discussion of the variation of the supply price of factors of production to firms of varying size, see E. A. G. Robinson, *The Structure of Competitive Industry*. It is sometimes said that the supply price of organising ability increases as the size of the firm increases because men prefer to be the heads of small independent businesses rather than the heads of departments in a large business. See Jones, *The Trust Problem*, p. 531, and Macgregor, *Industrial Combination*, p. 63. This is a common argument of those who advocate Rationalisation. It is said that larger units would be more efficient, but owing to the individualistic spirit of the smaller entrepreneurs, they prefer to remain independent, apparently in spite of the higher income which their increased efficiency under Rationalisation makes possible. For a more thorough discussion of this particular problem, see N. Kaldor, "The Equilibrium of the Firm," *Economic Journal*, March, 1934, and E. A. G. Robinson, "The Problem of Management and the Size of the Firm," *Economic Journal*, June, 1934.
+> 4. For a discussion of the variation of the supply price of factors of production to firms of varying size, see E. A. G. Robinson, _The Structure of Competitive Industry_. It is sometimes said that the supply price of organising ability increases as the size of the firm increases because men prefer to be the heads of small independent businesses rather than the heads of departments in a large business. See Jones, _The Trust Problem_, p. 531, and Macgregor, _Industrial Combination_, p. 63. This is a common argument of those who advocate Rationalisation. It is said that larger units would be more efficient, but owing to the individualistic spirit of the smaller entrepreneurs, they prefer to remain independent, apparently in spite of the higher income which their increased efficiency under Rationalisation makes possible. For a more thorough discussion of this particular problem, see N. Kaldor, "The Equilibrium of the Firm," _Economic Journal_, March, 1934, and E. A. G. Robinson, "The Problem of Management and the Size of the Firm," _Economic Journal_, June, 1934.
 > 5. This discussion is, of course, brief and incomplete.
 > 6. A definition of this term is given below.
 
@@ -161,10 +161,10 @@ Apart from variations in the supply price of factors of production to firms of d
 
 除了不同规模企业所面对的生产要素供给价格的差异之外，看来组织成本以及因错误而造成的损失，会随着所组织交易的空间分布、交易的差异性以及相关价格变动概率的增加而增加。随着企业家组织更多的交易，这些交易似乎会倾向于在种类上或在地点上有所不同。这就为企业越大效率越倾向于下降提供了又一个理由。倾向于把生产要素在空间上拉近、从而减少空间分布的发明，会倾向于增大企业规模。像电话和电报这类倾向于降低空间组织成本的变化，会倾向于增大企业规模。一切改进管理技术的变革，都会倾向于增大企业规模。
 
-> 1. This aspect of the problem is emphasised by N. Kaldor, op. cit. Its importance in this connection had been previously noted by E. A. G. Robinson, *The Structure of Competitive Industry*, pp. 83–106. This assumes that an increase in the probability of price movements increases the costs of organising within a firm more than it increases the cost of carrying out an exchange transaction on the market—which is probable.
+> 1. This aspect of the problem is emphasised by N. Kaldor, op. cit. Its importance in this connection had been previously noted by E. A. G. Robinson, _The Structure of Competitive Industry_, pp. 83–106. This assumes that an increase in the probability of price movements increases the costs of organising within a firm more than it increases the cost of carrying out an exchange transaction on the market—which is probable.
 > 2. This would appear to be the importance of the treatment of the technical unit by E. A. G. Robinson, op. cit., pp. 27–33. The larger the technical unit, the greater the concentration of factors and therefore the firm is likely to be larger.
 > 3. It should be noted that most inventions will change both the costs of organising and the costs of using the price mechanism. In such cases, whether the invention tends to make firms larger or smaller will depend on the relative effect on these two sets of costs. For instance, if the telephone reduces the costs of using the price mechanism more than it reduces the costs of organising, then it will have the effect of reducing the size of the firm.
-> 4. An illustration of these dynamic forces is furnished by Maurice Dobb, *Russian Economic Development*, p. 68. "With the passing of bonded labour the factory, as an establishment where work was organised under the whip of the overseer, lost its raison d'être until this was restored to it with the introduction of power machinery after 1846." It seems important to realise that the passage from the domestic system to the factory system is not a mere historical accident, but is conditioned by economic forces. This is shown by the fact that it is possible to move from the factory system to the domestic system, as in the Russian example, as well as the reverse. It is the essence of serfdom that the price mechanism is not allowed to operate. Therefore, there has to be direction from some organiser. When, however, serfdom passed, the price mechanism was allowed to operate. It was not until machinery drew workers into one locality that it paid to supersede the price mechanism and the firm again emerged.
+> 4. An illustration of these dynamic forces is furnished by Maurice Dobb, _Russian Economic Development_, p. 68. "With the passing of bonded labour the factory, as an establishment where work was organised under the whip of the overseer, lost its raison d'être until this was restored to it with the introduction of power machinery after 1846." It seems important to realise that the passage from the domestic system to the factory system is not a mere historical accident, but is conditioned by economic forces. This is shown by the fact that it is possible to move from the factory system to the domestic system, as in the Russian example, as well as the reverse. It is the essence of serfdom that the price mechanism is not allowed to operate. Therefore, there has to be direction from some organiser. When, however, serfdom passed, the price mechanism was allowed to operate. It was not until machinery drew workers into one locality that it paid to supersede the price mechanism and the firm again emerged.
 > 5. This is often called "vertical integration," combination being termed "lateral integration."
 
 It should be noted that the definition of a firm which was given above can be used to give more precise meanings to the terms "combination" and "integration." There is a combination when transactions which were previously organised by two or more entrepreneurs become organised by one. This becomes integration when it involves the organisation of transactions which were previously carried out between the entrepreneurs on a market. A firm can expand in either or both of these two ways. The whole of the "structure of competitive industry" becomes tractable by the ordinary technique of economic analysis.
@@ -181,12 +181,12 @@ It is sometimes said that the reason for the existence of a firm is to be found 
 
 有时人们说，企业存在的原因可以在劳动分工中找到。这是厄舍教授的观点，这一观点被莫里斯·多布先生采纳并加以发挥。企业成了"劳动分工日益复杂化的结果……这种经济分化的增长，产生了对某种整合力量的需要，没有这种力量，分化就会陷入混乱；而产业形态之所以主要具有意义，正是作为分化经济中的整合力量。"对这一论点的回答是显而易见的。那种"分化经济中的整合力量"早已以价格机制的形式存在。经济科学的主要成就或许就在于它表明：没有理由认为专业化必然导致混乱。因此，莫里斯·多布先生给出的理由是站不住脚的。需要解释的是：为什么一种整合力量（企业家）应当被另一种整合力量（价格机制）所取代。
 
-The most interesting reasons (and probably the most widely accepted) which have been given to explain this fact are those to be found in Professor Knight's *Risk, Uncertainty and Profit*. His views will be examined in some detail.
+The most interesting reasons (and probably the most widely accepted) which have been given to explain this fact are those to be found in Professor Knight's _Risk, Uncertainty and Profit_. His views will be examined in some detail.
 
 为解释这一事实而给出的最有趣的（大概也是最广为接受的）理由，见于奈特教授的《风险、不确定性与利润》。下面将较为详细地考察他的观点。
 
-> 1. Op. cit., p. 10. Professor Usher's views are to be found in his *Introduction to the Industrial History of England*, pp. 1–18.
-> 2. Cf. J. B. Clark, *Distribution of Wealth*, p. 19, who speaks of the theory of exchange as being the "theory of the organisation of industrial society."
+> 1. Op. cit., p. 10. Professor Usher's views are to be found in his _Introduction to the Industrial History of England_, pp. 1–18.
+> 2. Cf. J. B. Clark, _Distribution of Wealth_, p. 19, who speaks of the theory of exchange as being the "theory of the organisation of industrial society."
 
 Professor Knight starts with a system in which there is no uncertainty: "acting as individuals under absolute freedom but without collusion men are supposed to have organised economic life with the primary and secondary division of labour, the use of capital, etc., developed to the point familiar in present-day America. The principal fact which calls for the exercise of the imagination is the internal organisation of the productive groups or establishments. With uncertainty entirely absent, every individual being in possession of perfect knowledge of the situation, there would be no occasion for anything of the nature of responsible management or control of productive activity. Even marketing transactions in any realistic sense would not be found. The flow of raw materials and productive services to the consumer would be entirely automatic."
 
@@ -212,7 +212,7 @@ These quotations give the essence of Professor Knight's theory. The fact of unce
 
 这些引文给出了奈特教授理论的要点。不确定性这一事实意味着人们必须预测未来的需求。因此，就产生出一个特殊的阶级，他们指挥他人的活动，并给后者发放有保证的工资。它之所以起作用，是因为良好的判断力通常与对自己判断的信心相伴。
 
-> 1. *Risk, Uncertainty and Profit*, p. 267.
+> 1. _Risk, Uncertainty and Profit_, p. 267.
 > 2. Op. cit., pp. 267–8.
 > 3. Op. cit., p. 268.
 > 4. Op. cit., pp. 268–9.
@@ -240,8 +240,8 @@ It has sometimes been assumed that a firm is limited in size under perfect compe
 有时人们假定，在完全竞争下，如果企业的成本曲线向上倾斜，企业规模就受到限制；而在不完全竞争下，企业规模之所以受到限制，是因为产量超过边际成本等于边际收入的那一点就不合算了。但显然，一家企业可以生产一种以上的产品，因此，无论是在完全竞争下成本曲线向上倾斜，还是在不完全竞争下边际成本并不总是低于边际收入，看来都没有显而易见的理由说明它们应当限制企业的规模。罗宾逊夫人作了只生产一种产品的简化假定。但显然，研究一家企业所生产产品的数量如何决定是很重要的，而任何假定事实上只生产一种产品的理论，都不可能有很大的实际意义。
 
 > 1. Mr. Robinson calls this the Imperfect Competition solution for the survival of the small firm.
-> 2. Mr. Robinson's conclusion, op. cit., p. 249, note 1, would appear to be definitely wrong. He is followed by Horace J. White, Jr., "Monopolistic and Perfect Competition," *American Economic Review*, December, 1936, p. 645, note 27. Mr. White states "It is obvious that the size of the firm is limited in conditions of monopolistic competition."
-> 3. *Economics of Imperfect Competition*.
+> 2. Mr. Robinson's conclusion, op. cit., p. 249, note 1, would appear to be definitely wrong. He is followed by Horace J. White, Jr., "Monopolistic and Perfect Competition," _American Economic Review_, December, 1936, p. 645, note 27. Mr. White states "It is obvious that the size of the firm is limited in conditions of monopolistic competition."
+> 3. _Economics of Imperfect Competition_.
 
 It might be replied that under perfect competition, since everything that is produced can be sold at the prevailing price, then there is no need for any other product to be produced. But this argument ignores the fact that there may be a point where it is less costly to organise the exchange transactions of a new product than to organise further exchange transactions of the old product. This point can be illustrated in the following way. Imagine, following von Thunen, that there is a town, the consuming centre, and that industries are located around this central point in rings. These conditions are illustrated in the following diagram in which A, B and C represent different industries.
 
@@ -258,7 +258,7 @@ To determine the size of the firm, we have to consider the marketing costs (that
 要确定企业的规模，我们必须考虑市场成本（即使用价格机制的成本）以及不同企业家的组织成本，然后我们才能确定每家企业将生产多少种产品，以及每种产品生产多少。因此看来，肖夫先生在其关于"不完全竞争"的文章中提出的问题，是罗宾逊夫人的成本曲线工具所无法回答的。上面提到的那些因素看来才是相关的因素。
 
 > 1. As has been shown above, location is only one of the factors influencing the cost of organising.
-> 2. G. F. Shove, "The Imperfection of the Market," *Economic Journal*, March, 1933, p. 115. In connection with an increase in demand in the suburbs and the effect on the price charged by suppliers, Mr. Shove asks ". . . . why do not the old firms open branches in the suburbs?" If the argument in the text is correct, this is a question which Mrs. Robinson's apparatus cannot answer.
+> 2. G. F. Shove, "The Imperfection of the Market," _Economic Journal_, March, 1933, p. 115. In connection with an increase in demand in the suburbs and the effect on the price charged by suppliers, Mr. Shove asks ". . . . why do not the old firms open branches in the suburbs?" If the argument in the text is correct, this is a question which Mrs. Robinson's apparatus cannot answer.
 
 ## V
 
@@ -280,7 +280,7 @@ We can therefore conclude that the definition we have given is one which approxi
 
 因此我们可以得出结论：我们给出的定义，与现实世界中所考虑的企业十分接近。所以，我们的定义是贴近现实的。那么它是否易于处理呢？这一点应当是清楚的。当我们考虑一家企业将有多大时，边际原理可以顺畅地发挥作用。问题始终是：把一笔额外的交换交易纳入组织权威之下是否合算？在边际上，企业内部组织的成本将等于在另一家企业中组织的成本，或者等于把该交易留给价格机制去"组织"所涉及的成本。商人会不断进行试验，时而多控制一些、时而少控制一些，均衡便以这种方式得以维持。这给出了静态分析中的均衡位置。
 
-> 1. Batt, *The Law of Master and Servant*, p. 6.
+> 1. Batt, _The Law of Master and Servant_, p. 6.
 > 2. Op. cit., p. 7.
 > 3. The legal concept of "employer and employee" and the economic concept of a firm are not identical, in that the firm may imply control over another person's property as well as over their labour. But the identity of these two concepts is sufficiently close for an examination of the legal concept to be of value in appraising the worth of the economic concept.
 

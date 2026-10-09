@@ -1,6 +1,6 @@
 ---
-title: 'Does a Modern .NET Project Still Need ComVisible(false)?'
-description: 'What the assembly-level ComVisible attribute controls, why older C# projects contain it, and when it still matters in .NET 10 and later.'
+title: "Does a Modern .NET Project Still Need ComVisible(false)?"
+description: "What the assembly-level ComVisible attribute controls, why older C# projects contain it, and when it still matters in .NET 10 and later."
 pubDate: 2026-09-10
 threeLevelNote: |
   - L1 ComVisible controls the managed surface exposed to COM
@@ -53,7 +53,7 @@ public sealed class ReportGenerator
 
 This is a default-deny policy: do not expose the assembly accidentally; expose only the contract designed for COM.
 
-There are two important limits to that statement. First, `ComVisible(true)` cannot make an `internal` type public. Second, `[assembly: ComVisible(false)]` does **not** stop the project from consuming COM APIs. It controls managed code being exposed *to* COM, not managed code calling *into* COM.
+There are two important limits to that statement. First, `ComVisible(true)` cannot make an `internal` type public. Second, `[assembly: ComVisible(false)]` does **not** stop the project from consuming COM APIs. It controls managed code being exposed _to_ COM, not managed code calling _into_ COM.
 
 ## Why it appears in `AssemblyInfo.cs`
 
@@ -71,13 +71,13 @@ Modern .NET also makes COM exposure more deliberate than the attribute alone sug
 
 The decision can therefore be made from the project's actual boundary:
 
-| Project situation | Recommendation |
-| --- | --- |
-| No COM interop | Do not add the attribute; removing inherited boilerplate is reasonable |
-| Only consumes COM, such as Office automation | The attribute is not required |
-| Exposes .NET objects to COM | Keep assembly-level `false` and opt in designed types with `true` |
-| Targets .NET Framework or is being migrated from it | Keep it until COM consumers and registration behavior have been checked |
-| Shared library where accidental COM exposure is a realistic compatibility risk | Keeping it is a reasonable explicit policy |
+| Project situation                                                              | Recommendation                                                          |
+| ------------------------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| No COM interop                                                                 | Do not add the attribute; removing inherited boilerplate is reasonable  |
+| Only consumes COM, such as Office automation                                   | The attribute is not required                                           |
+| Exposes .NET objects to COM                                                    | Keep assembly-level `false` and opt in designed types with `true`       |
+| Targets .NET Framework or is being migrated from it                            | Keep it until COM consumers and registration behavior have been checked |
+| Shared library where accidental COM exposure is a realistic compatibility risk | Keeping it is a reasonable explicit policy                              |
 
 ## Treat it as a boundary decision
 

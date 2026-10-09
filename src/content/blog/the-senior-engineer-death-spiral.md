@@ -1,6 +1,6 @@
 ---
-title: '[中英对照] the senior engineer death spiral 资深工程师的死亡螺旋'
-description: 'on proving yourself, burning out, and being a good teammate / 论自我证明、职业倦怠以及成为一名好队友'
+title: "[中英对照] the senior engineer death spiral 资深工程师的死亡螺旋"
+description: "on proving yourself, burning out, and being a good teammate / 论自我证明、职业倦怠以及成为一名好队友"
 pubDate: 2026-09-20
 updatedDate: 2026-09-20
 ---

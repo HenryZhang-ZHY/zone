@@ -1,5 +1,5 @@
 ---
-title: 'Using a Git Bare Repository to backup beancount files in OneDrive'
+title: "Using a Git Bare Repository to backup beancount files in OneDrive"
 description: "How I back up a beancount bookkeeping project to OneDrive with a Git bare repository, keeping the virtualenv and temporary files out of the synced folder."
 pubDate: 2025-10-25
 ---

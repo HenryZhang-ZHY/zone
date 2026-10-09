@@ -19,7 +19,7 @@ Use the local package manager/runtime configured for the project.
 bun install
 bun run dev
 bun run build
-bun run test
+bun run vitest
 ```
 
 Markdown and MDX formatting uses Oxfmt managed by mise:
