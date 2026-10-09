@@ -22,6 +22,17 @@ bun run build
 bun run test
 ```
 
+Markdown and MDX formatting uses Oxfmt managed by mise:
+
+```sh
+mise install
+mise run fmt:check
+mise run fmt
+```
+
+`fmt:check` checks formatting without modifying files. `fmt` writes formatting
+changes to Markdown and MDX files only; neither task formats Astro components.
+
 ## Project Structure
 
 ```text
