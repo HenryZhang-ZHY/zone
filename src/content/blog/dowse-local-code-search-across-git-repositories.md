@@ -1,5 +1,5 @@
 ---
-title: 'dowse 1.0: A Local Alternative to Sourcegraph and GitHub Code Search'
+title: 'dowse: A Local Alternative to Sourcegraph and GitHub Code Search'
 description: "dowse is a free, open-source desktop app and CLI that searches code across every Git repository on your disk, with GitHub code search syntax and no server."
 pubDate: 2026-09-27
 outline: |
@@ -40,7 +40,7 @@ outline: |
 
 ![dowse searching 12 public repositories as the query is typed: results in milliseconds, then narrowed to Rust with a facet and shown as a table](./imgs/dowse/dowse-search.webp)
 
-Version 1.0 is out today for Windows, macOS and Linux. It is free and MIT-licensed.
+dowse runs on Windows, macOS and Linux. It is free and MIT-licensed.
 
 **[Download the latest version](https://github.com/HenryZhang-ZHY/dowse/releases)**
 
@@ -57,7 +57,7 @@ When you want to know how a function is called, where a config key is read, or w
 
 I wanted what GitHub code search gives me on github.com, over the repositories on my disk: the mirrors I keep on `main` and the working copies I develop in, uncommitted edits included. dowse is that.
 
-## What dowse 1.0 does
+## What dowse does
 
 ### GitHub code search syntax, on your own clones
 
@@ -166,14 +166,14 @@ The short version: if you want the fastest grep in one repository from a termina
 
 ## Download dowse
 
-The [releases page](https://github.com/HenryZhang-ZHY/dowse/releases) always has the newest builds ready to run, with checksums in `SHA256SUMS`. Pick your platform — the version number is in the file name, `v1.2.0` at the time of writing:
+The [releases page](https://github.com/HenryZhang-ZHY/dowse/releases) always has the newest builds ready to run, with checksums in `SHA256SUMS`. Each asset starts with `dowse`, then the version, then your platform:
 
 | Platform | Asset |
 | --- | --- |
-| Windows (x64) | `dowse-*-windows-x86_64.zip` |
-| macOS 11+ (Apple silicon and Intel) | `dowse-*-macos-universal.zip` |
-| Linux (x64) | `dowse-*-linux-x86_64.tar.gz` |
-| Linux (arm64) | `dowse-*-linux-aarch64.tar.gz` |
+| Windows (x64) | `…-windows-x86_64.zip` |
+| macOS 11+ (Apple silicon and Intel) | `…-macos-universal.zip` |
+| Linux (x64) | `…-linux-x86_64.tar.gz` |
+| Linux (arm64) | `…-linux-aarch64.tar.gz` |
 
 Then add the folders that hold your repositories:
 
