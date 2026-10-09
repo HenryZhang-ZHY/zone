@@ -4,10 +4,8 @@ bun = "latest"
 
 [tasks."fmt:check"]
 description = "Check Markdown and MDX formatting"
-shell = "bun exec"
-run = 'oxfmt --check "**/*.{md,mdx}"'
+run = 'oxfmt --check **/*.{md,mdx}'
 
 [tasks.fmt]
 description = "Format Markdown and MDX files"
-shell = "bun exec"
-run = 'oxfmt --write "**/*.{md,mdx}"'
+run = 'oxfmt --write **/*.{md,mdx}'
