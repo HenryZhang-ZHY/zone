@@ -101,166 +101,167 @@ colors:
   pink-900: "#c41562"
   pink-1000: "#460523"
 fontFamilies:
-  sans: "'IBM Plex Mono', 'LXGW WenKai', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
-  mono: "'IBM Plex Mono', 'LXGW WenKai', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
+  ui: "'IBM Plex Mono', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei', 'Noto Sans SC', 'Noto Sans CJK SC', 'Source Han Sans SC', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
+  code: "'IBM Plex Mono', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei', 'Noto Sans SC', 'Noto Sans CJK SC', 'Source Han Sans SC', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
+  reading: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei', 'Noto Sans SC', 'Noto Sans CJK SC', 'Source Han Sans SC', 'Helvetica Neue', Arial, sans-serif"
 typography:
   heading-72:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 72px
     fontWeight: 600
     lineHeight: 72px
     letterSpacing: -4.32px
   heading-64:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 64px
     fontWeight: 600
     lineHeight: 64px
     letterSpacing: -3.84px
   heading-56:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 56px
     fontWeight: 600
     lineHeight: 56px
     letterSpacing: -3.36px
   heading-48:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 48px
     fontWeight: 600
     lineHeight: 56px
     letterSpacing: -2.88px
   heading-40:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 40px
     fontWeight: 600
     lineHeight: 48px
     letterSpacing: -2.4px
   heading-32:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 32px
     fontWeight: 600
     lineHeight: 40px
     letterSpacing: -1.28px
   heading-24:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 24px
     fontWeight: 600
     lineHeight: 32px
     letterSpacing: -0.96px
   heading-20:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 20px
     fontWeight: 600
     lineHeight: 26px
     letterSpacing: -0.4px
   heading-16:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 16px
     fontWeight: 600
     lineHeight: 24px
     letterSpacing: -0.32px
   heading-14:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 14px
     fontWeight: 600
     lineHeight: 20px
     letterSpacing: -0.28px
   button-16:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 16px
     fontWeight: 500
     lineHeight: 20px
   button-14:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 14px
     fontWeight: 500
     lineHeight: 20px
   button-12:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 12px
     fontWeight: 500
     lineHeight: 16px
   label-20:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 20px
     fontWeight: 400
     lineHeight: 32px
   label-18:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 18px
     fontWeight: 400
     lineHeight: 20px
   label-16:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 16px
     fontWeight: 400
     lineHeight: 20px
   label-14:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 14px
     fontWeight: 400
     lineHeight: 20px
   label-14-mono:
-    fontFamily: "{fontFamilies.mono}"
+    fontFamily: "{fontFamilies.code}"
     fontSize: 14px
     fontWeight: 400
     lineHeight: 20px
   label-13:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 13px
     fontWeight: 400
     lineHeight: 16px
   label-13-mono:
-    fontFamily: "{fontFamilies.mono}"
+    fontFamily: "{fontFamilies.code}"
     fontSize: 13px
     fontWeight: 400
     lineHeight: 20px
   label-12:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 12px
     fontWeight: 400
     lineHeight: 16px
   label-12-mono:
-    fontFamily: "{fontFamilies.mono}"
+    fontFamily: "{fontFamilies.code}"
     fontSize: 12px
     fontWeight: 400
     lineHeight: 16px
   copy-24:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 24px
     fontWeight: 400
     lineHeight: 36px
   copy-20:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 20px
     fontWeight: 400
     lineHeight: 36px
   copy-18:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 18px
     fontWeight: 400
     lineHeight: 28px
   copy-16:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 16px
     fontWeight: 400
     lineHeight: 24px
   copy-14:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 14px
     fontWeight: 400
     lineHeight: 20px
   copy-14-mono:
-    fontFamily: "{fontFamilies.mono}"
+    fontFamily: "{fontFamilies.code}"
     fontSize: 14px
     fontWeight: 400
     lineHeight: 20px
   copy-13:
-    fontFamily: "{fontFamilies.sans}"
+    fontFamily: "{fontFamilies.ui}"
     fontSize: 13px
     fontWeight: 400
     lineHeight: 18px
   copy-13-mono:
-    fontFamily: "{fontFamilies.mono}"
+    fontFamily: "{fontFamilies.code}"
     fontSize: 13px
     fontWeight: 400
     lineHeight: 18px
@@ -365,7 +366,7 @@ components:
 
 ## Overview
 
-Zone uses Vercel's design-token vocabulary and scale structure, then applies a small set of brand-specific overrides: brand navy for primary text, electric blue for interaction, coral red for destructive or error states, IBM Plex Mono with LXGW WenKai for the mono-forward CJK-aware voice, and sharp corners on major UI.
+Zone uses Vercel's design-token vocabulary and scale structure, then applies a small set of brand-specific overrides: brand navy for primary text, electric blue for interaction, coral red for destructive or error states, IBM Plex Mono for the mono-forward Latin voice with the platform CJK sans for Chinese, and sharp corners on major UI.
 
 Treat the frontmatter tokens as the design source of truth. The implementation maps these ideas into CSS variables in `src/styles/global.css`; `BaseLayout`, `.z-main`, `SiteIdentity`, and `Footer` share page-shell tokens for alignment.
 
@@ -388,13 +389,17 @@ Zone keeps the same token names but changes the key semantic anchors. `primary` 
 
 Accent meaning stays strict: `blue-700`/`tertiary` is the brand accent and focus/checked state; `red-700`/`red-800` is for errors and destructive actions; `amber-700` is for warnings. Keep decorative color rare.
 
-For text on light surfaces, use the darker `blue-900` via `--z-color-text-accent`; keep `blue-700` for non-text accents and focus indicators. For small white button labels, use `blue-800` as the fill so the label has sufficient contrast. Give inline article links an underline so they remain recognizable without color. Long-form article content, including its headings, shares a 72ch maximum measure with `copy-16` and relaxed leading; compact metadata should not drop below `label-13` where space permits.
+For text on light surfaces, use the darker `blue-900` via `--z-color-text-accent`; keep `blue-700` for non-text accents and focus indicators. For small white button labels, use `blue-800` as the fill so the label has sufficient contrast. Give inline article links an underline so they remain recognizable without color. Long-form article content, including its headings, shares a 72ch maximum measure with `copy-16` and relaxed leading (Chinese articles use the reading rules below); compact metadata should not drop below `label-13` where space permits.
 
 ## Typography
 
-Zone reuses Vercel's typography token set and metrics, but replaces the font family with the Zone stack:
+Both themes share Vercel's typography token set and metrics, with the font families replaced by the Zone stacks. The CSS tokens in `src/styles/global.css` mirror the `fontFamilies` keys:
 
-`'IBM Plex Mono', 'LXGW WenKai', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace`
+- `ui` (`--z-font-ui`): IBM Plex Mono for Latin, falling through to the platform CJK sans (`--z-font-cjk`: PingFang on Apple, Microsoft YaHei on Windows, Noto/Source Han Sans elsewhere), so no CJK webfont is downloaded. This is the default for UI and English prose.
+- `code` (`--z-font-code`): the same stack, named separately so code can diverge from UI text later.
+- `reading` (`--z-font-reading`): proportional system Latin with the same platform CJK sans, for Chinese long-form text.
+
+`'IBM Plex Mono', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei', 'Noto Sans SC', 'Noto Sans CJK SC', 'Source Han Sans SC', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace`
 
 Use the `typography` tokens above instead of setting font size, line height, weight, or letter spacing by hand:
 
@@ -404,6 +409,12 @@ Use the `typography` tokens above instead of setting font size, line height, wei
 - Buttons, `button-16` through `button-12`, are medium-weight labels for buttons and compact controls.
 
 For most Zone UI, start with `copy-16` for body text, `copy-14` for dense copy, `label-14` for metadata and navigation, and `button-14` for controls. The `-mono` variants intentionally keep the same font stack because Zone is mono-forward by default.
+
+Chinese is handled in the token layer, not in components. A `:lang(zh)` block in `global.css` matches `<html lang="zh-CN">` pages and any list item that carries `lang="zh-CN"`, then redefines tokens: `--z-font-prose` points to `reading` instead of `ui`, because mono-width Latin leaves loose gaps in mixed CJK prose; heading tracking from `heading-40` down to `heading-14` drops to 0, because negative tracking crowds CJK glyphs; and heading leading opens up slightly. Display sizes from `heading-48` up keep their tracking, since they mostly set numerals. Components consume `--z-font-prose` and the heading tokens and need no `:lang` rules of their own. Site identity, metadata, labels, and code keep the `ui` stack in every language.
+
+Long-form markdown (`.z-markdown-content`) uses one vertical rhythm for every language, defined as `--z-prose-gap*` variables in `src/styles/markdown.css`. Space sits mostly above a heading, not below it: 40px above `h2`, 32px above `h3`, and 12px between a heading and its content. A horizontal rule and a code block take 32px on each side, and a rule replaces the heading gap rather than stacking with it. English blocks are separated by 16px. Chinese articles change only the text inside that rhythm: `copy-18` at 1.8 leading (`copy-16` at 1.75 on screens 480px and narrower), a 0.75em block gap, `heading-24` for `h2`, and `heading-20` for `h3`.
+
+UI strings that appear inside content, such as the table-of-contents title, series labels, dates, and footnote labels, come from `src/lib/i18n.ts` and follow the item's `lang`.
 
 ## Layout
 
@@ -468,7 +479,7 @@ Use numerals for counts and measurements. Keep body copy sentence case; use titl
 ## Do's and Don'ts
 
 - Use Vercel-compatible token names for colors, typography, spacing, and rounded values.
-- Keep Zone's key overrides: Brand Navy primary text, Electric Blue interaction, Coral Red errors, IBM Plex Mono/LXGW WenKai typography, and sharp major UI.
+- Keep Zone's key overrides: Brand Navy primary text, Electric Blue interaction, Coral Red errors, IBM Plex Mono with platform CJK sans typography, and sharp major UI.
 - Use the gray scale to rank information: primary text, secondary text, disabled text, borders, and subtle fills should come from the scale.
 - Apply typography tokens instead of hand-setting font size, line height, or weight.
 - Use `.z-main`, `pageLayout`, `--z-page-max-width`, and `--z-page-pad-x` for shell alignment.

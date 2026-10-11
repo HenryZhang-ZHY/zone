@@ -1,0 +1,133 @@
+---
+import { type CollectionEntry, getCollection } from 'astro:content'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import FormattedDate from '../../components/FormattedDate.astro'
+import { t } from '../../lib/i18n'
+import { getSeriesPosts } from '../../lib/series'
+
+export async function getStaticPaths() {
+	const [allSeries, posts] = await Promise.all([getCollection('series'), getCollection('blog')])
+	return allSeries.map((series) => ({
+		params: { id: series.id },
+		props: { series, posts: getSeriesPosts(posts, series.id) },
+	}))
+}
+
+type Props = { series: CollectionEntry<'series'>; posts: CollectionEntry<'blog'>[] }
+
+const { series, posts } = Astro.props
+const { title, description, lang } = series.data
+---
+
+<BaseLayout title={title} description={description} lang={lang} editorial>
+	<main class="z-main">
+		<section class="z-editorial-column">
+			<header class="series-header">
+				<h1 class="series-title">{title}</h1>
+				<p class="series-description">{description}</p>
+			</header>
+
+			<ol class="series-list z-stack-list">
+				{posts.map((post) => (
+					<li class="series-item z-stack-item" lang={post.data.lang}>
+						<a href={post.data.redirect || `/blog/${post.id}/`} class="series-item-link z-link-reset">
+							<span class="series-item-part">{t(post.data.lang).seriesPart(post.data.seriesOrder!)}</span>
+							<h2 class="series-item-title">{post.data.title}</h2>
+							<p class="series-item-excerpt">{post.data.description}</p>
+							<time class="series-item-date"><FormattedDate date={post.data.pubDate} lang={post.data.lang} /></time>
+						</a>
+					</li>
+				))}
+			</ol>
+		</section>
+	</main>
+</BaseLayout>
+
+<style>
+	.series-header {
+		margin-bottom: var(--z-space-8);
+		padding-bottom: var(--z-space-6);
+		border-bottom: 1px solid var(--z-color-hairline-light);
+	}
+
+	.series-title {
+		font-size: var(--z-text-heading-40);
+		font-weight: 600;
+		line-height: var(--z-leading-heading-40);
+		letter-spacing: var(--z-tracking-heading-40);
+		color: var(--z-color-heading);
+		margin: 0 0 var(--z-space-4) 0;
+	}
+
+	.series-description {
+		font-size: var(--z-text-copy-16);
+		line-height: var(--z-leading-copy-16);
+		color: var(--z-color-text-secondary);
+		margin: 0;
+	}
+
+	.series-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.series-item-link {
+		display: flex;
+		flex-direction: column;
+		gap: var(--z-space-2);
+	}
+
+	.series-item-part,
+	.series-item-date {
+		font-size: var(--z-text-label-13);
+		line-height: var(--z-leading-label-13);
+		color: var(--z-color-text-dimmed);
+	}
+
+	.series-item-title {
+		font-size: var(--z-text-heading-20);
+		font-weight: 600;
+		line-height: var(--z-leading-heading-20);
+		letter-spacing: var(--z-tracking-heading-20);
+		color: var(--z-color-heading);
+		margin: 0;
+		text-decoration: underline;
+		text-decoration-color: transparent;
+		text-decoration-thickness: 1px;
+		text-underline-offset: 0.2em;
+		transition: color 150ms ease, text-decoration-color 150ms ease;
+	}
+
+	.series-item-link:hover .series-item-title,
+	.series-item-link:focus-visible .series-item-title {
+		color: var(--z-color-text-accent);
+		text-decoration-color: currentColor;
+	}
+
+	.series-item-excerpt {
+		font-size: var(--z-text-copy-16);
+		line-height: var(--z-leading-copy-16);
+		color: var(--z-color-text-secondary);
+		margin: 0;
+	}
+
+	@media (max-width: 768px) {
+		.series-title {
+			font-size: var(--z-text-heading-32);
+			line-height: var(--z-leading-heading-32);
+			letter-spacing: var(--z-tracking-heading-32);
+		}
+
+		.series-item-title {
+			font-size: var(--z-text-heading-16);
+			line-height: var(--z-leading-heading-16);
+			letter-spacing: var(--z-tracking-heading-16);
+		}
+
+		.series-item-excerpt {
+			font-size: var(--z-text-copy-14);
+			line-height: var(--z-leading-copy-14);
+		}
+	}
+</style>

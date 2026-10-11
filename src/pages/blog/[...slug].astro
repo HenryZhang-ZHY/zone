@@ -1,21 +1,35 @@
 ---
-import { type CollectionEntry, getCollection } from 'astro:content'
+import { type CollectionEntry, getCollection, getEntry } from 'astro:content'
 import BlogPost from '../../layouts/BlogPost.astro'
 import { render } from 'astro:content'
+import { getSeriesNav } from '../../lib/series'
 
 export async function getStaticPaths() {
 	const posts = await getCollection('blog')
 	return posts.filter((post) => !post.data.redirect).map((post) => ({
 		params: { slug: post.id },
-		props: post,
+		props: { post, posts },
 	}))
 }
-type Props = CollectionEntry<'blog'>
+type Props = { post: CollectionEntry<'blog'>; posts: CollectionEntry<'blog'>[] }
 
-const post = Astro.props
+const { post, posts } = Astro.props
 const { Content, headings } = await render(post)
+
+const nav = getSeriesNav(posts, post)
+const seriesEntry = post.data.series ? await getEntry(post.data.series) : undefined
+const series = nav && seriesEntry
+	? {
+		id: seriesEntry.id,
+		title: seriesEntry.data.title,
+		position: nav.position,
+		total: nav.total,
+		prev: nav.prev && { title: nav.prev.data.title, href: `/blog/${nav.prev.id}/` },
+		next: nav.next && { title: nav.next.data.title, href: `/blog/${nav.next.id}/` },
+	}
+	: undefined
 ---
 
-<BlogPost {...post.data} headings={headings}>
+<BlogPost {...post.data} headings={headings} series={series}>
 	<Content />
 </BlogPost>

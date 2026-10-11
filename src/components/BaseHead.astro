@@ -4,9 +4,6 @@
 import '@fontsource/ibm-plex-mono'
 import ibmPlexMonoWoff2 from '@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2?url'
 
-import '@fontsource/lxgw-wenkai'
-import lxgwWoff2 from '@fontsource/lxgw-wenkai/files/lxgw-wenkai-latin-300-normal.woff2?url'
-
 import 'normalize.css'
 import '../styles/global.css'
 import '../styles/components.css'
@@ -45,7 +42,6 @@ const imageURL = new URL(image, Astro.site ?? Astro.url)
 
 <!-- Font preloads -->
 <link rel="preload" as="font" type="font/woff2" href={ibmPlexMonoWoff2} crossorigin="anonymous" />
-<link rel="preload" as="font" type="font/woff2" href={lxgwWoff2} crossorigin="anonymous" />
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalHref} />

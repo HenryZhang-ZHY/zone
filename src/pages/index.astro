@@ -3,8 +3,15 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 
 import { getCollection } from 'astro:content'
 import FormattedDate from '../components/FormattedDate.astro'
+import { t } from '../lib/i18n'
 
 const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+const seriesTitles = new Map((await getCollection('series')).map((s) => [s.id, s.data.title]))
+const seriesLabel = (post: (typeof posts)[number]) => {
+	const title = post.data.series && seriesTitles.get(post.data.series.id)
+	if (!title) return undefined
+	return `${title} · ${t(post.data.lang).seriesPart(post.data.seriesOrder!)}`
+}
 ---
 
 <BaseLayout description="Notes on software engineering, investing and economics by Hongyu Zhang, with bilingual translations and open-source tools such as dowse and refuge." editorial>
@@ -13,14 +20,20 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueO
 			{
 				posts.length > 0 ? (
 					posts.map((post) => (
-						<article class="post-item z-stack-item">
+						<article class="post-item z-stack-item" lang={post.data.lang}>
 							<a href={post.data.redirect || `/blog/${post.id}/`} class="post-link z-link-reset">
 								<h2 class="post-title">{post.data.title}</h2>
 								{post.data.description && <p class="post-excerpt">{post.data.description}</p>}
 								<div class="post-meta">
 									<time class="post-date">
-										<FormattedDate date={post.data.pubDate} />
+										<FormattedDate date={post.data.pubDate} lang={post.data.lang} />
 									</time>
+									{seriesLabel(post) && (
+										<>
+											<span class="divider" aria-hidden="true">·</span>
+											<span class="post-series">{seriesLabel(post)}</span>
+										</>
+									)}
 								</div>
 							</a>
 						</article>
@@ -92,6 +105,10 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueO
 
 	.read-time {
 		color: var(--z-color-text-dimmed);
+	}
+
+	.post-series {
+		color: var(--z-color-text-secondary);
 	}
 
 	@media (max-width: 768px) {

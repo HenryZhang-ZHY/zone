@@ -1,15 +1,42 @@
+/**
+ * Vertical rhythm. One gap between blocks; headings sit closer to what they
+ * introduce than to what came before; a rule replaces the heading gap instead of
+ * stacking with it. Languages change the values, not the rules.
+ */
 .z-markdown-content {
+  --z-prose-gap: var(--z-space-4);
+  --z-prose-gap-before-h2: var(--z-space-10);
+  --z-prose-gap-before-h3: var(--z-space-8);
+  --z-prose-gap-after-heading: var(--z-space-3);
+  --z-prose-gap-hr: var(--z-space-8);
+  --z-prose-gap-code: var(--z-space-8);
+  --z-list-indent: 2em;
+
+  font-family: var(--z-font-prose);
   font-size: var(--z-text-copy-16);
   line-height: 1.65;
   overflow-wrap: break-word;
 }
 
 .z-markdown-content :not(a, strong, em, del, span, input, code, br)+:not(a, strong, em, del, span, input, code, br, :where(.not-content *)) {
-  margin-top: var(--z-space-4)
+  margin-top: var(--z-prose-gap)
 }
 
-.z-markdown-content :not(h1, h2, h3, h4, h5, h6)+:is(h1, h2, h3, h4, h5, h6):not(:where(.not-content *)) {
-  margin-top: var(--z-space-10)
+.z-markdown-content :not(h1, h2, h3, h4, h5, h6)+:is(h1, h2):not(:where(.not-content *)) {
+  margin-top: var(--z-prose-gap-before-h2)
+}
+
+.z-markdown-content :not(h1, h2, h3, h4, h5, h6)+:is(h3, h4, h5, h6):not(:where(.not-content *)) {
+  margin-top: var(--z-prose-gap-before-h3)
+}
+
+.z-markdown-content :is(h1, h2, h3, h4, h5, h6)+:not(a, strong, em, del, span, input, code, br, :where(.not-content *)) {
+  margin-top: var(--z-prose-gap-after-heading)
+}
+
+.z-markdown-content :not(a, strong, em, del, span, input, code, br)+hr:not(:where(.not-content *)),
+.z-markdown-content hr+:not(a, strong, em, del, span, input, code, br, :where(.not-content *)) {
+  margin-top: var(--z-prose-gap-hr)
 }
 
 .z-markdown-content li+li:not(:where(.not-content *)),
@@ -23,8 +50,53 @@
   overflow-wrap: anywhere
 }
 
+/*
+ * List markers start at the text edge instead of hanging in the browser's 40px
+ * indent; the item text is indented by --z-list-indent. Drawn with ::before
+ * because ::marker cannot be positioned.
+ */
+.z-markdown-content :is(ol, ul):not(:where(.not-content *)) {
+  list-style: none;
+  padding-inline-start: var(--z-list-indent)
+}
+
+.z-markdown-content :is(ol, ul)>li:not(:where(.not-content *)) {
+  position: relative
+}
+
+.z-markdown-content :is(ol, ul)>li:not(:where(.not-content *))::before {
+  position: absolute;
+  inset-inline-start: calc(var(--z-list-indent) * -1)
+}
+
+.z-markdown-content ol>li:not(:where(.not-content *))::before {
+  content: counter(list-item) ".";
+  font-variant-numeric: tabular-nums
+}
+
+.z-markdown-content ul>li:not(:where(.not-content *))::before {
+  content: "\2022"
+}
+
+.z-markdown-content :is(ol, ul) ul>li:not(:where(.not-content *))::before {
+  content: "\25E6"
+}
+
 .z-markdown-content li>:last-child:not(li, ul, ol, a, strong, em, del, span, input, code, br, :where(.not-content *)) {
   margin-bottom: var(--z-space-6)
+}
+
+/* Footnotes start a new section; GFM wraps each one in <p>, so undo the loose-list spacing. */
+.z-markdown-content>[data-footnotes]:not(:where(.not-content *)) {
+  margin-top: var(--z-prose-gap-before-h2)
+}
+
+.z-markdown-content [data-footnotes] li>:last-child:not(:where(.not-content *)) {
+  margin-bottom: 0
+}
+
+.z-markdown-content [data-footnotes] li+li:not(:where(.not-content *)) {
+  margin-top: var(--z-space-2)
 }
 
 .z-markdown-content dt:not(:where(.not-content *)) {
@@ -104,7 +176,7 @@
 
 .z-markdown-content pre code:not(:where(.not-content *)) {
   all: unset;
-  font-family: var(--z-font-mono)
+  font-family: var(--z-font-code)
 }
 
 .z-markdown-content blockquote:not(:where(.not-content *)) {
@@ -210,11 +282,36 @@
   display: inline
 }
 
-/* Space around sections */
-.z-markdown-content :not(h1, h2, h3, h4, h5, h6)+ :is(h1, h2, h3, h4, h5, h6):not(:where(.not-content *)),
-.z-markdown-content :not(a, strong, em, del, span, input, code)+hr:not(:where(.not-content *)),
-.z-markdown-content hr:not(:where(.not-content *))+ :not(a, strong, em, del, span, input, code, :where(.not-content *)) {
-  margin-top: calc(var(--paragraph-spacing) + var(--z-space-8));
+/**
+ * Chinese long-form reading: CJK needs a larger size and more leading than
+ * Latin. Font, heading leading and tracking come from the :lang(zh) tokens in
+ * global.css; spacing comes from the shared rhythm above.
+ */
+.z-markdown-content:lang(zh) {
+  --z-prose-gap: 0.75em;
+  --z-list-indent: 1.5em;
+
+  font-size: var(--z-text-copy-18);
+  line-height: 1.8;
+}
+
+.z-markdown-content:lang(zh) h2 {
+  font-size: var(--z-text-heading-24);
+}
+
+.z-markdown-content:lang(zh) h3 {
+  font-size: var(--z-text-heading-20);
+}
+
+.z-markdown-content:lang(zh) :is(h4, h5, h6) {
+  font-size: var(--z-text-copy-18);
+}
+
+@media (max-width: 480px) {
+  .z-markdown-content:lang(zh) {
+    font-size: var(--z-text-copy-16);
+    line-height: 1.75;
+  }
 }
 
 /**
@@ -229,13 +326,9 @@
   }
 }
 
-/* Space around asides and code blocks */
+/* Space around code blocks */
 .z-markdown-content :not(a, strong, em, del, span, input, code)+ :is(.expressive-code) {
-  margin-top: calc(var(--paragraph-spacing) + var(--z-space-2));
-}
-
-.z-markdown-content :is(.expressive-code)+ :is(.expressive-code) {
-  margin-top: calc(var(--paragraph-spacing) + var(--z-space-4));
+  margin-top: var(--z-prose-gap-code);
 }
 
 /* Plain blocks */

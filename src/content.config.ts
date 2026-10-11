@@ -1,15 +1,31 @@
 import { glob, file } from 'astro/loaders';
-import { defineCollection, z } from 'astro:content';
+import { defineCollection, reference, z } from 'astro:content';
+
+const lang = z.enum(['en', 'zh-CN']);
+
+const series = defineCollection({
+	loader: file('./src/content/series.yaml'),
+	schema: z.object({
+		title: z.string(),
+		description: z.string().min(20).max(160),
+		lang: lang.default('en'),
+	}),
+});
 
 const blog = defineCollection({
 	loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' }),
 	schema: z.object({
 		title: z.string(),
 		description: z.string().min(50).max(160),
-		lang: z.enum(['en', 'zh-CN']).default('en'),
+		lang: lang.default('en'),
 		pubDate: z.coerce.date(),
 		updatedDate: z.coerce.date().optional(),
 		redirect: z.string().optional(),
+		series: reference('series').optional(),
+		seriesOrder: z.number().int().positive().optional(),
+	}).refine((data) => (data.series === undefined) === (data.seriesOrder === undefined), {
+		message: '`series` and `seriesOrder` must be set together',
+		path: ['seriesOrder'],
 	}),
 });
 
@@ -58,4 +74,4 @@ const dsibs = defineCollection({
 	}),
 });
 
-export const collections = { blog, book, readingList, podcast, dsibs };
+export const collections = { blog, series, book, readingList, podcast, dsibs };

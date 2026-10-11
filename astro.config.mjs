@@ -9,10 +9,11 @@ import { addClassName } from 'astro-expressive-code/hast';
 
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import rehypeFootnotes from './src/lib/rehype-footnotes';
 
 const markdownProcessor = unified({
   remarkPlugins: [remarkMath],
-  rehypePlugins: [rehypeKatex],
+  rehypePlugins: [rehypeKatex, rehypeFootnotes],
 });
 
 // https://astro.build/config
@@ -34,6 +35,12 @@ export default defineConfig({
     mdx(),
     sitemap()
   ],
+  vite: {
+    // esbuild escapes non-ASCII (lightningcss, Vite's default, does not), so CSS
+    // `content` glyphs like • and · survive servers that send text/css without a charset.
+    build: { cssMinify: 'esbuild' },
+    esbuild: { charset: 'ascii' },
+  },
   markdown: {
     processor: markdownProcessor,
     shikiConfig: {

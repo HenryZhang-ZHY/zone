@@ -2,11 +2,15 @@
 	color-scheme: light dark;
 
 	/* === FONT FAMILIES === */
-	--z-font-system: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 	--z-font-system-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-	--z-font-sans: 'IBM Plex Mono', 'LXGW WenKai', var(--z-font-system-mono);
-	--z-font-mono: var(--z-font-sans);
-	--__z-font: var(--z-font-sans);
+	--z-font-cjk: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC";
+	/* Brand voice: mono Latin, platform CJK sans. */
+	--z-font-ui: 'IBM Plex Mono', var(--z-font-cjk), var(--z-font-system-mono);
+	--z-font-code: var(--z-font-ui);
+	/* Proportional Latin with the same CJK sans, for mixed CJK prose. */
+	--z-font-reading: -apple-system, BlinkMacSystemFont, "Segoe UI", var(--z-font-cjk), "Helvetica Neue", Arial, sans-serif;
+	/* Article title, body and TOC. Switches to --z-font-reading for Chinese (see :lang(zh) below). */
+	--z-font-prose: var(--z-font-ui);
 
 	/* === VERCEL-COMPATIBLE COLOR TOKENS WITH ZONE OVERRIDES === */
 	--z-color-primary: light-dark(#213547, #E5E7EB);
@@ -250,24 +254,6 @@
 	--z-tracking-heading-16: -0.32px;
 	--z-tracking-heading-14: -0.28px;
 
-	/* Backward-compatible aliases used in existing markup. */
-	--z-text-2xs: var(--z-text-label-12);
-	--z-text-xs: var(--z-text-label-13);
-	--z-text-sm: var(--z-text-copy-14);
-	--z-text-base: var(--z-text-copy-16);
-	--z-text-lg: var(--z-text-copy-18);
-	--z-text-xl: var(--z-text-heading-20);
-	--z-text-2xl: var(--z-text-heading-24);
-	--z-text-3xl: var(--z-text-heading-32);
-	--z-text-4xl: var(--z-text-heading-40);
-	--z-text-5xl: var(--z-text-heading-48);
-	--z-text-6xl: var(--z-text-heading-56);
-	--z-text-h1: var(--z-text-heading-40);
-	--z-text-h2: var(--z-text-heading-32);
-	--z-text-h3: var(--z-text-heading-24);
-	--z-text-h4: var(--z-text-heading-20);
-	--z-text-h5: var(--z-text-heading-16);
-	--z-text-h6: var(--z-text-heading-14);
 	--z-text-code: var(--z-text-copy-14);
 	--z-text-code-sm: var(--z-text-copy-13);
 	--z-line-height: 1.5;
@@ -283,15 +269,6 @@
 	--z-space-10: 2.5rem;
 	--z-space-16: 4rem;
 	--z-space-24: 6rem;
-	--z-space-base: var(--z-space-1);
-
-	/* Legacy spacing aliases kept for existing compiled content and third-party overrides. */
-	--z-space-5: var(--z-space-6);
-	--z-space-7: var(--z-space-8);
-	--z-space-9: var(--z-space-10);
-	--z-space-12: var(--z-space-16);
-	--z-space-15: var(--z-space-16);
-	--z-space-20: var(--z-space-16);
 
 	/* === SHAPE, FOCUS, ELEVATION === */
 	--z-radius-none: 0;
@@ -312,19 +289,25 @@
 	--z-shadow-lg: 0px 12px 24px var(--z-shadow-lg-color);
 
 	/* === LAYOUT === */
-	--z-mobile-toc-height: 3rem;
-	--z-sidebar-width: 18.75rem;
-	--z-sidebar-pad-x: var(--z-space-4);
 	--z-article-reading-width: 72ch;
-	--z-content-pad-x: var(--z-space-4);
-	--z-menu-button-size: 2rem;
-	--z-nav-gap: var(--z-space-6);
-	--z-outline-offset-inside: -0.1875rem;
-	--z-z-index-toc: 4;
-	--z-z-index-menu: 5;
-	--z-z-index-navbar: 10;
-	--z-z-index-skiplink: 20;
-	--paragraph-spacing: var(--z-space-6);
+}
+
+/*
+ * Chinese text: CJK glyphs have no letter shapes to tighten, so headings drop the
+ * negative tracking and get more leading; prose switches to proportional Latin.
+ * Display sizes (48px and up) are only used for numerals and keep their tracking.
+ */
+:lang(zh) {
+	--z-font-prose: var(--z-font-reading);
+	--z-tracking-heading-40: 0;
+	--z-tracking-heading-32: 0;
+	--z-tracking-heading-24: 0;
+	--z-tracking-heading-20: 0;
+	--z-tracking-heading-16: 0;
+	--z-tracking-heading-14: 0;
+	--z-leading-heading-40: 3.25rem;
+	--z-leading-heading-32: 2.625rem;
+	--z-line-height-headings: 1.4;
 }
 
 *,
@@ -343,7 +326,7 @@ body {
 	--z-page-main-pad-block-start: var(--z-space-10);
 	--z-page-main-pad-block-end: var(--z-space-16);
 
-	font-family: var(--z-font-sans);
+	font-family: var(--z-font-ui);
 	line-height: var(--z-line-height);
 	-webkit-font-smoothing: antialiased;
 	text-underline-offset: 0.1875rem;

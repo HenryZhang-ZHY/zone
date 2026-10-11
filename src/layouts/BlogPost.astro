@@ -3,12 +3,24 @@ import type { CollectionEntry } from 'astro:content'
 import type { MarkdownHeading } from 'astro'
 import FormattedDate from '../components/FormattedDate.astro'
 import BaseLayout from '../layouts/BaseLayout.astro'
+import { t } from '../lib/i18n'
 
-type Props = CollectionEntry<'blog'>['data'] & {
+type SeriesLink = { title: string; href: string }
+
+type Props = Omit<CollectionEntry<'blog'>['data'], 'series'> & {
 	headings?: MarkdownHeading[]
+	series?: {
+		id: string
+		title: string
+		position: number
+		total: number
+		prev?: SeriesLink
+		next?: SeriesLink
+	}
 }
 
-const { title, description, pubDate, updatedDate, lang = 'en', headings = [] } = Astro.props
+const { title, description, pubDate, updatedDate, lang = 'en', headings = [], series } = Astro.props
+const i18n = t(lang)
 
 const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3 && h.slug !== 'footnote-label')
 ---
@@ -18,15 +30,21 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3 && h.slu
 		<main>
 			<article>
 				<header class="article-header">
+					{series && (
+						<p class="article-series">
+							<a href={`/series/${series.id}/`} class="series-link">{series.title}</a>
+							<span class="series-part">{i18n.seriesPartOf(series.position, series.total)}</span>
+						</p>
+					)}
 					<h1 class="article-title">{title}</h1>
 					<div class="article-meta">
 						<time class="publish-date">
-							<FormattedDate date={pubDate} />
+							<FormattedDate date={pubDate} lang={lang} />
 						</time>
 						{
 							updatedDate && (
 								<div class="updated-date">
-									Updated on <FormattedDate date={updatedDate} />
+									{i18n.updatedOn} <FormattedDate date={updatedDate} lang={lang} />
 								</div>
 							)
 						}
@@ -34,9 +52,9 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3 && h.slu
 				</header>
 
 				{tocHeadings.length > 0 && (
-					<nav class="toc toc-mobile" aria-label="Table of contents">
+					<nav class="toc toc-mobile" aria-label={i18n.tocLabel}>
 						<details>
-							<summary class="toc-title">Table of Contents</summary>
+							<summary class="toc-title">{i18n.toc}</summary>
 							<ul class="toc-list">
 								{tocHeadings.map((heading) => (
 									<li class:list={['toc-item', `toc-depth-${heading.depth}`]}>
@@ -51,13 +69,30 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3 && h.slu
 				<div class="z-markdown-content">
 					<slot />
 				</div>
+
+				{series && (series.prev || series.next) && (
+					<nav class="series-pager" aria-label={i18n.seriesNav}>
+						{series.prev && (
+							<a href={series.prev.href} class="series-pager-link series-pager-prev" rel="prev">
+								<span class="series-pager-label">← {i18n.seriesPrev}</span>
+								<span class="series-pager-title">{series.prev.title}</span>
+							</a>
+						)}
+						{series.next && (
+							<a href={series.next.href} class="series-pager-link series-pager-next" rel="next">
+								<span class="series-pager-label">{i18n.seriesNext} →</span>
+								<span class="series-pager-title">{series.next.title}</span>
+							</a>
+						)}
+					</nav>
+				)}
 			</article>
 		</main>
 
 		{tocHeadings.length > 0 && (
-			<aside class="toc toc-desktop" aria-label="Table of contents">
+			<aside class="toc toc-desktop" aria-label={i18n.tocLabel}>
 				<div class="toc-sticky">
-					<p class="toc-title">Table of Contents</p>
+					<p class="toc-title">{i18n.toc}</p>
 					<ul class="toc-list">
 						{tocHeadings.map((heading) => (
 							<li class:list={['toc-item', `toc-depth-${heading.depth}`]}>
@@ -198,6 +233,7 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3 && h.slu
 		margin: 0 0 var(--z-space-6) 0;
 		letter-spacing: var(--z-tracking-heading-40);
 		color: var(--z-color-heading);
+		font-family: var(--z-font-prose);
 	}
 
 	.article-meta {
@@ -212,6 +248,84 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3 && h.slu
 	.publish-date {
 		font-weight: 400;
 		color: var(--z-color-text-secondary);
+	}
+
+	.article-series {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: var(--z-space-2);
+		margin: 0 0 var(--z-space-3) 0;
+		font-size: var(--z-text-label-14);
+		line-height: var(--z-leading-label-14);
+		color: var(--z-color-text-dimmed);
+	}
+
+	.series-link {
+		font-weight: 600;
+		color: var(--z-color-text-accent);
+		text-decoration: underline;
+		text-decoration-color: transparent;
+		text-underline-offset: 0.2em;
+		transition: text-decoration-color 150ms ease;
+	}
+
+	.series-link:hover,
+	.series-link:focus-visible {
+		text-decoration-color: currentColor;
+	}
+
+	.series-pager {
+		display: grid;
+		grid-auto-flow: column;
+		grid-auto-columns: 1fr;
+		gap: var(--z-space-4);
+		margin-top: var(--z-space-16);
+		padding-top: var(--z-space-6);
+		border-top: 1px solid var(--z-color-hairline-light);
+	}
+
+	.series-pager-link {
+		display: flex;
+		flex-direction: column;
+		gap: var(--z-space-1);
+		padding: var(--z-space-3) var(--z-space-4);
+		border: 1px solid var(--z-color-hairline-light);
+		border-radius: var(--z-radius-subtle);
+		text-decoration: none;
+		transition: border-color 150ms ease, background-color 150ms ease;
+	}
+
+	.series-pager-next {
+		grid-column: 2;
+		text-align: end;
+	}
+
+	.series-pager-link:hover,
+	.series-pager-link:focus-visible {
+		border-color: color-mix(in srgb, var(--z-color-text-accent) 40%, transparent);
+		background-color: var(--z-color-row-hover);
+	}
+
+	.series-pager-label {
+		font-size: var(--z-text-label-13);
+		line-height: var(--z-leading-label-13);
+		color: var(--z-color-text-dimmed);
+	}
+
+	.series-pager-title {
+		font-weight: 600;
+		color: var(--z-color-heading);
+	}
+
+	@media (max-width: 480px) {
+		.series-pager {
+			grid-auto-flow: row;
+		}
+
+		.series-pager-next {
+			grid-column: auto;
+		}
 	}
 
 	.updated-date {
@@ -253,6 +367,7 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3 && h.slu
 		background: transparent;
 		transition: color 150ms ease, border-color 150ms ease, background-color 150ms ease;
 		text-decoration: none;
+		font-family: var(--z-font-prose);
 	}
 
 	.toc-link:hover,
