@@ -1,7 +1,7 @@
 import { glob, file } from 'astro/loaders';
 import { defineCollection, reference, z } from 'astro:content';
 
-const lang = z.enum(['en', 'zh-CN']);
+const lang = z.enum(['en', 'zh-Hans']);
 
 const series = defineCollection({
 	loader: file('./src/content/series.yaml'),
@@ -13,7 +13,12 @@ const series = defineCollection({
 });
 
 const blog = defineCollection({
-	loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' }),
+	// Each post is a bundle: `<slug>/index.md` holds the original, siblings hold its images.
+	loader: glob({
+		base: './src/content/blog',
+		pattern: '*/index.{md,mdx}',
+		generateId: ({ entry }) => entry.split('/')[0],
+	}),
 	schema: z.object({
 		title: z.string(),
 		description: z.string().min(50).max(160),

@@ -1,4 +1,4 @@
-export type Lang = 'en' | 'zh-CN'
+export type Lang = 'en' | 'zh-Hans'
 
 const messages = {
 	en: {
@@ -13,7 +13,7 @@ const messages = {
 		footnotes: 'Footnotes',
 		footnoteBack: (ref: string) => `Back to reference ${ref}`,
 	},
-	'zh-CN': {
+	'zh-Hans': {
 		seriesPart: (n: number) => `第 ${n} 篇`,
 		seriesPartOf: (n: number, total: number) => `第 ${n} 篇，共 ${total} 篇`,
 		seriesPrev: '上一篇',
@@ -31,7 +31,7 @@ export const t = (lang: Lang = 'en') => messages[lang] ?? messages.en
 
 const dateFormats: Record<Lang, Intl.DateTimeFormatOptions> = {
 	en: { year: 'numeric', month: 'short', day: 'numeric' },
-	'zh-CN': { year: 'numeric', month: 'long', day: 'numeric' },
+	'zh-Hans': { year: 'numeric', month: 'long', day: 'numeric' },
 }
 
 export const formatDate = (date: Date, lang: Lang = 'en') =>

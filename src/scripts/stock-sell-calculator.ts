@@ -1,11 +1,11 @@
 import { calcSellPoints, type SellPoint } from '../lib/stock-sell-calc'
 
 function formatCurrency(n: number): string {
-  return n.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  return n.toLocaleString('zh-Hans', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
 function formatPercent(n: number): string {
-  return `${n.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`
+  return `${n.toLocaleString('zh-Hans', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`
 }
 
 function yieldClass(pct: number): string {
@@ -31,10 +31,10 @@ function appendResultRow(parent: HTMLTableSectionElement, point: SellPoint): voi
   appendText(yieldCell, `z-tag yield-pill ${yieldClass(point.yieldPercent)}`, `${point.yieldPercent}%`, 'span')
   row.appendChild(yieldCell)
 
-  appendText(row, 'col-lots', `${point.sharesToSell.toLocaleString('zh-CN')} 股`, 'td')
+  appendText(row, 'col-lots', `${point.sharesToSell.toLocaleString('zh-Hans')} 股`, 'td')
   appendText(row, 'col-price', formatCurrency(point.sellPrice), 'td')
   appendText(row, 'col-cost', formatCurrency(point.dilutedCost), 'td')
-  appendText(row, 'col-remain', `${point.remainingShares.toLocaleString('zh-CN')} 股`, 'td')
+  appendText(row, 'col-remain', `${point.remainingShares.toLocaleString('zh-Hans')} 股`, 'td')
 
   const profitCell = document.createElement('td')
   profitCell.className = 'col-profit'
@@ -118,9 +118,9 @@ function initStockSellCalculator(): void {
     resultBody.replaceChildren()
     points.forEach((point) => appendResultRow(resultBody, point))
 
-    resultSummary.textContent = `共 ${points.length.toLocaleString('zh-CN')} 个结果，按目标股息率、卖出股数从小到大排列。价格和成本单位均为元/股。`
+    resultSummary.textContent = `共 ${points.length.toLocaleString('zh-Hans')} 个结果，按目标股息率、卖出股数从小到大排列。价格和成本单位均为元/股。`
     resultSection.hidden = false
-    statusEl.textContent = `已找到 ${points.length.toLocaleString('zh-CN')} 个卖点，结果见下方。`
+    statusEl.textContent = `已找到 ${points.length.toLocaleString('zh-Hans')} 个卖点，结果见下方。`
     resultSection.scrollIntoView({
       behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
       block: 'start',

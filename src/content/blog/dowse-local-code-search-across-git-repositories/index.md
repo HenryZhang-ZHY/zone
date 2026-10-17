@@ -38,7 +38,7 @@ outline: |
 
 [dowse](https://github.com/HenryZhang-ZHY/dowse) searches code across many Git repositories at once, from a desktop app or the command line. It does for the clones on your own disk what [GitHub code search](https://github.com/features/code-search) and [grep.app](https://grep.app) do for GitHub: one search box, every repository, results in milliseconds. It uses the same query syntax as GitHub code search, runs on [tgrep](https://github.com/microsoft/tgrep), Microsoft's trigram-indexed grep, with one index per repository in the manner of [Zoekt](https://github.com/sourcegraph/zoekt), and needs no server.
 
-![dowse searching 12 public repositories as the query is typed: results in milliseconds, then narrowed to Rust with a facet and shown as a table](./imgs/dowse/dowse-search.webp)
+![dowse searching 12 public repositories as the query is typed: results in milliseconds, then narrowed to Rust with a facet and shown as a table](./dowse-search.webp)
 
 dowse runs on Windows, macOS and Linux. It is free and MIT-licensed.
 
@@ -76,11 +76,11 @@ repo:api  branch:main             which repositories
 
 A query of only qualifiers, such as `path:*.proto`, lists the files without reading them. Match case, whole word and regular expression are toggles (`Alt+C`, `Alt+W`, `Alt+R`).
 
-![dowse results for the query trigram index -path:test across tgrep, Zoekt, Google codesearch, Hound, Django and Go, with repository, branch, owner and language facets](./imgs/dowse/search-across-repositories.webp)
+![dowse results for the query trigram index -path:test across tgrep, Zoekt, Google codesearch, Hound, Django and Go, with repository, branch, owner and language facets](./search-across-repositories.webp)
 
 Results are shown as snippets highlighted by tree-sitter grammars. Click a line to preview the whole file beside the results, step through matches with `F4`, and open the file at that line in VS Code, Cursor, Zed or Sublime Text with `Ctrl+Click`.
 
-![The dowse preview pane showing Google codesearch's cindex.go beside the results, with every match of the query highlighted](./imgs/dowse/file-preview.webp)
+![The dowse preview pane showing Google codesearch's cindex.go beside the results, with every match of the query highlighted](./file-preview.webp)
 
 ### Tags choose what to search; facets narrow what was found
 
@@ -96,7 +96,7 @@ The table view (`Alt+T`) lists one row per matching line: repository, branch, pa
 /^version = "(?<version>[^"]+)"/ path:Cargo.toml
 ```
 
-![The dowse table view: one row per Cargo.toml version line in ripgrep, regex, tokio, serde and tgrep, with a version column from the named capture group](./imgs/dowse/table-view-capture-groups.webp)
+![The dowse table view: one row per Cargo.toml version line in ripgrep, regex, tokio, serde and tgrep, with a version column from the named capture group](./table-view-capture-groups.webp)
 
 Up to about 20,000 rows, where GitHub code search stops at 100 results. Sort by any column, then export the rows as CSV, TSV, Markdown or JSON, or paste them into a spreadsheet. Questions such as "which services still use this API" or "what log levels are configured where" become a table instead of a scroll through results.
 
@@ -106,7 +106,7 @@ The repositories page lists an owner's GitHub repositories through the [GitHub C
 
 Clones are blobless by default: every commit, but only the file contents that are checked out, so large repositories clone quickly and history still works.
 
-![The dowse repositories page: twelve cloned GitHub repositories with their branch, owner and mirror tags, and how many files each index holds](./imgs/dowse/repositories-page.webp)
+![The dowse repositories page: twelve cloned GitHub repositories with their branch, owner and mirror tags, and how many files each index holds](./repositories-page.webp)
 
 Give a repository a pull interval (`15m`, `1h`, `3d`) and dowse pulls it on schedule. A pull fetches `origin` and fast-forwards only when the default branch is checked out, tracked files are unchanged and there are no local commits. Otherwise it only fetches, and tells you why (`on feature/x, not main`, `uncommitted changes`). It never merges, rebases or stashes, so it is safe to point at the working copies you develop in, not only at mirrors.
 

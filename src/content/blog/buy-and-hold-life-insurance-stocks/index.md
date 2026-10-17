@@ -1,7 +1,7 @@
 ---
 title: "买入并持有寿险股"
 description: "记录对寿险股的阶段性思考：从寿险的业务模式与利润来源出发，看低利率与资管新规下分红险的负债端增长，以及寿险股可能迎来的戴维斯双击。"
-lang: zh-CN
+lang: zh-Hans
 pubDate: 2026-09-15
 series: household-asset-allocation
 seriesOrder: 2

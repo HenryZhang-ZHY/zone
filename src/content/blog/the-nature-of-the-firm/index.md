@@ -247,7 +247,7 @@ It might be replied that under perfect competition, since everything that is pro
 
 可以这样回答：在完全竞争下，既然所生产的一切都能按现行价格售出，那么就没有必要生产任何其他产品了。但这种论证忽略了一个事实：可能存在这样一点，在这一点上，组织一种新产品的交换交易比组织旧产品的更多交换交易成本更低。这一点可以用下面的方式来加以说明。按照冯·杜能的思路，设想有一个城镇作为消费中心，各产业以环状分布在这个中心点周围。这些情形由下面的图表示，其中 A、B、C 代表不同的产业。
 
-![冯·杜能环状区位示意图：消费中心（黑点）外围由内向外依次为 C、B、A 三个产业环；企业家起始位置 x 标在最内环下方，带四个方向的箭头。](./imgs/the-nature-of-the-firm-von-thunen-rings.png)
+![冯·杜能环状区位示意图：消费中心（黑点）外围由内向外依次为 C、B、A 三个产业环；企业家起始位置 x 标在最内环下方，带四个方向的箭头。](./the-nature-of-the-firm-von-thunen-rings.png)
 
 Imagine an entrepreneur who starts controlling exchange transactions from x. Now as he extends his activities in the same product (B), the cost of organising increases until at some point it becomes equal to that of a dissimilar product which is nearer. As the firm expands, it will therefore from this point include more than one product (A and C). This treatment of the problem is obviously incomplete, but it is necessary to show that merely proving that the cost curve turns upwards does not give a limitation to the size of the firm. So far we have only considered the case of perfect competition; the case of imperfect competition would appear to be obvious.
 

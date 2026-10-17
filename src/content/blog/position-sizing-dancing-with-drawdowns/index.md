@@ -1,7 +1,7 @@
 ---
 title: "仓位管理：从降低回撤到与回撤共舞"
 description: "仓位管理如何改善持有体验：用单只股票 20% 仓位上限降低回撤对总账户的冲击，用分批建仓给下跌留出预案，并用三条规矩防止补仓失控。"
-lang: zh-CN
+lang: zh-Hans
 pubDate: 2026-10-11
 series: household-asset-allocation
 seriesOrder: 1
@@ -19,7 +19,7 @@ seriesOrder: 1
 
 以常被视为“类债股”的长江电力为例：2016 年到 2026 年，算上分红再投入，它累计涨了 2 倍多，年化收益约 11%。但就是这样一只股票，按月末收盘价算，中途最大回撤约 15.5%；如果看高点到盘中最低点，跌幅接近 20%。
 
-![长江电力前复权 K 线，2016-05-13 至 2026-10-09](./imgs/position-sizing-dancing-with-drawdowns/changjiang-power-kline-2016-2026.jpg)
+![长江电力前复权 K 线，2016-05-13 至 2026-10-09](./changjiang-power-kline-2016-2026.jpg)
 
 面对这样的回撤，很少有人能毫不在意。看着账户一天天缩水，你会开始怀疑公司的基本面，怀疑自己的判断，犹豫要不要先卖掉躲一躲回撤。
 

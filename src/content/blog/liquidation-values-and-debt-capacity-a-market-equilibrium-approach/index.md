@@ -125,7 +125,7 @@ Assumption S1 represents the agency problem and creates the need to use capital 
 
 假设S1代表了代理问题，并创造了利用资本结构控制管理层自利投资的需要。没有S1，模型中就不需要使用债务。假设S2和S3都表明繁荣期是远比萧条期更好的世界状态。它们共同意味着，在繁荣期足以约束管理者进行不良投资的严格资本结构，实际上会使企业在萧条期陷入财务困境。如果这些假设不成立，将存在一种资本结构，既能减轻繁荣期的代理成本，又不会在萧条期带来任何财务困境成本。例如，如果S3成立但S2不成立，最优资本结构将要求一个短期债务水平，它既能在繁荣期阻止投资，又足够低，使得企业能在萧条期用第1期现金流偿还短期债务。反之，如果S2成立但S3不成立，则可以通过长期债务来约束投资以实现最优结果。
 
-![Figure 1. Timing for the seller. R is the future payoff from the investment, I is the cost of the investment, and Y is cash flow from existing assets. Superscripts denote states (either prosperity or depression) and subscripts denote time periods.](./imgs/liquidation-values-and-debt-capacity-a-market-equilibrium-approach/1.png)
+![Figure 1. Timing for the seller. R is the future payoff from the investment, I is the cost of the investment, and Y is cash flow from existing assets. Superscripts denote states (either prosperity or depression) and subscripts denote time periods.](./1.png)
 
 Hart (1991) studies the optimal period 0 capital structure when complete state-contingent contracts cannot be written. He shows that the capital structure that maximizes the wealth of period 0 shareholders, under Assumptions S1–S3, consists of senior debt $ D_{2} $ due in period 2 and debt $ D_{1} $ due in period 1. The function of junior short-term debt is to bring the firm to the capital market in period 1 rather than let it invest from the internal cash flow. Hart (1991) assumes that this debt cannot be rescheduled; we discuss this assumption in Section III. The function of senior long-term debt is to create debt overhang, so that a firm with a negative NPV investment opportunity cannot raise more money by issuing new securities. Both the long-term and the short-term debt, then, are used to discipline the management.
 
@@ -233,7 +233,7 @@ Assumption B2: $ 0 < y_{1}^{D} - y_{1}^{P} + i^{P} < C_{out} $.
 
 假设B2：$ 0 < y_{1}^{D} - y_{1}^{P} + i^{P} < C_{out} $。
 
-![Figure 2. Timing for the industry buyer. r is the future payoff from the investment, i is the cost of the investment, and y is cash flow from existing assets. Superscripts denote states (either prosperity or depression) and subscripts denote time periods.](./imgs/liquidation-values-and-debt-capacity-a-market-equilibrium-approach/2.png)
+![Figure 2. Timing for the industry buyer. r is the future payoff from the investment, i is the cost of the investment, and y is cash flow from existing assets. Superscripts denote states (either prosperity or depression) and subscripts denote time periods.](./2.png)
 
 The first part of the inequality is the reverse of S2; it will imply that the buyer's cash flow in the depression is high enough that he does not have to be liquidated. This assumption captures our key distinction between the buyer and the seller, namely that the former is hit less hard in the depression. If the first part of the inequality in B2 is reversed, the buyer like the seller will be liquidated and our result that assets are allocated to low valuation buyers would be even stronger. The second part of the inequality in B2 will imply that the buyer does not have enough internal cash flow to buy the seller's assets for $ C_{out} $, the outsider's valuation. If the buyer wants to get the seller's assets in the depression, he must go to the external capital market. In equilibrium, in fact, he would sometimes not be able to raise cash there either, because of debt overhang.
 

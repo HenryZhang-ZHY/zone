@@ -48,7 +48,7 @@ src/
 
 ## Content Collections
 
-- `blog`: Markdown/MDX posts with title, description, publish date, optional update date, and optional redirect.
+- `blog`: one directory per post under `src/content/blog/<slug>/`; `index.md` (or `index.mdx`) holds the original with title, description, language, publish date, optional update date, and optional redirect, and its images sit beside it.
 - `book`: Bookshelf entries loaded from `src/content/book.yaml`; `/reading/books/` shows cover and title links to their source pages.
 - `podcast`: Listening-list entries loaded from `src/content/podcast.yaml`.
 - `dsibs`: Systemically important bank data loaded from `src/content/d-sibs.yaml`.

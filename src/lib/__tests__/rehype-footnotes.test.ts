@@ -43,7 +43,7 @@ describe('rehypeFootnotes', () => {
 	})
 
 	it('localizes labels for Chinese articles', () => {
-		const { label, backref } = run('zh-CN')
+		const { label, backref } = run('zh-Hans')
 		expect(label.children).toEqual([{ type: 'text', value: '脚注' }])
 		expect(backref.properties.ariaLabel).toBe('返回引用 1-2')
 		expect(backref.children[0]).toEqual({ type: 'text', value: FOOTNOTE_BACK_TEXT })
