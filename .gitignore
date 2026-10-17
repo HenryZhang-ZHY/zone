@@ -26,3 +26,6 @@ package-lock.json
 # jetbrains setting folder
 .idea/
 .superpowers/
+
+# wrangler local state
+.wrangler/

@@ -1,8 +1,12 @@
 {
   "name": "zone",
   "compatibility_date": "2025-08-23",
+  // Negotiates the language for the root URL only; every other request is a static asset.
+  "main": "./src/worker/index.ts",
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/"]
   },
   "routes": [
     {

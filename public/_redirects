@@ -3,3 +3,5 @@
 /blog/stock-sell/ /zh-hans/stock-sell/ 301
 /rss.xml /en/rss.xml 301
 /sitemap-index.xml /sitemap.xml 301
+# BCP 47 tags are case-insensitive; URLs use the lowercase form
+/zh-Hans/* /zh-hans/:splat 301
