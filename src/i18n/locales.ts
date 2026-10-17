@@ -1,3 +1,5 @@
+import { rankLocales } from './match'
+
 /**
  * Supported languages as BCP 47 tags. Tags stay as short as the distinction needs
  * (W3C language-tag guidance): plain language subtags, plus the `Hans` script subtag
@@ -51,22 +53,9 @@ export const localeStaticPaths = () => localeTags.map((locale) => ({ params: { l
 
 export const switchLocale = (pathname: string, locale: Locale) => localizePath(splitLocale(pathname).path, locale)
 
-const languageAndScript = (tag: string) => {
-	const { language, script } = new Intl.Locale(tag).maximize()
-	return `${language}-${script}`
-}
-
-const supportedByScript = new Map(localeTags.map((tag) => [languageAndScript(tag), tag]))
-
-/**
- * Picks the language for a visitor: a saved choice wins, then the browser's
- * Accept-Language entries by q-value. Each entry is matched on language and script,
- * so zh-CN and zh-SG reach zh-Hans while zh-TW and zh-HK do not.
- */
-export function negotiateLocale(acceptLanguage: string | null | undefined, saved?: string | null): Locale {
-	if (isLocale(saved)) return saved
-
-	const ranges = (acceptLanguage ?? '')
+/** Accept-Language ranges, best first by q-value; `*` and q=0 are dropped. */
+export function parseAcceptLanguage(header: string | null | undefined): string[] {
+	return (header ?? '')
 		.split(',')
 		.map((part, index) => {
 			const [range, ...params] = part.trim().split(';')
@@ -75,14 +64,15 @@ export function negotiateLocale(acceptLanguage: string | null | undefined, saved
 		})
 		.filter((r) => r.range && r.range !== '*' && r.q > 0)
 		.sort((a, b) => b.q - a.q || a.index - b.index)
+		.map((r) => r.range)
+}
 
-	for (const { range } of ranges) {
-		try {
-			const match = supportedByScript.get(languageAndScript(range))
-			if (match) return match
-		} catch {
-			// Not a well-formed language tag; try the next one.
-		}
-	}
-	return defaultLocale
+/**
+ * Picks the language to redirect a visitor to: a saved choice wins, then the best
+ * Accept-Language match. Matching is strict, so Traditional Chinese readers are not
+ * sent to Simplified Chinese; the in-page suggestion may still offer it.
+ */
+export function negotiateLocale(acceptLanguage: string | null | undefined, saved?: string | null): Locale {
+	if (isLocale(saved)) return saved
+	return (rankLocales(parseAcceptLanguage(acceptLanguage), localeTags, false)[0] as Locale | undefined) ?? defaultLocale
 }

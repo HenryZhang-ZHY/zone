@@ -46,4 +46,8 @@ export default {
 	readOriginal: '原文を読む',
 	outdatedTranslation: 'この翻訳の後に原文が更新されています。',
 	alsoAvailableIn: 'ほかの言語：',
+
+	suggestLanguage: 'このページは日本語でもご覧いただけます。',
+	switchLanguage: '日本語で読む',
+	dismiss: '閉じる',
 } satisfies Messages

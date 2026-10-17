@@ -62,7 +62,7 @@ The D-SIBs page shows the latest published list first, followed by per-publicati
 
 ## Languages
 
-The site is built in eight languages, identified by BCP 47 tags: `en`, `es`, `de`, `ja`, `fr`, `pt`, `ru` and `zh-Hans`. Every page exists under the lowercase tag, such as `/ja/blog/refuge/` or `/zh-hans/reading/`. The page chrome follows that language; an article without a translation is shown in its original language with a notice, and its canonical URL points at the original. `/` redirects to the reader's saved or browser language through `src/worker/`; the language switcher in the footer saves the choice in the `lang` cookie.
+The site is built in eight languages, identified by BCP 47 tags: `en`, `es`, `de`, `ja`, `fr`, `pt`, `ru` and `zh-Hans`. Every page exists under the lowercase tag, such as `/ja/blog/refuge/` or `/zh-hans/reading/`. The page chrome follows that language; an article without a translation is shown in its original language with a notice, and its canonical URL points at the original. `/` redirects to the reader's saved or browser language through `src/worker/` (locally it redirects to `/en/`); every other URL is served as is. When a page also exists in a language the reader prefers, a one-line suggestion offers it. The language switcher in the footer and the suggestion save the choice in the `lang` cookie.
 
 To translate a post, add a file named after the language next to the original:
 

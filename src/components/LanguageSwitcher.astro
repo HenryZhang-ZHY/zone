@@ -23,7 +23,8 @@ const { locale, path, label } = Astro.props
 </nav>
 
 <script define:vars={{ cookie: LOCALE_COOKIE }}>
-	// Remember the choice so the root URL can send this reader to it next time.
+	// Any language link marked with data-locale (this switcher, the language suggestion)
+	// remembers the choice, so the root URL sends this reader to it next time.
 	document.addEventListener('click', (event) => {
 		const link = event.target instanceof Element && event.target.closest('a[data-locale]')
 		if (link) document.cookie = `${cookie}=${link.dataset.locale}; Path=/; Max-Age=31536000; SameSite=Lax; Secure`

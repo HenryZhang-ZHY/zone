@@ -353,3 +353,81 @@
   align-items: center;
   gap: var(--z-space-2);
 }
+
+/* === NOTICES === */
+/* Quiet page-level notes above the main content: language fallbacks, translation credits, language suggestions. */
+.z-notice-shell {
+  width: min(100%, var(--z-page-max-width));
+  margin: var(--z-space-6) auto 0;
+  padding: 0 var(--z-page-pad-x);
+}
+
+.z-page-shell--editorial .z-notice {
+  max-width: var(--z-article-reading-width);
+  margin-inline: auto;
+}
+
+.z-notice {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: var(--z-space-3);
+  row-gap: var(--z-space-1);
+  align-items: start;
+  padding: var(--z-space-3) var(--z-space-4);
+  border-inline-start: 2px solid var(--z-color-border);
+  background: var(--z-color-row-hover);
+  color: var(--z-color-text-secondary);
+}
+
+/* Text size is set on the lines, not the box, so the box's ch-based width matches the article column. */
+.z-notice p {
+  grid-column: 1;
+  font-size: var(--z-text-copy-13);
+  line-height: var(--z-leading-copy-13);
+}
+
+.z-notice a {
+  color: var(--z-color-text-accent);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.z-notice-versions > span + span::before {
+  content: " · ";
+}
+
+.z-notice-dismiss {
+  grid-column: 2;
+  grid-row: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin: calc(var(--z-space-1) * -1) calc(var(--z-space-2) * -1) 0 0;
+  border: 0;
+  border-radius: var(--z-radius-subtle);
+  background: transparent;
+  color: var(--z-color-text-dimmed);
+  font: inherit;
+  font-size: var(--z-text-label-14);
+  cursor: pointer;
+}
+
+.z-notice-dismiss:hover {
+  background: var(--z-color-border-subtle);
+  color: var(--z-color-heading);
+}
+
+.z-notice-dismiss:focus-visible {
+  outline: var(--z-focus-ring);
+  outline-offset: var(--z-focus-offset);
+}
+
+@media (max-width: 768px) {
+  .z-notice-dismiss {
+    width: 44px;
+    height: 44px;
+    margin: calc(var(--z-space-3) * -1) calc(var(--z-space-4) * -1) 0 0;
+  }
+}

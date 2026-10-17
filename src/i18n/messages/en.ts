@@ -45,6 +45,11 @@ const en = {
 	readOriginal: 'Read the original',
 	outdatedTranslation: 'The original has changed since this translation was made.',
 	alsoAvailableIn: 'Also available in:',
+
+	// Shown in this language to readers who prefer it, on pages written in another.
+	suggestLanguage: 'This page is also available in English.',
+	switchLanguage: 'Read in English',
+	dismiss: 'Dismiss',
 }
 
 export type Messages = typeof en

@@ -4,6 +4,7 @@ import { SITE_TITLE } from '../consts'
 import BaseHead from '../components/BaseHead.astro'
 import Footer from '../components/Footer.astro'
 import SiteIdentity from '../components/SiteIdentity.astro'
+import LanguageSuggestion from '../components/LanguageSuggestion.astro'
 import TranslationNotice from '../components/TranslationNotice.astro'
 import { localeTags, localizePath, t, type Locale } from '../i18n'
 import { alternateLinks } from '../lib/localized'
@@ -61,8 +62,11 @@ const alternates = alternateLinks(path, available, xDefault, Astro.site!)
   </head>
   <body class:list={['z-page-shell', `z-page-shell--${pageLayout}`, { 'z-page-shell--editorial': editorial }]}>
     <SiteIdentity locale={locale} />
-    {(isFallback || translation) && (
+    {/* A page shows at most one notice: the language suggestion joins the translation notice when there is one. */}
+    {isFallback || translation ? (
       <TranslationNotice locale={locale} path={path} sourceLocale={sourceLocale} available={available} outdated={translation?.outdated ?? false} />
+    ) : (
+      <LanguageSuggestion locale={locale} path={path} available={available} mode="banner" />
     )}
     <slot />
 

@@ -21,6 +21,9 @@ export default defineConfig({
   site: 'https://shuzhi.zone',
   // Every page URL ends in a slash, so each page has exactly one URL.
   trailingSlash: 'always',
+  // In production the Worker picks the reader's language for `/` first; this static
+  // redirect only serves local development and requests that bypass the Worker.
+  redirects: { '/': '/en/' },
   integrations: [
     expressiveCode({
       plugins: [

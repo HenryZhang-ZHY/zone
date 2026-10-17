@@ -46,4 +46,8 @@ export default {
 	readOriginal: 'Lire l’original',
 	outdatedTranslation: 'L’original a été modifié depuis cette traduction.',
 	alsoAvailableIn: 'Également disponible en :',
+
+	suggestLanguage: 'Cette page est aussi disponible en français.',
+	switchLanguage: 'Lire en français',
+	dismiss: 'Fermer',
 } satisfies Messages

@@ -1,4 +1,5 @@
 ---
+import LanguageSuggestion from './LanguageSuggestion.astro'
 import { endonym, languageName, localizePath, t, type Locale } from '../i18n'
 
 interface Props {
@@ -16,8 +17,8 @@ const isFallback = !available.includes(locale)
 const others = available.filter((tag) => tag !== locale)
 ---
 
-<aside class="translation-notice-shell">
-	<div class="translation-notice">
+<aside class="z-notice-shell">
+	<div class="z-notice">
 		{isFallback ? (
 			<p>{i18n.untranslated(source)}</p>
 		) : (
@@ -30,47 +31,13 @@ const others = available.filter((tag) => tag !== locale)
 		{isFallback && others.length > 1 && (
 			<p>
 				{i18n.alsoAvailableIn}{' '}
-				{others.map((tag, index) => (
-					<>
-						{index > 0 && ' · '}
-						<a href={localizePath(path, tag)} hreflang={tag} lang={tag}>{endonym(tag)}</a>
-					</>
-				))}
+				<span class="z-notice-versions">
+					{others.map((tag) => (
+						<span data-version={tag}><a href={localizePath(path, tag)} hreflang={tag} lang={tag}>{endonym(tag)}</a></span>
+					))}
+				</span>
 			</p>
 		)}
+		<LanguageSuggestion locale={locale} path={path} available={available} mode="notice" />
 	</div>
 </aside>
-
-<style>
-	.translation-notice-shell {
-		width: min(100%, var(--z-page-max-width));
-		margin: var(--z-space-6) auto 0;
-		padding: 0 var(--z-page-pad-x);
-	}
-
-	:global(.z-page-shell--editorial) .translation-notice {
-		max-width: var(--z-article-reading-width);
-		margin-inline: auto;
-	}
-
-	.translation-notice {
-		display: grid;
-		gap: var(--z-space-1);
-		padding: var(--z-space-3) var(--z-space-4);
-		border-inline-start: 2px solid var(--z-color-border);
-		background: var(--z-color-row-hover);
-		color: var(--z-color-text-secondary);
-	}
-
-	/* Text size is set on the lines, not the box, so the box's ch-based width matches the article column. */
-	.translation-notice p {
-		font-size: var(--z-text-copy-13);
-		line-height: var(--z-leading-copy-13);
-	}
-
-	.translation-notice a {
-		color: var(--z-color-text-accent);
-		text-decoration: underline;
-		text-underline-offset: 0.2em;
-	}
-</style>

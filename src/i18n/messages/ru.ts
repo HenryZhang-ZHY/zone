@@ -46,4 +46,8 @@ export default {
 	readOriginal: 'Читать оригинал',
 	outdatedTranslation: 'Оригинал изменился после этого перевода.',
 	alsoAvailableIn: 'Другие языки:',
+
+	suggestLanguage: 'Эта страница есть и на русском языке.',
+	switchLanguage: 'Читать на русском',
+	dismiss: 'Закрыть',
 } satisfies Messages

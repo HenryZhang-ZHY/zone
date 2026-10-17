@@ -46,4 +46,8 @@ export default {
 	readOriginal: '阅读原文',
 	outdatedTranslation: '原文在本译文完成后有更新。',
 	alsoAvailableIn: '其他语言版本：',
+
+	suggestLanguage: '本页有简体中文版本。',
+	switchLanguage: '切换到简体中文',
+	dismiss: '关闭',
 } satisfies Messages
