@@ -1,2 +1,5 @@
-/blog/d-sibs/ /d-sibs/ 301
-/blog/stock-sell/ /stock-sell/ 301
+# Posts that stand in for tool pages
+/blog/d-sibs/ /zh-hans/d-sibs/ 301
+/blog/stock-sell/ /zh-hans/stock-sell/ 301
+/rss.xml /en/rss.xml 301
+/sitemap-index.xml /sitemap.xml 301

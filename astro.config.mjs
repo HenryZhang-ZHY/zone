@@ -2,7 +2,6 @@
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import { unified } from '@astrojs/markdown-remark';
-import sitemap from '@astrojs/sitemap';
 
 import expressiveCode from 'astro-expressive-code';
 import { addClassName } from 'astro-expressive-code/hast';
@@ -10,6 +9,7 @@ import { addClassName } from 'astro-expressive-code/hast';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import rehypeFootnotes from './src/lib/rehype-footnotes';
+import i18nOutput from './src/integrations/i18n-output';
 
 const markdownProcessor = unified({
   remarkPlugins: [remarkMath],
@@ -35,7 +35,7 @@ export default defineConfig({
       ]
     }),
     mdx(),
-    sitemap()
+    i18nOutput()
   ],
   vite: {
     // esbuild escapes non-ASCII (lightningcss, Vite's default, does not), so CSS
