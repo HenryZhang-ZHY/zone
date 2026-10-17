@@ -1,9 +1,9 @@
 ---
-import { formatDate, type Lang } from '../lib/i18n';
+import { formatDate, type Locale } from '../i18n';
 
 interface Props {
 	date: Date;
-	lang?: Lang;
+	lang: Locale;
 }
 
 const { date, lang } = Astro.props;

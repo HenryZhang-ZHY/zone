@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 
 import { getCollection } from 'astro:content'
 import FormattedDate from '../components/FormattedDate.astro'
-import { t } from '../lib/i18n'
+import { t } from '../i18n'
 
 const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
 const seriesTitles = new Map((await getCollection('series')).map((s) => [s.id, s.data.title]))

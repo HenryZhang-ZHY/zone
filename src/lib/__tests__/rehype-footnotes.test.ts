@@ -26,9 +26,9 @@ const footnoteTree = (): Root => ({
 	],
 })
 
-const run = (lang?: string) => {
+const run = (lang?: string, path = '/site/src/content/blog/post/index.md') => {
 	const tree = footnoteTree()
-	rehypeFootnotes()(tree, new VFile({ data: { astro: { frontmatter: lang ? { lang } : {} } } }))
+	rehypeFootnotes()(tree, new VFile({ path, data: { astro: { frontmatter: lang ? { lang } : {} } } }))
 	const section = tree.children[0] as Element
 	return { label: section.children[0] as Element, backref: section.children[1] as Element }
 }
@@ -47,5 +47,11 @@ describe('rehypeFootnotes', () => {
 		expect(label.children).toEqual([{ type: 'text', value: '脚注' }])
 		expect(backref.properties.ariaLabel).toBe('返回引用 1-2')
 		expect(backref.children[0]).toEqual({ type: 'text', value: FOOTNOTE_BACK_TEXT })
+	})
+
+	it('takes the language of a translation from its file name', () => {
+		const { label, backref } = run(undefined, '/site/src/content/blog/post/ja.md')
+		expect(label.children).toEqual([{ type: 'text', value: '脚注' }])
+		expect(backref.properties.ariaLabel).toBe('参照 1-2 に戻る')
 	})
 })

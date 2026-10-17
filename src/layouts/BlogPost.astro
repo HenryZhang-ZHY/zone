@@ -3,7 +3,7 @@ import type { CollectionEntry } from 'astro:content'
 import type { MarkdownHeading } from 'astro'
 import FormattedDate from '../components/FormattedDate.astro'
 import BaseLayout from '../layouts/BaseLayout.astro'
-import { t } from '../lib/i18n'
+import { t } from '../i18n'
 
 type SeriesLink = { title: string; href: string }
 
@@ -19,7 +19,7 @@ type Props = Omit<CollectionEntry<'blog'>['data'], 'series'> & {
 	}
 }
 
-const { title, description, pubDate, updatedDate, lang = 'en', headings = [], series } = Astro.props
+const { title, description, pubDate, updatedDate, lang, headings = [], series } = Astro.props
 const i18n = t(lang)
 
 const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3 && h.slug !== 'footnote-label')

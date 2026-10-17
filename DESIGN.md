@@ -414,7 +414,7 @@ Chinese is handled in the token layer, not in components. A `:lang(zh)` block in
 
 Long-form markdown (`.z-markdown-content`) uses one vertical rhythm for every language, defined as `--z-prose-gap*` variables in `src/styles/markdown.css`. Space sits mostly above a heading, not below it: 40px above `h2`, 32px above `h3`, and 12px between a heading and its content. A horizontal rule and a code block take 32px on each side, and a rule replaces the heading gap rather than stacking with it. English blocks are separated by 16px. Chinese articles change only the text inside that rhythm: `copy-18` at 1.8 leading (`copy-16` at 1.75 on screens 480px and narrower), a 0.75em block gap, `heading-24` for `h2`, and `heading-20` for `h3`.
 
-UI strings that appear inside content, such as the table-of-contents title, series labels, dates, and footnote labels, come from `src/lib/i18n.ts` and follow the item's `lang`.
+UI strings that appear inside content, such as the table-of-contents title, series labels, dates, and footnote labels, come from `src/i18n/` (one message file per locale under `src/i18n/messages/`) and follow the item's `lang`.
 
 ## Layout
 
