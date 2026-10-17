@@ -1,7 +1,14 @@
 import { glob, file } from 'astro/loaders';
 import { defineCollection, reference, z } from 'astro:content';
+import { localeTags, type Locale } from './i18n/locales';
+import { translationKey } from './lib/localized';
 
-const lang = z.enum(['en', 'zh-Hans']);
+const lang = z.enum(localeTags as [Locale, ...Locale[]]);
+
+const localizedText = z.object({
+	title: z.string(),
+	description: z.string().min(20).max(160),
+});
 
 const series = defineCollection({
 	loader: file('./src/content/series.yaml'),
@@ -9,6 +16,7 @@ const series = defineCollection({
 		title: z.string(),
 		description: z.string().min(20).max(160),
 		lang: lang.default('en'),
+		translations: z.partialRecord(lang, localizedText).optional(),
 	}),
 });
 
@@ -31,6 +39,25 @@ const blog = defineCollection({
 	}).refine((data) => (data.series === undefined) === (data.seriesOrder === undefined), {
 		message: '`series` and `seriesOrder` must be set together',
 		path: ['seriesOrder'],
+	}),
+});
+
+// Hand-made translations sit beside the original: `<slug>/<locale>.md`. Publish
+// date, series and update date belong to the original and are not repeated here.
+const translations = defineCollection({
+	loader: glob({
+		base: './src/content/blog',
+		pattern: ['*/*.{md,mdx}', '!*/index.{md,mdx}'],
+		generateId: ({ entry }) => {
+			const id = entry.replace(/\.mdx?$/, '');
+			translationKey(id);
+			return id;
+		},
+	}),
+	schema: z.object({
+		title: z.string(),
+		description: z.string().min(50).max(160),
+		translatedAt: z.coerce.date(),
 	}),
 });
 
@@ -79,4 +106,4 @@ const dsibs = defineCollection({
 	}),
 });
 
-export const collections = { blog, series, book, readingList, podcast, dsibs };
+export const collections = { blog, translations, series, book, readingList, podcast, dsibs };
