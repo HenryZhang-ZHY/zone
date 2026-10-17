@@ -18,8 +18,8 @@ describe('page-to-page layout', () => {
     expect(identity).toMatch(/\.z-page-shell--editorial\) \.site-identity-inner\s*\{[^}]*max-width:\s*var\(--z-article-reading-width\);[^}]*margin-inline:\s*auto/s)
 
     for (const page of ['index.astro', 'reading.astro', 'listening.astro']) {
-      expect(readSource('pages', page)).toContain('z-editorial-column')
-      expect(readSource('pages', page)).toMatch(/<BaseLayout[^\n]*\beditorial\b/)
+      expect(readSource('pages', '[locale]', page)).toContain('z-editorial-column')
+      expect(readSource('pages', '[locale]', page)).toMatch(/<BaseLayout[^\n]*\beditorial\b/)
     }
     const article = readSource('layouts', 'BlogPost.astro')
     expect(article).toContain('editorial')

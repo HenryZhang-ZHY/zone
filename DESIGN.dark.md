@@ -410,11 +410,11 @@ Use the `typography` tokens above instead of setting font size, line height, wei
 
 For most Zone UI, start with `copy-16` for body text, `copy-14` for dense copy, `label-14` for metadata and navigation, and `button-14` for controls. The `-mono` variants intentionally keep the same font stack because Zone is mono-forward by default.
 
-Chinese is handled in the token layer, not in components. A `:lang(zh)` block in `global.css` matches `<html lang="zh-Hans">` pages and any list item that carries `lang="zh-Hans"`, then redefines tokens: `--z-font-prose` points to `reading` instead of `ui`, because mono-width Latin leaves loose gaps in mixed CJK prose; heading tracking from `heading-40` down to `heading-14` drops to 0, because negative tracking crowds CJK glyphs; and heading leading opens up slightly. Display sizes from `heading-48` up keep their tracking, since they mostly set numerals. Components consume `--z-font-prose` and the heading tokens and need no `:lang` rules of their own. Site identity, metadata, labels, and code keep the `ui` stack in every language.
+Chinese is handled in the token layer, not in components. A `:lang(zh), :lang(ja)` block in `global.css` matches any element that carries, or sits inside, `lang="zh-Hans"` or `lang="ja"`, then redefines tokens: `--z-font-prose` points to `reading` instead of `ui`, because mono-width Latin leaves loose gaps in mixed CJK prose; heading tracking from `heading-40` down to `heading-14` drops to 0, because negative tracking crowds CJK glyphs; and heading leading opens up slightly. Display sizes from `heading-48` up keep their tracking, since they mostly set numerals. Components consume `--z-font-prose` and the heading tokens and need no `:lang` rules of their own. Site identity, metadata, labels, and code keep the `ui` stack in every language.
 
 Long-form markdown (`.z-markdown-content`) uses one vertical rhythm for every language, defined as `--z-prose-gap*` variables in `src/styles/markdown.css`. Space sits mostly above a heading, not below it: 40px above `h2`, 32px above `h3`, and 12px between a heading and its content. A horizontal rule and a code block take 32px on each side, and a rule replaces the heading gap rather than stacking with it. English blocks are separated by 16px. Chinese articles change only the text inside that rhythm: `copy-18` at 1.8 leading (`copy-16` at 1.75 on screens 480px and narrower), a 0.75em block gap, `heading-24` for `h2`, and `heading-20` for `h3`.
 
-UI strings that appear inside content, such as the table-of-contents title, series labels, dates, and footnote labels, come from `src/i18n/` (one message file per locale under `src/i18n/messages/`) and follow the item's `lang`.
+UI strings come from `src/i18n/`, one message file per locale under `src/i18n/messages/`. Chrome such as the table-of-contents title, series navigation and dates follows the page locale; footnote labels are part of the rendered content and follow the content's `lang`.
 
 ## Layout
 
@@ -475,6 +475,15 @@ Collapse grids from 3 columns to 2 to 1. Page padding should move from 32px to 2
 Copy is part of the interface. Keep it direct, specific, and calm. Use action labels with verbs and nouns (`Export Data`, `Delete Rule`), not generic labels like `OK` or `Confirm`. Error copy should state what happened and what the user can do next. Loading states use the present participle with an ellipsis, such as `Saving…`.
 
 Use numerals for counts and measurements. Keep body copy sentence case; use title case only for concise labels, navigation, buttons, and page titles. Avoid marketing superlatives and filler.
+
+## Languages
+
+Every page exists under a lowercase BCP 47 locale segment: `/en/`, `/es/`, `/de/`, `/ja/`, `/fr/`, `/pt/`, `/ru/`, `/zh-hans/`. Markup uses the canonical tag (`zh-Hans`). The page chrome (site identity, footer, labels, dates, notices) follows the URL locale; content follows its own `lang`, so an article without a translation keeps its original language inside a localized page.
+
+- Untranslated pages show a quiet notice above the main content: copy-13, secondary text, a 2px start border and the row-hover fill. It names the original language in the reader's language and links the versions that exist. Translated articles use the same notice to credit the original and to flag a translation older than the original's last update.
+- Lists mark an entry shown in another language with that language's own name in the metadata row, after the date.
+- The footer language switcher is a centered row of label-13 links separated by `·`, below the section links and above the copyright, divided by a hairline. Every language is named in itself (`日本語`, not `Japanese`); there are no flags. The current language uses heading color and weight 600 with `aria-current`.
+- Japanese gets a Japanese-first CJK stack through `:lang(ja)`, because Chinese and Japanese share Han code points but not glyph shapes. Otherwise Japanese follows the Chinese reading rules.
 
 ## Do's and Don'ts
 

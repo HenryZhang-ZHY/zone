@@ -1,40 +1,44 @@
 ---
 import { type CollectionEntry, getCollection } from 'astro:content'
-import BaseLayout from '../../layouts/BaseLayout.astro'
-import FormattedDate from '../../components/FormattedDate.astro'
-import { t } from '../../i18n'
-import { getSeriesPosts } from '../../lib/series'
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import FormattedDate from '../../../components/FormattedDate.astro'
+import { localeTags, segmentOf, t, type Locale } from '../../../i18n'
+import { localizeSeries } from '../../../lib/localized'
+import { loadPosts } from '../../../lib/posts'
+import { getSeriesPosts } from '../../../lib/series'
 
 export async function getStaticPaths() {
-	const [allSeries, posts] = await Promise.all([getCollection('series'), getCollection('blog')])
-	return allSeries.map((series) => ({
-		params: { id: series.id },
-		props: { series, posts: getSeriesPosts(posts, series.id) },
-	}))
+	const allSeries = await getCollection('series')
+	return localeTags.flatMap((locale) =>
+		allSeries.map((series) => ({ params: { locale: segmentOf(locale), id: series.id }, props: { locale, series } })),
+	)
 }
 
-type Props = { series: CollectionEntry<'series'>; posts: CollectionEntry<'blog'>[] }
+type Props = { locale: Locale; series: CollectionEntry<'series'> }
 
-const { series, posts } = Astro.props
-const { title, description, lang } = series.data
+const { locale, series } = Astro.props
+const { posts, localize } = await loadPosts()
+const entries = getSeriesPosts(posts, series.id).map((post) => localize(post, locale))
+const { title, description, lang } = localizeSeries(series, locale)
+const available = localeTags.filter((tag) => tag === series.data.lang || series.data.translations?.[tag])
 ---
 
-<BaseLayout title={title} description={description} lang={lang} editorial>
+<BaseLayout locale={locale} path={`/series/${series.id}/`} title={title} description={description} available={available} sourceLocale={series.data.lang} editorial>
 	<main class="z-main">
 		<section class="z-editorial-column">
-			<header class="series-header">
+			<header class="series-header" lang={lang}>
 				<h1 class="series-title">{title}</h1>
 				<p class="series-description">{description}</p>
 			</header>
 
 			<ol class="series-list z-stack-list">
-				{posts.map((post) => (
-					<li class="series-item z-stack-item" lang={post.data.lang}>
-						<a href={post.data.redirect || `/blog/${post.id}/`} class="series-item-link z-link-reset">
-							<span class="series-item-part">{t(post.data.lang).seriesPart(post.data.seriesOrder!)}</span>
-							<h2 class="series-item-title">{post.data.title}</h2>
-							<p class="series-item-excerpt">{post.data.description}</p>
-							<time class="series-item-date"><FormattedDate date={post.data.pubDate} lang={post.data.lang} /></time>
+				{entries.map((entry) => (
+					<li class="series-item z-stack-item" lang={entry.contentLang}>
+						<a href={entry.href} class="series-item-link z-link-reset">
+							<span class="series-item-part">{t(entry.contentLang).seriesPart(entry.post.data.seriesOrder!)}</span>
+							<h2 class="series-item-title">{entry.title}</h2>
+							<p class="series-item-excerpt">{entry.description}</p>
+							<time class="series-item-date"><FormattedDate date={entry.post.data.pubDate} lang={locale} /></time>
 						</a>
 					</li>
 				))}

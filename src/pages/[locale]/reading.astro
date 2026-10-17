@@ -1,7 +1,13 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro'
-import { SITE_TITLE } from '../consts'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { SITE_TITLE } from '../../consts'
 import { getCollection } from 'astro:content'
+import { formatDate, localeStaticPaths, t, type Locale } from '../../i18n'
+
+export const getStaticPaths = localeStaticPaths
+
+const { locale } = Astro.props as { locale: Locale }
+const i18n = t(locale)
 
 const readingItems = await getCollection('readingList')
 
@@ -11,8 +17,10 @@ const sortedReadingItems = readingItems.sort(
 ---
 
 <BaseLayout editorial
-  title={`Reading | ${SITE_TITLE}`}
-  description="A running list of the articles, blog posts and papers I have read, newest first, mostly on software engineering, economics and investing."
+  locale={locale}
+  path="/reading/"
+  title={`${i18n.readingTitle} | ${SITE_TITLE}`}
+  description={i18n.readingDescription}
 >
   <main class="z-main reading-page">
     <div class="z-stack-list z-editorial-column">
@@ -27,7 +35,7 @@ const sortedReadingItems = readingItems.sort(
               </h2>
               <div class="reading-item-meta">
                 <time class="reading-date" datetime={item.data.dateRead.toISOString().slice(0, 10)}>
-                  {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(item.data.dateRead)}
+                  {formatDate(item.data.dateRead, locale)}
                 </time>
               </div>
             </div>
@@ -35,8 +43,8 @@ const sortedReadingItems = readingItems.sort(
         ))
       ) : (
         <div class="z-empty-state">
-          <h3>No articles yet</h3>
-          <p>Articles, posts, and papers I've read will appear here.</p>
+          <h3>{i18n.noReading}</h3>
+          <p>{i18n.noReadingHint}</p>
         </div>
       )}
     </div>

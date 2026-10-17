@@ -1,17 +1,19 @@
 ---
-import type { CollectionEntry } from 'astro:content'
 import type { MarkdownHeading } from 'astro'
 import FormattedDate from '../components/FormattedDate.astro'
 import BaseLayout from '../layouts/BaseLayout.astro'
-import { t } from '../i18n'
+import { localizePath, t } from '../i18n'
+import type { LocalizedPost } from '../lib/posts'
 
-type SeriesLink = { title: string; href: string }
+type SeriesLink = { title: string; href: string; lang: string }
 
-type Props = Omit<CollectionEntry<'blog'>['data'], 'series'> & {
+type Props = {
+	entry: LocalizedPost
 	headings?: MarkdownHeading[]
 	series?: {
 		id: string
 		title: string
+		lang: string
 		position: number
 		total: number
 		prev?: SeriesLink
@@ -19,32 +21,44 @@ type Props = Omit<CollectionEntry<'blog'>['data'], 'series'> & {
 	}
 }
 
-const { title, description, pubDate, updatedDate, lang, headings = [], series } = Astro.props
-const i18n = t(lang)
+const { entry, headings = [], series } = Astro.props
+const { locale, contentLang, title, description, post } = entry
+const { pubDate, updatedDate } = post.data
+const i18n = t(locale)
 
 const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3 && h.slug !== 'footnote-label')
 ---
 
-<BaseLayout title={title} description={description} lang={lang} pageLayout="article" editorial>
+<BaseLayout
+	locale={locale}
+	path={`/blog/${post.id}/`}
+	title={title}
+	description={description}
+	available={entry.available}
+	sourceLocale={entry.sourceLocale}
+	translation={entry.translation && { outdated: entry.outdated }}
+	pageLayout="article"
+	editorial
+>
 	<div class="blog-layout z-main">
 		<main>
 			<article>
 				<header class="article-header">
 					{series && (
 						<p class="article-series">
-							<a href={`/series/${series.id}/`} class="series-link">{series.title}</a>
+							<a href={localizePath(`/series/${series.id}/`, locale)} class="series-link" lang={series.lang}>{series.title}</a>
 							<span class="series-part">{i18n.seriesPartOf(series.position, series.total)}</span>
 						</p>
 					)}
-					<h1 class="article-title">{title}</h1>
+					<h1 class="article-title" lang={contentLang}>{title}</h1>
 					<div class="article-meta">
 						<time class="publish-date">
-							<FormattedDate date={pubDate} lang={lang} />
+							<FormattedDate date={pubDate} lang={locale} />
 						</time>
 						{
 							updatedDate && (
 								<div class="updated-date">
-									{i18n.updatedOn} <FormattedDate date={updatedDate} lang={lang} />
+									{i18n.updatedOn} <FormattedDate date={updatedDate} lang={locale} />
 								</div>
 							)
 						}
@@ -55,7 +69,7 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3 && h.slu
 					<nav class="toc toc-mobile" aria-label={i18n.tocLabel}>
 						<details>
 							<summary class="toc-title">{i18n.toc}</summary>
-							<ul class="toc-list">
+							<ul class="toc-list" lang={contentLang}>
 								{tocHeadings.map((heading) => (
 									<li class:list={['toc-item', `toc-depth-${heading.depth}`]}>
 										<a href={`#${heading.slug}`} class="toc-link">{heading.text}</a>
@@ -66,7 +80,7 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3 && h.slu
 					</nav>
 				)}
 
-				<div class="z-markdown-content">
+				<div class="z-markdown-content" lang={contentLang}>
 					<slot />
 				</div>
 
@@ -75,13 +89,13 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3 && h.slu
 						{series.prev && (
 							<a href={series.prev.href} class="series-pager-link series-pager-prev" rel="prev">
 								<span class="series-pager-label">← {i18n.seriesPrev}</span>
-								<span class="series-pager-title">{series.prev.title}</span>
+								<span class="series-pager-title" lang={series.prev.lang}>{series.prev.title}</span>
 							</a>
 						)}
 						{series.next && (
 							<a href={series.next.href} class="series-pager-link series-pager-next" rel="next">
 								<span class="series-pager-label">{i18n.seriesNext} →</span>
-								<span class="series-pager-title">{series.next.title}</span>
+								<span class="series-pager-title" lang={series.next.lang}>{series.next.title}</span>
 							</a>
 						)}
 					</nav>
@@ -93,7 +107,7 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3 && h.slu
 			<aside class="toc toc-desktop" aria-label={i18n.tocLabel}>
 				<div class="toc-sticky">
 					<p class="toc-title">{i18n.toc}</p>
-					<ul class="toc-list">
+					<ul class="toc-list" lang={contentLang}>
 						{tocHeadings.map((heading) => (
 							<li class:list={['toc-item', `toc-depth-${heading.depth}`]}>
 								<a href={`#${heading.slug}`} class="toc-link">{heading.text}</a>

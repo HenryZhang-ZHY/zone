@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { localeFromSegment, locales, localizePath, negotiateLocale, ogLocale, segmentOf, splitLocale, switchLocale } from '../locales'
+import { localeFromSegment, locales, localeStaticPaths, localizePath, negotiateLocale, ogLocale, segmentOf, splitLocale, switchLocale } from '../locales'
 
 describe('locales', () => {
 	it('lists the supported BCP 47 tags in switcher order', () => {
@@ -25,6 +25,13 @@ describe('locales', () => {
 		expect(localeFromSegment('zh-hans')).toBe('zh-Hans')
 		expect(localeFromSegment('zh-Hans')).toBeUndefined()
 		expect(localeFromSegment('blog')).toBeUndefined()
+	})
+})
+
+describe('localeStaticPaths', () => {
+	it('gives one route per locale with the tag as a prop', () => {
+		expect(localeStaticPaths().at(-1)).toEqual({ params: { locale: 'zh-hans' }, props: { locale: 'zh-Hans' } })
+		expect(localeStaticPaths()).toHaveLength(8)
 	})
 })
 

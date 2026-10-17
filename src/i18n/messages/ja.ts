@@ -45,5 +45,5 @@ export default {
 	translatedFrom: (source: string) => `${source}からの翻訳です。`,
 	readOriginal: '原文を読む',
 	outdatedTranslation: 'この翻訳の後に原文が更新されています。',
-	alsoAvailableIn: 'ほかの言語',
+	alsoAvailableIn: 'ほかの言語：',
 } satisfies Messages

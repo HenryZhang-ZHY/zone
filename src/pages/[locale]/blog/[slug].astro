@@ -1,0 +1,43 @@
+---
+import { getEntry, render } from 'astro:content'
+import BlogPost from '../../../layouts/BlogPost.astro'
+import { localeTags, segmentOf, type Locale } from '../../../i18n'
+import { localizeSeries } from '../../../lib/localized'
+import { loadPosts, warnOutdatedTranslations, type LocalizedPost } from '../../../lib/posts'
+import { getSeriesNav } from '../../../lib/series'
+
+export async function getStaticPaths() {
+	const { posts, localize } = await loadPosts()
+	warnOutdatedTranslations(posts, localize)
+	return localeTags.flatMap((locale) =>
+		posts.filter((post) => !post.data.redirect).map((post) => ({
+			params: { locale: segmentOf(locale), slug: post.id },
+			props: { entry: localize(post, locale), siblings: posts.map((p) => localize(p, locale)) },
+		})),
+	)
+}
+
+type Props = { entry: LocalizedPost; siblings: LocalizedPost[] }
+
+const { entry, siblings } = Astro.props
+const locale: Locale = entry.locale
+const { Content, headings } = await render(entry.translation ?? entry.post)
+
+const nav = getSeriesNav(siblings.map((s) => ({ ...s.post, localized: s })), { ...entry.post, localized: entry })
+const seriesEntry = entry.post.data.series ? await getEntry(entry.post.data.series) : undefined
+const link = (s?: { localized: LocalizedPost }) => s && { title: s.localized.title, href: s.localized.href, lang: s.localized.contentLang }
+const series = nav && seriesEntry
+	? {
+		id: seriesEntry.id,
+		...localizeSeries(seriesEntry, locale),
+		position: nav.position,
+		total: nav.total,
+		prev: link(nav.prev),
+		next: link(nav.next),
+	}
+	: undefined
+---
+
+<BlogPost entry={entry} headings={headings} series={series}>
+	<Content />
+</BlogPost>

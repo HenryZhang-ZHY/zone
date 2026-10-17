@@ -13,7 +13,7 @@ interface DesignDoc {
 // DESIGN.md files must be self-contained, so the light and dark docs repeat
 // their theme-independent parts. These must stay identical.
 const SHARED_FRONTMATTER = ['version', 'name', 'fontFamilies', 'typography', 'spacing', 'rounded', 'layout']
-const SHARED_SECTIONS = ['Typography', 'Layout', 'Shapes', 'Responsive Behavior', 'Voice & Content']
+const SHARED_SECTIONS = ['Typography', 'Layout', 'Shapes', 'Responsive Behavior', 'Voice & Content', 'Languages']
 
 function parseDesignDoc(file: string): DesignDoc {
   const source = readFileSync(resolve(root, file), 'utf8').replace(/\r\n/g, '\n')

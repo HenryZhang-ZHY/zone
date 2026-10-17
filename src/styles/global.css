@@ -9,7 +9,7 @@
 	--z-font-code: var(--z-font-ui);
 	/* Proportional Latin with the same CJK sans, for mixed CJK prose. */
 	--z-font-reading: -apple-system, BlinkMacSystemFont, "Segoe UI", var(--z-font-cjk), "Helvetica Neue", Arial, sans-serif;
-	/* Article title, body and TOC. Switches to --z-font-reading for Chinese (see :lang(zh) below). */
+	/* Article title, body and TOC. Switches to --z-font-reading for Chinese and Japanese (see :lang(zh) below). */
 	--z-font-prose: var(--z-font-ui);
 
 	/* === VERCEL-COMPATIBLE COLOR TOKENS WITH ZONE OVERRIDES === */
@@ -293,11 +293,29 @@
 }
 
 /*
- * Chinese text: CJK glyphs have no letter shapes to tighten, so headings drop the
- * negative tracking and get more leading; prose switches to proportional Latin.
- * Display sizes (48px and up) are only used for numerals and keep their tracking.
+ * Chinese and Japanese share Han code points (Han unification) but not glyph shapes,
+ * so each gets its own CJK sans first. Chinese is re-declared too, so a Chinese block
+ * inside a Japanese page does not inherit the Japanese stack.
  */
 :lang(zh) {
+	--z-font-cjk: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC";
+}
+
+:lang(ja) {
+	--z-font-cjk: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Yu Gothic", Meiryo, "Noto Sans JP", "Noto Sans CJK JP", "Source Han Sans JP";
+}
+
+/*
+ * Chinese and Japanese text: CJK glyphs have no letter shapes to tighten, so headings
+ * drop the negative tracking and get more leading; prose switches to proportional Latin.
+ * Display sizes (48px and up) are only used for numerals and keep their tracking.
+ */
+:lang(zh),
+:lang(ja) {
+	/* Stacks that embed --z-font-cjk resolve where they are declared, so they are repeated here. */
+	--z-font-ui: 'IBM Plex Mono', var(--z-font-cjk), var(--z-font-system-mono);
+	--z-font-code: var(--z-font-ui);
+	--z-font-reading: -apple-system, BlinkMacSystemFont, "Segoe UI", var(--z-font-cjk), "Helvetica Neue", Arial, sans-serif;
 	--z-font-prose: var(--z-font-reading);
 	--z-tracking-heading-40: 0;
 	--z-tracking-heading-32: 0;
@@ -333,6 +351,15 @@ body {
 
 	color: var(--z-color-text);
 	background-color: var(--z-color-bg);
+}
+
+/*
+ * font-family inherits as an already-resolved list, so an element that changes
+ * language resolves the stack again for its own language. Zero specificity, so any
+ * component rule that sets a font still wins.
+ */
+:where([lang]) {
+	font-family: var(--z-font-ui);
 }
 
 .z-page-shell--medium {

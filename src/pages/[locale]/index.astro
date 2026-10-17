@@ -1,0 +1,171 @@
+---
+import { getCollection } from 'astro:content'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import FormattedDate from '../../components/FormattedDate.astro'
+import { endonym, localeStaticPaths, t, type Locale } from '../../i18n'
+import { localizeSeries } from '../../lib/localized'
+import { loadPosts, type LocalizedPost } from '../../lib/posts'
+
+export const getStaticPaths = localeStaticPaths
+
+const { locale } = Astro.props as { locale: Locale }
+const i18n = t(locale)
+const { posts, localize } = await loadPosts()
+const entries = posts.map((post) => localize(post, locale))
+const allSeries = new Map((await getCollection('series')).map((s) => [s.id, s]))
+const seriesLabel = ({ post, contentLang }: LocalizedPost) => {
+	const series = post.data.series && allSeries.get(post.data.series.id)
+	if (!series) return undefined
+	return `${localizeSeries(series, contentLang).title} · ${t(contentLang).seriesPart(post.data.seriesOrder!)}`
+}
+---
+
+<BaseLayout locale={locale} path="/" xDefault="/" editorial>
+	<main class="z-main">
+		<section class="posts-container z-stack-list z-editorial-column">
+			{
+				entries.length > 0 ? (
+					entries.map((entry) => (
+						<article class="post-item z-stack-item" lang={entry.contentLang}>
+							<a href={entry.href} class="post-link z-link-reset">
+								<h2 class="post-title">{entry.title}</h2>
+								{entry.description && <p class="post-excerpt">{entry.description}</p>}
+								<div class="post-meta">
+									<time class="post-date">
+										<FormattedDate date={entry.post.data.pubDate} lang={locale} />
+									</time>
+									{seriesLabel(entry) && (
+										<>
+											<span class="divider" aria-hidden="true">·</span>
+											<span class="post-series">{seriesLabel(entry)}</span>
+										</>
+									)}
+									{entry.isFallback && (
+										<>
+											<span class="divider" aria-hidden="true">·</span>
+											<span class="post-lang">{endonym(entry.contentLang)}</span>
+										</>
+									)}
+								</div>
+							</a>
+						</article>
+					))
+				) : (
+					<div class="empty-state z-empty-state">
+						<h3>{i18n.noPosts}</h3>
+						<p>{i18n.noPostsHint}</p>
+					</div>
+				)
+			}
+		</section>
+	</main>
+</BaseLayout>
+
+<style>
+	* {
+		box-sizing: border-box;
+	}
+
+	.post-title {
+		font-size: var(--z-text-heading-20);
+		font-weight: 600;
+		line-height: var(--z-leading-heading-20);
+		margin: 0 0 var(--z-space-3) 0;
+		letter-spacing: var(--z-tracking-heading-20);
+		color: var(--z-color-heading);
+		text-decoration: underline;
+		text-decoration-color: transparent;
+		text-decoration-thickness: 1px;
+		text-underline-offset: 0.2em;
+		transition: color 150ms ease, text-decoration-color 150ms ease;
+	}
+
+	.post-link:hover .post-title,
+	.post-link:focus-visible .post-title,
+	.post-link:active .post-title {
+		color: var(--z-color-text-accent);
+		text-decoration-color: currentColor;
+	}
+
+	.post-excerpt {
+		font-size: var(--z-text-copy-16);
+		color: var(--z-color-text-secondary);
+		line-height: var(--z-leading-copy-16);
+		margin: 0 0 var(--z-space-4) 0;
+		font-weight: 400;
+	}
+
+	.post-meta {
+		display: flex;
+		align-items: center;
+		gap: var(--z-space-2);
+		font-size: var(--z-text-label-13);
+		line-height: var(--z-leading-label-13);
+		color: var(--z-color-text-dimmed);
+	}
+
+	.post-date {
+		font-weight: 400;
+		text-transform: none;
+		letter-spacing: 0;
+	}
+
+	.divider {
+		margin: 0 var(--z-space-2);
+		color: var(--z-color-hairline-light);
+	}
+
+	.read-time {
+		color: var(--z-color-text-dimmed);
+	}
+
+	.post-series {
+		color: var(--z-color-text-secondary);
+	}
+
+	.post-lang {
+		color: var(--z-color-text-dimmed);
+	}
+
+	@media (max-width: 768px) {
+		.post-title {
+			font-size: var(--z-text-heading-16);
+			line-height: var(--z-leading-heading-16);
+			letter-spacing: var(--z-tracking-heading-16);
+			margin-bottom: var(--z-space-2);
+		}
+
+		.post-excerpt {
+			font-size: var(--z-text-copy-14);
+			line-height: var(--z-leading-copy-14);
+			margin-bottom: var(--z-space-3);
+		}
+
+		.post-meta {
+			font-size: var(--z-text-label-13);
+			line-height: var(--z-leading-label-13);
+		}
+	}
+
+	@media (max-width: 480px) {
+		.post-title {
+			font-size: var(--z-text-heading-16);
+			line-height: var(--z-leading-heading-16);
+		}
+
+		.post-excerpt {
+			font-size: var(--z-text-copy-14);
+			line-height: var(--z-leading-copy-14);
+		}
+	}
+
+	@media (min-width: 1200px) {
+		.post-item {
+			padding-bottom: var(--z-space-10);
+		}
+
+		.post-item + .post-item {
+			padding-top: var(--z-space-10);
+		}
+	}
+</style>

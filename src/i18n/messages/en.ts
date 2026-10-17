@@ -44,7 +44,7 @@ const en = {
 	translatedFrom: (source: string) => `Translated from ${source}.`,
 	readOriginal: 'Read the original',
 	outdatedTranslation: 'The original has changed since this translation was made.',
-	alsoAvailableIn: 'Also available in',
+	alsoAvailableIn: 'Also available in:',
 }
 
 export type Messages = typeof en

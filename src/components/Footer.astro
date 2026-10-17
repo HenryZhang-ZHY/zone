@@ -1,36 +1,50 @@
 ---
 import HeaderLink from './HeaderLink.astro'
+import LanguageSwitcher from './LanguageSwitcher.astro'
 import { SITE_TITLE } from '../consts'
+import { localizePath, t, type Locale } from '../i18n'
 
+interface Props {
+	locale: Locale
+	/** Site path of the current page, linked in every language by the switcher. */
+	path: string
+}
+
+const { locale, path } = Astro.props
+const i18n = t(locale)
+const href = (sitePath: string) => localizePath(sitePath, locale)
 const today = new Date()
-const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '')
-const isReadingActive = pathname === '/reading' || pathname.startsWith('/reading/')
+const isReadingActive = path.startsWith('/reading/')
 ---
 
 <footer class="footer">
 	<div class="footer-inner">
-		<nav class="footer-nav" aria-label="Footer navigation">
-			<ul class="footer-primary-list" aria-label="Sections">
-				<li><HeaderLink href="/">Writing</HeaderLink></li>
-				<li><HeaderLink href="/listening">Listening</HeaderLink></li>
+		<nav class="footer-nav" aria-label={i18n.footerNav}>
+			<ul class="footer-primary-list" aria-label={i18n.footerSections}>
+				<li><HeaderLink href={href('/')}>{i18n.writing}</HeaderLink></li>
+				<li><HeaderLink href={href('/listening/')}>{i18n.listening}</HeaderLink></li>
 			</ul>
 
-			<div class="footer-reading-row" aria-label="Reading sections">
-				<span class:list={['footer-primary-label', { active: isReadingActive }]}>Reading</span>
+			<div class="footer-reading-row" aria-label={i18n.readingSections}>
+				<span class:list={['footer-primary-label', { active: isReadingActive }]}>{i18n.reading}</span>
 				<div class="footer-reading-subnav">
 					<span aria-hidden="true">(</span>
-					<ul class="footer-secondary-list" aria-label="Reading pages">
-						<li><HeaderLink href="/reading" exact>Recents</HeaderLink></li>
-						<li><HeaderLink href="/reading/books" exact>Books</HeaderLink></li>
+					<ul class="footer-secondary-list" aria-label={i18n.readingPages}>
+						<li><HeaderLink href={href('/reading/')} exact>{i18n.recents}</HeaderLink></li>
+						<li><HeaderLink href={href('/reading/books/')} exact>{i18n.books}</HeaderLink></li>
 					</ul>
 					<span aria-hidden="true">)</span>
 				</div>
 			</div>
 
-			<a href="/rss.xml" class="footer-utility-link">RSS Feed</a>
+			<a href={href('/rss.xml')} class="footer-utility-link">{i18n.rssFeed}</a>
 		</nav>
 
-		<p class="copyright">&copy; {today.getFullYear()} {SITE_TITLE}. All rights reserved.</p>
+		<div class="footer-languages">
+			<LanguageSwitcher locale={locale} path={path} label={i18n.language} />
+		</div>
+
+		<p class="copyright">&copy; {today.getFullYear()} {SITE_TITLE}. {i18n.copyright}</p>
 	</div>
 </footer>
 
@@ -129,6 +143,12 @@ const isReadingActive = pathname === '/reading' || pathname.startsWith('/reading
 	.footer-utility-link:hover {
 		color: var(--z-color-text-accent);
 		text-decoration: underline;
+	}
+
+	.footer-languages {
+		margin-top: var(--z-space-4);
+		padding-top: var(--z-space-4);
+		border-top: 1px solid var(--z-color-hairline-light);
 	}
 
 	.copyright {

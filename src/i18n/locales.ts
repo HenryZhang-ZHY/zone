@@ -46,6 +46,9 @@ export function splitLocale(pathname: string): { locale: Locale | undefined; pat
 	return { locale, path: match?.[2] ?? '/' }
 }
 
+/** `getStaticPaths` entries for a page that exists under every locale. */
+export const localeStaticPaths = () => localeTags.map((locale) => ({ params: { locale: segmentOf(locale) }, props: { locale } }))
+
 export const switchLocale = (pathname: string, locale: Locale) => localizePath(splitLocale(pathname).path, locale)
 
 const languageAndScript = (tag: string) => {

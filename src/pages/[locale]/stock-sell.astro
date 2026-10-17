@@ -1,16 +1,24 @@
 ---
-import StockSellCalculator from '../components/stock-sell/StockSellCalculator.astro'
-import BaseLayout from '../layouts/BaseLayout.astro'
-import { SITE_TITLE } from '../consts'
+import StockSellCalculator from '../../components/stock-sell/StockSellCalculator.astro'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { SITE_TITLE } from '../../consts'
+import { localeStaticPaths, type Locale } from '../../i18n'
+
+export const getStaticPaths = localeStaticPaths
+
+const { locale } = Astro.props as { locale: Locale }
 ---
 
 <BaseLayout
   title={`股票卖点计算器 | ${SITE_TITLE}`}
   description="股票卖点计算器：输入持仓股数与每股分红，按目标股息率估算卖出部分持仓所需的每股价格；结果仅供估算，不构成投资建议。"
-  lang="zh-Hans"
+  locale={locale}
+  path="/stock-sell/"
+  available={['zh-Hans']}
+  sourceLocale="zh-Hans"
   pageLayout="medium"
 >
-  <main class="z-main">
+  <main class="z-main" lang="zh-Hans">
     <div class="page-header z-page-header">
       <h1 class="z-page-title">股票卖点计算器</h1>
       <p class="z-page-subtitle">按目标股息率，估算卖出部分持仓所需的每股价格。</p>

@@ -45,5 +45,5 @@ export default {
 	translatedFrom: (source: string) => `Übersetzung. Originalsprache: ${source}.`,
 	readOriginal: 'Original lesen',
 	outdatedTranslation: 'Das Original wurde seit dieser Übersetzung geändert.',
-	alsoAvailableIn: 'Auch verfügbar auf',
+	alsoAvailableIn: 'Auch verfügbar auf:',
 } satisfies Messages

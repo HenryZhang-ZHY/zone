@@ -25,7 +25,7 @@ describe('link interaction taxonomy', () => {
   })
 
   it('makes post titles explicit content entry links on hover and focus', () => {
-    const source = readSource('pages', 'index.astro')
+    const source = readSource('pages', '[locale]', 'index.astro')
     const titleRule = ruleBody(source, /\.post-title\s*\{([\s\S]*?)\n\s*\}/)
     const interactiveRule = ruleBody(
       source,

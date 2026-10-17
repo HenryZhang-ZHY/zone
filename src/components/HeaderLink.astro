@@ -1,17 +1,17 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
+import { splitLocale } from '../i18n'
 
 type Props = HTMLAttributes<'a'> & {
 	exact?: boolean
 }
 
 const { href, class: className, exact = false, ...props } = Astro.props
-const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '')
-const normalizedHref = href?.split(/[?#]/)[0]
-const subpath = pathname.match(/[^\/]+/g)
-const isActive = exact
-	? normalizedHref === pathname
-	: normalizedHref === pathname || normalizedHref === '/' + (subpath?.[0] || '')
+// Compare site paths, so a link is active in every language.
+const current = splitLocale(Astro.url.pathname).path
+const target = splitLocale(String(href ?? '').split(/[?#]/)[0]).path
+const section = current.match(/^\/[^/]+\//)?.[0] ?? '/'
+const isActive = exact ? target === current : target === current || target === section
 ---
 
 <a href={href} class:list={[className, { active: isActive }]} {...props}>

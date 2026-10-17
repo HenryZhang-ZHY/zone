@@ -19,6 +19,8 @@ const markdownProcessor = unified({
 // https://astro.build/config
 export default defineConfig({
   site: 'https://shuzhi.zone',
+  // Every page URL ends in a slash, so each page has exactly one URL.
+  trailingSlash: 'always',
   integrations: [
     expressiveCode({
       plugins: [

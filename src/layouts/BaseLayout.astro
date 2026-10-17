@@ -1,38 +1,71 @@
 ---
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts'
+import { SITE_TITLE } from '../consts'
 
 import BaseHead from '../components/BaseHead.astro'
 import Footer from '../components/Footer.astro'
 import SiteIdentity from '../components/SiteIdentity.astro'
+import TranslationNotice from '../components/TranslationNotice.astro'
+import { localeTags, localizePath, t, type Locale } from '../i18n'
+import { alternateLinks } from '../lib/localized'
 
 interface Props {
+  /** Language of the page chrome, from the URL. */
+  locale: Locale
+  /** Site path without the locale segment, e.g. `/blog/refuge/`. */
+  path: string
   title?: string
   description?: string
   image?: string
-  lang?: string
+  /** Languages the page's main content exists in. Pages built only from UI strings exist in all. */
+  available?: Locale[]
+  /** Language the main content was written in; the canonical URL when this locale has no version. */
+  sourceLocale?: Locale
+  /** hreflang x-default: a locale's version of this page, or another URL such as `/`. */
+  xDefault?: Locale | string
+  /** Set when the main content is a translation, to credit the original. */
+  translation?: { outdated: boolean }
   pageLayout?: 'narrow' | 'medium' | 'wide' | 'article'
   editorial?: boolean
 }
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site)
+const {
+  locale,
+  path,
+  title,
+  description,
+  image = '/open-graph-image.webp',
+  available = localeTags,
+  sourceLocale = 'en',
+  xDefault = sourceLocale,
+  translation,
+  pageLayout = 'narrow',
+  editorial = false,
+} = Astro.props
 
-const { title, description, image = '/open-graph-image.webp', lang = 'en', pageLayout = 'narrow', editorial = false } = Astro.props
+const isFallback = !available.includes(locale)
+const canonicalURL = new URL(localizePath(path, isFallback ? sourceLocale : locale), Astro.site)
+const alternates = alternateLinks(path, available, xDefault, Astro.site!)
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={locale} dir="ltr">
   <head>
     <BaseHead
       title={title ?? SITE_TITLE}
-      description={description ?? SITE_DESCRIPTION}
+      description={description ?? t(locale).siteDescription}
+      locale={locale}
       image={image}
       canonicalURL={canonicalURL}
+      alternates={alternates}
     />
   </head>
   <body class:list={['z-page-shell', `z-page-shell--${pageLayout}`, { 'z-page-shell--editorial': editorial }]}>
-    <SiteIdentity />
+    <SiteIdentity locale={locale} />
+    {(isFallback || translation) && (
+      <TranslationNotice locale={locale} path={path} sourceLocale={sourceLocale} available={available} outdated={translation?.outdated ?? false} />
+    )}
     <slot />
 
-    <Footer />
+    <Footer locale={locale} path={path} />
   </body>
 </html>
