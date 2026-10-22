@@ -1,0 +1,137 @@
+---
+interface Heading {
+  depth: number
+  text: string
+  slug: string
+}
+
+interface Props {
+  headings: Heading[]
+  label?: string
+}
+
+const { headings, label = 'On this page' } = Astro.props
+
+let section = 0
+let currentSection = ''
+const items = headings
+  .filter((heading) => heading.depth === 2 || heading.depth === 3)
+  .map((heading) => {
+    if (heading.depth === 2) {
+      section += 1
+      currentSection = heading.slug
+    }
+    return {
+      ...heading,
+      number: heading.depth === 2 ? String(section).padStart(2, '0') : '',
+      section: currentSection,
+    }
+  })
+
+const sections = items.filter((item) => item.depth === 2)
+---
+
+<nav
+  class="group/toc fixed right-5 top-1/2 z-40 flex -translate-y-1/2 items-center justify-end py-3 max-[1180px]:hidden"
+  aria-label={label}
+  data-edge-toc
+>
+  <ul class="m-0 flex list-none flex-col items-end gap-2 p-0">
+    {
+      sections.map((item) => (
+        <li>
+          <a
+            class="flex h-4 w-10 items-center justify-end aria-[current=location]:[&>span]:h-0.5 aria-[current=location]:[&>span]:w-[26px] aria-[current=location]:[&>span]:bg-accent hover:[&>span]:w-5 hover:[&>span]:bg-ink-tertiary"
+            href={`#${item.slug}`}
+            data-section={item.slug}
+            data-edge-tick
+            aria-label={`${item.number} ${item.text}`}
+          >
+            <span class="block h-px w-3 bg-line-strong transition-[width,height,background-color] duration-1 ease-out"></span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="invisible absolute right-full top-1/2 mr-4 w-56 -translate-y-1/2 translate-x-1 border border-line bg-canvas p-4 opacity-0 transition-[opacity,transform,visibility] duration-1 ease-out group-hover/toc:visible group-hover/toc:translate-x-0 group-hover/toc:opacity-100 group-focus-within/toc:visible group-focus-within/toc:translate-x-0 group-focus-within/toc:opacity-100">
+    <ol class="m-0 list-none p-0">
+      {
+        items.map((item) => (
+          <li>
+            <a
+              class:list={[
+                'grid -ml-0.5 gap-1 border-l-2 border-transparent py-1 pl-2 text-label-12 text-ink-tertiary transition-[color,border-color] duration-1 hover:border-line-strong hover:text-ink aria-[current=location]:border-accent aria-[current=location]:text-accent aria-[current=location]:[&>span:first-child]:text-accent',
+                item.depth === 2 ? 'grid-cols-[1.5rem_minmax(0,1fr)]' : 'grid-cols-1 pl-6',
+              ]}
+              href={`#${item.slug}`}
+              data-section={item.section}
+              data-edge-link
+            >
+              {item.depth === 2 && <span class="text-[10px] leading-[1.8] tabular-nums text-ink-quiet">{item.number}</span>}
+              <span>{item.text}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</nav>
+
+<script>
+  const navs = document.querySelectorAll<HTMLElement>('[data-edge-toc]')
+
+  for (const nav of navs) {
+    const links = Array.from(nav.querySelectorAll<HTMLAnchorElement>('[data-edge-link]'))
+    const ticks = Array.from(nav.querySelectorAll<HTMLAnchorElement>('[data-edge-tick]'))
+    const ids = [
+      ...new Set(
+        [...links, ...ticks]
+          .map((link) => link.getAttribute('href')?.slice(1))
+          .filter((id): id is string => Boolean(id)),
+      ),
+    ]
+    const headings = ids
+      .map((id) => document.getElementById(id))
+      .filter((heading): heading is HTMLElement => heading !== null)
+
+    const sectionByHeading = new Map(
+      links.map((link) => [link.getAttribute('href')?.slice(1), link.dataset.section]),
+    )
+
+    let frame = 0
+
+    const update = () => {
+      frame = 0
+      if (headings.length === 0) return
+
+      let current = headings[0].id
+      for (const heading of headings) {
+        if (heading.getBoundingClientRect().top <= 120) current = heading.id
+        else break
+      }
+      if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2) {
+        current = headings[headings.length - 1].id
+      }
+      const currentSection = sectionByHeading.get(current)
+
+      for (const link of links) {
+        if (link.getAttribute('href') === `#${current}`) link.setAttribute('aria-current', 'location')
+        else link.removeAttribute('aria-current')
+      }
+      for (const tick of ticks) {
+        if (tick.dataset.section === currentSection) tick.setAttribute('aria-current', 'location')
+        else tick.removeAttribute('aria-current')
+      }
+    }
+
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update)
+    }
+
+    window.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule)
+    window.addEventListener('hashchange', schedule)
+    update()
+  }
+</script>

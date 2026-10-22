@@ -1,0 +1,70 @@
+---
+import { tv } from '../recipes/tv'
+import { cn } from '../recipes/cn'
+
+interface Props {
+  href?: string
+  variant?: 'primary' | 'secondary' | 'quiet'
+  size?: 'md' | 'sm'
+  type?: 'button' | 'submit' | 'reset'
+  disabled?: boolean
+  arrow?: boolean
+  class?: string
+  [key: string]: unknown
+}
+
+const button = tv({
+  base: [
+    'group inline-flex min-h-10 items-center justify-center gap-2 border border-transparent px-4 font-ui text-button-14 font-medium no-underline',
+    'transition-[background-color,border-color,color] duration-1 ease-out',
+    'focus-visible:focus-ring',
+    'disabled:cursor-not-allowed disabled:bg-surface-strong disabled:text-ink-quiet',
+    'aria-disabled:cursor-not-allowed aria-disabled:bg-surface-strong aria-disabled:text-ink-quiet',
+  ],
+  variants: {
+    variant: {
+      primary: 'border-accent bg-accent text-on-accent hover:border-accent-strong hover:bg-accent-strong hover:text-on-accent',
+      secondary: 'border-line-strong bg-transparent text-ink hover:border-ink-tertiary hover:bg-surface hover:text-ink',
+      quiet: 'min-h-6 px-0 text-label-13 text-accent underline decoration-accent/40 underline-offset-[0.25em] hover:text-accent-strong hover:decoration-current',
+    },
+    size: {
+      md: '',
+      sm: 'min-h-8 px-3 text-button-13',
+    },
+  },
+  defaultVariants: { variant: 'primary', size: 'md' },
+})
+
+const {
+  href,
+  variant = 'primary',
+  size = 'md',
+  type = 'button',
+  disabled = false,
+  arrow = false,
+  class: className,
+  ...rest
+} = Astro.props
+
+const classes = cn(button({ variant, size }), className)
+---
+
+{
+  href ? (
+    <a
+      class={classes}
+      href={href}
+      aria-disabled={disabled ? 'true' : undefined}
+      tabindex={disabled ? -1 : undefined}
+      {...rest}
+    >
+      <slot />
+      {arrow && <span class="transition-transform duration-1 group-hover:translate-x-0.5" aria-hidden="true">→</span>}
+    </a>
+  ) : (
+    <button class={classes} type={type} disabled={disabled} {...rest}>
+      <slot />
+      {arrow && <span class="transition-transform duration-1 group-hover:translate-x-0.5" aria-hidden="true">→</span>}
+    </button>
+  )
+}

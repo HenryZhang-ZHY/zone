@@ -54,11 +54,11 @@ const { src } = Astro.props
     align-items: center;
     justify-content: center;
     transition: color 150ms ease, opacity 150ms ease;
-    color: var(--z-color-primary);
+    color: var(--z-color-ink);
   }
 
   .play-button:hover {
-    color: var(--z-color-text-accent);
+    color: var(--z-color-accent);
   }
 
   .play-button svg {
@@ -81,7 +81,7 @@ const { src } = Astro.props
   .time-duration {
     font-size: var(--z-text-label-12);
     line-height: var(--z-leading-label-12);
-    color: var(--z-color-text-secondary);
+    color: var(--z-color-ink-secondary);
     font-weight: 500;
     font-variant-numeric: tabular-nums;
     min-width: 40px;
@@ -105,7 +105,7 @@ const { src } = Astro.props
     transform: translateY(-50%);
     width: 100%;
     height: 2px;
-    background-color: var(--z-color-border-hover);
+    background-color: var(--z-color-line-strong);
     z-index: 0;
   }
 
@@ -115,7 +115,7 @@ const { src } = Astro.props
     top: 50%;
     transform: translateY(-50%);
     height: 2px;
-    background-color: var(--z-color-tertiary);
+    background-color: var(--z-color-accent);
     width: 0%;
     pointer-events: none;
     z-index: 1;
@@ -137,21 +137,21 @@ const { src } = Astro.props
   .progress-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--z-color-text-accent);
+    width: 9px;
+    height: 9px;
+    border-radius: 1px;
+    background: var(--z-color-accent);
     cursor: pointer;
-    border: 2px solid var(--z-color-bg);
+    border: 2px solid var(--z-color-canvas);
   }
 
   .progress-slider::-moz-range-thumb {
-    width: 12px;
-    height: 12px;
-    background: var(--z-color-text-accent);
+    width: 9px;
+    height: 9px;
+    background: var(--z-color-accent);
     cursor: pointer;
-    border: 2px solid var(--z-color-bg);
-    border-radius: 50%;
+    border: 2px solid var(--z-color-canvas);
+    border-radius: 1px;
   }
 
   @media (max-width: 768px) {

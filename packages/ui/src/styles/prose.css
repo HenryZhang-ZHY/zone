@@ -1,0 +1,528 @@
+@layer components {
+/*
+ * Long-form reading. Newsreader is the author's voice; Chinese and Japanese
+ * resolve to the proportional reading stack. One rhythm; the language changes the
+ * values inside it, never the rules.
+ */
+
+.z-prose {
+  --z-prose-gap: 1.15em;
+  --z-prose-heading-before: 2.5em;
+  --z-prose-heading-after: 0.55em;
+  --z-prose-h3-before: 1.9em;
+
+  font-family: var(--z-font-prose);
+  font-size: var(--z-text-reading-22);
+  line-height: var(--z-leading-reading-22);
+  color: var(--z-color-ink-secondary);
+  counter-reset: z-section;
+  overflow-wrap: break-word;
+}
+
+.z-prose > * + * {
+  margin-top: var(--z-prose-gap);
+}
+
+.z-prose > :is(h1, h2) + * {
+  margin-top: var(--z-prose-heading-after);
+}
+
+.z-prose > h3 + * {
+  margin-top: calc(var(--z-prose-heading-after) * 0.8);
+}
+
+.z-prose > * + h2 {
+  margin-top: var(--z-prose-heading-before);
+}
+
+.z-prose > * + h3 {
+  margin-top: var(--z-prose-h3-before);
+}
+
+.z-prose > * + :is(h4, h5, h6) {
+  margin-top: 1.6em;
+}
+
+.z-prose :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--z-font-prose);
+  color: var(--z-color-ink);
+  scroll-margin-top: var(--z-space-6);
+}
+
+.z-prose h1 {
+  font-size: var(--z-text-heading-40);
+  line-height: var(--z-leading-heading-40);
+  letter-spacing: var(--z-tracking-heading-40);
+}
+
+.z-prose h2 {
+  font-size: var(--z-text-heading-28);
+  line-height: var(--z-leading-heading-28);
+  letter-spacing: var(--z-tracking-heading-28);
+}
+
+.z-prose h3 {
+  font-size: var(--z-text-heading-20);
+  line-height: var(--z-leading-heading-20);
+  letter-spacing: var(--z-tracking-heading-20);
+}
+
+.z-prose h4 {
+  font-size: var(--z-text-heading-16);
+  line-height: var(--z-leading-heading-16);
+  letter-spacing: 0;
+}
+
+.z-prose h5,
+.z-prose h6 {
+  font-size: var(--z-text-heading-14);
+  line-height: var(--z-leading-heading-14);
+  letter-spacing: 0;
+}
+
+/*
+ * Numbered sections: the index sits in the left margin on wide screens, where
+ * there is already a rail; below that it moves above the heading rather than
+ * disappearing.
+ */
+.z-prose--numbered > h2 {
+  position: relative;
+  counter-increment: z-section;
+  padding-top: 1.1em;
+  border-top: 1px solid var(--z-color-line);
+}
+
+.z-prose--numbered > h2::before {
+  content: counter(z-section, decimal-leading-zero);
+  position: absolute;
+  inset-inline-start: -2.5rem;
+  top: 0.35em;
+  color: var(--z-color-ink-quiet);
+  font-family: var(--z-font-ui);
+  font-size: var(--z-text-label-11);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: var(--z-tracking-label-11);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 1180px) {
+  .z-prose--numbered > h2::before {
+    position: static;
+    display: block;
+    margin-bottom: var(--z-space-2);
+  }
+}
+
+.z-prose a {
+  color: var(--z-color-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in srgb, var(--z-color-accent) 40%, transparent);
+  text-underline-offset: 0.2em;
+  transition:
+    color var(--z-motion-duration-1) var(--z-ease-out),
+    text-decoration-color var(--z-motion-duration-1) var(--z-ease-out);
+}
+
+.z-prose a:hover {
+  color: var(--z-color-accent-strong);
+  text-decoration-color: currentColor;
+}
+
+.z-prose strong,
+.z-prose b {
+  color: var(--z-color-ink);
+  font-weight: 600;
+}
+
+.z-prose em,
+.z-prose i {
+  font-style: italic;
+}
+
+.z-prose small {
+  font-size: var(--z-text-label-12);
+  line-height: var(--z-leading-label-12);
+}
+
+.z-prose .z-lede {
+  margin-top: var(--z-space-2);
+  color: var(--z-color-ink);
+  font-size: var(--z-text-lede-24);
+  line-height: var(--z-leading-lede-24);
+}
+
+.z-prose .z-lede + * {
+  margin-top: var(--z-prose-gap);
+}
+
+@media (min-width: 1181px) {
+  .z-prose .z-dropcap::first-letter {
+    float: left;
+    margin: 0.08em 0.12em 0 0;
+    color: var(--z-color-ink);
+    font-size: 3.1em;
+    line-height: 0.82;
+  }
+}
+
+/* ── Lists ────────────────────────────────────────────────────────────── */
+
+.z-prose ul,
+.z-prose ol {
+  padding-inline-start: 1.6em;
+  list-style: none;
+}
+
+.z-prose ul > li,
+.z-prose ol > li {
+  position: relative;
+  padding-inline-start: 0.1em;
+}
+
+.z-prose ul > li::before {
+  content: '–';
+  position: absolute;
+  inset-inline-start: -1.5em;
+  color: var(--z-color-ink-quiet);
+}
+
+.z-prose ol {
+  counter-reset: z-item;
+}
+
+.z-prose ol > li {
+  counter-increment: z-item;
+}
+
+.z-prose ol > li::before {
+  content: counter(z-item) '.';
+  position: absolute;
+  inset-inline-start: -1.75em;
+  color: var(--z-color-ink-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+.z-prose li + li,
+.z-prose li > :is(ul, ol) {
+  margin-top: 0.35em;
+}
+
+.z-prose li > :is(ul, ol) {
+  margin-bottom: 0.35em;
+}
+
+.z-prose ul ul > li::before {
+  content: '·';
+}
+
+.z-prose li > :is(ul, ol) :is(ul, ol) > li::before {
+  content: '–';
+}
+
+.z-prose dt {
+  color: var(--z-color-ink);
+  font-weight: 600;
+}
+
+.z-prose dd {
+  padding-inline-start: var(--z-space-4);
+}
+
+/* ── Quotes ───────────────────────────────────────────────────────────── */
+
+.z-prose blockquote {
+  margin-block: 2em;
+  padding-inline-start: var(--z-space-5);
+  border-inline-start: 2px solid var(--z-color-line-strong);
+  color: var(--z-color-ink);
+  font-family: var(--z-font-serif);
+  font-size: 1.18em;
+  font-style: italic;
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+}
+
+.z-prose blockquote p + p {
+  margin-top: 0.7em;
+}
+
+.z-prose blockquote cite,
+.z-prose blockquote footer {
+  display: block;
+  margin-top: var(--z-space-3);
+  color: var(--z-color-ink-tertiary);
+  font-family: var(--z-font-ui);
+  font-size: var(--z-text-label-11);
+  font-style: normal;
+  line-height: var(--z-leading-label-11);
+  letter-spacing: var(--z-tracking-label-11);
+  text-transform: uppercase;
+}
+
+/* ── Code ─────────────────────────────────────────────────────────────── */
+
+.z-prose code {
+  padding: 0.15em 0.35em;
+  border-radius: 2px;
+  background-color: var(--z-color-code);
+  color: var(--z-color-ink);
+  font-family: var(--z-font-code);
+  font-size: 0.88em;
+}
+
+.z-prose pre {
+  margin-block: 2em;
+  padding: var(--z-space-4) var(--z-space-5);
+  overflow-x: auto;
+  border: 1px solid var(--z-color-line);
+  background-color: var(--z-color-surface);
+  font-family: var(--z-font-code);
+  font-size: var(--z-text-copy-13);
+  line-height: 1.7;
+  tab-size: 2;
+}
+
+.z-prose pre code {
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
+}
+
+.z-prose kbd {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 0.1em 0.4em;
+  border: 1px solid var(--z-color-line-strong);
+  border-bottom-width: 2px;
+  border-radius: 3px;
+  background-color: var(--z-color-surface);
+  color: var(--z-color-ink);
+  font-family: var(--z-font-code);
+  font-size: 0.8em;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.z-prose mark {
+  padding: 0.05em 0.15em;
+  background-color: var(--z-color-accent-soft);
+  color: var(--z-color-ink);
+}
+
+/* ── Tables ───────────────────────────────────────────────────────────── */
+
+.z-prose table {
+  display: block;
+  width: 100%;
+  margin-block: 2em;
+  overflow-x: auto;
+  border-collapse: collapse;
+  border-top: 1px solid var(--z-color-line-strong);
+  border-bottom: 1px solid var(--z-color-line-strong);
+  font-family: var(--z-font-ui);
+  font-size: var(--z-text-copy-13);
+  line-height: 1.55;
+  font-variant-numeric: tabular-nums;
+}
+
+.z-prose thead th {
+  padding: var(--z-space-2) var(--z-space-3);
+  border-bottom: 1px solid var(--z-color-line);
+  color: var(--z-color-ink-tertiary);
+  font-family: var(--z-font-ui);
+  font-size: var(--z-text-label-11);
+  font-weight: 500;
+  letter-spacing: var(--z-tracking-label-11);
+  text-align: start;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.z-prose caption {
+  padding-bottom: var(--z-space-2);
+  color: var(--z-color-ink-tertiary);
+  font-family: var(--z-font-ui);
+  font-size: var(--z-text-label-12);
+  line-height: var(--z-leading-label-12);
+  text-align: start;
+}
+
+.z-prose .z-num,
+.z-prose th.z-num {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.z-prose tbody td {
+  padding: var(--z-space-2) var(--z-space-3);
+  border-bottom: 1px solid var(--z-color-line);
+  vertical-align: top;
+}
+
+.z-prose tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.z-prose :is(th, td):first-child {
+  padding-inline-start: 0;
+}
+
+.z-prose :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+/* ── Media ────────────────────────────────────────────────────────────── */
+
+.z-prose img,
+.z-prose video {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--z-color-line);
+}
+
+.z-prose figure {
+  margin-block: 2em;
+}
+
+.z-prose figcaption {
+  margin-top: var(--z-space-2);
+  color: var(--z-color-ink-tertiary);
+  font-family: var(--z-font-ui);
+  font-size: var(--z-text-label-12);
+  line-height: var(--z-leading-label-12);
+}
+
+.z-prose hr {
+  margin-block: 2.75em;
+  border: 0;
+  border-top: 1px solid var(--z-color-line);
+}
+
+/* ── Footnotes and asides ─────────────────────────────────────────────── */
+
+.z-prose sup {
+  font-size: 0.7em;
+  line-height: 0;
+  vertical-align: super;
+}
+
+.z-prose sup a {
+  padding-inline: 0.1em;
+  text-decoration: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.z-prose .z-footnotes {
+  font-family: var(--z-font-ui);
+}
+
+.z-prose details {
+  padding-inline-start: var(--z-space-4);
+  border-inline-start: 2px solid var(--z-color-line);
+}
+
+.z-prose summary {
+  color: var(--z-color-ink);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ── Chinese and Japanese reading ─────────────────────────────────────── */
+
+.z-prose:is(:lang(zh), :lang(ja)) {
+  --z-prose-gap: 1em;
+  --z-prose-heading-before: 2.1em;
+  --z-prose-h3-before: 1.6em;
+  font-size: var(--z-text-copy-18);
+  line-height: 1.9;
+}
+
+.z-prose:is(:lang(zh), :lang(ja)) h2 {
+  font-size: var(--z-text-heading-24);
+}
+
+.z-prose:is(:lang(zh), :lang(ja)) h3 {
+  font-size: var(--z-text-heading-20);
+}
+
+.z-prose:is(:lang(zh), :lang(ja)) :is(h4, h5, h6) {
+  font-size: var(--z-text-copy-18);
+}
+
+@media (max-width: 480px) {
+  .z-prose {
+    font-size: 19px;
+    line-height: 1.7;
+  }
+
+  .z-prose:is(:lang(zh), :lang(ja)) {
+    font-size: var(--z-text-copy-16);
+    line-height: 1.85;
+  }
+
+  .z-prose .z-lede {
+    font-size: 21px;
+    line-height: 1.55;
+  }
+
+  .z-prose--numbered > h2 {
+    padding-top: 0.9em;
+  }
+
+  .z-prose blockquote {
+    font-size: 1.1em;
+  }
+}
+
+@media print {
+  .z-prose {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 10.5pt;
+    line-height: 1.55;
+    color: #000;
+  }
+
+  .z-prose a {
+    color: #000;
+    text-decoration: underline;
+  }
+
+  .z-prose h2 {
+    break-after: avoid;
+  }
+}
+
+.z-footnotes {
+  margin-top: var(--z-space-16);
+  padding-top: var(--z-space-4);
+  border-top: 1px solid var(--z-color-line);
+  color: var(--z-color-ink-tertiary);
+  font-size: var(--z-text-label-12);
+  line-height: 1.6;
+}
+
+.z-footnotes ol {
+  display: block;
+  margin: 0;
+  padding-inline-start: 1.5rem;
+}
+
+.z-footnotes li + li {
+  margin-top: var(--z-space-2);
+}
+
+.z-footnotes a {
+  color: var(--z-color-accent);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--z-color-accent) 40%, transparent);
+  text-underline-offset: 0.2em;
+}
+
+.z-footnotes a:hover {
+  text-decoration-color: currentColor;
+}
+
+}

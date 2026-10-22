@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import { unified } from '@astrojs/markdown-remark';
+import tailwindcss from '@tailwindcss/vite';
 
 import expressiveCode from 'astro-expressive-code';
 import { addClassName } from 'astro-expressive-code/hast';
@@ -41,6 +42,7 @@ export default defineConfig({
     i18nOutput()
   ],
   vite: {
+    plugins: [tailwindcss()],
     // esbuild escapes non-ASCII (lightningcss, Vite's default, does not), so CSS
     // `content` glyphs like • and · survive servers that send text/css without a charset.
     build: { cssMinify: 'esbuild' },

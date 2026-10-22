@@ -1,0 +1,30 @@
+---
+import DemoLayout from '../../components/DemoLayout.astro'
+import Entry from '@zone/ui/components/Entry.astro'
+import { posts } from '../../data/demo'
+---
+
+<DemoLayout
+  title="Archive"
+  description="The writing index demo for Hairline, the Zone Design System."
+  current="/demos/archive/"
+>
+  <div class="shell">
+    <div class="mx-auto max-w-measure">
+      <h1 class="sr-only">Writing</h1>
+      <ul class="m-0 list-none p-0">
+        {posts.map((entry) => (
+          <Entry
+            date={entry.date}
+            datetime={entry.datetime}
+            title={entry.title}
+            excerpt={entry.excerpt}
+            href={entry.href}
+            meta={entry.meta}
+            lang={entry.lang}
+          />
+        ))}
+      </ul>
+    </div>
+  </div>
+</DemoLayout>

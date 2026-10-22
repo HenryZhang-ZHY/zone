@@ -1,0 +1,51 @@
+---
+import '@zone/ui/styles.css'
+import '../styles/docs.css'
+
+interface Props {
+  title: string
+  description?: string
+  bodyClass?: string
+}
+
+const {
+  title,
+  description = 'Hairline, the Zone Design System: white paper, cool ink, a serif reading voice, mono apparatus, and one earned accent.',
+  bodyClass,
+} = Astro.props
+---
+
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <title>{title}</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline>
+      ;(() => {
+        try {
+          const params = new URLSearchParams(location.search)
+          const forced = params.get('theme')
+          if (forced === 'light' || forced === 'dark') {
+            document.documentElement.style.colorScheme = forced
+          }
+          if (forced) return
+          const theme = localStorage.getItem('zone-theme')
+          if (theme === 'light' || theme === 'dark') {
+            document.documentElement.style.colorScheme = theme
+          }
+        } catch {}
+      })()
+    </script>
+  </head>
+  <body class:list={[bodyClass]}>
+    <a class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-ink focus:px-4 focus:py-2 focus:text-label-13 focus:text-on-ink" href="#main">Skip to content</a>
+    <slot />
+  </body>
+</html>

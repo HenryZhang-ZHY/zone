@@ -1,0 +1,15 @@
+{
+  "name": "@zone/tokens",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Zone's design tokens: the single source for color, type, space, motion and layout.",
+  "exports": {
+    ".": "./tokens.css",
+    "./tokens.css": "./tokens.css",
+    "./tokens.json": "./tokens.json"
+  },
+  "scripts": {
+    "build": "bun run build.mjs"
+  }
+}

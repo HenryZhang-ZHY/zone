@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import DocsHeader from './DocsHeader.astro'
+import DocsNav from './DocsNav.astro'
+import DocsNavInline from './DocsNavInline.astro'
+
+interface Props {
+  current: string
+  eyebrow?: string
+  heading: string
+  lede?: string
+  description?: string
+  display?: boolean
+}
+
+const { current, eyebrow, heading, lede, description, display = false } = Astro.props
+---
+
+<BaseLayout title={`${heading} — Zone Design System`} description={description ?? lede}>
+  <DocsHeader current={current} />
+  <div class="shell doc-layout">
+    <DocsNav current={current} />
+    <main id="main" class="doc-main">
+      <DocsNavInline current={current} />
+      <header class="doc-head">
+        {eyebrow && <p class="text-label-11 uppercase text-ink-tertiary">{eyebrow}</p>}
+        <h1 class:list={['doc-title', display && 'doc-title--display']}>{heading}</h1>
+        {lede && <p class="doc-lede">{lede}</p>}
+      </header>
+      <slot />
+      <footer class="mt-20 border-t border-line pt-4">
+        <p class="flex flex-wrap items-center gap-2 text-label-12 text-ink-tertiary">
+          <a class="underline decoration-transparent underline-offset-4 hover:text-ink hover:decoration-current" href="/foundations/">Foundations</a>
+          <span class="text-ink-quiet" aria-hidden="true">·</span>
+          <a class="underline decoration-transparent underline-offset-4 hover:text-ink hover:decoration-current" href="/components/">Components</a>
+          <span class="text-ink-quiet" aria-hidden="true">·</span>
+          <a class="underline decoration-transparent underline-offset-4 hover:text-ink hover:decoration-current" href="/patterns/">Patterns</a>
+        </p>
+      </footer>
+    </main>
+  </div>
+</BaseLayout>

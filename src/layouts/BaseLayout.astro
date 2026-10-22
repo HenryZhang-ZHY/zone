@@ -1,13 +1,14 @@
 ---
-import { SITE_TITLE } from '../consts'
-
 import BaseHead from '../components/BaseHead.astro'
-import Footer from '../components/Footer.astro'
-import SiteIdentity from '../components/SiteIdentity.astro'
+import LanguageIndex from '../components/LanguageIndex.astro'
 import LanguageSuggestion from '../components/LanguageSuggestion.astro'
 import TranslationNotice from '../components/TranslationNotice.astro'
-import { localeTags, localizePath, t, type Locale } from '../i18n'
+import SiteFooter from '@zone/ui/components/SiteFooter.astro'
+import SiteHeader from '@zone/ui/components/SiteHeader.astro'
+import LanguageMenu from '@zone/ui/components/LanguageMenu.astro'
+import { LOCALE_COOKIE, endonym, localeTags, localizePath, t, type Locale } from '../i18n'
 import { alternateLinks } from '../lib/localized'
+import { SITE_TITLE } from '../consts'
 
 interface Props {
   /** Language of the page chrome, from the URL. */
@@ -25,6 +26,7 @@ interface Props {
   xDefault?: Locale | string
   /** Set when the main content is a translation, to credit the original. */
   translation?: { outdated: boolean }
+  /** Retained for page compatibility; the migrated layout uses the design system's measures. */
   pageLayout?: 'narrow' | 'medium' | 'wide' | 'article'
   editorial?: boolean
 }
@@ -39,13 +41,44 @@ const {
   sourceLocale = 'en',
   xDefault = sourceLocale,
   translation,
-  pageLayout = 'narrow',
-  editorial = false,
 } = Astro.props
 
 const isFallback = !available.includes(locale)
 const canonicalURL = new URL(localizePath(path, isFallback ? sourceLocale : locale), Astro.site)
 const alternates = alternateLinks(path, available, xDefault, Astro.site!)
+const i18n = t(locale)
+const href = (sitePath: string) => localizePath(sitePath, locale)
+
+const nav = [
+  { label: i18n.writing, href: href('/') },
+  { label: i18n.reading, href: href('/reading/') },
+  { label: i18n.listening, href: href('/listening/') },
+]
+
+const isTool = path.startsWith('/d-sibs/') || path.startsWith('/stock-sell/')
+const current = path.startsWith('/reading/')
+  ? href('/reading/')
+  : path.startsWith('/listening/')
+    ? href('/listening/')
+    : isTool
+      ? ''
+      : href('/')
+
+const languageItems = localeTags.map((tag) => ({
+  tag,
+  name: endonym(tag),
+  href: localizePath(path, tag),
+}))
+
+const footerLinks = [
+  { label: i18n.writing, href: href('/') },
+  { label: i18n.reading, href: href('/reading/') },
+  { label: i18n.books, href: href('/reading/books/') },
+  { label: i18n.listening, href: href('/listening/') },
+  { label: i18n.rssFeed, href: href('/rss.xml') },
+]
+
+const copyright = `© ${new Date().getFullYear()} ${SITE_TITLE}. ${i18n.copyright}`
 ---
 
 <!doctype html>
@@ -53,23 +86,45 @@ const alternates = alternateLinks(path, available, xDefault, Astro.site!)
   <head>
     <BaseHead
       title={title ?? SITE_TITLE}
-      description={description ?? t(locale).siteDescription}
+      description={description ?? i18n.siteDescription}
       locale={locale}
       image={image}
       canonicalURL={canonicalURL}
       alternates={alternates}
     />
   </head>
-  <body class:list={['z-page-shell', `z-page-shell--${pageLayout}`, { 'z-page-shell--editorial': editorial }]}>
-    <SiteIdentity locale={locale} />
-    {/* A page shows at most one notice: the language suggestion joins the translation notice when there is one. */}
+  <body class="min-h-screen bg-canvas text-ink">
+    <SiteHeader current={current} items={nav} home={href('/')}>
+      <LanguageMenu current={locale} items={languageItems} label={i18n.language} class="max-sm:ml-auto" />
+    </SiteHeader>
+
     {isFallback || translation ? (
-      <TranslationNotice locale={locale} path={path} sourceLocale={sourceLocale} available={available} outdated={translation?.outdated ?? false} />
+      <TranslationNotice
+        locale={locale}
+        path={path}
+        sourceLocale={sourceLocale}
+        available={available}
+        outdated={translation?.outdated ?? false}
+      />
     ) : (
       <LanguageSuggestion locale={locale} path={path} available={available} mode="banner" />
     )}
-    <slot />
 
-    <Footer locale={locale} path={path} />
+    <div id="main">
+      <slot />
+    </div>
+
+    <SiteFooter links={footerLinks} copyright={copyright}>
+      <LanguageIndex locale={locale} path={path} label={i18n.language} />
+    </SiteFooter>
+
+    <script define:vars={{ cookie: LOCALE_COOKIE }}>
+      document.addEventListener('click', (event) => {
+        const link = event.target instanceof Element && event.target.closest('a[data-locale]')
+        if (link) {
+          document.cookie = `${cookie}=${link.dataset.locale}; Path=/; Max-Age=31536000; SameSite=Lax; Secure`
+        }
+      })
+    </script>
   </body>
 </html>

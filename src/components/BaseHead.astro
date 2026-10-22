@@ -1,14 +1,8 @@
 ---
-// Import the global.css file here so that it is included on
-// all pages through the use of the <BaseHead /> component.
-import '@fontsource/ibm-plex-mono'
-import ibmPlexMonoWoff2 from '@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2?url'
-
-import 'normalize.css'
-import '../styles/global.css'
-import '../styles/components.css'
-import '../styles/markdown.css'
-import '/node_modules/katex/dist/katex.min.css'
+// The live site now consumes the same Tailwind/theme layer as the design system.
+import '@zone/ui/styles.css'
+import 'katex/dist/katex.min.css'
+import '../styles/reading.css'
 
 import { SITE_TITLE } from '../consts'
 import { localizePath, ogLocale, type Locale } from '../i18n'
@@ -35,8 +29,10 @@ const imageURL = new URL(image, Astro.site ?? Astro.url)
 <!-- Global Metadata -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="color-scheme" content="light dark" />
 
-<!-- Favicon -->
+<!-- Favicon: mark 41, the 33 branch -->
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
@@ -45,9 +41,6 @@ const imageURL = new URL(image, Astro.site ?? Astro.url)
 <link rel="sitemap" href="/sitemap.xml" />
 <link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href={new URL(localizePath('/rss.xml', locale), Astro.site)} />
 <meta name="generator" content={Astro.generator} />
-
-<!-- Font preloads -->
-<link rel="preload" as="font" type="font/woff2" href={ibmPlexMonoWoff2} crossorigin="anonymous" />
 
 <!-- Canonical URL and language versions -->
 <link rel="canonical" href={canonicalHref} />

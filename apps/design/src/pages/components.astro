@@ -1,0 +1,238 @@
+---
+import DocsLayout from '../components/DocsLayout.astro'
+import DocSection from '../components/DocSection.astro'
+import DemoFrame from '../components/DemoFrame.astro'
+import Button from '@zone/ui/components/Button.astro'
+import Tag from '@zone/ui/components/Tag.astro'
+import SectionHead from '@zone/ui/components/SectionHead.astro'
+import SiteHeader from '@zone/ui/components/SiteHeader.astro'
+import Wordmark from '@zone/ui/components/Wordmark.astro'
+import Entry from '@zone/ui/components/Entry.astro'
+import Notice from '@zone/ui/components/Notice.astro'
+import SeriesPager from '@zone/ui/components/SeriesPager.astro'
+import Callout from '@zone/ui/components/Callout.astro'
+import CodeBlock from '@zone/ui/components/CodeBlock.astro'
+import Book from '@zone/ui/components/Book.astro'
+import ListenRow from '@zone/ui/components/ListenRow.astro'
+import { posts, books, episodes } from '../data/demo'
+
+const entries = posts.slice(0, 2)
+const code = `--z-color-accent: light-dark(#0067A8, #71B8F0);
+--z-color-signal: light-dark(#0A86E8, #3AA9FF);`
+
+const contracts = [
+  'It fills its container. No component sets a page max-width or a horizontal margin.',
+  'It uses tokens only. No hex, no px outside the scale, no duration written inline.',
+  'It has a real state: hover, focus, active, disabled and current are expressed in DOM semantics first.',
+  'It survives the dark theme. If it looks right in one theme only, it is not done.',
+  'It is readable without color. The accent can leave; the hierarchy stays.',
+]
+---
+
+<DocsLayout
+  current="/components/"
+  eyebrow="Components"
+  heading="A small kit, used hard."
+  lede="A row, a rule, a label, a button, a page of prose. Every component is a class contract first; the Astro wrappers keep the markup honest."
+>
+  <DocSection index="01 / Actions" title="Buttons">
+    <DemoFrame label="Button">
+      <div class="flex flex-wrap items-center gap-3">
+        <Button href="/demos/archive/">Read the archive</Button>
+        <Button variant="secondary" href="/demos/essay/">Read the essay</Button>
+        <Button variant="quiet" href="/demos/reading/">Browse the shelf →</Button>
+        <Button size="sm">Small</Button>
+        <Button disabled>Disabled</Button>
+      </div>
+    </DemoFrame>
+  </DocSection>
+
+  <DocSection index="02 / Identity" title="Header and navigation">
+    <DemoFrame label="Wordmark">
+      <div class="grid gap-x-6 gap-y-8 sm:grid-cols-2">
+        <div>
+          <p class="mb-3 text-label-11 uppercase text-ink-tertiary">Domain only</p>
+          <Wordmark />
+        </div>
+        <div>
+          <p class="mb-3 text-label-11 uppercase text-ink-tertiary">Slash</p>
+          <Wordmark variant="slash" />
+        </div>
+      </div>
+      <p class="mt-6 text-label-13 text-ink-tertiary">
+        The header carries no icon. The branch is the app mark; <a class="text-accent underline decoration-accent/40 underline-offset-[0.25em] hover:decoration-current" href="/marks/">choose from twenty →</a>
+      </p>
+    </DemoFrame>
+    <DemoFrame label="Site header">
+      <SiteHeader current="/" items={[
+        { label: 'Writing', href: '/' },
+        { label: 'Reading', href: '/reading/' },
+        { label: 'Listening', href: '/listening/' },
+      ]} />
+    </DemoFrame>
+  </DocSection>
+
+  <DocSection index="03 / Rows" title="The entry">
+    <DemoFrame label="Entry">
+      <ul class="m-0 list-none p-0">
+        {entries.map((entry) => (
+          <Entry
+            date={entry.date}
+            datetime={entry.datetime}
+            title={entry.title}
+            excerpt={entry.excerpt}
+            href={entry.href}
+            meta={entry.meta}
+            lang={entry.lang}
+          />
+        ))}
+      </ul>
+    </DemoFrame>
+  </DocSection>
+
+  <DocSection index="04 / Labels" title="Section heads and tags">
+    <DemoFrame label="Section head">
+      <SectionHead label="Books" count={12} action="All books" href="/demos/reading/" />
+    </DemoFrame>
+    <DemoFrame label="Tags">
+      <div class="flex flex-wrap items-center gap-3">
+        <Tag>Translation</Tag>
+        <Tag tone="accent">Open source</Tag>
+        <Tag tone="quiet">002</Tag>
+        <Tag>中文</Tag>
+      </div>
+    </DemoFrame>
+  </DocSection>
+
+  <DocSection index="05 / Notices" title="Page notices">
+    <DemoFrame label="Notice">
+      <Notice label="Translation">
+        This article is a translation. The original is in <a href="/demos/essay/">Chinese</a> and was last updated on 2026.10.11.
+      </Notice>
+      <div class="mt-3">
+        <Notice label="Language" tone="accent">
+          This page is also available in <a href="/demos/essay/">中文</a>.
+        </Notice>
+      </div>
+    </DemoFrame>
+  </DocSection>
+
+  <DocSection index="06 / Reading" title="Series and the edge index">
+    <DemoFrame label="Series pager">
+      <SeriesPager
+        previous={{ title: 'The margin', href: '/demos/essay/#the-margin' }}
+        next={{ title: 'The weather', href: '/demos/essay/#the-weather' }}
+      />
+    </DemoFrame>
+    <p class="mt-6 max-w-[62ch] text-[15px] leading-[1.72] text-ink-secondary">
+      The table of contents is not a column. On the article page it lives at the
+      right edge as a stack of hairline ticks; hover or focus reveals the
+      labels. <a class="text-accent underline decoration-accent/40 underline-offset-[0.2em] hover:decoration-current" href="/demos/essay/">See it in the essay demo →</a>
+    </p>
+  </DocSection>
+
+  <DocSection index="07 / Prose furniture" title="Callouts, code and tables">
+    <DemoFrame label="Callout">
+      <Callout>
+        <p>Serif is the reading voice; mono is the apparatus. There is no reading-mode switch.</p>
+      </Callout>
+      <div class="mt-3">
+        <Callout kind="accent">
+          <p>Chinese and Japanese always resolve prose to the proportional reading stack, even when serif mode is on.</p>
+        </Callout>
+      </div>
+    </DemoFrame>
+
+    <DemoFrame label="Code">
+      <CodeBlock label="tokens.css" meta="generated" code={code} />
+    </DemoFrame>
+
+    <DemoFrame label="Table">
+      <div class="z-table-wrap">
+        <table class="z-table">
+          <thead>
+            <tr>
+              <th>Token</th>
+              <th>Light</th>
+              <th>Dark</th>
+              <th class="text-right tabular-nums">Contrast</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>canvas</td>
+              <td>#FFFFFF</td>
+              <td>#0B0E11</td>
+              <td class="text-right tabular-nums">—</td>
+            </tr>
+            <tr>
+              <td>ink</td>
+              <td>#111418</td>
+              <td>#F3F4F5</td>
+              <td class="text-right tabular-nums">18.5</td>
+            </tr>
+            <tr>
+              <td>accent</td>
+              <td>#0067A8</td>
+              <td>#71B8F0</td>
+              <td class="text-right tabular-nums">6.0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </DemoFrame>
+  </DocSection>
+
+  <DocSection index="08 / Collections" title="Books and listening">
+    <DemoFrame label="Books">
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))] gap-x-6 gap-y-10 max-sm:grid-cols-2 max-sm:gap-x-4 max-sm:gap-y-8">
+        {books.slice(0, 4).map((book) => (
+          <Book title={book.title} cover={book.cover} href={book.href} loading="eager" />
+        ))}
+      </div>
+    </DemoFrame>
+
+    <DemoFrame label="Listening">
+      <div>
+        {episodes.slice(0, 3).map((episode, index) => (
+          <ListenRow
+            index={String(index + 1).padStart(2, '0')}
+            title={episode.title}
+            href={episode.href}
+            meta={episode.meta}
+          />
+        ))}
+      </div>
+    </DemoFrame>
+  </DocSection>
+
+  <DocSection index="09 / Forms" title="Fields">
+    <DemoFrame label="Fields">
+      <div class="grid grid-cols-2 gap-6 max-sm:grid-cols-1">
+        <div class="z-field">
+          <label class="z-field__label" for="demo-name">Name <span class="z-field__hint">Optional</span></label>
+          <input class="z-input" id="demo-name" name="name" type="text" placeholder="Hongyu Zhang" />
+        </div>
+        <div class="z-field">
+          <label class="z-field__label" for="demo-price">Target price</label>
+          <input class="z-input" id="demo-price" name="price" type="text" value="12.40" aria-invalid="true" aria-describedby="demo-price-error" />
+          <p class="z-field__error" id="demo-price-error">Enter a number above zero.</p>
+        </div>
+      </div>
+      <label class="z-checkbox mt-6">
+        <input type="checkbox" checked />
+        <span>Send me the monthly reading note.</span>
+      </label>
+    </DemoFrame>
+  </DocSection>
+
+  <DocSection index="Contracts" title="What every component promises">
+    <div class="max-w-[62ch] border-t border-line">
+      {
+        contracts.map((rule) => (
+          <p class="border-b border-line py-3 text-copy-13 text-ink-secondary">{rule}</p>
+        ))
+      }
+    </div>
+  </DocSection>
+</DocsLayout>

@@ -1,0 +1,39 @@
+---
+import { tv } from '../recipes/tv'
+import { cn } from '../recipes/cn'
+
+interface Props {
+  label: string
+  count?: number | string
+  action?: string
+  href?: string
+  class?: string
+}
+
+const sectionHead = tv({
+  slots: {
+    root: 'mb-6 flex items-center gap-3 font-ui',
+    label: 'whitespace-nowrap text-label-11 font-medium uppercase text-ink',
+    count: 'text-label-12 tabular-nums text-ink-tertiary',
+    line: 'h-px flex-1 bg-line',
+    action: 'inline-flex items-center gap-1 whitespace-nowrap text-label-12 text-ink-tertiary underline decoration-transparent underline-offset-[0.25em] transition-[color,text-decoration-color] duration-1 ease-out hover:text-accent hover:decoration-current',
+  },
+})
+
+const { label, count, action, href, class: className } = Astro.props
+const styles = sectionHead()
+---
+
+<div class={cn(styles.root(), className)}>
+  <span class={styles.label()}>{label}</span>
+  {count !== undefined && <span class={styles.count()}>{count}</span>}
+  <span class={styles.line()} aria-hidden="true"></span>
+  {
+    action && href && (
+      <a class={styles.action()} href={href}>
+        {action}
+        <span aria-hidden="true">→</span>
+      </a>
+    )
+  }
+</div>

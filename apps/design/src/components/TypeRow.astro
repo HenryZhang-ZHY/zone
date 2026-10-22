@@ -1,0 +1,57 @@
+---
+import tokens from '@zone/tokens/tokens.json'
+
+interface Props {
+  name: string
+  sample?: string
+  font?: 'ui' | 'prose'
+}
+
+const typeClass: Record<string, string> = {
+  'display-64': 'text-display-64',
+  'display-48': 'text-display-48',
+  'heading-40': 'text-heading-40',
+  'heading-32': 'text-heading-32',
+  'heading-28': 'text-heading-28',
+  'heading-24': 'text-heading-24',
+  'heading-20': 'text-heading-20',
+  'heading-18': 'text-heading-18',
+  'heading-16': 'text-heading-16',
+  'heading-14': 'text-heading-14',
+  'lede-20': 'text-lede-20',
+  'lede-24': 'text-lede-24',
+  'copy-18': 'text-copy-18',
+  'reading-22': 'text-reading-22',
+  'copy-16': 'text-copy-16',
+  'copy-14': 'text-copy-14',
+  'copy-13': 'text-copy-13',
+  'label-16': 'text-label-16',
+  'label-14': 'text-label-14',
+  'label-13': 'text-label-13',
+  'label-12': 'text-label-12',
+  'label-11': 'text-label-11',
+  'button-14': 'text-button-14',
+  'button-13': 'text-button-13',
+  'button-12': 'text-button-12',
+}
+
+const { name, sample = 'Hairline', font = 'ui' } = Astro.props
+const token = (tokens.type as Record<string, { size: string; 'line-height': string; weight: number; tracking: string }>)[name]
+const weightClass = token.weight >= 600 ? 'font-semibold' : token.weight >= 500 ? 'font-medium' : 'font-normal'
+const meta = [
+  token.size,
+  `leading ${token['line-height']}`,
+  `weight ${token.weight}`,
+  token.tracking !== '0' ? `tracking ${token.tracking}` : undefined,
+]
+  .filter(Boolean)
+  .join(' · ')
+---
+
+<div class="doc-type">
+  <div class="doc-type__meta">
+    <p class="doc-type__name">{name}</p>
+    <p class="tabular-nums">{meta}</p>
+  </div>
+  <p class:list={['doc-type__sample', typeClass[name], font === 'prose' ? 'font-prose' : 'font-ui', weightClass]}>{sample}</p>
+</div>

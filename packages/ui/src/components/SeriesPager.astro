@@ -1,0 +1,62 @@
+---
+import { tv } from '../recipes/tv'
+import { cn } from '../recipes/cn'
+
+export interface PagerLink {
+  title: string
+  href: string
+  lang?: string
+}
+
+interface Props {
+  previous?: PagerLink
+  next?: PagerLink
+  previousLabel?: string
+  nextLabel?: string
+  class?: string
+}
+
+const pager = tv({
+  slots: {
+    root: 'mt-16 grid grid-cols-2 border-t border-line-strong font-ui max-sm:grid-cols-1',
+    link: 'group flex flex-col gap-1 py-6 max-sm:py-4',
+    label: 'text-label-11 uppercase text-ink-tertiary',
+    title: 'font-prose text-heading-16 font-semibold text-ink underline decoration-transparent underline-offset-[0.18em] transition-[color,text-decoration-color] duration-1 ease-out group-hover:text-accent group-hover:decoration-current',
+  },
+})
+
+const {
+  previous,
+  next,
+  previousLabel = 'Previous',
+  nextLabel = 'Next',
+  class: className,
+} = Astro.props
+
+const styles = pager()
+---
+
+{
+  (previous || next) && (
+    <nav class={cn(styles.root(), className)} aria-label="Series">
+      {previous ? (
+        <a class={styles.link()} href={previous.href} rel="prev">
+          <span class={styles.label()}>← {previousLabel}</span>
+          <span class={styles.title()} lang={previous.lang}>{previous.title}</span>
+        </a>
+      ) : (
+        <span></span>
+      )}
+      {next && (
+        <a
+          class={cn(styles.link(), 'border-l border-line pl-6 text-right max-sm:border-l-0 max-sm:border-t max-sm:pl-0 max-sm:pt-4 max-sm:text-left')}
+          href={next.href}
+          rel="next"
+        >
+          <span class={styles.label()}>{nextLabel} →</span>
+          <span class={styles.title()} lang={next.lang}>{next.title}</span>
+        </a>
+      )}
+    </nav>
+  )
+}

@@ -1,0 +1,45 @@
+---
+import { tv } from '../recipes/tv'
+import { cn } from '../recipes/cn'
+
+interface Props {
+  href?: string
+  label?: string
+  variant?: 'plain' | 'slash'
+  class?: string
+}
+
+const wordmark = tv({
+  slots: {
+    base: 'inline-flex min-h-10 items-center font-ui text-label-14 font-semibold tracking-[-0.01em] text-ink transition-colors duration-1 ease-out hover:text-accent',
+    text: 'inline-flex items-center',
+    dot: 'text-ink',
+    slash: 'mx-1.5 font-normal text-ink-quiet',
+  },
+  variants: {
+    variant: {
+      plain: { base: 'gap-0' },
+      slash: { base: 'gap-0' },
+    },
+  },
+  defaultVariants: { variant: 'plain' },
+})
+
+const { href = '/', label = 'shuzhi.zone', variant = 'plain', class: className } = Astro.props
+const split = label.indexOf('.')
+const before = split === -1 ? label : label.slice(0, split)
+const after = split === -1 ? '' : label.slice(split + 1)
+const styles = wordmark({ variant })
+---
+
+<a class={cn(styles.base(), className)} href={href}>
+  <span class={styles.text()}>
+    {before}{
+      variant === 'slash' ? (
+        <span class={styles.slash()}>/</span>
+      ) : (
+        <span class={styles.dot()}>.</span>
+      )
+    }{after}
+  </span>
+</a>

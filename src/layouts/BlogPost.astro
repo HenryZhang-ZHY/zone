@@ -2,23 +2,25 @@
 import type { MarkdownHeading } from 'astro'
 import FormattedDate from '../components/FormattedDate.astro'
 import BaseLayout from '../layouts/BaseLayout.astro'
+import EdgeToc from '@zone/ui/components/EdgeToc.astro'
+import SeriesPager from '@zone/ui/components/SeriesPager.astro'
 import { localizePath, t } from '../i18n'
 import type { LocalizedPost } from '../lib/posts'
 
 type SeriesLink = { title: string; href: string; lang: string }
 
 type Props = {
-	entry: LocalizedPost
-	headings?: MarkdownHeading[]
-	series?: {
-		id: string
-		title: string
-		lang: string
-		position: number
-		total: number
-		prev?: SeriesLink
-		next?: SeriesLink
-	}
+  entry: LocalizedPost
+  headings?: MarkdownHeading[]
+  series?: {
+    id: string
+    title: string
+    lang: string
+    position: number
+    total: number
+    prev?: SeriesLink
+    next?: SeriesLink
+  }
 }
 
 const { entry, headings = [], series } = Astro.props
@@ -27,482 +29,73 @@ const { pubDate, updatedDate } = post.data
 const i18n = t(locale)
 
 const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3 && h.slug !== 'footnote-label')
+const hasSections = tocHeadings.some((h) => h.depth === 2)
 ---
 
 <BaseLayout
-	locale={locale}
-	path={`/blog/${post.id}/`}
-	title={title}
-	description={description}
-	available={entry.available}
-	sourceLocale={entry.sourceLocale}
-	translation={entry.translation && { outdated: entry.outdated }}
-	pageLayout="article"
-	editorial
+  locale={locale}
+  path={`/blog/${post.id}/`}
+  title={title}
+  description={description}
+  available={entry.available}
+  sourceLocale={entry.sourceLocale}
+  translation={entry.translation && { outdated: entry.outdated }}
+  pageLayout="article"
+  editorial
 >
-	<div class="blog-layout z-main">
-		<main>
-			<article>
-				<header class="article-header">
-					{series && (
-						<p class="article-series">
-							<a href={localizePath(`/series/${series.id}/`, locale)} class="series-link" lang={series.lang}>{series.title}</a>
-							<span class="series-part">{i18n.seriesPartOf(series.position, series.total)}</span>
-						</p>
-					)}
-					<h1 class="article-title" lang={contentLang}>{title}</h1>
-					<div class="article-meta">
-						<time class="publish-date">
-							<FormattedDate date={pubDate} lang={locale} />
-						</time>
-						{
-							updatedDate && (
-								<div class="updated-date">
-									{i18n.updatedOn} <FormattedDate date={updatedDate} lang={locale} />
-								</div>
-							)
-						}
-					</div>
-				</header>
+  <main class="shell py-page-top pb-page-bottom">
+    <article class="mx-auto w-full max-w-reading">
+      <header class="mb-8 border-b border-line pb-6">
+        <h1
+          class="mt-0 font-prose text-heading-40 font-semibold text-ink max-sm:text-heading-32"
+          lang={contentLang}
+        >
+          {title}
+        </h1>
+        {description && (
+          <p class="mt-4 max-w-[56ch] font-prose text-lede-24 text-ink-secondary max-sm:text-copy-18" lang={contentLang}>
+            {description}
+          </p>
+        )}
+        <div class="mt-6 flex flex-wrap items-baseline gap-x-4 gap-y-2 font-ui text-label-12 tabular-nums text-ink-tertiary">
+          <time datetime={pubDate.toISOString()}>
+            <FormattedDate date={pubDate} lang={locale} />
+          </time>
+          {series && (
+            <span class="inline-flex flex-wrap items-baseline gap-2">
+              <a
+                class="text-accent underline decoration-accent/40 underline-offset-[0.2em] hover:decoration-current"
+                href={localizePath(`/series/${series.id}/`, locale)}
+                lang={series.lang}
+              >
+                {series.title}
+              </a>
+              <span class="text-ink-quiet" aria-hidden="true">·</span>
+              <span>{i18n.seriesPartOf(series.position, series.total)}</span>
+            </span>
+          )}
+          {updatedDate && (
+            <span class="text-ink-quiet">
+              {i18n.updatedOn} <FormattedDate date={updatedDate} lang={locale} />
+            </span>
+          )}
+        </div>
+      </header>
 
-				{tocHeadings.length > 0 && (
-					<nav class="toc toc-mobile" aria-label={i18n.tocLabel}>
-						<details>
-							<summary class="toc-title">{i18n.toc}</summary>
-							<ul class="toc-list" lang={contentLang}>
-								{tocHeadings.map((heading) => (
-									<li class:list={['toc-item', `toc-depth-${heading.depth}`]}>
-										<a href={`#${heading.slug}`} class="toc-link">{heading.text}</a>
-									</li>
-								))}
-							</ul>
-						</details>
-					</nav>
-				)}
+      <div class="z-prose z-prose--numbered" lang={contentLang}>
+        <slot />
+      </div>
 
-				<div class="z-markdown-content" lang={contentLang}>
-					<slot />
-				</div>
+      {series && (series.prev || series.next) && (
+        <SeriesPager
+          previous={series.prev}
+          next={series.next}
+          previousLabel={i18n.seriesPrev}
+          nextLabel={i18n.seriesNext}
+        />
+      )}
+    </article>
+  </main>
 
-				{series && (series.prev || series.next) && (
-					<nav class="series-pager" aria-label={i18n.seriesNav}>
-						{series.prev && (
-							<a href={series.prev.href} class="series-pager-link series-pager-prev" rel="prev">
-								<span class="series-pager-label">← {i18n.seriesPrev}</span>
-								<span class="series-pager-title" lang={series.prev.lang}>{series.prev.title}</span>
-							</a>
-						)}
-						{series.next && (
-							<a href={series.next.href} class="series-pager-link series-pager-next" rel="next">
-								<span class="series-pager-label">{i18n.seriesNext} →</span>
-								<span class="series-pager-title" lang={series.next.lang}>{series.next.title}</span>
-							</a>
-						)}
-					</nav>
-				)}
-			</article>
-		</main>
-
-		{tocHeadings.length > 0 && (
-			<aside class="toc toc-desktop" aria-label={i18n.tocLabel}>
-				<div class="toc-sticky">
-					<p class="toc-title">{i18n.toc}</p>
-					<ul class="toc-list" lang={contentLang}>
-						{tocHeadings.map((heading) => (
-							<li class:list={['toc-item', `toc-depth-${heading.depth}`]}>
-								<a href={`#${heading.slug}`} class="toc-link">{heading.text}</a>
-							</li>
-						))}
-					</ul>
-				</div>
-			</aside>
-		)}
-	</div>
+  {hasSections && <EdgeToc headings={tocHeadings} label={i18n.tocLabel} />}
 </BaseLayout>
-
-<script>
-	let disposeToc: (() => void) | undefined
-
-	function initToc() {
-		disposeToc?.()
-		const tocLinks = document.querySelectorAll<HTMLAnchorElement>('.toc-link')
-		if (tocLinks.length === 0) return
-
-		const headingIds = [...new Set(
-			Array.from(tocLinks, (link) => link.getAttribute('href')!.slice(1))
-		)]
-		const headingElements = headingIds
-			.map((id) => document.getElementById(id))
-			.filter((el): el is HTMLElement => el !== null)
-
-		if (headingElements.length === 0) return
-
-		function setActive(id: string) {
-			tocLinks.forEach((link) => {
-				const linkId = link.getAttribute('href')!.slice(1)
-				const active = linkId === id
-				link.classList.toggle('active', active)
-				if (active) link.setAttribute('aria-current', 'location')
-				else link.removeAttribute('aria-current')
-			})
-		}
-
-		let frame = 0
-		let anchorFrame = 0
-		let pinnedId: string | null = null
-		let pinnedScrollY = 0
-
-		function update() {
-			frame = 0
-			if (pinnedId && Math.abs(window.scrollY - pinnedScrollY) <= 1) {
-				setActive(pinnedId)
-				return
-			}
-
-			pinnedId = null
-			let currentId = headingElements[0].id
-			for (const heading of headingElements) {
-				if (heading.getBoundingClientRect().top <= 100) currentId = heading.id
-				else break
-			}
-			if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2) {
-				currentId = headingElements.at(-1)!.id
-			}
-			setActive(currentId)
-		}
-
-		function scheduleUpdate() {
-			if (!frame) frame = requestAnimationFrame(update)
-		}
-
-		function selectHash() {
-			const link = Array.from(tocLinks).find((item) => item.hash === window.location.hash)
-			if (!link) {
-				scheduleUpdate()
-				return
-			}
-			pinnedId = link.getAttribute('href')!.slice(1)
-			pinnedScrollY = window.scrollY
-			setActive(pinnedId)
-		}
-
-		const onLinkClick = (event: Event) => {
-			const link = event.currentTarget as HTMLAnchorElement
-			const id = link.getAttribute('href')!.slice(1)
-			pinnedId = id
-			pinnedScrollY = window.scrollY
-			setActive(id)
-			if (anchorFrame) cancelAnimationFrame(anchorFrame)
-			anchorFrame = requestAnimationFrame(() => {
-				anchorFrame = 0
-				if (pinnedId !== id) return
-				pinnedScrollY = window.scrollY
-				setActive(id)
-			})
-		}
-
-		tocLinks.forEach((link) => link.addEventListener('click', onLinkClick))
-		window.addEventListener('scroll', scheduleUpdate, { passive: true })
-		window.addEventListener('resize', scheduleUpdate)
-		window.addEventListener('hashchange', selectHash)
-		selectHash()
-		disposeToc = () => {
-			if (frame) cancelAnimationFrame(frame)
-			if (anchorFrame) cancelAnimationFrame(anchorFrame)
-			tocLinks.forEach((link) => link.removeEventListener('click', onLinkClick))
-			window.removeEventListener('scroll', scheduleUpdate)
-			window.removeEventListener('resize', scheduleUpdate)
-			window.removeEventListener('hashchange', selectHash)
-		}
-	}
-
-	// Run on initial load and after Astro page transitions
-	initToc()
-	document.addEventListener('astro:after-swap', initToc)
-</script>
-
-<style>
-	main {
-		width: 100%;
-		max-width: var(--z-article-reading-width);
-		margin-inline: auto;
-	}
-
-	article {
-		width: 100%;
-		max-width: var(--z-article-reading-width);
-	}
-
-	.article-header {
-		margin-bottom: var(--z-space-8);
-		padding-bottom: var(--z-space-6);
-		border-bottom: 1px solid var(--z-color-hairline-light);
-		text-align: left;
-	}
-
-	.article-title {
-		font-size: var(--z-text-heading-40);
-		font-weight: 600;
-		line-height: var(--z-leading-heading-40);
-		margin: 0 0 var(--z-space-6) 0;
-		letter-spacing: var(--z-tracking-heading-40);
-		color: var(--z-color-heading);
-		font-family: var(--z-font-prose);
-	}
-
-	.article-meta {
-		display: flex;
-		align-items: center;
-		gap: var(--z-space-4);
-		font-size: var(--z-text-label-13);
-		line-height: var(--z-leading-label-13);
-		margin-bottom: 0;
-	}
-
-	.publish-date {
-		font-weight: 400;
-		color: var(--z-color-text-secondary);
-	}
-
-	.article-series {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: baseline;
-		gap: var(--z-space-2);
-		margin: 0 0 var(--z-space-3) 0;
-		font-size: var(--z-text-label-14);
-		line-height: var(--z-leading-label-14);
-		color: var(--z-color-text-dimmed);
-	}
-
-	.series-link {
-		font-weight: 600;
-		color: var(--z-color-text-accent);
-		text-decoration: underline;
-		text-decoration-color: transparent;
-		text-underline-offset: 0.2em;
-		transition: text-decoration-color 150ms ease;
-	}
-
-	.series-link:hover,
-	.series-link:focus-visible {
-		text-decoration-color: currentColor;
-	}
-
-	.series-pager {
-		display: grid;
-		grid-auto-flow: column;
-		grid-auto-columns: 1fr;
-		gap: var(--z-space-4);
-		margin-top: var(--z-space-16);
-		padding-top: var(--z-space-6);
-		border-top: 1px solid var(--z-color-hairline-light);
-	}
-
-	.series-pager-link {
-		display: flex;
-		flex-direction: column;
-		gap: var(--z-space-1);
-		padding: var(--z-space-3) var(--z-space-4);
-		border: 1px solid var(--z-color-hairline-light);
-		border-radius: var(--z-radius-subtle);
-		text-decoration: none;
-		transition: border-color 150ms ease, background-color 150ms ease;
-	}
-
-	.series-pager-next {
-		grid-column: 2;
-		text-align: end;
-	}
-
-	.series-pager-link:hover,
-	.series-pager-link:focus-visible {
-		border-color: color-mix(in srgb, var(--z-color-text-accent) 40%, transparent);
-		background-color: var(--z-color-row-hover);
-	}
-
-	.series-pager-label {
-		font-size: var(--z-text-label-13);
-		line-height: var(--z-leading-label-13);
-		color: var(--z-color-text-dimmed);
-	}
-
-	.series-pager-title {
-		font-weight: 600;
-		color: var(--z-color-heading);
-	}
-
-	@media (max-width: 480px) {
-		.series-pager {
-			grid-auto-flow: row;
-		}
-
-		.series-pager-next {
-			grid-column: auto;
-		}
-	}
-
-	.updated-date {
-		font-style: italic;
-		color: var(--z-color-text-dimmed);
-		font-size: var(--z-text-label-12);
-		line-height: var(--z-leading-label-12);
-	}
-
-	.toc-title {
-		font-size: var(--z-text-label-14);
-		line-height: var(--z-leading-label-14);
-		font-weight: 600;
-		color: var(--z-color-primary);
-		margin: 0 0 var(--z-space-3) 0;
-	}
-
-	.toc-list {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-	}
-
-	.toc-item {
-		line-height: 1.5;
-	}
-
-	.toc-depth-3 {
-		padding-inline-start: var(--z-space-4);
-	}
-
-	.toc-link {
-		display: block;
-		padding: var(--z-space-1) var(--z-space-2);
-		font-size: var(--z-text-label-13);
-		line-height: var(--z-leading-label-13);
-		color: var(--z-color-text-dimmed);
-		border-inline-start: 2px solid transparent;
-		background: transparent;
-		transition: color 150ms ease, border-color 150ms ease, background-color 150ms ease;
-		text-decoration: none;
-		font-family: var(--z-font-prose);
-	}
-
-	.toc-link:hover,
-	.toc-link:focus-visible {
-		color: var(--z-color-text-accent);
-		border-inline-start-color: color-mix(in srgb, var(--z-color-text-accent) 40%, transparent);
-		background-color: var(--z-color-row-hover);
-	}
-
-	.toc-link:global(.active) {
-		color: var(--z-color-text-accent);
-		border-inline-start-color: var(--z-color-text-accent);
-		background-color: var(--z-color-row-hover);
-	}
-
-	.toc-mobile {
-		margin-bottom: var(--z-space-8);
-		border: 1px solid var(--z-color-hairline-light);
-		border-radius: var(--z-radius-subtle);
-		padding: var(--z-space-3) var(--z-space-4);
-	}
-
-	.toc-mobile .toc-title {
-		cursor: pointer;
-		margin: 0;
-		user-select: none;
-		font-size: var(--z-text-label-14);
-		line-height: var(--z-leading-label-14);
-	}
-
-	.toc-mobile .toc-list {
-		margin-top: var(--z-space-3);
-	}
-
-	.toc-desktop {
-		display: none;
-	}
-
-	@media (max-width: 768px) {
-		.toc-mobile .toc-title {
-			display: flex;
-			align-items: center;
-			min-height: 44px;
-		}
-
-		.toc-mobile .toc-link {
-			display: flex;
-			align-items: center;
-			min-height: 44px;
-		}
-
-		.article-header {
-			margin-bottom: var(--z-space-8);
-			padding-bottom: var(--z-space-6);
-		}
-
-		.article-title {
-			font-size: var(--z-text-heading-32);
-			line-height: var(--z-leading-heading-32);
-			letter-spacing: var(--z-tracking-heading-32);
-			margin-bottom: var(--z-space-4);
-		}
-
-		.article-meta {
-			flex-direction: column;
-			align-items: flex-start;
-			gap: var(--z-space-2);
-		}
-	}
-
-	@media (max-width: 480px) {
-		.article-title {
-			font-size: var(--z-text-heading-24);
-			line-height: var(--z-leading-heading-24);
-			letter-spacing: var(--z-tracking-heading-24);
-		}
-	}
-
-	@media (min-width: 1280px) {
-		.blog-layout {
-			position: relative;
-		}
-
-		.toc-mobile {
-			display: none;
-		}
-
-		.toc-desktop {
-			display: block;
-			position: absolute;
-			inset-inline-start: calc(50% + var(--z-article-reading-width) / 2 + var(--z-space-8));
-			top: var(--z-page-main-pad-block-start);
-			bottom: var(--z-page-main-pad-block-end);
-			width: 12rem;
-		}
-
-		.toc-sticky {
-			position: sticky;
-			top: var(--z-space-8);
-			max-height: calc(100vh - var(--z-space-16));
-			overflow-y: auto;
-			padding-inline-end: var(--z-space-2);
-			scrollbar-color: var(--z-color-border-hover) transparent;
-			scrollbar-width: thin;
-		}
-
-		.toc-sticky::-webkit-scrollbar {
-			width: 6px;
-		}
-
-		.toc-sticky::-webkit-scrollbar-track {
-			background: transparent;
-		}
-
-		.toc-sticky::-webkit-scrollbar-thumb {
-			background-color: var(--z-color-border-hover);
-			border-radius: var(--z-radius-subtle);
-		}
-
-		.toc-sticky::-webkit-scrollbar-thumb:hover {
-			background-color: var(--z-color-border-active);
-		}
-	}
-</style>

@@ -1,0 +1,188 @@
+---
+import DocsLayout from '../components/DocsLayout.astro'
+import DocSection from '../components/DocSection.astro'
+import GridDiagram from '../components/GridDiagram.astro'
+---
+
+<DocsLayout
+  current="/patterns/"
+  eyebrow="Patterns"
+  heading="The pages, composed."
+  lede="The components are vocabulary. These are the sentences: the shell, the archive, the article, the shelf, the listening list."
+>
+  <div class="doc-copy">
+    <p>
+      A page pattern is a decision about where the eye should start and where
+      it should rest. It is not a template with slots; it is a small set of
+      rules that keep the page from inventing a new layout.
+    </p>
+  </div>
+
+  <DocSection
+    index="Pattern 00"
+    title="The shell"
+    lede="Every page starts on the same white page, in the same 1200px shell, with the same gutters."
+  >
+    <div class="doc-grid-2">
+      <div class="doc-copy">
+        <p>
+          The header, main content and footer all consume
+          <code>--z-layout-shell</code> and <code>--z-layout-gutter</code>.
+          Nothing else sets a page width. The article uses the same shell with a
+          centered 78ch measure at 22px; the margins are air, not a column.
+        </p>
+        <p>
+          Gutters collapse from 32px to 24px to 16px as the viewport narrows.
+          The page padding follows the layout, not the component.
+        </p>
+      </div>
+      <div>
+        <div class="z-table-wrap" style="margin-top: 0">
+          <table class="z-table">
+            <thead>
+              <tr><th>Range</th><th>Shell</th><th class="text-right tabular-nums">Gutter</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>≥ 900px</td><td>1200px</td><td class="text-right tabular-nums">32px</td></tr>
+              <tr><td>600–899px</td><td>fluid</td><td class="text-right tabular-nums">24px</td></tr>
+              <tr><td>&lt; 600px</td><td>fluid</td><td class="text-right tabular-nums">16px</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </DocSection>
+
+  <DocSection
+    index="Pattern 01"
+    title="The archive"
+    lede="One centered column that begins with the list. No introduction panel, no sticky card, no sidebar."
+  >
+    <div class="doc-wire doc-wire--archive">
+      <div class="doc-wire__air"></div>
+      <div class="doc-wire__cell">Centered measure<br />Flat list · full dates</div>
+      <div class="doc-wire__air"></div>
+    </div>
+    <div class="rule-list doc-mt">
+      <div class="rule">
+        <span class="rule__mark">01</span>
+        <p class="rule__text"><strong>The page starts with the first entry.</strong> The site header carries the identity and the navigation; the archive carries the work. There is no introduction block to scroll past.</p>
+      </div>
+      <div class="rule">
+        <span class="rule__mark">02</span>
+        <p class="rule__text"><strong>One flat list.</strong> No year groups, no month dividers. Every row carries its full date so the list can be scanned from any point.</p>
+      </div>
+      <div class="rule">
+        <span class="rule__mark">03</span>
+        <p class="rule__text"><strong>Serif for the writing, mono for the apparatus.</strong> The title and excerpt are the author's voice; the date, series and language stay in the mono column.</p>
+      </div>
+      <div class="rule">
+        <span class="rule__mark">04</span>
+        <p class="rule__text"><strong>No thumbnails.</strong> A list of writing is a list of titles. Images would make a calm archive look like a feed.</p>
+      </div>
+    </div>
+    <p class="doc-mt-sm"><a class="text-label-13 text-accent underline decoration-accent/40 underline-offset-[0.25em] hover:decoration-current" href="/demos/archive/">Open the archive demo →</a></p>
+  </DocSection>
+
+  <DocSection
+    index="Pattern 02"
+    title="The article"
+    lede="A centered measure, no sidebars, and an index that only exists when you reach for it."
+  >
+    <GridDiagram />
+    <div class="rule-list doc-mt">
+      <div class="rule">
+        <span class="rule__mark">01</span>
+        <p class="rule__text"><strong>The title block is the only display size.</strong> Title, lede, then the metadata row and a hairline; the body starts after one clean gap.</p>
+      </div>
+      <div class="rule">
+        <span class="rule__mark">02</span>
+        <p class="rule__text"><strong>Serif reads; mono annotates.</strong> Newsreader carries the title, lede and body at 22px in a 78ch measure. Plex Mono carries dates, section numbers, the edge index and code. Mono never renders prose.</p>
+      </div>
+      <div class="rule">
+        <span class="rule__mark">03</span>
+        <p class="rule__text"><strong>Headings are numbered in the margin.</strong> The number is small and quiet; below 1180px it moves above the heading rather than disappearing.</p>
+      </div>
+      <div class="rule">
+        <span class="rule__mark">04</span>
+        <p class="rule__text"><strong>The index lives at the edge.</strong> A fixed stack of hairline ticks, one per section, current one accented. Hover or focus reveals the labels; the page itself never reserves a column for them.</p>
+      </div>
+      <div class="rule">
+        <span class="rule__mark">05</span>
+        <p class="rule__text"><strong>End with a way forward.</strong> Footnotes, then a series pager, then the footer. No related-post grid.</p>
+      </div>
+    </div>
+    <p class="doc-mt-sm"><a class="text-label-13 text-accent underline decoration-accent/40 underline-offset-[0.25em] hover:decoration-current" href="/demos/essay/">Open the essay demo →</a></p>
+  </DocSection>
+
+  <DocSection
+    index="Pattern 03"
+    title="The shelf"
+    lede="Books are objects, not cards. One page, one grid, no completion metric."
+  >
+    <div class="doc-wire doc-wire--reading">
+      <div class="doc-wire__cell">Cover</div>
+      <div class="doc-wire__cell">Cover</div>
+      <div class="doc-wire__cell">Cover</div>
+      <div class="doc-wire__cell">Cover</div>
+    </div>
+    <div class="rule-list doc-mt">
+      <div class="rule">
+        <span class="rule__mark">01</span>
+        <p class="rule__text"><strong>Covers keep their ratio.</strong> 2:3, a hairline border, no shadow, no tilt. A grid of book covers is already visually rich.</p>
+      </div>
+      <div class="rule">
+        <span class="rule__mark">02</span>
+        <p class="rule__text"><strong>The page title, then the objects.</strong> No introduction paragraph and no "Books" section label. The covers explain themselves; a visually hidden h2 keeps the semantics.</p>
+      </div>
+      <div class="rule">
+        <span class="rule__mark">03</span>
+        <p class="rule__text"><strong>Collapse 6 → 4 → 2.</strong> The grid changes column count; the covers do not change their proportions. Titles are serif; no stars, no counts.</p>
+      </div>
+    </div>
+    <p class="doc-mt-sm"><a class="text-label-13 text-accent underline decoration-accent/40 underline-offset-[0.25em] hover:decoration-current" href="/demos/reading/">Open the reading demo →</a></p>
+  </DocSection>
+
+  <DocSection
+    index="Pattern 04"
+    title="The listening list"
+    lede="A ledger, not a player. One row per episode, the source named, the exit clear."
+  >
+    <div class="doc-wire doc-wire--listening">
+      <div class="doc-wire__cell">01</div>
+      <div class="doc-wire__cell">Episode title</div>
+      <div class="doc-wire__cell">↗</div>
+    </div>
+    <div class="rule-list doc-mt">
+      <div class="rule">
+        <span class="rule__mark">01</span>
+        <p class="rule__text"><strong>Index, title, source, arrow.</strong> The number is the listening order, the title is serif, the source and duration are mono. The arrow leaves the site; there is no fake player UI.</p>
+      </div>
+      <div class="rule">
+        <span class="rule__mark">02</span>
+        <p class="rule__text"><strong>One 68ch column.</strong> The listening list keeps the index measure; the article is 78ch. It is still reading, not the shelf's full width.</p>
+      </div>
+      <div class="rule">
+        <span class="rule__mark">03</span>
+        <p class="rule__text"><strong>No section label.</strong> The page title says Listening; the rows are obviously episodes. A visually hidden h2 keeps the semantics.</p>
+      </div>
+    </div>
+    <p class="doc-mt-sm"><a class="text-label-13 text-accent underline decoration-accent/40 underline-offset-[0.25em] hover:decoration-current" href="/demos/listening/">Open the listening demo →</a></p>
+  </DocSection>
+
+  <DocSection
+    index="Pattern 05"
+    title="The documentation"
+    lede="This site is a pattern too: a sticky contents column and a single column of specimens."
+  >
+    <div class="doc-copy">
+      <p>
+        Documentation is the one place where a left column is navigation rather
+        than marginalia. It uses an 11rem column, the same 2px accent rule for
+        the current page, and the same hairline section breaks. The content
+        column is wider (48rem) because a specimen needs room to breathe, but it
+        never becomes a dashboard.
+      </p>
+    </div>
+  </DocSection>
+</DocsLayout>

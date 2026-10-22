@@ -1,0 +1,466 @@
+---
+import tokens from '@zone/tokens/tokens.json'
+import DocsLayout from '../components/DocsLayout.astro'
+import DocSection from '../components/DocSection.astro'
+import Swatch from '../components/Swatch.astro'
+import TypeRow from '../components/TypeRow.astro'
+import SpaceRuler from '../components/SpaceRuler.astro'
+import GridDiagram from '../components/GridDiagram.astro'
+
+const colors = tokens.color as { light: Record<string, string>; dark: Record<string, string> }
+
+const groups = [
+  {
+    title: 'Surfaces',
+    items: [
+      { name: 'canvas', role: 'The page' },
+      { name: 'surface', role: 'Notes, code, quiet blocks' },
+      { name: 'surface-strong', role: 'Pressed and disabled fills' },
+      { name: 'code', role: 'Inline code' },
+      { name: 'selection', role: 'Text selection' },
+    ],
+  },
+  {
+    title: 'Ink',
+    items: [
+      { name: 'ink', role: 'Headings and primary text' },
+      { name: 'ink-secondary', role: 'Body text' },
+      { name: 'ink-tertiary', role: 'Metadata, AA on paper' },
+      { name: 'ink-quiet', role: 'Decorative only, never body' },
+    ],
+  },
+  {
+    title: 'Lines',
+    items: [
+      { name: 'line', role: 'Hairline separators' },
+      { name: 'line-strong', role: 'Section rules, field borders' },
+    ],
+  },
+  {
+    title: 'Accent',
+    items: [
+      { name: 'accent', role: 'Links, primary actions' },
+      { name: 'accent-strong', role: 'Hover and pressed' },
+      { name: 'accent-soft', role: 'Selection and quiet emphasis' },
+      { name: 'signal', role: 'Current page, links' },
+      { name: 'on-accent', role: 'Text on an accent fill' },
+      { name: 'on-ink', role: 'Text on an ink fill' },
+    ],
+  },
+  {
+    title: 'States',
+    items: [
+      { name: 'positive', role: 'Success' },
+      { name: 'positive-soft', role: 'Success background' },
+      { name: 'warning', role: 'Warning' },
+      { name: 'warning-soft', role: 'Warning background' },
+      { name: 'danger', role: 'Error and destructive' },
+      { name: 'danger-soft', role: 'Error background' },
+    ],
+  },
+  {
+    title: 'Data',
+    items: [
+      { name: 'data-1', role: 'Series 01' },
+      { name: 'data-2', role: 'Series 02' },
+      { name: 'data-3', role: 'Series 03' },
+      { name: 'data-4', role: 'Series 04' },
+      { name: 'data-5', role: 'Series 05' },
+    ],
+  },
+]
+
+const luminance = (hex: string) => {
+  const value = hex.replace('#', '')
+  const channels = [0, 2, 4]
+    .map((index) => Number.parseInt(value.slice(index, index + 2), 16) / 255)
+    .map((channel) => (channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4))
+  return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2]
+}
+
+const ratio = (foreground: string, background: string) => {
+  const a = luminance(foreground)
+  const b = luminance(background)
+  return ((Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)).toFixed(2)
+}
+
+const pairs = [
+  { name: 'ink on canvas', foreground: 'ink', background: 'canvas' },
+  { name: 'ink-secondary on canvas', foreground: 'ink-secondary', background: 'canvas' },
+  { name: 'ink-tertiary on canvas', foreground: 'ink-tertiary', background: 'canvas' },
+  { name: 'ink-quiet on canvas', foreground: 'ink-quiet', background: 'canvas' },
+  { name: 'accent on canvas', foreground: 'accent', background: 'canvas' },
+  { name: 'signal on canvas', foreground: 'signal', background: 'canvas' },
+  { name: 'on-accent on accent', foreground: 'on-accent', background: 'accent' },
+]
+
+const typeGroups = [
+  {
+    label: 'Display',
+    rows: [
+      { name: 'display-64', sample: 'Hairline' },
+      { name: 'display-48', sample: 'The quiet page' },
+    ],
+  },
+  {
+    label: 'Headings',
+    rows: [
+      { name: 'heading-40', sample: 'A reading room' },
+      { name: 'heading-32', sample: 'Notes on software and markets' },
+      { name: 'heading-28', sample: 'The measure' },
+      { name: 'heading-24', sample: 'Marginalia' },
+      { name: 'heading-20', sample: 'One accent, earned' },
+      { name: 'heading-16', sample: 'Section label' },
+    ],
+  },
+  {
+    label: 'Reading',
+    rows: [
+      { name: 'lede-24', sample: 'What a reading interface owes the reader.' },
+      {
+        name: 'reading-22',
+        sample: 'A page is a promise: nothing here is more interesting than the sentence you are reading.',
+      },
+    ],
+  },
+  {
+    label: 'Copy',
+    rows: [
+      {
+        name: 'copy-18',
+        sample: 'A page, not a screen. The interface should disappear into the reading.',
+      },
+      {
+        name: 'copy-16',
+        sample: 'White paper, cool ink, and a serif reading voice.',
+      },
+      {
+        name: 'copy-14',
+        sample: 'Dense copy: metadata rows, captions, table values and secondary notes.',
+      },
+      { name: 'copy-13', sample: 'The smallest comfortable reading size, used in notices and tables.' },
+    ],
+  },
+  {
+    label: 'Labels',
+    rows: [
+      { name: 'label-16', sample: 'Writing · Reading · Listening' },
+      { name: 'label-14', sample: 'On this page' },
+      { name: 'label-13', sample: '2026.10.11 · 12 min' },
+      { name: 'label-12', sample: 'Published' },
+      { name: 'label-11', sample: 'Zone Design System' },
+    ],
+  },
+  {
+    label: 'Buttons',
+    rows: [
+      { name: 'button-14', sample: 'Subscribe to the RSS feed' },
+      { name: 'button-13', sample: 'Copy link' },
+      { name: 'button-12', sample: 'Small control' },
+    ],
+  },
+]
+---
+
+<DocsLayout
+  current="/foundations/"
+  eyebrow="Foundations"
+  heading="The parts, and the rules between them."
+  lede="Color, type, space, shape and motion. Values live in tokens.json; the rules live in the design language; this page shows both."
+>
+  <DocSection
+    index="Foundation 01"
+    title="Color & surface"
+    id="color"
+  >
+    {
+      groups.map((group) => (
+        <div class="doc-mt">
+          <h3 class="doc-subhead">{group.title}</h3>
+          <div class="doc-swatches doc-mt-sm">
+            {group.items.map((item) => (
+              <Swatch
+                name={item.name}
+                light={colors.light[item.name]}
+                dark={colors.dark[item.name]}
+                role={item.role}
+              />
+            ))}
+          </div>
+        </div>
+      ))
+    }
+
+    <div class="doc-mt">
+      <h3 class="doc-subhead">Contrast, measured</h3>
+      <p class="doc-note">
+        Ratios are computed from the token values. Anything below 4.5 is not
+        available for body text; <code>ink-quiet</code> is decorative only.
+      </p>
+      <div class="z-table-wrap doc-mt-sm">
+        <table class="z-table">
+          <thead>
+            <tr>
+              <th>Pair</th>
+              <th class="text-right tabular-nums">Light</th>
+              <th class="text-right tabular-nums">Dark</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              pairs.map((pair) => (
+                <tr>
+                  <td>{pair.name}</td>
+                  <td class="text-right tabular-nums">{ratio(colors.light[pair.foreground], colors.light[pair.background])}:1</td>
+                  <td class="text-right tabular-nums">{ratio(colors.dark[pair.foreground], colors.dark[pair.background])}:1</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="doc-copy doc-mt">
+      <p>
+        Dark mode is a second set of values for the same names, not an
+        inversion. The canvas goes near-black, the ink cools and softens, and
+        the accent gets lighter so it keeps its contrast. The implementation uses
+        <code>light-dark()</code>: one token declaration, two values, and
+        <code>color-scheme</code> decides which one is live.
+      </p>
+    </div>
+  </DocSection>
+
+  <DocSection
+    index="Foundation 02"
+    title="Typography"
+    lede="Newsreader for the writing; IBM Plex Mono for the apparatus, labels and code."
+    id="type"
+  >
+    <div class="doc-grid-2">
+      <div>
+        <p class="doc-caption">Apparatus · IBM Plex Mono</p>
+        <p class="doc-font-sample font-ui">The quick brown fox jumps over 0123456789.</p>
+      </div>
+      <div>
+        <p class="doc-caption">Reading · Newsreader</p>
+        <p class="doc-font-sample font-serif">The quick brown fox jumps over 0123456789.</p>
+      </div>
+      <div lang="zh-Hans">
+        <p class="doc-caption">中文 · 平台黑体</p>
+        <p class="doc-font-sample font-reading">中文长文阅读，字体来自系统，不下载网络字体。</p>
+      </div>
+      <div lang="ja">
+        <p class="doc-caption">日本語 · 平台ゴシック</p>
+        <p class="doc-font-sample font-reading">日本語の長文は、読みやすい行間に調整します。</p>
+      </div>
+    </div>
+
+    {
+      typeGroups.map((group) => (
+        <div class="doc-mt">
+          <h3 class="doc-subhead">{group.label}</h3>
+          <div>
+            {group.rows.map((row) => (
+              <TypeRow
+                name={row.name}
+                sample={row.sample}
+                font={group.label === 'Labels' || group.label === 'Buttons' ? 'ui' : 'prose'}
+              />
+            ))}
+          </div>
+        </div>
+      ))
+    }
+
+    <div class="doc-mt">
+      <h3 class="doc-subhead">Chinese and Japanese</h3>
+      <div class="doc-copy">
+        <p>
+          Two changes happen when the language is <code>zh</code> or
+          <code>ja</code>. Headings drop negative tracking and gain leading,
+          because Han glyphs have no letter shapes to tighten. Prose resolves
+          to the reading stack at 18px and 1.9 line-height, with a smaller
+          block gap. Japanese gets its own CJK-first family, since Chinese and
+          Japanese share code points but not glyph shapes.
+        </p>
+      </div>
+      <div class="doc-cjk doc-mt-sm">
+        <p lang="zh-Hans">
+          阅读是一种慢动作。字体、行距和页边距都应该让眼睛忘记它们的存在，只留下文字本身。
+        </p>
+        <p lang="ja">
+          読むことは、ゆっくりした動作です。文字組みは目から消え、文章だけが残るのがよい。
+        </p>
+      </div>
+    </div>
+  </DocSection>
+
+  <DocSection
+    index="Foundation 03"
+    title="Space & layout"
+    id="space"
+  >
+    <SpaceRuler />
+
+    <div class="doc-copy doc-mt">
+      <p>
+        There is one shell (1200px), one reading measure (78ch of the UI mono,
+        which is roughly 81 characters of 22px serif), and one article layout:
+        the measure, centered, with air on both sides. The article's index is a
+        separate layer at the viewport edge; it never reserves a column.
+      </p>
+    </div>
+
+    <GridDiagram />
+
+    <div class="rule-list doc-mt">
+      <div class="rule">
+        <span class="rule__mark">01</span>
+        <p class="rule__text">
+          <strong>Use the scale.</strong> 8px inside a tight group, 16px between
+          related items, 24–32px for component gaps, 40–64px between sections,
+          96px only for a hero-scale break.
+        </p>
+      </div>
+      <div class="rule">
+        <span class="rule__mark">02</span>
+        <p class="rule__text">
+          <strong>One shell.</strong> Header, main, and footer consume
+          <code>--z-layout-shell</code> and <code>--z-layout-gutter</code>.
+          Components do not invent a second page width.
+        </p>
+      </div>
+      <div class="rule">
+        <span class="rule__mark">03</span>
+        <p class="rule__text">
+          <strong>Collapse, don't shrink.</strong> The edge index disappears,
+          the archive stays one column, the book grid goes 6 → 4 → 2. Type sizes
+          step down at 900px and 640px; they do not scale continuously.
+        </p>
+      </div>
+    </div>
+  </DocSection>
+
+  <DocSection
+    index="Foundation 04"
+    title="Shape, focus & elevation"
+    id="shape"
+  >
+    <div class="doc-grid-2">
+      <div>
+        <h3 class="doc-subhead">Radius</h3>
+        <div class="doc-radius-row">
+          <div class="doc-radius">
+            <span class="doc-radius__box doc-radius__box--none"></span>
+            <span class="doc-caption">none · 0</span>
+          </div>
+          <div class="doc-radius">
+            <span class="doc-radius__box doc-radius__box--subtle"></span>
+            <span class="doc-caption">subtle · 3px</span>
+          </div>
+          <div class="doc-radius">
+            <span class="doc-radius__box doc-radius__box--sm"></span>
+            <span class="doc-caption">sm · 6px</span>
+          </div>
+          <div class="doc-radius">
+            <span class="doc-radius__box doc-radius__box--full"></span>
+            <span class="doc-caption">full</span>
+          </div>
+        </div>
+        <p class="doc-note doc-mt-sm">
+          Buttons, tags, navigation and structural surfaces are square. Inputs,
+          small controls and cards get 3px. Nothing else gets a radius.
+        </p>
+      </div>
+      <div>
+        <h3 class="doc-subhead">Focus</h3>
+        <div class="doc-focus-sample">
+          <span class="doc-focus-sample__control">A focused control</span>
+        </div>
+        <p class="doc-note doc-mt-sm">
+          2px accent outline, 3px offset. On every interactive element, in both
+          themes. The outline is never removed; only its offset changes.
+        </p>
+      </div>
+    </div>
+
+    <div class="doc-mt">
+      <h3 class="doc-subhead">Elevation</h3>
+      <p class="doc-note">Borders first. Shadows exist only for things that float.</p>
+      <div class="doc-elevation">
+        <div class="doc-elevation__card doc-elevation__card--1">
+          <span class="doc-caption">1 · raised</span>
+          <p>Tooltips, popovers</p>
+        </div>
+        <div class="doc-elevation__card doc-elevation__card--2">
+          <span class="doc-caption">2 · floating</span>
+          <p>Menus, demo controls</p>
+        </div>
+        <div class="doc-elevation__card doc-elevation__card--3">
+          <span class="doc-caption">3 · overlay</span>
+          <p>Dialogs, sheets</p>
+        </div>
+      </div>
+    </div>
+  </DocSection>
+
+  <DocSection
+    index="Foundation 05"
+    title="Motion"
+    id="motion"
+  >
+    <div class="doc-grid-3">
+      <div>
+        <p class="doc-caption">Duration 1 · 120ms</p>
+        <p class="doc-motion__copy">Color, underline, border, icons.</p>
+        <div class="doc-motion__track"><span class="doc-motion__dot doc-motion__dot--1"></span></div>
+      </div>
+      <div>
+        <p class="doc-caption">Duration 2 · 180ms</p>
+        <p class="doc-motion__copy">Menus, popovers, the theme cross-fade.</p>
+        <div class="doc-motion__track"><span class="doc-motion__dot doc-motion__dot--2"></span></div>
+      </div>
+      <div>
+        <p class="doc-caption">Duration 3 · 260ms</p>
+        <p class="doc-motion__copy">Overlays and sheet entrances.</p>
+        <div class="doc-motion__track"><span class="doc-motion__dot doc-motion__dot--3"></span></div>
+      </div>
+    </div>
+
+    <div class="doc-copy doc-mt">
+      <p>
+        The shared easing is <code>cubic-bezier(0.23, 1, 0.32, 1)</code>: quick
+        to start, quiet at the end. Avoid bounce and spring in this interface;
+        the page is a place, not a toy. Under
+        <code>prefers-reduced-motion</code>, durations collapse to zero and the
+        page transition is removed.
+      </p>
+    </div>
+
+    <div class="rule-list doc-mt">
+      <div class="rule">
+        <span class="rule__mark">01</span>
+        <p class="rule__text">
+          <strong>State changes may animate.</strong> A link color, a border on
+          hover, a disclosure marker rotating 90°.
+        </p>
+      </div>
+      <div class="rule">
+        <span class="rule__mark">02</span>
+        <p class="rule__text">
+          <strong>Entrances are for overlays only.</strong> Content does not
+          fade in on scroll. There is no reveal animation on the article.
+        </p>
+      </div>
+      <div class="rule">
+        <span class="rule__mark">03</span>
+        <p class="rule__text">
+          <strong>Never animate layout.</strong> No width, height or top/left
+          transitions. Use opacity, color, border-color and small transforms.
+        </p>
+      </div>
+    </div>
+  </DocSection>
+</DocsLayout>

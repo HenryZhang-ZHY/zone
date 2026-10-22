@@ -1,0 +1,17 @@
+---
+interface Props {
+  label: string
+  note?: string
+  class?: string
+}
+
+const { label, note, class: className } = Astro.props
+---
+
+<figure class:list={['doc-demo', className]}>
+  <figcaption class="doc-demo__bar">
+    <span>{label}</span>
+    {note && <span>{note}</span>}
+  </figcaption>
+  <div class="doc-demo__canvas"><slot /></div>
+</figure>

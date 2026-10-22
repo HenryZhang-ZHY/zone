@@ -1,0 +1,19 @@
+---
+interface Props {
+  index: string
+  title: string
+  lede?: string
+  id?: string
+}
+
+const { index, title, lede, id } = Astro.props
+---
+
+<section class="doc-block" id={id}>
+  <header class="doc-block__head">
+    <p class="text-label-11 uppercase text-ink-tertiary">{index}</p>
+    <h2 class="doc-block__title">{title}</h2>
+    {lede && <p class="doc-block__lede">{lede}</p>}
+  </header>
+  <div class="doc-block__body"><slot /></div>
+</section>

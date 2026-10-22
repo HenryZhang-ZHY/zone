@@ -1,0 +1,242 @@
+---
+import DemoLayout from '../../components/DemoLayout.astro'
+---
+
+<DemoLayout
+  title="Measure"
+  description="A measure lab for Hairline: the new 78ch / 22px reading default against the previous 68ch / 19px, full-bleed and the 78ch / 19px anti-example."
+  current="/demos/measure/"
+>
+  <div class="shell">
+    <div class="mx-auto max-w-reading">
+      <p class="font-ui text-label-11 uppercase text-ink-tertiary">Measure lab</p>
+      <h1 class="mt-3 font-ui text-heading-32 font-semibold text-ink">A measure, four ways.</h1>
+      <p class="mt-4 max-w-[54ch] font-prose text-copy-18 text-ink-secondary">
+        The new reading default is 78ch at 22px. Compare it with the previous
+        68ch / 19px, a full-bleed object, and the same 78ch at 19px.
+      </p>
+      <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
+        <div class="z-segmented max-sm:flex-wrap" role="group" aria-label="Measure treatment">
+          <button type="button" class="z-segmented__item" data-measure-option="new" aria-pressed="true">New default</button>
+          <button type="button" class="z-segmented__item" data-measure-option="before" aria-pressed="false">Before</button>
+          <button type="button" class="z-segmented__item" data-measure-option="bleed" aria-pressed="false">Full-bleed</button>
+          <button type="button" class="z-segmented__item" data-measure-option="wide" aria-pressed="false">78ch / 19</button>
+        </div>
+        <p class="font-ui text-label-12 text-ink-tertiary" data-measure-note>
+          78ch · 22px · about 81 characters. The new reading default.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <article class="measure-article mt-16" data-measure-article data-measure="new">
+    <div class="shell">
+      <div class="measure-column mx-auto max-w-reading">
+        <header class="mb-8 border-b border-line pb-6">
+          <h2 class="mt-0 font-prose text-heading-40 font-semibold text-ink max-sm:text-heading-32">The Quiet Page</h2>
+          <p class="measure-deck mt-4 max-w-[56ch] font-prose text-lede-24 text-ink-secondary max-sm:text-copy-18">What a reading interface owes the reader.</p>
+          <div class="mt-6 flex flex-wrap items-baseline gap-2 font-ui text-label-12 tabular-nums text-ink-tertiary">
+            <time datetime="2026-10-22">2026.10.22</time>
+            <span aria-hidden="true">·</span>
+            <span>12 min</span>
+          </div>
+        </header>
+
+        <div class="z-prose z-prose--numbered" lang="en">
+          <p class="z-lede">
+            A page is a promise: nothing here is more interesting than the
+            sentence you are reading. Most interfaces break that promise before
+            the first paragraph. The ones that keep it are not simpler. They are
+            more deliberate.
+          </p>
+
+          <h2 id="the-measure">The measure</h2>
+          <p>
+            Reading happens in a line, and a line has a length. Too short and
+            the eye bounces from one ragged edge to the other; too long and it
+            loses its place on the return. The typographic answer is old and
+            unglamorous: set a measure, then defend it.
+          </p>
+          <p>
+            A measure is a range in characters, not a width in pixels. The
+            typeface, the size and the reader's settings all change it. The new
+            reading measure is 78ch at 22px: about 81 characters. The old 68ch
+            at 19px was about 80. The same 78ch at 19px would be about 94; the
+            larger body is what makes the wider column work.
+          </p>
+
+          <figure class="measure-bleed measure-quote">
+            <blockquote>Typography exists to honor content.</blockquote>
+            <figcaption>Robert Bringhurst</figcaption>
+          </figure>
+
+          <h2 id="the-numbers">The numbers</h2>
+          <p>
+            The classic range is 45–75 characters. Most web reading lands
+            between 60 and 70; 80 is the upper bound, not a target. The new
+            default is at 81, the old one at 80: both sit at the top of the
+            range. The wider column and the larger body were chosen together.
+          </p>
+
+          <div class="measure-bleed measure-table">
+            <table class="z-table">
+              <caption class="sr-only">A comparison of the four treatments.</caption>
+              <thead>
+                <tr>
+                  <th>Treatment</th>
+                  <th>Body</th>
+                  <th>Column</th>
+                  <th class="text-right tabular-nums">Characters</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>New default</td><td>22px / 1.68</td><td>78ch</td><td class="text-right tabular-nums">≈ 81</td></tr>
+                <tr><td>Before</td><td>19px / 1.68</td><td>68ch</td><td class="text-right tabular-nums">≈ 80</td></tr>
+                <tr><td>Full-bleed</td><td>22px / 1.68</td><td>78ch</td><td class="text-right tabular-nums">≈ 81</td></tr>
+                <tr><td>78ch / 19</td><td>19px / 1.68</td><td>78ch</td><td class="text-right tabular-nums">≈ 94</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+            Widening the text column alone makes every number worse. The new
+            default widens the column and raises the body; the full-bleed option
+            keeps the measure and lets the object use the shell; 78ch at 19px
+            is the anti-example.
+          </p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <section class="shell mt-24 border-t border-line pt-8">
+    <div class="mx-auto max-w-reading">
+      <p class="font-ui text-label-11 uppercase text-ink-tertiary">The range</p>
+      <div class="mt-4 grid gap-6 sm:grid-cols-3">
+        <div>
+          <p class="font-prose text-heading-24 text-ink">45–75</p>
+          <p class="mt-1 font-ui text-label-12 text-ink-tertiary">Bringhurst's classic range</p>
+        </div>
+        <div>
+          <p class="font-prose text-heading-24 text-ink">60–70</p>
+          <p class="mt-1 font-ui text-label-12 text-ink-tertiary">The practical web target</p>
+        </div>
+        <div>
+          <p class="font-prose text-heading-24 text-ink">≤ 80</p>
+          <p class="mt-1 font-ui text-label-12 text-ink-tertiary">The upper bound, not a goal</p>
+        </div>
+      </div>
+      <p class="mt-8 max-w-[58ch] font-prose text-copy-16 text-ink-secondary">
+        The best measure is a property of the face and the size, not of the
+        screen. A 1440px monitor does not ask for a 1440px line; it asks for a
+        reading column and a good use of the space around it.
+      </p>
+    </div>
+  </section>
+</DemoLayout>
+
+<script>
+  const article = document.querySelector<HTMLElement>('[data-measure-article]')
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-measure-option]')
+  const note = document.querySelector<HTMLElement>('[data-measure-note]')
+
+  const notes: Record<string, string> = {
+    new: '78ch · 22px · about 81 characters. The new reading default.',
+    before: '68ch · 19px · about 80 characters. The previous measure.',
+    bleed: '78ch · 22px; the quote and table use the shell. The text measure does not move.',
+    wide: '78ch · 19px · about 94 characters. The anti-example.',
+  }
+
+  const set = (value: string) => {
+    if (!article) return
+    article.dataset.measure = value
+    for (const button of buttons) {
+      button.setAttribute('aria-pressed', String(button.dataset.measureOption === value))
+    }
+    if (note) note.textContent = notes[value] ?? ''
+  }
+
+  for (const button of buttons) {
+    button.addEventListener('click', () => set(button.dataset.measureOption ?? 'new'))
+  }
+</script>
+
+<style>
+  .measure-article[data-measure='before'] .measure-column {
+    max-width: 68ch;
+  }
+
+  .measure-article[data-measure='before'] .z-prose {
+    font-size: 19px;
+  }
+
+  .measure-article[data-measure='before'] .z-prose .z-lede {
+    font-size: 21px;
+    line-height: 1.6;
+  }
+
+  .measure-article[data-measure='before'] .measure-deck {
+    font-size: 20px;
+  }
+
+  .measure-article[data-measure='wide'] .z-prose {
+    font-size: 19px;
+  }
+
+  .measure-article[data-measure='wide'] .z-prose .z-lede {
+    font-size: 21px;
+    line-height: 1.6;
+  }
+
+  .measure-article[data-measure='wide'] .measure-deck {
+    font-size: 20px;
+  }
+
+  .measure-article[data-measure='bleed'] .measure-bleed {
+    width: min(var(--z-layout-shell), calc(100vw - 2 * var(--z-layout-gutter)));
+    margin-left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .measure-quote {
+    margin-block: 2.5em;
+  }
+
+  .measure-quote blockquote {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    color: var(--z-color-ink);
+    font-family: var(--z-font-serif);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .measure-quote figcaption {
+    margin-top: var(--z-space-4);
+    color: var(--z-color-ink-tertiary);
+    font-family: var(--z-font-ui);
+    font-size: var(--z-text-label-11);
+    line-height: var(--z-leading-label-11);
+    letter-spacing: var(--z-tracking-label-11);
+    text-transform: uppercase;
+  }
+
+  .measure-article[data-measure='bleed'] .measure-quote blockquote {
+    max-width: 20ch;
+  }
+
+  .measure-table {
+    margin-block: 2.5em;
+    overflow-x: auto;
+  }
+
+  .measure-table table {
+    display: table;
+    width: 100%;
+    min-width: 34rem;
+    margin-block: 0;
+  }
+</style>

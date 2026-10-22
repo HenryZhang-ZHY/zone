@@ -1,0 +1,189 @@
+/* Generated from tokens.json by build.mjs. Do not edit by hand. */
+
+:root {
+  /* Color: the same semantic name resolves per theme. */
+  --z-color-accent: light-dark(#0067A8, #6FB8F5);
+  --z-color-accent-soft: light-dark(#EDF5FC, #11283A);
+  --z-color-accent-strong: light-dark(#004F82, #A3D2F8);
+  --z-color-canvas: light-dark(#FFFFFF, #0B0E11);
+  --z-color-code: light-dark(#F3F3F4, #161A1F);
+  --z-color-danger: light-dark(#AE2B23, #FF8F86);
+  --z-color-danger-soft: light-dark(#FBEBE9, #331513);
+  --z-color-data-1: light-dark(#0067A8, #6FB8F5);
+  --z-color-data-2: light-dark(#946000, #E5B25D);
+  --z-color-data-3: light-dark(#A33C34, #FF8F86);
+  --z-color-data-4: light-dark(#2F6B4F, #7FD1AC);
+  --z-color-data-5: light-dark(#5B4A88, #B9A5E8);
+  --z-color-ink: light-dark(#111418, #F3F4F5);
+  --z-color-ink-quiet: light-dark(#8A929C, #687079);
+  --z-color-ink-secondary: light-dark(#3B424C, #C4C8CE);
+  --z-color-ink-tertiary: light-dark(#606873, #9299A2);
+  --z-color-line: light-dark(#E8E8EA, #262A30);
+  --z-color-line-strong: light-dark(#D2D3D7, #3A3F47);
+  --z-color-on-accent: light-dark(#FFFFFF, #06131F);
+  --z-color-on-ink: light-dark(#FFFFFF, #0B0E11);
+  --z-color-overlay: light-dark(rgba(10, 14, 18, 0.44), rgba(0, 0, 0, 0.62));
+  --z-color-positive: light-dark(#1E7A55, #74CFA6);
+  --z-color-positive-soft: light-dark(#E9F5EF, #102B21);
+  --z-color-selection: light-dark(#DCEBF7, #1B374D);
+  --z-color-shadow: light-dark(rgba(16, 20, 26, 0.08), rgba(0, 0, 0, 0.40));
+  --z-color-signal: light-dark(#0A86E8, #3AA9FF);
+  --z-color-surface: light-dark(#F7F7F8, #14171B);
+  --z-color-surface-strong: light-dark(#EFEFF1, #1D2127);
+  --z-color-warning: light-dark(#946000, #E5B25D);
+  --z-color-warning-soft: light-dark(#FBF3E1, #2D2110);
+
+  /* Families */
+  --z-font-ui: 'IBM Plex Mono', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei', 'Noto Sans SC', 'Noto Sans CJK SC', 'Source Han Sans SC', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --z-font-reading: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei', 'Noto Sans SC', 'Noto Sans CJK SC', 'Source Han Sans SC', 'Helvetica Neue', Arial, sans-serif;
+  --z-font-serif: 'Newsreader Variable', 'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Charter, Georgia, 'Times New Roman', serif;
+  --z-font-code: 'IBM Plex Mono', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei', 'Noto Sans SC', 'Noto Sans CJK SC', 'Source Han Sans SC', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+
+  /* Type scale */
+  --z-text-display-64: 64px;
+  --z-leading-display-64: 1.05;
+  --z-weight-display-64: 600;
+  --z-tracking-display-64: -0.03em;
+  --z-text-display-48: 48px;
+  --z-leading-display-48: 1.08;
+  --z-weight-display-48: 600;
+  --z-tracking-display-48: -0.03em;
+  --z-text-heading-40: 40px;
+  --z-leading-heading-40: 1.15;
+  --z-weight-heading-40: 600;
+  --z-tracking-heading-40: -0.025em;
+  --z-text-heading-32: 32px;
+  --z-leading-heading-32: 1.2;
+  --z-weight-heading-32: 600;
+  --z-tracking-heading-32: -0.02em;
+  --z-text-heading-28: 28px;
+  --z-leading-heading-28: 1.25;
+  --z-weight-heading-28: 600;
+  --z-tracking-heading-28: -0.015em;
+  --z-text-heading-24: 24px;
+  --z-leading-heading-24: 1.32;
+  --z-weight-heading-24: 600;
+  --z-tracking-heading-24: -0.01em;
+  --z-text-heading-20: 20px;
+  --z-leading-heading-20: 1.36;
+  --z-weight-heading-20: 600;
+  --z-tracking-heading-20: 0;
+  --z-text-heading-18: 18px;
+  --z-leading-heading-18: 1.4;
+  --z-weight-heading-18: 600;
+  --z-tracking-heading-18: 0;
+  --z-text-heading-16: 16px;
+  --z-leading-heading-16: 1.45;
+  --z-weight-heading-16: 600;
+  --z-tracking-heading-16: 0;
+  --z-text-heading-14: 14px;
+  --z-leading-heading-14: 1.45;
+  --z-weight-heading-14: 600;
+  --z-tracking-heading-14: 0;
+  --z-text-lede-20: 20px;
+  --z-leading-lede-20: 1.6;
+  --z-weight-lede-20: 400;
+  --z-tracking-lede-20: -0.005em;
+  --z-text-lede-24: 24px;
+  --z-leading-lede-24: 1.55;
+  --z-weight-lede-24: 400;
+  --z-tracking-lede-24: 0;
+  --z-text-copy-18: 18px;
+  --z-leading-copy-18: 1.65;
+  --z-weight-copy-18: 400;
+  --z-tracking-copy-18: 0;
+  --z-text-reading-22: 22px;
+  --z-leading-reading-22: 1.68;
+  --z-weight-reading-22: 400;
+  --z-tracking-reading-22: 0;
+  --z-text-copy-16: 16px;
+  --z-leading-copy-16: 1.65;
+  --z-weight-copy-16: 400;
+  --z-tracking-copy-16: 0;
+  --z-text-copy-14: 14px;
+  --z-leading-copy-14: 1.6;
+  --z-weight-copy-14: 400;
+  --z-tracking-copy-14: 0;
+  --z-text-copy-13: 13px;
+  --z-leading-copy-13: 1.55;
+  --z-weight-copy-13: 400;
+  --z-tracking-copy-13: 0;
+  --z-text-label-16: 16px;
+  --z-leading-label-16: 1.5;
+  --z-weight-label-16: 400;
+  --z-tracking-label-16: 0;
+  --z-text-label-14: 14px;
+  --z-leading-label-14: 1.45;
+  --z-weight-label-14: 400;
+  --z-tracking-label-14: 0;
+  --z-text-label-13: 13px;
+  --z-leading-label-13: 1.4;
+  --z-weight-label-13: 400;
+  --z-tracking-label-13: 0;
+  --z-text-label-12: 12px;
+  --z-leading-label-12: 1.4;
+  --z-weight-label-12: 400;
+  --z-tracking-label-12: 0;
+  --z-text-label-11: 11px;
+  --z-leading-label-11: 1.35;
+  --z-weight-label-11: 500;
+  --z-tracking-label-11: 0.09em;
+  --z-text-button-14: 14px;
+  --z-leading-button-14: 1.4;
+  --z-weight-button-14: 500;
+  --z-tracking-button-14: 0;
+  --z-text-button-13: 13px;
+  --z-leading-button-13: 1.4;
+  --z-weight-button-13: 500;
+  --z-tracking-button-13: 0;
+  --z-text-button-12: 12px;
+  --z-leading-button-12: 1.4;
+  --z-weight-button-12: 500;
+  --z-tracking-button-12: 0;
+
+  /* Font */
+  --z-font-ui: 'IBM Plex Mono', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei', 'Noto Sans SC', 'Noto Sans CJK SC', 'Source Han Sans SC', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --z-font-reading: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei', 'Noto Sans SC', 'Noto Sans CJK SC', 'Source Han Sans SC', 'Helvetica Neue', Arial, sans-serif;
+  --z-font-serif: 'Newsreader Variable', 'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Charter, Georgia, 'Times New Roman', serif;
+  --z-font-code: 'IBM Plex Mono', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei', 'Noto Sans SC', 'Noto Sans CJK SC', 'Source Han Sans SC', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+
+  /* Space */
+  --z-space-1: 4px;
+  --z-space-2: 8px;
+  --z-space-3: 12px;
+  --z-space-4: 16px;
+  --z-space-5: 20px;
+  --z-space-6: 24px;
+  --z-space-8: 32px;
+  --z-space-10: 40px;
+  --z-space-12: 48px;
+  --z-space-16: 64px;
+  --z-space-20: 80px;
+  --z-space-24: 96px;
+
+  /* Radius */
+  --z-radius-none: 0;
+  --z-radius-subtle: 3px;
+  --z-radius-sm: 6px;
+  --z-radius-full: 9999px;
+
+  /* Motion */
+  --z-motion-duration-1: 120ms;
+  --z-motion-duration-2: 180ms;
+  --z-motion-duration-3: 260ms;
+  --z-motion-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --z-motion-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Shadow */
+  --z-shadow-1: 0 1px 2px var(--z-color-shadow);
+  --z-shadow-2: 0 4px 12px var(--z-color-shadow);
+  --z-shadow-3: 0 16px 40px var(--z-color-shadow);
+
+  /* Layout */
+  --z-layout-shell: 1200px;
+  --z-layout-measure: 68ch;
+  --z-layout-reading: 78ch;
+  --z-layout-gutter: clamp(1rem, 3.5vw, 2rem);
+  --z-layout-page-top: clamp(2.5rem, 6vw, 4.5rem);
+  --z-layout-page-bottom: clamp(4rem, 9vw, 7rem);
+}

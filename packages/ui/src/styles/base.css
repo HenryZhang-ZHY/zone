@@ -1,0 +1,214 @@
+@layer base {
+  :root {
+    color-scheme: light dark;
+
+    /*
+     * Prose is the author's voice: Newsreader. Chinese and Japanese resolve to
+     * the platform reading stack; mono is never a prose face.
+     */
+    --z-font-prose: var(--z-font-serif);
+
+    --z-focus-width: 2px;
+    --z-focus-offset: 3px;
+    --z-focus-ring: var(--z-focus-width) solid var(--z-color-accent);
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  * {
+    margin: 0;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-height: 100vh;
+    background-color: var(--z-color-canvas);
+    color: var(--z-color-ink-secondary);
+    font-family: var(--z-font-ui);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-underline-offset: 0.18em;
+    text-decoration-thickness: 1px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--z-color-ink);
+    font-family: var(--z-font-ui);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  img,
+  picture,
+  video,
+  canvas,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  input,
+  button,
+  select,
+  textarea {
+    font: inherit;
+    color: inherit;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  ::selection {
+    background-color: var(--z-color-selection);
+    color: var(--z-color-ink);
+  }
+
+  :focus-visible {
+    outline: var(--z-focus-ring);
+    outline-offset: var(--z-focus-offset);
+  }
+
+  ::placeholder {
+    color: var(--z-color-ink-quiet);
+    opacity: 1;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  /* Language-specific type. Han characters need room; Latin tracking crowds them. */
+  :lang(zh) {
+    --z-font-cjk: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei', 'Noto Sans SC', 'Noto Sans CJK SC', 'Source Han Sans SC';
+    --z-font-ui: 'IBM Plex Mono', var(--z-font-cjk), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    --z-font-code: var(--z-font-ui);
+    --z-font-reading: -apple-system, BlinkMacSystemFont, 'Segoe UI', var(--z-font-cjk), 'Helvetica Neue', Arial, sans-serif;
+    --z-font-prose: var(--z-font-reading);
+  }
+
+  :lang(ja) {
+    --z-font-cjk: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic UI', 'Yu Gothic', Meiryo, 'Noto Sans JP', 'Noto Sans CJK JP', 'Source Han Sans JP';
+    --z-font-ui: 'IBM Plex Mono', var(--z-font-cjk), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    --z-font-code: var(--z-font-ui);
+    --z-font-reading: -apple-system, BlinkMacSystemFont, 'Segoe UI', var(--z-font-cjk), 'Helvetica Neue', Arial, sans-serif;
+    --z-font-prose: var(--z-font-reading);
+  }
+
+  :is(:lang(zh), :lang(ja)) {
+    --z-tracking-heading-40: 0;
+    --z-tracking-heading-32: 0;
+    --z-tracking-heading-28: 0;
+    --z-tracking-heading-24: 0;
+    --z-tracking-heading-20: 0;
+    --z-tracking-heading-18: 0;
+    --z-tracking-heading-16: 0;
+    --z-leading-heading-40: 1.24;
+    --z-leading-heading-32: 1.28;
+    --z-leading-heading-28: 1.34;
+    --z-leading-heading-24: 1.4;
+    --z-leading-heading-20: 1.45;
+    --z-leading-heading-18: 1.5;
+    --z-leading-heading-16: 1.5;
+  }
+
+  /*
+   * font-family inherits as an already-resolved list, so an element that changes
+   * language resolves the stack again for its own language. Zero specificity, so
+   * any component rule that sets a family still wins.
+   */
+  :where([lang]) {
+    font-family: var(--z-font-ui);
+  }
+
+  /* CJK always resolves to the platform reading stack; it never uses the Latin serif. */
+  :is(:lang(zh), :lang(ja)) {
+    --z-font-prose: var(--z-font-reading);
+  }
+
+  @media (prefers-contrast: more) {
+    :root {
+      --z-color-line: var(--z-color-line-strong);
+      --z-color-ink-tertiary: var(--z-color-ink-secondary);
+      --z-color-ink-quiet: var(--z-color-ink-tertiary);
+    }
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    :root {
+      --z-color-overlay: light-dark(rgba(10, 14, 18, 0.8), rgba(0, 0, 0, 0.85));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  @view-transition {
+    navigation: auto;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: var(--z-motion-duration-2);
+    animation-timing-function: var(--z-motion-ease-in-out);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation: none;
+    }
+  }
+
+  @media print {
+    body {
+      background: #fff;
+      color: #000;
+      font-size: 11pt;
+    }
+
+    header,
+    footer,
+    .z-demo-controls {
+      display: none !important;
+    }
+  }
+}

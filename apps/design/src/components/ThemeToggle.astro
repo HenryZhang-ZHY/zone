@@ -1,0 +1,58 @@
+---
+interface Props {
+  label?: string
+  class?: string
+}
+
+const { label = 'Color theme', class: className } = Astro.props
+---
+
+<div class:list={['z-segmented', className]} role="group" aria-label={label} data-theme-toggle>
+  <button type="button" class="z-segmented__item" data-theme="auto" aria-pressed="true" title="Follow the system">Auto</button>
+  <button type="button" class="z-segmented__item" data-theme="light" aria-pressed="false" title="Always light">Light</button>
+  <button type="button" class="z-segmented__item" data-theme="dark" aria-pressed="false" title="Always dark">Dark</button>
+</div>
+
+<script>
+  const root = document.documentElement
+  const toggles = document.querySelectorAll<HTMLElement>('[data-theme-toggle]')
+
+  const read = () => {
+    try {
+      return localStorage.getItem('zone-theme') ?? 'auto'
+    } catch {
+      return 'auto'
+    }
+  }
+
+  const sync = () => {
+    const value = read()
+    for (const toggle of toggles) {
+      for (const button of toggle.querySelectorAll<HTMLButtonElement>('[data-theme]')) {
+        button.setAttribute('aria-pressed', String(button.dataset.theme === value))
+      }
+    }
+  }
+
+  const apply = (theme: string) => {
+    try {
+      if (theme === 'auto') {
+        root.style.removeProperty('color-scheme')
+        localStorage.removeItem('zone-theme')
+      } else {
+        root.style.colorScheme = theme
+        localStorage.setItem('zone-theme', theme)
+      }
+    } catch {}
+    sync()
+  }
+
+  for (const toggle of toggles) {
+    toggle.addEventListener('click', (event) => {
+      const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-theme]')
+      if (button?.dataset.theme) apply(button.dataset.theme)
+    })
+  }
+
+  sync()
+</script>

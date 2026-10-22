@@ -1,0 +1,32 @@
+---
+import { localizePath, locales, type Locale } from '../i18n'
+
+interface Props {
+  locale: Locale
+  path: string
+  label: string
+}
+
+const { locale, path, label } = Astro.props
+---
+
+<nav class="mt-6 border-t border-line pt-4" aria-label={label}>
+  <ul class="m-0 flex list-none flex-wrap gap-x-4 gap-y-1 p-0 font-ui text-label-12">
+    {
+      locales.map(({ tag, name }) => (
+        <li>
+          <a
+            class="text-ink-tertiary underline decoration-transparent underline-offset-[0.2em] transition-[color,text-decoration-color] duration-1 ease-out hover:text-ink hover:decoration-current aria-[current=true]:text-ink"
+            href={localizePath(path, tag)}
+            hreflang={tag}
+            lang={tag}
+            data-locale={tag}
+            aria-current={tag === locale ? 'true' : undefined}
+          >
+            {name}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>

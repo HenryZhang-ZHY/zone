@@ -1,0 +1,249 @@
+---
+import DocsLayout from '../components/DocsLayout.astro'
+import DocSection from '../components/DocSection.astro'
+---
+
+<DocsLayout
+  current="/"
+  eyebrow="Zone Design System"
+  heading="Hairline"
+  lede="The design language of shuzhi.zone: white paper, cool ink, hairline rules, a serif reading voice, mono apparatus, and one accent that has to earn its place."
+  display
+>
+  <DocSection
+    index="The idea"
+    title="A reading room, not a product."
+    lede="The interface should feel like a well-set page: one place to read, one place to find what to read next, and no chrome competing with either."
+  >
+    <div class="doc-copy">
+      <p>
+        shuzhi.zone is a personal publication. It carries essays in multiple languages,
+        a reading shelf, a listening list, and a few data-heavy notes. The design's
+        job is not to be remembered. It is to make a stranger trust the page enough
+        to start reading, and to make a returning reader find the thing they half
+        remember.
+      </p>
+      <p>
+        <strong>Hairline</strong> is the name of the visual language that does that
+        work. It is built from four materials: white paper, a cool ink hierarchy,
+        1px rules, and a single electric accent. Everything else is type and space.
+      </p>
+    </div>
+
+    <div class="principles">
+      <article class="principle">
+        <p class="principle__index">01</p>
+        <h3 class="principle__title">Rules, not boxes.</h3>
+        <p class="principle__text">
+          A hairline separates without containing. Cards, shadows and rounded
+          panels are reserved for things that truly float — a menu, a dialog —
+          not for ordinary content.
+        </p>
+      </article>
+      <article class="principle">
+        <p class="principle__index">02</p>
+        <h3 class="principle__title">Serif reads. Mono annotates.</h3>
+        <p class="principle__text">
+          Newsreader carries the writing: titles, ledes, article body, entry
+          excerpts. Plex Mono marks the apparatus: dates, labels, navigation,
+          numbers, code. Mono never renders prose.
+        </p>
+      </article>
+      <article class="principle">
+        <p class="principle__index">03</p>
+        <h3 class="principle__title">One accent, earned.</h3>
+        <p class="principle__text">
+          Electric blue is a signal — a link, a focus ring, the current
+          navigation item, the current section. If it starts decorating, it stops meaning
+          anything.
+        </p>
+      </article>
+    </div>
+  </DocSection>
+
+  <DocSection
+    index="The moves"
+    title="Five decisions that make it look like this."
+    lede="These are the choices worth keeping when the details change."
+  >
+    <div class="rule-list">
+      <div class="rule">
+        <span class="rule__mark">01</span>
+        <p class="rule__text">
+          <strong>Paper is white, ink is cool.</strong> The page is pure
+          white; the text is a cool blue-black. The ink hierarchy and the
+          hairlines do the work a tinted background would otherwise do.
+        </p>
+      </div>
+      <div class="rule">
+        <span class="rule__mark">02</span>
+        <p class="rule__text">
+          <strong>The reading column is the page.</strong> A 78ch measure at 22px,
+          air on both sides, and no container around the text. On small screens
+          the measure stays and the margins simply shrink.
+        </p>
+      </div>
+      <div class="rule">
+        <span class="rule__mark">03</span>
+        <p class="rule__text">
+          <strong>Numbers are set as numbers.</strong> Dates, years, table
+          values and section indexes use tabular figures. Measurement is part
+          of the writing, so it gets the same care as the prose.
+        </p>
+      </div>
+      <div class="rule">
+        <span class="rule__mark">04</span>
+        <p class="rule__text">
+          <strong>Square by default.</strong> Buttons, navigation, tags and
+          structural surfaces have no radius. Inputs and small controls get 3px,
+          because a field should look like somewhere to put something.
+        </p>
+      </div>
+      <div class="rule">
+        <span class="rule__mark">05</span>
+        <p class="rule__text">
+          <strong>Motion clarifies, never decorates.</strong> 120ms for state,
+          180ms for a menu, 260ms for an overlay. If a hover only changes color,
+          it does not need to move.
+        </p>
+      </div>
+    </div>
+  </DocSection>
+
+  <DocSection
+    index="Demos"
+    title="Four pages, one system."
+    lede="The same tokens and components, applied to the four things the site actually does."
+  >
+    <div class="demo-index">
+      <a class="demo-index__item" href="/demos/archive/">
+        <span class="demo-index__index">01</span>
+        <span>
+          <span class="demo-index__title">Archive</span>
+          <span class="demo-index__text">
+            The writing index: one centered column, one flat list, full dates,
+            and rows that stay out of the way.
+          </span>
+        </span>
+        <span class="demo-index__arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="demo-index__item" href="/demos/essay/">
+        <span class="demo-index__index">02</span>
+        <span>
+          <span class="demo-index__title">Essay</span>
+          <span class="demo-index__text">
+            One centered measure, no sidebars, an index at the page edge,
+            numbered sections, and a serif reading voice.
+          </span>
+        </span>
+        <span class="demo-index__arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="demo-index__item" href="/demos/reading/">
+        <span class="demo-index__index">03</span>
+        <span>
+          <span class="demo-index__title">Reading</span>
+          <span class="demo-index__text">
+            The shelf: a book grid with no cards, no shadows, and no completion
+            metric.
+          </span>
+        </span>
+        <span class="demo-index__arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="demo-index__item" href="/demos/listening/">
+        <span class="demo-index__index">04</span>
+        <span>
+          <span class="demo-index__title">Listening</span>
+          <span class="demo-index__text">
+            A listening ledger: number, title, source, external arrow. No player
+            chrome.
+          </span>
+        </span>
+        <span class="demo-index__arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </DocSection>
+
+  <DocSection
+    index="Inside"
+    title="A small monorepo, with one source of truth."
+    lede="Values flow one way. The documentation and the demos are consumers, not a second implementation."
+  >
+    <pre class="repo-map">{`zone/
+├─ packages/
+│  ├─ tokens/        tokens.json → tokens.css (generated)
+│  └─ ui/            CSS recipes + Astro components
+├─ apps/
+│  └─ design/        this documentation site + demos
+├─ design/           the written language: principles and rules
+└─ src/              the live blog, still on its current styles`}</pre>
+    <div class="doc-copy doc-mt">
+      <p>
+        <code>tokens.json</code> is the only file that holds a color, a type
+        size or a duration. A small generator turns it into
+        <code>tokens.css</code>; a test fails when the checked-in CSS drifts.
+        The UI package composes those tokens into recipes; the components are
+        thin wrappers over the recipes; the demos consume the components.
+      </p>
+      <p>
+        Nothing in <code>apps/design</code> is allowed to invent a value. That
+        is what makes the demos trustworthy: if a page looks right here, the
+        same recipe will look right in the blog.
+      </p>
+    </div>
+  </DocSection>
+
+  <DocSection
+    index="Open questions"
+    title="What we should settle next."
+    lede="The system is a proposal. These are the decisions I would not make without you."
+  >
+    <div class="question-list">
+      <div class="question">
+        <span class="question__index">01</span>
+        <div>
+          <h3 class="question__title">Does serif feel right as the default?</h3>
+          <p class="question__text">
+            Newsreader is now the reading voice for titles, ledes and body, with
+            no reading-mode switch. The column and rhythm are fixed. This is the
+            publishing convention, but it is also a different site from the mono
+            one you had.
+          </p>
+        </div>
+      </div>
+      <div class="question">
+        <span class="question__index">02</span>
+        <div>
+          <h3 class="question__title">Is the archive flat enough?</h3>
+          <p class="question__text">
+            It is now one list with full dates, no year groups and no
+            introduction. Does it need more air between rows, or is starting with
+            the first entry right?
+          </p>
+        </div>
+      </div>
+      <div class="question">
+        <span class="question__index">03</span>
+        <div>
+          <h3 class="question__title">How much metadata belongs on an article?</h3>
+          <p class="question__text">
+            The title block keeps a date, a reading time and a copy action.
+            Anything else starts to look like a dashboard. Is there something a
+            reader actually needs that this leaves out?
+          </p>
+        </div>
+      </div>
+      <div class="question">
+        <span class="question__index">04</span>
+        <div>
+          <h3 class="question__title">Where should the next polish pass go?</h3>
+          <p class="question__text">
+            The design system is separate from the live blog. The next pass could
+            be archive density, article typography, or the new reading and
+            listening pages. I would polish the components first, then choose the
+            first page to migrate.
+          </p>
+        </div>
+      </div>
+    </div>
+  </DocSection>
+</DocsLayout>

@@ -1,0 +1,68 @@
+---
+import DocsLayout from '../components/DocsLayout.astro'
+import DocSection from '../components/DocSection.astro'
+import BranchMark from '@zone/ui/components/BranchMark.astro'
+import { branchMarks } from '@zone/ui/marks'
+
+const base = branchMarks[32]
+const roundThree = branchMarks.slice(40)
+---
+
+<DocsLayout
+  current="/marks/"
+  eyebrow="Marks"
+  heading="Twenty from 33."
+  lede="33 is the base. These twenty vary its long left branch, its short right shoot, the stem arc and the small upper twigs."
+>
+  <DocSection
+    index="01 / The base"
+    title="33."
+    lede="Long left branch, short right shoot, one continuous stem. At 48px and 16px."
+  >
+    <figure class="m-0 flex min-h-44 max-w-md flex-col justify-between border border-line bg-canvas p-5">
+      <div class="flex items-start justify-between gap-2">
+        <span class="font-ui text-label-11 tabular-nums text-ink-tertiary">33</span>
+        <span class="text-right font-ui text-label-11 uppercase leading-tight text-ink-tertiary">{base.name}</span>
+      </div>
+      <div class="mt-10 flex items-end justify-between gap-4">
+        <BranchMark variant={33} class="size-12 text-ink" />
+        <BranchMark variant={33} class="size-4 text-ink-tertiary" />
+      </div>
+    </figure>
+  </DocSection>
+
+  <DocSection
+    index="02 / The set"
+    title="Twenty micro-variations."
+    lede="Same three strokes, different lengths and arcs. Pick by number."
+  >
+    <div class="grid grid-cols-2 gap-px border border-line bg-line sm:grid-cols-4">
+      {
+        roundThree.map((mark, index) => {
+          const n = index + 41
+          return (
+            <figure class="m-0 flex min-h-40 flex-col justify-between bg-canvas p-4">
+              <div class="flex items-start justify-between gap-2">
+                <span class="font-ui text-label-11 tabular-nums text-ink-tertiary">{String(n).padStart(2, '0')}</span>
+                <span class="text-right font-ui text-label-11 uppercase leading-tight text-ink-tertiary">{mark.name}</span>
+              </div>
+              <div class="mt-8 flex items-end justify-between gap-4">
+                <BranchMark variant={n} class="size-8 text-ink" />
+                <BranchMark variant={n} class="size-4 text-ink-tertiary" />
+              </div>
+            </figure>
+          )
+        })
+      }
+    </div>
+    <p class="mt-6 max-w-[52ch] text-label-13 text-ink-secondary">
+      The header keeps the domain only. The chosen branch becomes the favicon,
+      the touch icon and the app avatar; it does not return to the header
+      wordmark. 41 is selected; the favicon uses it.
+    </p>
+    <p class="mt-2 text-label-12 text-ink-tertiary">
+      Favicon preview: <BranchMark variant={41} class="ml-1 inline-block size-4 align-[-3px] text-ink" />
+      <span class="ml-2">41</span>
+    </p>
+  </DocSection>
+</DocsLayout>

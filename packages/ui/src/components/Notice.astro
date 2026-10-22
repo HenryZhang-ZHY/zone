@@ -1,0 +1,35 @@
+---
+import { tv } from '../recipes/tv'
+import { cn } from '../recipes/cn'
+
+interface Props {
+  label?: string
+  tone?: 'default' | 'accent'
+  class?: string
+}
+
+const notice = tv({
+  slots: {
+    root: 'grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-4 gap-y-1 border-l-2 border-line-strong bg-surface px-4 py-3 font-ui text-copy-13 text-ink-secondary max-sm:grid-cols-1',
+    label: 'text-label-11 uppercase text-ink-tertiary',
+    text: 'col-start-1 [&_a]:text-accent [&_a]:underline [&_a]:decoration-accent/40 [&_a]:underline-offset-[0.2em] [&_a:hover]:decoration-current',
+    actions: 'col-start-2 row-span-2 row-start-1 flex items-center gap-2 max-sm:col-start-1 max-sm:row-auto max-sm:mt-1',
+  },
+  variants: {
+    tone: {
+      default: '',
+      accent: { root: 'border-accent' },
+    },
+  },
+  defaultVariants: { tone: 'default' },
+})
+
+const { label, tone = 'default', class: className } = Astro.props
+const styles = notice({ tone })
+---
+
+<aside class={cn(styles.root(), className)} role="note">
+  {label && <p class={styles.label()}>{label}</p>}
+  <div class={styles.text()}><slot /></div>
+  <div class={styles.actions()}><slot name="actions" /></div>
+</aside>

@@ -1,0 +1,274 @@
+---
+import DemoLayout from '../../components/DemoLayout.astro'
+import EdgeToc from '@zone/ui/components/EdgeToc.astro'
+import SeriesPager from '@zone/ui/components/SeriesPager.astro'
+import Callout from '@zone/ui/components/Callout.astro'
+import CodeBlock from '@zone/ui/components/CodeBlock.astro'
+import Button from '@zone/ui/components/Button.astro'
+import { essayHeadings } from '../../data/demo'
+
+const proseCode = `.z-prose {
+  font-family: var(--z-font-prose);
+  font-size: 22px;
+  line-height: 1.68;
+}
+
+:lang(zh), :lang(ja) {
+  --z-font-prose: var(--z-font-reading);
+}`
+---
+
+<DemoLayout
+  title="The Quiet Page"
+  description="The article demo for Hairline: one centered measure, an edge index, and a serif reading voice."
+  current="/demos/archive/"
+>
+  <div class="shell">
+    <article class="mx-auto w-full max-w-reading">
+      <header class="mb-8 border-b border-line pb-6">
+        <h1 class="mt-0 font-prose text-heading-40 font-semibold text-ink max-sm:text-heading-32">The Quiet Page</h1>
+        <p class="mt-4 max-w-[56ch] font-prose text-lede-24 text-ink-secondary max-sm:text-copy-18">
+          What a reading interface owes the reader.
+        </p>
+        <div class="mt-6 flex flex-wrap items-baseline gap-2 text-label-12 tabular-nums text-ink-tertiary">
+          <time datetime="2026-10-22">2026.10.22</time>
+          <span class="text-ink-quiet">·</span>
+          <span>12 min</span>
+          <span class="text-ink-quiet">·</span>
+          <Button variant="quiet" data-copy-link class="min-w-[4.75rem]">Copy link</Button>
+          <span class="sr-only" data-copy-status aria-live="polite"></span>
+        </div>
+      </header>
+
+      <div class="z-prose z-prose--numbered" lang="en">
+        <p class="z-lede">
+          A page is a promise: nothing here is more interesting than the
+          sentence you are reading. Most interfaces break that promise before
+          the first paragraph. The ones that keep it are not simpler. They are
+          more deliberate.
+        </p>
+
+        <h2 id="the-measure">The measure</h2>
+        <p>
+          Reading happens in a line, and a line has a length. Too short and the
+          eye bounces from one ragged edge to the other; too long and it loses
+          its place on the return. The typographic answer is old and
+          unglamorous: set a measure, then defend it.
+        </p>
+        <blockquote>
+          <p>Typography exists to honor content.</p>
+          <cite>Robert Bringhurst</cite>
+        </blockquote>
+        <p>
+          A measure of 45 to 75 characters is the usual comfort zone for a
+          book.<sup><a href="#fn-1" id="fnref-1" aria-label="Footnote 1">1</a></sup>
+          A screen is not a book, but the eye has not changed. What has changed
+          is how easily a page can forget the measure while it chases a
+          viewport.
+        </p>
+
+        <h3 id="a-measure-in-characters">A measure in characters</h3>
+        <p>
+          A measure in characters is not a width in pixels. It changes with the
+          typeface and with the reader's settings. That is the point: the
+          column should be defined by the text, not by a device. The old column
+          was 68ch of the UI mono: 68 characters of mono, about 80 of 19px
+          serif. The new reading measure is 78ch: about 81 characters at 22px.
+          The wider column and the larger body were chosen together; one
+          without the other would miss<sup><a href="#fn-2" id="fnref-2" aria-label="Footnote 2">2</a></sup>.
+        </p>
+        <table>
+          <caption class="sr-only">Two measures, five faces.</caption>
+          <thead>
+            <tr>
+              <th>Face</th>
+              <th>Size / leading</th>
+              <th>Measure</th>
+              <th class="text-right tabular-nums">Characters</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Reading</td>
+              <td>22 / 1.68</td>
+              <td>78ch</td>
+              <td class="text-right tabular-nums">≈ 81</td>
+            </tr>
+            <tr>
+              <td>Before</td>
+              <td>19 / 1.68</td>
+              <td>68ch</td>
+              <td class="text-right tabular-nums">≈ 80</td>
+            </tr>
+            <tr>
+              <td>Mono (ref.)</td>
+              <td>16 / 1.70</td>
+              <td>68ch</td>
+              <td class="text-right tabular-nums">68</td>
+            </tr>
+            <tr>
+              <td>CJK</td>
+              <td>18 / 1.90</td>
+              <td>40em</td>
+              <td class="text-right tabular-nums">≈ 40</td>
+            </tr>
+            <tr>
+              <td>Code</td>
+              <td>13 / 1.70</td>
+              <td>78ch</td>
+              <td class="text-right tabular-nums">78</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          At 81 characters the new reading line is at the top of the range; the
+          old 19px line was at 80. The 22px body is what keeps the wider column
+          readable. The 78ch width alone at 19px would be about 94 characters,
+          over the limit.
+        </p>
+        <p>
+          Too often a page sets its width once, in pixels, and then changes the
+          type inside it. The column is a container; the text is a guest.
+          Reverse it. The column follows the text, and the page follows the
+          column.
+        </p>
+        <p class="font-ui text-label-13"><a class="text-accent underline decoration-accent/40 underline-offset-[0.25em] hover:decoration-current" href="/demos/measure/">Open the measure lab →</a></p>
+
+        <h2 id="the-margin">The margin</h2>
+        <p>
+          Margins are not leftover space. They are where the page tells you
+          what it is: a date, a series, a language, a chapter number. Put those
+          facts at the top of the page, or in the margin, and the reading
+          column stays uninterrupted. The reader can look when they need to and
+          ignore it when they do not.
+        </p>
+        <p>
+          This page keeps the margin mostly empty. The title block carries the
+          facts; the right edge carries a thin index of the sections, invisible
+          until you reach for it. There is no sidebar, no sticky card, nothing
+          that asks to be looked at while the essay is being read.
+        </p>
+        <Callout kind="accent">
+          <p>
+            Chinese and Japanese get a different measure: 18px with 1.9
+            leading, 0.75em block gaps, and no negative tracking. The rhythm is
+            the same; only the values change.
+          </p>
+        </Callout>
+        <p>
+          Small screens have no margin to spare. The edge index leaves, the
+          metadata moves under the title, and the article becomes one column.
+          Nothing is lost. It is re-sequenced.
+        </p>
+
+        <h2 id="the-voice">The voice</h2>
+        <p>
+          Type has a voice before it has a size. IBM Plex Mono is the apparatus
+          of this site: dates, labels, numbers, navigation, code. Newsreader is
+          the essay itself. The two are deliberately different.
+        </p>
+
+        <p>
+          A 4,000-word essay in mono is a commitment. The characters are even,
+          the rhythm is mechanical, and after twenty minutes the reader is aware
+          of the machine. Serif is the publication's normal voice: even color, a
+          quiet rhythm, a measure that disappears.
+        </p>
+        <p>
+          There is no reading-mode switch. Serif is the reading voice; mono is
+          the apparatus. A reader should not have to configure a page before
+          reading it.
+        </p>
+        <CodeBlock code={proseCode} />
+        <p>
+          In Chinese and Japanese the question does not arise. Mono Latin leaves
+          gaps around Han characters, so prose resolves to the proportional
+          reading stack at every size. The chrome stays mono.
+        </p>
+
+        <h2 id="the-weather">The weather</h2>
+        <p>
+          Dark mode is not a filter. A white page inverted becomes a different
+          page; the ink hierarchy collapses; the accent loses its contrast. The
+          dark theme is a second set of values, chosen for a different light.
+        </p>
+        <p>
+          A page that is calm in daylight should be calm at night. The dark
+          paper is nearly black, the ink is cool and slightly soft, and the
+          accent is lighter. The hierarchy survives; only the luminance flips.
+        </p>
+        <Callout>
+          <p>
+            The theme is automatic by default. The switch in the corner exists
+            to inspect both. A product switch is a promise to maintain a third
+            state, not just a toggle.
+          </p>
+        </Callout>
+
+        <h2 id="a-page-not-a-screen">A page, not a screen</h2>
+        <p>
+          None of this is visible. That is the test. A reader should remember
+          the essay, the argument, the sentence they underlined, and not the
+          interface that held it.
+        </p>
+        <p>
+          A quiet page is not an empty page. It is a page where every rule,
+          every margin and every type size has already made the decision, so
+          the reader does not have to.
+        </p>
+        <p>
+          The best compliment is the one this design is trying to earn: I forgot
+          I was reading on a screen.
+        </p>
+      </div>
+
+      <section class="z-footnotes" aria-label="Footnotes">        <ol>
+          <li id="fn-1">
+            Robert Bringhurst, <em>The Elements of Typographic Style</em>, on
+            measure and the 45–75 character range.
+            <a href="#fnref-1" aria-label="Back to reference 1">↩</a>
+          </li>
+          <li id="fn-2">
+            The old column was 68ch of IBM Plex Mono at 16px; at 19px,
+            Newsreader fit about 80 characters. The new reading measure is
+            78ch at 22px, about 81; the column and the body changed together.
+            A ch is the width of the zero, not the average character.
+            <a href="#fnref-2" aria-label="Back to reference 2">↩</a>
+          </li>
+        </ol>
+      </section>
+
+      <SeriesPager
+        previousLabel="Previous essay"
+        nextLabel="Next essay"
+        previous={{ title: 'The Senior Engineer Death Spiral', href: 'https://shuzhi.zone/en/blog/the-senior-engineer-death-spiral/' }}
+        next={{ title: 'The Nature of the Firm', href: 'https://shuzhi.zone/en/blog/the-nature-of-the-firm/' }}
+      />
+    </article>
+  </div>
+
+  <EdgeToc headings={essayHeadings} />
+</DemoLayout>
+
+<script>
+  const copyButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-copy-link]'))
+  const status = document.querySelector<HTMLElement>('[data-copy-status]')
+
+  for (const button of copyButtons) {
+    const label = button.textContent ?? 'Copy link'
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(window.location.href)
+        button.textContent = 'Copied'
+        if (status) status.textContent = 'Link copied to the clipboard.'
+      } catch {
+        button.textContent = 'Copy failed'
+        if (status) status.textContent = 'Copy failed. The URL is in the address bar.'
+      }
+      window.setTimeout(() => {
+        button.textContent = label
+        if (status) status.textContent = ''
+      }, 1800)
+    })
+  }
+</script>

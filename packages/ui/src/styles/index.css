@@ -1,0 +1,201 @@
+@import 'tailwindcss';
+@import '@zone/tokens/tokens.css';
+@import './fonts.css';
+@import './base.css';
+@import './primitives.css';
+@import './prose.css';
+
+/*
+ * Tailwind scans the UI package and the documentation app. The product's
+ * source of truth is still tokens.json; this block only names those values
+ * for Tailwind's utilities.
+ */
+@source '../components';
+@source '../recipes';
+@source '../../../apps/design/src';
+@source '../../../../src';
+
+@theme inline {
+  --color-accent: var(--z-color-accent);
+  --color-accent-soft: var(--z-color-accent-soft);
+  --color-accent-strong: var(--z-color-accent-strong);
+  --color-canvas: var(--z-color-canvas);
+  --color-code: var(--z-color-code);
+  --color-danger: var(--z-color-danger);
+  --color-danger-soft: var(--z-color-danger-soft);
+  --color-data-1: var(--z-color-data-1);
+  --color-data-2: var(--z-color-data-2);
+  --color-data-3: var(--z-color-data-3);
+  --color-data-4: var(--z-color-data-4);
+  --color-data-5: var(--z-color-data-5);
+  --color-ink: var(--z-color-ink);
+  --color-ink-quiet: var(--z-color-ink-quiet);
+  --color-ink-secondary: var(--z-color-ink-secondary);
+  --color-ink-tertiary: var(--z-color-ink-tertiary);
+  --color-line: var(--z-color-line);
+  --color-line-strong: var(--z-color-line-strong);
+  --color-on-accent: var(--z-color-on-accent);
+  --color-on-ink: var(--z-color-on-ink);
+  --color-overlay: var(--z-color-overlay);
+  --color-positive: var(--z-color-positive);
+  --color-positive-soft: var(--z-color-positive-soft);
+  --color-selection: var(--z-color-selection);
+  --color-signal: var(--z-color-signal);
+  --color-surface: var(--z-color-surface);
+  --color-surface-strong: var(--z-color-surface-strong);
+  --color-warning: var(--z-color-warning);
+  --color-warning-soft: var(--z-color-warning-soft);
+  --text-display-64: var(--z-text-display-64);
+  --text-display-64--line-height: var(--z-leading-display-64);
+  --text-display-64--letter-spacing: var(--z-tracking-display-64);
+  --text-display-48: var(--z-text-display-48);
+  --text-display-48--line-height: var(--z-leading-display-48);
+  --text-display-48--letter-spacing: var(--z-tracking-display-48);
+  --text-heading-40: var(--z-text-heading-40);
+  --text-heading-40--line-height: var(--z-leading-heading-40);
+  --text-heading-40--letter-spacing: var(--z-tracking-heading-40);
+  --text-heading-32: var(--z-text-heading-32);
+  --text-heading-32--line-height: var(--z-leading-heading-32);
+  --text-heading-32--letter-spacing: var(--z-tracking-heading-32);
+  --text-heading-28: var(--z-text-heading-28);
+  --text-heading-28--line-height: var(--z-leading-heading-28);
+  --text-heading-28--letter-spacing: var(--z-tracking-heading-28);
+  --text-heading-24: var(--z-text-heading-24);
+  --text-heading-24--line-height: var(--z-leading-heading-24);
+  --text-heading-24--letter-spacing: var(--z-tracking-heading-24);
+  --text-heading-20: var(--z-text-heading-20);
+  --text-heading-20--line-height: var(--z-leading-heading-20);
+  --text-heading-20--letter-spacing: var(--z-tracking-heading-20);
+  --text-heading-18: var(--z-text-heading-18);
+  --text-heading-18--line-height: var(--z-leading-heading-18);
+  --text-heading-18--letter-spacing: var(--z-tracking-heading-18);
+  --text-heading-16: var(--z-text-heading-16);
+  --text-heading-16--line-height: var(--z-leading-heading-16);
+  --text-heading-16--letter-spacing: var(--z-tracking-heading-16);
+  --text-heading-14: var(--z-text-heading-14);
+  --text-heading-14--line-height: var(--z-leading-heading-14);
+  --text-heading-14--letter-spacing: var(--z-tracking-heading-14);
+  --text-lede-20: var(--z-text-lede-20);
+  --text-lede-20--line-height: var(--z-leading-lede-20);
+  --text-lede-20--letter-spacing: var(--z-tracking-lede-20);
+  --text-lede-24: var(--z-text-lede-24);
+  --text-lede-24--line-height: var(--z-leading-lede-24);
+  --text-lede-24--letter-spacing: var(--z-tracking-lede-24);
+  --text-copy-18: var(--z-text-copy-18);
+  --text-copy-18--line-height: var(--z-leading-copy-18);
+  --text-copy-18--letter-spacing: var(--z-tracking-copy-18);
+  --text-reading-22: var(--z-text-reading-22);
+  --text-reading-22--line-height: var(--z-leading-reading-22);
+  --text-reading-22--letter-spacing: var(--z-tracking-reading-22);
+  --text-copy-16: var(--z-text-copy-16);
+  --text-copy-16--line-height: var(--z-leading-copy-16);
+  --text-copy-16--letter-spacing: var(--z-tracking-copy-16);
+  --text-copy-14: var(--z-text-copy-14);
+  --text-copy-14--line-height: var(--z-leading-copy-14);
+  --text-copy-14--letter-spacing: var(--z-tracking-copy-14);
+  --text-copy-13: var(--z-text-copy-13);
+  --text-copy-13--line-height: var(--z-leading-copy-13);
+  --text-copy-13--letter-spacing: var(--z-tracking-copy-13);
+  --text-label-16: var(--z-text-label-16);
+  --text-label-16--line-height: var(--z-leading-label-16);
+  --text-label-16--letter-spacing: var(--z-tracking-label-16);
+  --text-label-14: var(--z-text-label-14);
+  --text-label-14--line-height: var(--z-leading-label-14);
+  --text-label-14--letter-spacing: var(--z-tracking-label-14);
+  --text-label-13: var(--z-text-label-13);
+  --text-label-13--line-height: var(--z-leading-label-13);
+  --text-label-13--letter-spacing: var(--z-tracking-label-13);
+  --text-label-12: var(--z-text-label-12);
+  --text-label-12--line-height: var(--z-leading-label-12);
+  --text-label-12--letter-spacing: var(--z-tracking-label-12);
+  --text-label-11: var(--z-text-label-11);
+  --text-label-11--line-height: var(--z-leading-label-11);
+  --text-label-11--letter-spacing: var(--z-tracking-label-11);
+  --text-button-14: var(--z-text-button-14);
+  --text-button-14--line-height: var(--z-leading-button-14);
+  --text-button-14--letter-spacing: var(--z-tracking-button-14);
+  --text-button-13: var(--z-text-button-13);
+  --text-button-13--line-height: var(--z-leading-button-13);
+  --text-button-13--letter-spacing: var(--z-tracking-button-13);
+  --text-button-12: var(--z-text-button-12);
+  --text-button-12--line-height: var(--z-leading-button-12);
+  --text-button-12--letter-spacing: var(--z-tracking-button-12);
+  --spacing-1: var(--z-space-1);
+  --spacing-2: var(--z-space-2);
+  --spacing-3: var(--z-space-3);
+  --spacing-4: var(--z-space-4);
+  --spacing-5: var(--z-space-5);
+  --spacing-6: var(--z-space-6);
+  --spacing-8: var(--z-space-8);
+  --spacing-10: var(--z-space-10);
+  --spacing-12: var(--z-space-12);
+  --spacing-16: var(--z-space-16);
+  --spacing-20: var(--z-space-20);
+  --spacing-24: var(--z-space-24);
+  --spacing-gutter: var(--z-layout-gutter);
+  --spacing-page-top: var(--z-layout-page-top);
+  --spacing-page-bottom: var(--z-layout-page-bottom);
+  --radius-none: var(--z-radius-none);
+  --radius-subtle: var(--z-radius-subtle);
+  --radius-sm: var(--z-radius-sm);
+  --radius-full: var(--z-radius-full);
+  --shadow-1: var(--z-shadow-1);
+  --shadow-2: var(--z-shadow-2);
+  --shadow-3: var(--z-shadow-3);
+  --container-shell: var(--z-layout-shell);
+  --container-measure: var(--z-layout-measure);
+  --container-reading: var(--z-layout-reading);
+  --font-serif: var(--z-font-serif);
+  --ease-out: var(--z-motion-ease-out);
+  --ease-in-out: var(--z-motion-ease-in-out);
+}
+
+/* Utilities that name a layout or a token, rather than a component. */
+@utility shell {
+  width: 100%;
+  max-width: var(--z-layout-shell);
+  margin-inline: auto;
+  padding-inline: var(--z-layout-gutter);
+}
+
+/*
+ * Fonts are resolved on the element, not at :root, so a language change or the
+ * language change can re-resolve the stack. A @theme variable would freeze
+ * the value at the root.
+ */
+@utility font-ui {
+  font-family: var(--z-font-ui);
+}
+
+@utility font-reading {
+  font-family: var(--z-font-reading);
+}
+
+@utility font-serif {
+  font-family: var(--z-font-serif);
+}
+
+@utility font-code {
+  font-family: var(--z-font-code);
+}
+
+@utility font-prose {
+  font-family: var(--z-font-prose);
+}
+
+@utility focus-ring {
+  outline: var(--z-focus-ring);
+  outline-offset: var(--z-focus-offset);
+}
+
+@utility duration-1 {
+  transition-duration: var(--z-motion-duration-1);
+}
+
+@utility duration-2 {
+  transition-duration: var(--z-motion-duration-2);
+}
+
+@utility duration-3 {
+  transition-duration: var(--z-motion-duration-3);
+}

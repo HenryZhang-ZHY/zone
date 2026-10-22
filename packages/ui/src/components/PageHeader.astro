@@ -1,0 +1,31 @@
+---
+import { tv } from '../recipes/tv'
+import { cn } from '../recipes/cn'
+
+interface Props {
+  eyebrow?: string
+  title: string
+  lede?: string
+  class?: string
+}
+
+const pageHeader = tv({
+  slots: {
+    root: 'mb-12 font-ui',
+    eyebrow: 'font-ui text-label-11 uppercase text-ink-tertiary',
+    title: 'mt-3 font-prose text-heading-40 font-semibold text-ink',
+    lede: 'mt-4 max-w-[54ch] font-prose text-copy-18 text-ink-secondary',
+  },
+})
+
+const { eyebrow, title, lede, class: className } = Astro.props
+const styles = pageHeader()
+---
+
+<header class={cn(styles.root(), className)}>
+  {eyebrow && <p class={styles.eyebrow()}>{eyebrow}</p>}
+  <h1 class={styles.title()}>{title}</h1>
+  {lede && <p class={styles.lede()}>{lede}</p>}
+  <slot name="meta" />
+  <slot />
+</header>

@@ -1,0 +1,33 @@
+---
+import ThemeToggle from './ThemeToggle.astro'
+import { docsTopNav } from '../data/site'
+
+interface Props {
+  current: string
+}
+
+const { current } = Astro.props
+const isCurrent = (href: string) =>
+  href === '/' ? current === '/' : current === href || (href === '/demos/archive/' && current.startsWith('/demos/'))
+---
+
+<header class="doc-header">
+  <div class="shell doc-header__inner">
+    <a class="doc-brand" href="/">
+
+      <span class="doc-brand__name">Hairline</span>
+      <span class="doc-brand__slash" aria-hidden="true">/</span>
+      <span class="doc-brand__long">Design System</span>
+    </a>
+    <nav class="doc-top-nav" aria-label="Design system">
+      {
+        docsTopNav.map((item) => (
+          <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+    <ThemeToggle label="Documentation theme" />
+  </div>
+</header>

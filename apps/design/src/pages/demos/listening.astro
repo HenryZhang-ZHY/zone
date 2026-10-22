@@ -1,0 +1,31 @@
+---
+import DemoLayout from '../../components/DemoLayout.astro'
+import PageHeader from '@zone/ui/components/PageHeader.astro'
+import ListenRow from '@zone/ui/components/ListenRow.astro'
+import { episodes } from '../../data/demo'
+---
+
+<DemoLayout
+  title="Listening"
+  description="The listening demo for Hairline: episode rows, no player chrome."
+  current="/demos/listening/"
+>
+  <div class="shell">
+    <div class="mx-auto max-w-measure">
+      <PageHeader title="Listening" class="mb-10" />
+      <section aria-labelledby="episodes">
+        <h2 id="episodes" class="sr-only">Episodes</h2>
+        <div>
+          {episodes.map((episode, index) => (
+            <ListenRow
+              index={String(index + 1).padStart(2, '0')}
+              title={episode.title}
+              href={episode.href}
+              meta={episode.meta}
+            />
+          ))}
+        </div>
+      </section>
+    </div>
+  </div>
+</DemoLayout>

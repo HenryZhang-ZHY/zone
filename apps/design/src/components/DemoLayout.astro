@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import SiteHeader from '@zone/ui/components/SiteHeader.astro'
+import SiteFooter from '@zone/ui/components/SiteFooter.astro'
+import DemoControls from './DemoControls.astro'
+import { footerElsewhere, footerIndex, siteNav } from '../data/site'
+
+interface Props {
+  title: string
+  description: string
+  current: string
+}
+
+const { title, description, current } = Astro.props
+---
+
+<BaseLayout title={`${title} — Zone Design System`} description={description}>
+  <SiteHeader current={current} items={siteNav} />
+  <main id="main" class="py-page-top pb-page-bottom"><slot /></main>
+  <SiteFooter links={[...footerIndex, ...footerElsewhere]} />
+  <DemoControls />
+</BaseLayout>

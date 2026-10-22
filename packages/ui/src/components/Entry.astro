@@ -1,0 +1,54 @@
+---
+import { tv } from '../recipes/tv'
+import { cn } from '../recipes/cn'
+
+interface Props {
+  date: string
+  datetime?: string
+  title: string
+  excerpt?: string
+  href: string
+  meta?: string[]
+  lang?: string
+  class?: string
+}
+
+const entry = tv({
+  slots: {
+    root: 'border-b border-line font-ui',
+    link: 'group grid grid-cols-[5.5rem_minmax(0,1fr)_1.25rem] items-start gap-6 py-6 max-sm:grid-cols-[4.5rem_minmax(0,1fr)] max-sm:gap-4 max-sm:py-5',
+    date: 'whitespace-nowrap pt-[0.4em] text-label-12 tabular-nums text-ink-tertiary',
+    body: 'min-w-0',
+    title: 'font-prose text-heading-20 font-semibold text-ink underline decoration-transparent underline-offset-[0.18em] transition-[color,text-decoration-color] duration-1 ease-out group-hover:text-accent group-hover:decoration-current group-focus-visible:text-accent group-focus-visible:decoration-current max-sm:text-heading-16',
+    excerpt: 'mt-2 max-w-[58ch] font-prose text-copy-16 text-ink-secondary max-sm:text-copy-14',
+    meta: 'mt-2 flex flex-wrap items-baseline gap-2 text-label-12 text-ink-tertiary',
+    arrow: 'self-center text-label-14 text-ink-quiet opacity-0 -translate-x-0.5 transition-[opacity,transform,color] duration-1 ease-out group-hover:translate-x-0 group-hover:text-accent group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:text-accent group-focus-visible:opacity-100 max-sm:hidden [@media(hover:none)]:translate-x-0 [@media(hover:none)]:opacity-35',
+  },
+})
+
+const { date, datetime, title, excerpt, href, meta = [], lang, class: className } = Astro.props
+const styles = entry()
+---
+
+<li class={cn(styles.root(), className)}>
+  <a class={styles.link()} href={href}>
+    <time class={styles.date()} datetime={datetime ?? date}>{date}</time>
+    <div class={styles.body()} lang={lang}>
+      <h3 class={styles.title()}>{title}</h3>
+      {excerpt && <p class={styles.excerpt()}>{excerpt}</p>}
+      {
+        meta.length > 0 && (
+          <div class={styles.meta()}>
+            {meta.map((item, index) => (
+              <>
+                {index > 0 && <span class="text-ink-quiet" aria-hidden="true">·</span>}
+                <span>{item}</span>
+              </>
+            ))}
+          </div>
+        )
+      }
+    </div>
+    <span class={styles.arrow()} aria-hidden="true">→</span>
+  </a>
+</li>

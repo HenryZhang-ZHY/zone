@@ -1,0 +1,42 @@
+/*
+ * Expressive Code is rendered outside the prose utility layer. Keep its frame
+ * on the Hairline system: one hairline, no shadow, no radius, canvas surface.
+ */
+.expressive-code .frame {
+  border: 1px solid var(--z-color-line) !important;
+  border-radius: 0 !important;
+  background: var(--z-color-surface) !important;
+  box-shadow: none !important;
+}
+
+.expressive-code .frame pre {
+  border: 0;
+  border-radius: 0;
+  background: transparent !important;
+}
+
+.expressive-code .frame.has-title .header {
+  border-bottom: 1px solid var(--z-color-line);
+  border-radius: 0;
+  background: transparent;
+}
+
+.expressive-code .frame.has-title .header:before {
+  border-color: var(--z-color-line);
+}
+
+.expressive-code .copy {
+  inset-block-start: calc(var(--ec-brdWd) + var(--button-spacing) + 0.1rem);
+}
+
+.expressive-code .copy button {
+  width: var(--z-space-8);
+  height: var(--z-space-8);
+  border: 1px solid var(--z-color-line);
+  border-radius: 0;
+  background: var(--z-color-canvas);
+}
+
+.expressive-code .copy button:before {
+  border-color: var(--z-color-line) !important;
+}

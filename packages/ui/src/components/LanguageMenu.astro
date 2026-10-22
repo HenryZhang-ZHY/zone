@@ -1,0 +1,97 @@
+---
+import { tv } from '../recipes/tv'
+import { cn } from '../recipes/cn'
+
+export interface LanguageItem {
+  tag: string
+  name: string
+  href: string
+}
+
+interface Props {
+  current: string
+  items: LanguageItem[]
+  label?: string
+  class?: string
+}
+
+const languageMenu = tv({
+  slots: {
+    root: 'relative',
+    summary: [
+      'flex min-h-10 cursor-pointer list-none items-center gap-2 px-1 text-label-13 text-ink-tertiary',
+      'transition-colors duration-1 ease-out hover:text-ink',
+      'focus-visible:focus-ring [&::-webkit-details-marker]:hidden',
+    ],
+    chevron: 'size-2.5 shrink-0 transition-transform duration-1 ease-out',
+    panel: 'absolute right-0 top-full z-50 mt-2 w-[19rem] border border-line-strong bg-canvas p-2 shadow-2 max-sm:w-[min(19rem,calc(100vw-2rem))]',
+    list: 'm-0 grid list-none grid-cols-2 gap-1 p-0 max-sm:grid-cols-1',
+    item: [
+      'flex min-h-9 items-center px-3 text-label-13 text-ink-secondary no-underline',
+      'transition-colors duration-1 ease-out hover:bg-surface hover:text-ink',
+      'aria-[current=true]:font-medium aria-[current=true]:text-ink',
+    ],
+  },
+})
+
+const { current, items, label = 'Language', class: className } = Astro.props
+const currentName = items.find((item) => item.tag === current)?.name ?? current
+const styles = languageMenu()
+---
+
+<details class={cn(styles.root(), className)} data-language-menu>
+  <summary class={styles.summary()} aria-label={`${label}: ${currentName}`}>
+    <span>{currentName}</span>
+    <svg class={styles.chevron()} viewBox="0 0 10 10" fill="none" aria-hidden="true">
+      <path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </summary>
+  <nav class={styles.panel()} aria-label={label}>
+    <ul class={styles.list()}>
+      {
+        items.map((item) => (
+          <li>
+            <a
+              class={styles.item()}
+              href={item.href}
+              hreflang={item.tag}
+              lang={item.tag}
+              data-locale={item.tag}
+              aria-current={item.tag === current ? 'true' : undefined}
+            >
+              {item.name}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</details>
+
+<script>
+  const closeMenu = (menu: HTMLDetailsElement) => menu.removeAttribute('open')
+
+  document.addEventListener('click', (event) => {
+    const target = event.target as Node
+    for (const menu of document.querySelectorAll<HTMLDetailsElement>('[data-language-menu]')) {
+      if (menu.open && !menu.contains(target)) closeMenu(menu)
+    }
+  })
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return
+    for (const menu of document.querySelectorAll<HTMLDetailsElement>('[data-language-menu][open]')) closeMenu(menu)
+  })
+
+  for (const menu of document.querySelectorAll<HTMLDetailsElement>('[data-language-menu]')) {
+    for (const link of menu.querySelectorAll('a')) {
+      link.addEventListener('click', () => closeMenu(menu))
+    }
+  }
+</script>
+
+<style>
+  details[data-language-menu][open] svg {
+    transform: rotate(180deg);
+  }
+</style>

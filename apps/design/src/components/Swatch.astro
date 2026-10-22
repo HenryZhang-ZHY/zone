@@ -1,0 +1,20 @@
+---
+interface Props {
+  name: string
+  light: string
+  dark: string
+  role?: string
+}
+
+const { name, light, dark, role } = Astro.props
+---
+
+<div class="doc-swatch">
+  <div class="doc-swatch__chip" style={`--swatch-light: ${light}; --swatch-dark: ${dark}`}></div>
+  <p class="doc-swatch__name">{name}</p>
+  <p class="doc-swatch__value tabular-nums">
+    <span>{light}</span>
+    <span>{dark}</span>
+  </p>
+  {role && <p class="doc-swatch__role">{role}</p>}
+</div>

@@ -47,6 +47,7 @@ export function mountLanguageSuggestion(config: SuggestionConfig, suggest: (inpu
 	anchor.href = link.href + location.search + location.hash
 	anchor.hreflang = target
 	anchor.dataset.locale = target
+	anchor.className = 'text-accent underline decoration-accent/40 underline-offset-[0.25em] hover:decoration-current'
 	anchor.textContent = link.action
 	line.append(`${link.text} `, anchor)
 
@@ -56,13 +57,15 @@ export function mountLanguageSuggestion(config: SuggestionConfig, suggest: (inpu
 	}
 
 	const shell = document.createElement('aside')
-	shell.className = 'z-notice-shell'
+	shell.className = 'shell pt-4'
 	shell.lang = target
-	const box = document.createElement('div')
-	box.className = 'z-notice'
+	const frame = document.createElement('div')
+  frame.className = 'mx-auto max-w-reading'
+  const box = document.createElement('div')
+	box.className = 'flex items-start gap-4 border-l-2 border-line-strong bg-surface px-4 py-3 font-ui text-copy-13 text-ink-secondary'
 	const close = document.createElement('button')
 	close.type = 'button'
-	close.className = 'z-notice-dismiss'
+	close.className = 'ml-auto shrink-0 text-label-16 leading-none text-ink-tertiary transition-colors duration-1 hover:text-ink'
 	close.setAttribute('aria-label', link.dismiss)
 	close.textContent = '×'
 	close.addEventListener('click', () => {
@@ -74,6 +77,7 @@ export function mountLanguageSuggestion(config: SuggestionConfig, suggest: (inpu
 		shell.remove()
 	})
 	box.append(line, close)
-	shell.append(box)
+	frame.append(box)
+  shell.append(frame)
 	script.before(shell)
 }

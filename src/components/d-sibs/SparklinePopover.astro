@@ -273,7 +273,7 @@
     }
   }
 
-  function getListedPoints(traj: DataPoint[]): DataPoint[] {
+  function getListedPoints(traj: DataPoint[]): (DataPoint & { group: number })[] {
     return traj.filter((point): point is DataPoint & { group: number } => point.group !== null)
   }
 

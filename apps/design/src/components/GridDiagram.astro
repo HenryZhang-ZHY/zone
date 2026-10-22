@@ -1,0 +1,27 @@
+---
+interface Props {
+  caption?: string
+}
+
+const {
+  caption = 'One centered measure, air on both sides, and a thin index at the page edge. No sidebar, no second column.',
+} = Astro.props
+---
+
+<figure class="doc-diagram">
+  <div class="doc-diagram__page">
+    <div class="doc-diagram__air"><span>air</span></div>
+    <div class="doc-diagram__measure">
+      <span class="doc-diagram__label">Reading column</span>
+      <span class="doc-diagram__note">78ch · 22px serif</span>
+    </div>
+    <div class="doc-diagram__air doc-diagram__air--edge">
+      <span>air</span>
+      <span class="doc-diagram__ticks" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i>
+      </span>
+      <span class="doc-diagram__edge-label">edge index</span>
+    </div>
+  </div>
+  <figcaption class="doc-diagram__caption">{caption}</figcaption>
+</figure>

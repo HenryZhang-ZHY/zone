@@ -1,0 +1,35 @@
+---
+import { tv } from '../recipes/tv'
+import { cn } from '../recipes/cn'
+
+interface Props {
+  code: string
+  label?: string
+  meta?: string
+  class?: string
+}
+
+const codeBlock = tv({
+  slots: {
+    root: 'my-8 border border-line bg-surface font-ui',
+    bar: 'flex items-center justify-between gap-4 border-b border-line px-4 py-2 text-label-11 tracking-[0.04em] text-ink-tertiary',
+    pre: 'm-0 overflow-x-auto px-5 py-4 font-code text-copy-13 leading-[1.7] text-ink-secondary [tab-size:2]',
+    code: 'font-code',
+  },
+})
+
+const { code, label, meta, class: className } = Astro.props
+const styles = codeBlock()
+---
+
+<figure class={cn(styles.root(), className)}>
+  {
+    (label || meta) && (
+      <figcaption class={styles.bar()}>
+        <span>{label}</span>
+        <span>{meta}</span>
+      </figcaption>
+    )
+  }
+  <pre class={styles.pre()}><code class={styles.code()}>{code}</code></pre>
+</figure>

@@ -1,0 +1,135 @@
+---
+import DocsLayout from '../components/DocsLayout.astro'
+import DocSection from '../components/DocSection.astro'
+import DemoFrame from '../components/DemoFrame.astro'
+import Wordmark from '@zone/ui/components/Wordmark.astro'
+import LanguageMenu from '@zone/ui/components/LanguageMenu.astro'
+import { formatSampleDate, languageMenuItems, languages } from '../data/languages'
+
+const isCJK = (tag: string) => tag === 'ja' || tag.startsWith('zh')
+---
+
+<DocsLayout
+  current="/languages/"
+  eyebrow="Languages"
+  heading="Eight languages, one page."
+  lede="The switch names languages in their own words. The column, the hierarchy and the reading voice stay the same."
+>
+  <DocSection
+    index="01 / The switch"
+    title="A name, not a flag."
+    lede="The header carries one compact control. The menu is an index, not a modal."
+  >
+    <DemoFrame label="Header with language">
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-3 border-b border-line pb-4">
+        <Wordmark />
+        <nav class="ml-auto flex items-center gap-4 text-label-13 text-ink-tertiary max-sm:ml-0 max-sm:w-full max-sm:border-t max-sm:border-line max-sm:pt-2" aria-label="Primary">
+          <span class="text-ink">Writing</span>
+          <span aria-hidden="true" class="text-ink-quiet">/</span>
+          <span>Reading</span>
+          <span aria-hidden="true" class="text-ink-quiet">/</span>
+          <span>Listening</span>
+        </nav>
+        <LanguageMenu current="en" items={languageMenuItems} />
+      </div>
+    </DemoFrame>
+    <div class="doc-copy doc-mt">
+      <p>
+        No flags. A flag names a country; a language is a name. Every item is an
+        endonym — <span lang="ja">日本語</span>, <span lang="zh-Hans">简体中文</span>,
+        <span lang="ru">Русский</span> — so a reader can find their language
+        without translating it first.
+      </p>
+      <p>
+        The current language is the ink item, not a checkmark. Each link carries
+        <code>hreflang</code> and <code>lang</code>; the page carries its own
+        <code>lang</code>. The menu is a two-column list of eight, and it closes
+        on Escape or an outside click.
+      </p>
+    </div>
+  </DocSection>
+
+  <DocSection
+    index="02 / The scripts"
+    title="One column, eight scripts."
+    lede="The same sentence, the same date. Only the face, the measure and the leading change."
+  >
+    <div class="border-y border-line-strong">
+      {
+        languages.map((language) => (
+          <div
+            id={`lang-${language.tag.toLowerCase()}`}
+            class="grid gap-x-6 gap-y-2 border-b border-line py-6 last:border-b-0 sm:grid-cols-[8.5rem_minmax(0,1fr)_9rem]"
+          >
+            <div class="font-ui text-label-11 uppercase text-ink-tertiary">
+              {language.name}
+              <span class="mt-1 block normal-case tracking-normal text-ink-quiet">{language.tag}</span>
+            </div>
+            <p
+              lang={language.tag}
+              class:list={[
+                'font-prose text-copy-18 text-ink',
+                isCJK(language.tag) && 'leading-[1.9]',
+              ]}
+            >
+              {language.sentence}
+            </p>
+            <time
+              datetime="2026-10-22"
+              class="font-ui text-label-12 tabular-nums text-ink-tertiary sm:text-right"
+            >
+              {formatSampleDate(language.tag)}
+            </time>
+          </div>
+        ))
+      }
+    </div>
+    <div class="doc-copy doc-mt">
+      <p>
+        English, Spanish, German, French, Portuguese and Russian use Newsreader;
+        Cyrillic falls through the same serif stack. Chinese and Japanese use the
+        platform reading stack at 18px / 1.9, with 0.75em block gaps and no
+        heading tracking. There is no synthetic italic and no uppercase for Han
+        characters.
+      </p>
+      <p>
+        Dates come from <code>Intl.DateTimeFormat</code>, not from a fixed
+        pattern. The mono column keeps the date scannable while the order changes
+        with the reader's language.
+      </p>
+    </div>
+  </DocSection>
+
+  <DocSection
+    index="03 / The rules"
+    title="What changes, what does not."
+    lede="The layout is language-agnostic. The type values are not."
+  >
+    <div class="z-table-wrap">
+      <table class="z-table">
+        <thead>
+          <tr><th>Script</th><th>Face</th><th>Size / leading</th><th>Measure</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Latin, Cyrillic</td><td>Newsreader (serif fallback)</td><td class="tabular-nums">22 / 1.68</td><td>78ch</td></tr>
+          <tr><td>Chinese, Japanese</td><td>Platform reading stack</td><td class="tabular-nums">18 / 1.90</td><td>40em</td></tr>
+          <tr><td>Apparatus</td><td>IBM Plex Mono</td><td class="tabular-nums">11–14 / 1.4</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="doc-copy doc-mt">
+      <p>
+        The URL is localized: <code>/ja/blog/…</code>, <code>/zh-hans/blog/…</code>.
+        The root negotiates <code>Accept-Language</code>, remembers an explicit
+        choice, and exposes <code>hreflang</code> alternates. The header menu is
+        the quick switch; the footer keeps the full language index for readers
+        and crawlers.
+      </p>
+      <p>
+        What does not change: one shell, one centered reading column, the same
+        section numbers, the same edge index, the same metadata. A language is a
+        different voice for the same page, not a different layout.
+      </p>
+    </div>
+  </DocSection>
+</DocsLayout>

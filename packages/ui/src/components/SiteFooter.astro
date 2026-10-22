@@ -1,0 +1,59 @@
+---
+import { tv } from '../recipes/tv'
+import Wordmark from './Wordmark.astro'
+import { cn } from '../recipes/cn'
+
+export interface FooterLink {
+  label: string
+  href: string
+}
+
+interface Props {
+  links?: FooterLink[]
+  copyright?: string
+  class?: string
+}
+
+const footer = tv({
+  slots: {
+    root: 'mt-24 border-t border-line pb-8 pt-8 font-ui max-sm:mt-16',
+    inner: 'shell',
+    top: 'flex flex-wrap items-center justify-between gap-x-8 gap-y-4',
+    list: 'm-0 flex list-none flex-wrap gap-x-6 gap-y-2 p-0',
+    link: 'text-label-13 text-ink-tertiary underline decoration-transparent underline-offset-[0.2em] transition-[color,text-decoration-color] duration-1 ease-out hover:text-ink hover:decoration-current max-sm:inline-flex max-sm:min-h-11 max-sm:items-center',
+    copy: 'mt-8 text-label-11 tracking-[0.02em] text-ink-tertiary max-sm:mt-6',
+  },
+})
+
+const {
+  links = [
+    { label: 'Archive', href: '/demos/archive/' },
+    { label: 'Essay', href: '/demos/essay/' },
+    { label: 'Reading', href: '/demos/reading/' },
+    { label: 'Listening', href: '/demos/listening/' },
+  ],
+  copyright = `© ${new Date().getFullYear()} shuzhi.zone`,
+  class: className,
+} = Astro.props
+
+const styles = footer()
+---
+
+<footer class={cn(styles.root(), className)}>
+  <div class={styles.inner()}>
+    <div class={styles.top()}>
+      <Wordmark />
+      <nav aria-label="Footer">
+        <ul class={styles.list()}>
+          {
+            links.map((link) => (
+              <li><a class={styles.link()} href={link.href}>{link.label}</a></li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+    <slot />
+    <p class={styles.copy()}>{copyright}</p>
+  </div>
+</footer>

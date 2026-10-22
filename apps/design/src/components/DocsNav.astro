@@ -1,0 +1,32 @@
+---
+import { docsNav } from '../data/site'
+
+interface Props {
+  current: string
+}
+
+const { current } = Astro.props
+---
+
+<nav class="doc-side" aria-label="Contents">
+  {
+    docsNav.map((group) => (
+      <div class="doc-side__group">
+        <p class="doc-side__label">{group.label}</p>
+        <ul class="doc-side__list">
+          {group.items.map((item) => (
+            <li>
+              <a
+                class="doc-side__link"
+                href={item.href}
+                aria-current={current === item.href ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))
+  }
+</nav>

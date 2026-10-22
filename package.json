@@ -1,12 +1,23 @@
 {
   "name": "zone",
+  "private": true,
   "type": "module",
   "version": "0.0.1",
+  "packageManager": "bun@1.3.12",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "vitest run",
+    "tokens": "bun run --filter @zone/tokens build",
+    "design": "bun run --filter @zone/design dev",
+    "design:build": "bun run --filter @zone/tokens build && bun run --filter @zone/design build",
+    "design:preview": "bun run --filter @zone/design preview"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.10",
@@ -14,6 +25,7 @@
     "@astrojs/mdx": "^7.0.8",
     "@astrojs/rss": "^4.0.19",
     "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@zone/ui": "workspace:*",
     "astro": "^7.3.8",
     "astro-expressive-code": "^0.44.2",
     "katex": "^0.18.11",
@@ -23,7 +35,9 @@
     "typescript": "^6.0.0"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
     "esbuild": "^0.28.1",
+    "tailwindcss": "^4.3.3",
     "tsx": "^4.23.15",
     "vitest": "^4.1.11"
   }

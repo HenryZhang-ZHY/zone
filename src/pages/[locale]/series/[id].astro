@@ -1,17 +1,18 @@
 ---
 import { type CollectionEntry, getCollection } from 'astro:content'
 import BaseLayout from '../../../layouts/BaseLayout.astro'
-import FormattedDate from '../../../components/FormattedDate.astro'
-import { localeTags, segmentOf, t, type Locale } from '../../../i18n'
+import Entry from '@zone/ui/components/Entry.astro'
+import PageHeader from '@zone/ui/components/PageHeader.astro'
+import { formatDate, localeTags, segmentOf, t, type Locale } from '../../../i18n'
 import { localizeSeries } from '../../../lib/localized'
 import { loadPosts } from '../../../lib/posts'
 import { getSeriesPosts } from '../../../lib/series'
 
 export async function getStaticPaths() {
-	const allSeries = await getCollection('series')
-	return localeTags.flatMap((locale) =>
-		allSeries.map((series) => ({ params: { locale: segmentOf(locale), id: series.id }, props: { locale, series } })),
-	)
+  const allSeries = await getCollection('series')
+  return localeTags.flatMap((locale) =>
+    allSeries.map((series) => ({ params: { locale: segmentOf(locale), id: series.id }, props: { locale, series } })),
+  )
 }
 
 type Props = { locale: Locale; series: CollectionEntry<'series'> }
@@ -24,114 +25,24 @@ const available = localeTags.filter((tag) => tag === series.data.lang || series.
 ---
 
 <BaseLayout locale={locale} path={`/series/${series.id}/`} title={title} description={description} available={available} sourceLocale={series.data.lang} editorial>
-	<main class="z-main">
-		<section class="z-editorial-column">
-			<header class="series-header" lang={lang}>
-				<h1 class="series-title">{title}</h1>
-				<p class="series-description">{description}</p>
-			</header>
-
-			<ol class="series-list z-stack-list">
-				{entries.map((entry) => (
-					<li class="series-item z-stack-item" lang={entry.contentLang}>
-						<a href={entry.href} class="series-item-link z-link-reset">
-							<span class="series-item-part">{t(entry.contentLang).seriesPart(entry.post.data.seriesOrder!)}</span>
-							<h2 class="series-item-title">{entry.title}</h2>
-							<p class="series-item-excerpt">{entry.description}</p>
-							<time class="series-item-date"><FormattedDate date={entry.post.data.pubDate} lang={locale} /></time>
-						</a>
-					</li>
-				))}
-			</ol>
-		</section>
-	</main>
+  <main class="shell py-page-top pb-page-bottom">
+    <div class="mx-auto max-w-reading">
+      <div lang={lang}>
+        <PageHeader title={title} lede={description} class="mb-10" />
+      </div>
+      <ol class="m-0 list-none p-0">
+        {entries.map((entry) => (
+          <Entry
+            date={t(entry.contentLang).seriesPart(entry.post.data.seriesOrder!)}
+            datetime={entry.post.data.pubDate.toISOString()}
+            title={entry.title}
+            excerpt={entry.description}
+            href={entry.href}
+            lang={entry.contentLang}
+            meta={[formatDate(entry.post.data.pubDate, locale)]}
+          />
+        ))}
+      </ol>
+    </div>
+  </main>
 </BaseLayout>
-
-<style>
-	.series-header {
-		margin-bottom: var(--z-space-8);
-		padding-bottom: var(--z-space-6);
-		border-bottom: 1px solid var(--z-color-hairline-light);
-	}
-
-	.series-title {
-		font-size: var(--z-text-heading-40);
-		font-weight: 600;
-		line-height: var(--z-leading-heading-40);
-		letter-spacing: var(--z-tracking-heading-40);
-		color: var(--z-color-heading);
-		margin: 0 0 var(--z-space-4) 0;
-	}
-
-	.series-description {
-		font-size: var(--z-text-copy-16);
-		line-height: var(--z-leading-copy-16);
-		color: var(--z-color-text-secondary);
-		margin: 0;
-	}
-
-	.series-list {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-	}
-
-	.series-item-link {
-		display: flex;
-		flex-direction: column;
-		gap: var(--z-space-2);
-	}
-
-	.series-item-part,
-	.series-item-date {
-		font-size: var(--z-text-label-13);
-		line-height: var(--z-leading-label-13);
-		color: var(--z-color-text-dimmed);
-	}
-
-	.series-item-title {
-		font-size: var(--z-text-heading-20);
-		font-weight: 600;
-		line-height: var(--z-leading-heading-20);
-		letter-spacing: var(--z-tracking-heading-20);
-		color: var(--z-color-heading);
-		margin: 0;
-		text-decoration: underline;
-		text-decoration-color: transparent;
-		text-decoration-thickness: 1px;
-		text-underline-offset: 0.2em;
-		transition: color 150ms ease, text-decoration-color 150ms ease;
-	}
-
-	.series-item-link:hover .series-item-title,
-	.series-item-link:focus-visible .series-item-title {
-		color: var(--z-color-text-accent);
-		text-decoration-color: currentColor;
-	}
-
-	.series-item-excerpt {
-		font-size: var(--z-text-copy-16);
-		line-height: var(--z-leading-copy-16);
-		color: var(--z-color-text-secondary);
-		margin: 0;
-	}
-
-	@media (max-width: 768px) {
-		.series-title {
-			font-size: var(--z-text-heading-32);
-			line-height: var(--z-leading-heading-32);
-			letter-spacing: var(--z-tracking-heading-32);
-		}
-
-		.series-item-title {
-			font-size: var(--z-text-heading-16);
-			line-height: var(--z-leading-heading-16);
-			letter-spacing: var(--z-tracking-heading-16);
-		}
-
-		.series-item-excerpt {
-			font-size: var(--z-text-copy-14);
-			line-height: var(--z-leading-copy-14);
-		}
-	}
-</style>

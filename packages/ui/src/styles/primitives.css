@@ -1,0 +1,89 @@
+/*
+ * Element-based primitives that do not deserve a component: tables and form
+ * fields are used as HTML, so their recipes live here, composed from Tailwind
+ * utilities and the same tokens as everything else.
+ */
+@layer components {
+  .z-table-wrap {
+    @apply my-8 overflow-x-auto border border-line;
+  }
+
+  .z-table {
+    @apply w-full border-collapse text-copy-13;
+  }
+
+  .z-table th {
+    @apply whitespace-nowrap border-b border-line-strong bg-surface px-4 py-2 text-left text-label-11 uppercase text-ink-tertiary;
+  }
+
+  .z-table td {
+    @apply border-b border-line px-4 py-3 align-top text-ink-secondary;
+  }
+
+  .z-table tbody tr:last-child td {
+    @apply border-b-0;
+  }
+
+  .z-table tbody tr:hover {
+    @apply bg-surface;
+  }
+
+  .z-table td:first-child {
+    @apply text-ink;
+  }
+
+  .z-field {
+    @apply flex max-w-[22rem] flex-col gap-2;
+  }
+
+  .z-field__label {
+    @apply flex items-baseline justify-between gap-3 text-label-12 font-medium text-ink;
+  }
+
+  .z-field__hint {
+    @apply text-label-11 text-ink-tertiary;
+  }
+
+  .z-field__error {
+    @apply text-label-11 text-danger;
+  }
+
+  .z-input {
+    @apply h-10 w-full rounded-subtle border border-line-strong bg-canvas px-3 text-label-13 text-ink transition-[border-color,box-shadow] duration-[120ms] ease-out;
+    @apply placeholder:text-ink-quiet hover:border-ink-tertiary focus:border-accent focus:shadow-[0_0_0_1px_var(--z-color-accent)] focus:outline-none;
+    @apply disabled:cursor-not-allowed disabled:border-line disabled:bg-surface disabled:text-ink-quiet;
+    @apply aria-[invalid=true]:border-danger aria-[invalid=true]:focus:shadow-[0_0_0_1px_var(--z-color-danger)];
+  }
+
+  .z-checkbox {
+    @apply flex cursor-pointer items-start gap-2 text-label-13 text-ink-secondary;
+  }
+
+  .z-checkbox input {
+    @apply mt-0.5 grid h-4 w-4 shrink-0 appearance-none place-content-center rounded-[2px] border border-line-strong bg-canvas transition-colors duration-[120ms];
+  }
+
+  .z-checkbox input::before {
+    content: '';
+    @apply h-2 w-2 scale-0 bg-on-accent transition-transform duration-[120ms];
+  }
+
+  .z-checkbox input:checked {
+    @apply border-accent bg-accent;
+  }
+
+  .z-checkbox input:checked::before {
+    @apply scale-100;
+  }
+
+  .z-checkbox input:focus-visible {
+    @apply outline-2 outline-offset-2 outline-accent;
+  }
+
+  @media (max-width: 600px) {
+    .z-table th,
+    .z-table td {
+      @apply px-3;
+    }
+  }
+}

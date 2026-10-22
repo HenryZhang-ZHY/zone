@@ -1,25 +1,43 @@
 # shuzhi.zone
 
-Personal Astro site for writing, reading/listening lists, and small data-heavy tools.
+Personal Astro site for writing, reading/listening lists, and small data-heavy tools — plus **Hairline**, the site's design system, and its documentation/demo app.
 
 ## Stack
 
-- Astro 5 static output
-- Astro Content Collections for Markdown, MDX, and YAML content
+- Astro 7 static output
+- Bun workspaces for the monorepo
+- Tailwind CSS v4 + `tailwind-variants` for the design system
+- Astro Content Collections for Markdown, MDX and YAML content
 - TypeScript strict mode
-- Vitest for pure logic tests
-- Bun lockfile for dependency management
+- Vitest for pure logic and token-sync tests
 - Cloudflare Workers static assets, with a small Worker for the root URL
+
+## Monorepo
+
+```text
+apps/
+  design/            Hairline: documentation, foundations, components, demos
+packages/
+  tokens/            tokens.json -> tokens.css (the only source of values)
+  ui/                Tailwind theme, prose layer, Astro components
+src/                 The live blog (Hairline, @zone/ui)
+design/              The written design language: principles, foundations, patterns, decisions
+```
+
+The blog stays at the workspace root while the design system is introduced. Its pages migrate one at a time to `@zone/ui`; until a page is migrated it keeps the styles in `src/styles/`. Do not mix the two systems inside one page.
 
 ## Commands
 
-Use the local package manager/runtime configured for the project.
-
 ```sh
 bun install
-bun run dev
-bun run build
-bun run vitest
+
+bun run dev            # the live blog
+bun run build          # build the live blog
+bun run test           # all tests, including tokens.css sync
+
+bun run design         # Hairline docs + demos
+bun run design:build   # static build of the design app
+bun run tokens         # regenerate packages/tokens/tokens.css
 ```
 
 Markdown and MDX formatting uses Oxfmt managed by mise:
@@ -30,8 +48,13 @@ mise run fmt:check
 mise run fmt
 ```
 
-`fmt:check` checks formatting without modifying files. `fmt` writes formatting
-changes to Markdown and MDX files only; neither task formats Astro components.
+`fmt:check` checks formatting without modifying files. `fmt` writes formatting changes to Markdown and MDX files only; neither task formats Astro components.
+
+## Design system
+
+- Start at [design/README.md](design/README.md).
+- The system lives in `packages/tokens` and `packages/ui`; the documentation and the four applied demos live in `apps/design`.
+- The live blog in `src/` now consumes `@zone/ui` and the Hairline tokens. Its two data tools keep a scoped compatibility stylesheet (`src/styles/tools.css`) for their bespoke charts.
 
 ## Project Structure
 
@@ -45,7 +68,7 @@ src/
   lib/               Pure TypeScript domain logic with tests
   pages/             Route-level page composition
   scripts/           Browser-only behavior for interactive components
-  styles/            Global tokens, reusable primitives, markdown styling
+  styles/            The live blog's current tokens, primitives and markdown styling
   worker/            Cloudflare Worker that picks a language for `/`
 ```
 
@@ -90,10 +113,7 @@ Publish date, update date and series come from the original. When the original's
 - `src/lib` owns pure logic and should have focused Vitest coverage.
 - `src/components` owns markup and scoped component styles.
 - `src/scripts` owns browser behavior and should use idempotent initializers when a page can be re-entered.
-- `src/styles/global.css` owns tokens and layout primitives.
-- `src/styles/components.css` owns reusable UI primitives.
+- `src/styles/global.css` owns the live blog's tokens and layout primitives.
+- `src/styles/components.css` owns the live blog's reusable UI primitives.
 - `src/styles/markdown.css` owns rendered article content styles.
-
-## Design
-
-The visual system is documented in [DESIGN.md](DESIGN.md). The site should stay content-first, low-noise, and optimized for long-form reading and dense data tables.
+- New design-system work belongs in `packages/ui` and `apps/design`, not in `src/styles`.

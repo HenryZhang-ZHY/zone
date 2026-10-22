@@ -1,0 +1,31 @@
+---
+import { tv } from '../recipes/tv'
+import { cn } from '../recipes/cn'
+
+interface Props {
+  caption?: string
+  plain?: boolean
+  class?: string
+}
+
+const figure = tv({
+  slots: {
+    root: 'my-8 font-ui',
+    media: 'overflow-hidden border border-line bg-surface',
+    caption: 'mt-2 max-w-[60ch] text-label-12 text-ink-tertiary [&_b]:font-medium [&_b]:text-ink-secondary',
+  },
+  variants: {
+    plain: {
+      true: { media: 'border-0 bg-transparent' },
+    },
+  },
+})
+
+const { caption, plain = false, class: className } = Astro.props
+const styles = figure({ plain })
+---
+
+<figure class={cn(styles.root(), className)}>
+  <div class={styles.media()}><slot /></div>
+  {caption && <figcaption class={styles.caption()}>{caption}</figcaption>}
+</figure>

@@ -1,0 +1,19 @@
+---
+import tokens from '@zone/tokens/tokens.json'
+
+const space = tokens.space as Record<string, string>
+---
+
+<div class="doc-space">
+  {
+    Object.entries(space).map(([key, value]) => (
+      <div class="doc-space-row">
+        <code class="doc-space-row__name">--z-space-{key}</code>
+        <span class="doc-space-row__track">
+          <span class="doc-space-row__bar" style={`width: var(--z-space-${key})`}></span>
+        </span>
+        <span class="doc-space-row__value tabular-nums">{value}</span>
+      </div>
+    ))
+  }
+</div>
