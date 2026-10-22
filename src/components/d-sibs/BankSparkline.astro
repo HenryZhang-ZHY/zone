@@ -19,15 +19,15 @@ const points = years
   .filter((point): point is { x: number; y: number; group: number } => point !== null)
 ---
 
-<svg class="sparkline" viewBox="0 0 80 32" preserveAspectRatio="none">
-  {[1, 2, 3, 4].map((g) => (
-    <line x1="0" y1={32 - ((g - 0.5) / 4) * 32} x2="80" y2={32 - ((g - 0.5) / 4) * 32} class="spark-grid" />
+<svg class="sparkline" viewBox="0 0 80 32" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+  {[1, 2, 3, 4].map((group) => (
+    <line x1="0" y1={32 - ((group - 0.5) / 4) * 32} x2="80" y2={32 - ((group - 0.5) / 4) * 32} class="spark-grid" />
   ))}
 
   {points.length >= 2 && <polyline points={points.map((point) => `${point.x},${point.y}`).join(' ')} class="spark-line" />}
 
   {points.map((point) => (
-    <circle cx={point.x} cy={point.y} r="2.5" class={`spark-dot spark-g${point.group}`} />
+    <circle cx={point.x} cy={point.y} r="2.4" class={`spark-dot spark-g${point.group}`} />
   ))}
 </svg>
 
@@ -39,26 +39,27 @@ const points = years
   }
 
   .spark-grid {
-    stroke: var(--z-color-hairline-light);
+    stroke: var(--z-color-line);
     stroke-width: 0.5;
     stroke-dasharray: 2 2;
   }
 
   .spark-line {
     fill: none;
-    stroke: var(--z-color-hairline-shade);
-    stroke-width: 1.5;
+    stroke: var(--z-color-ink-tertiary);
+    stroke-width: 1.25;
     stroke-linecap: round;
     stroke-linejoin: round;
   }
 
   .spark-dot {
-    stroke: var(--z-color-background-100);
-    stroke-width: 0.75;
+    stroke: var(--z-color-canvas);
+    stroke-width: 1;
   }
 
-  .spark-dot.spark-g1 { fill: var(--z-data-g1); }
-  .spark-dot.spark-g2 { fill: var(--z-data-g2); }
-  .spark-dot.spark-g3 { fill: var(--z-data-g3); }
-  .spark-dot.spark-g4 { fill: var(--z-data-g4); }
+  .spark-dot.spark-g1 { fill: var(--z-color-data-1); }
+  .spark-dot.spark-g2 { fill: var(--z-color-data-2); }
+  .spark-dot.spark-g3 { fill: var(--z-color-data-3); }
+  .spark-dot.spark-g4 { fill: var(--z-color-data-4); }
+  .spark-dot.spark-g5 { fill: var(--z-color-data-5); }
 </style>

@@ -10,7 +10,7 @@ The system is three things that must stay in sync:
 | UI            | `packages/ui`                                | Tailwind v4 theme, prose layer, Astro components, `tv()` recipes   |
 | Documentation | `apps/design`                                | This system's rules, the component gallery, and four applied demos |
 
-The live blog in `src/` now consumes `@zone/ui` and the Hairline tokens. The two data tools keep a scoped compatibility stylesheet for their charts; the editorial surfaces and chrome use the design system.
+The live blog in `src/` now consumes `@zone/ui` and the Hairline tokens. The stock-sell calculator keeps a scoped compatibility stylesheet for its form and result table; the D-SIBs report is fully Hairline.
 
 ## Start here
 
@@ -47,7 +47,8 @@ bun run design:build  # static build of apps/design
 
 ## What is intentionally absent
 
-- Hero sections with a call to action.\n- Year-grouped archives and a combined reading/listening page.
+- Hero sections with a call to action.
+- Year-grouped archives and a combined reading/listening page.
 - Card grids for writing.
 - A left rail of article metadata.
 - Drop caps, gradients, decorative illustration, shadows on content.

@@ -1,0 +1,27 @@
+---
+import { cn } from '../recipes/cn'
+
+interface Props {
+  /** 1–5; the D-SIB group level. */
+  group: number
+  /** Visible label. Omit for a bare mark; the group is still announced. */
+  label?: string
+  /** Spoken label; defaults to 第 N 组. */
+  srLabel?: string
+  class?: string
+}
+
+const colors = ['bg-data-1', 'bg-data-2', 'bg-data-3', 'bg-data-4', 'bg-data-5']
+const { group, label, srLabel, class: className } = Astro.props
+const color = colors[group - 1] ?? 'bg-ink-quiet'
+---
+
+<span
+  class={cn('inline-flex items-center gap-1.5 font-ui text-label-11 leading-none text-ink-secondary', className)}
+  role="img"
+  aria-label={srLabel ?? `第${group}组`}
+  data-group={group}
+>
+  <span class={cn('size-1.5 shrink-0', color)} aria-hidden="true"></span>
+  {label && <span class="tabular-nums" aria-hidden="true">{label}</span>}
+</span>

@@ -1,183 +1,67 @@
 ---
-import { type YearStats, groupLabels, typeClass } from '../../lib/d-sibs'
+import { type YearStats, groupKeys, groupLabels } from '../../lib/d-sibs'
+import GroupMark from '@zone/ui/components/GroupMark.astro'
 
 interface Props {
   yearStats: YearStats[]
 }
 
 const { yearStats } = Astro.props
+const groupOrder = [...groupKeys].reverse()
 ---
 
-<section class="composition-section z-section">
-  <p class="section-kicker">04 / ARCHIVE</p>
-  <h2 class="z-section-title">各期完整名单</h2>
-  <p class="section-intro">银行名称边框区分国有、股份制与城商行；点击年份查看对应央行公告。</p>
-  <div class="composition-grid">
-    {
-      [...yearStats].reverse().map((stats, index) => (
-        <div class="composition-year">
-          <div class="year-heading">
-            <h3>
-              <a href={stats.link} target="_blank" rel="noopener noreferrer">{stats.year} 年 ↗</a>
+<div class="grid gap-x-10 gap-y-12 md:grid-cols-2">
+  {
+    [...yearStats].reverse().map((stats, index) => {
+      const groups = groupOrder.filter((group) => stats.groups[group].length > 0)
+
+      return (
+        <section
+          class:list={[
+            'min-w-0 border-t-2 pt-4',
+            index === 0 ? 'border-accent' : 'border-line-strong',
+          ]}
+          aria-labelledby={`archive-${stats.year}`}
+        >
+          <header class="flex items-baseline justify-between gap-4">
+            <h3 id={`archive-${stats.year}`} class="font-prose text-heading-24 text-ink">
+              <a
+                class="underline decoration-transparent underline-offset-[0.2em] transition-[color,text-decoration-color] duration-1 hover:text-accent hover:decoration-current"
+                href={stats.link}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {stats.year} ↗
+              </a>
             </h3>
-            <span class="comp-total">{index === 0 ? '最新 · ' : ''}{stats.total} 家</span>
-          </div>
-          {[5, 4, 3, 2, 1].map(
-            (group) =>
-              stats.groups[group].length > 0 && (
-                <div class="comp-group">
-                  <div class={`comp-header comp-header--g${group}`}>
-                    <span class="comp-label">{groupLabels[group]}</span>
-                    <span class="comp-line" />
-                    <span class="comp-count">{stats.groups[group].length}家</span>
-                  </div>
-                  <ul class="comp-banks">
-                    {stats.groups[group].map((entry) => (
-                      <li class={`z-tag comp-bank ${typeClass(entry.type, 'tag')}`}>{entry.name}</li>
-                    ))}
-                  </ul>
+            <p class="font-ui text-label-11 tabular-nums text-ink-tertiary">
+              {index === 0 && <span class="mr-2 text-ink">最新</span>}
+              {stats.total} 家
+            </p>
+          </header>
+
+          <div class="mt-5 grid gap-4">
+            {groups.map((group) => (
+              <div>
+                <div class="flex items-baseline gap-3 border-b border-line pb-1.5 font-ui text-label-11">
+                  <GroupMark group={group} label={groupLabels[group]} srLabel={groupLabels[group]} />
+                  <span class="ml-auto tabular-nums text-ink-tertiary">{stats.groups[group].length}</span>
                 </div>
-              ),
-          )}
-        </div>
-      ))
-    }
-  </div>
-</section>
-
-<style>
-  .section-kicker {
-    color: var(--z-color-text-dimmed);
-    font-size: var(--z-text-label-13);
-    font-weight: 600;
-    line-height: var(--z-leading-label-13);
-    margin-bottom: var(--z-space-2);
+                <ul class="mt-2 flex flex-wrap gap-x-1 gap-y-1 p-0 font-prose text-copy-14 leading-[1.7] text-ink-secondary">
+                  {stats.groups[group].map((entry, entryIndex) => (
+                    <li class="m-0 list-none">
+                      {entry.name}
+                      {entryIndex < stats.groups[group].length - 1 && (
+                        <span class="mx-1.5 text-ink-quiet" aria-hidden="true">·</span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+      )
+    })
   }
-
-  .section-intro {
-    color: var(--z-color-text-secondary);
-    font-size: var(--z-text-copy-14);
-    line-height: var(--z-leading-copy-14);
-    margin-bottom: var(--z-space-8);
-  }
-
-  .composition-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--z-space-4);
-  }
-
-  .composition-year {
-    background: var(--z-color-surface);
-    border: 1px solid var(--z-color-border);
-    border-radius: var(--z-radius-subtle);
-    padding: var(--z-space-6);
-  }
-
-  .composition-year:first-child {
-    border-color: var(--z-color-border-active);
-  }
-
-  .year-heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: var(--z-space-2);
-    padding-bottom: var(--z-space-4);
-    margin-bottom: var(--z-space-6);
-    border-bottom: 1px solid var(--z-color-border);
-  }
-
-  .composition-year h3 {
-    font-size: var(--z-text-heading-20);
-    font-weight: 600;
-    line-height: var(--z-leading-heading-20);
-    letter-spacing: var(--z-tracking-heading-20);
-  }
-
-  .composition-year h3 a {
-    color: inherit;
-    text-decoration: underline;
-    text-decoration-color: transparent;
-    text-underline-offset: 0.2em;
-  }
-
-  .composition-year h3 a:hover,
-  .composition-year h3 a:focus-visible {
-    color: var(--z-color-text-accent);
-    text-decoration-color: currentColor;
-  }
-
-  .comp-total {
-    font-weight: 400;
-    font-size: var(--z-text-label-14);
-    line-height: var(--z-leading-label-14);
-    color: var(--z-color-text-secondary);
-  }
-
-  .comp-group {
-    margin-bottom: var(--z-space-8);
-  }
-
-  .comp-group:last-child {
-    margin-bottom: 0;
-  }
-
-  .comp-header {
-    font-size: var(--z-text-label-13);
-    line-height: var(--z-leading-label-13);
-    font-weight: 600;
-    padding: 0 0 var(--z-space-2);
-    margin-bottom: var(--z-space-2);
-    display: flex;
-    align-items: center;
-    gap: var(--z-space-2);
-    border-bottom: 1px solid var(--z-color-hairline-light);
-  }
-
-  .comp-header--g1 { color: var(--z-data-g1); }
-  .comp-header--g2 { color: var(--z-data-g2); }
-  .comp-header--g3 { color: var(--z-data-g3); }
-  .comp-header--g4 { color: var(--z-data-g4); }
-  .comp-header--g5 { color: var(--z-color-purple-900); }
-
-  .comp-label,
-  .comp-count {
-    white-space: nowrap;
-  }
-
-  .comp-count {
-    font-weight: 400;
-    font-size: var(--z-text-label-13);
-    line-height: var(--z-leading-label-13);
-    color: var(--z-color-text-dimmed);
-  }
-
-  .comp-line {
-    flex: 1;
-  }
-
-  .comp-banks {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--z-space-2);
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .comp-bank {
-    font-size: var(--z-text-label-13);
-    line-height: var(--z-leading-label-13);
-  }
-
-  @media (max-width: 768px) {
-    .composition-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .composition-year { padding: var(--z-space-4); }
-  }
-</style>
+</div>

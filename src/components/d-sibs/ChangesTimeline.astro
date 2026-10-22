@@ -1,5 +1,6 @@
 ---
 import { type YearChange, groupLabels } from '../../lib/d-sibs'
+import GroupMark from '@zone/ui/components/GroupMark.astro'
 
 interface Props {
   changes: YearChange[]
@@ -32,318 +33,122 @@ function summary(change: YearChange): string {
 const orderedChanges = [...changes].reverse()
 ---
 
-<section class="changes-section z-section">
-  <p class="section-kicker">03 / CHANGES</p>
-  <h2 class="z-section-title">历年变化</h2>
-  <p class="section-intro">比较相邻两次发布的名单；年份不连续时，不代表期间每年均已发布。</p>
-  <div class="change-years">
-    {
-      orderedChanges.map((change) => {
-        const total = changeCount(change)
-        const hasChanges = total > 0
-        const span = spanLabel(change)
+<div class="relative">
+  <div class="absolute inset-y-0 left-0 w-px bg-line" aria-hidden="true"></div>
+  {
+    orderedChanges.map((change) => {
+      const total = changeCount(change)
+      const hasChanges = total > 0
+      const span = spanLabel(change)
 
-        return (
-          <article class={`change-year ${hasChanges ? 'has-changes' : 'is-muted'}`}>
-            <header class="change-year-header">
-              <div>
-                <h3>{change.from} → {change.to}</h3>
-                {span && <p class="change-span">{span}</p>}
-              </div>
-              <span class={`change-total ${hasChanges ? '' : 'is-zero'}`}>{hasChanges ? `${total} 项变化` : '无变化'}</span>
-            </header>
+      return (
+        <article class="relative border-b border-line py-6 pl-5 last:border-b-0 sm:pl-6">
+          <span
+            class="absolute left-0 top-8 size-1.5 -translate-x-1/2 bg-canvas ring-1 ring-line-strong"
+            aria-hidden="true"
+          />
 
-            <p class="change-summary">{summary(change)}</p>
+          <header class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+            <div>
+              <h3 class="font-prose text-heading-20 text-ink">
+                {change.from} → {change.to}
+              </h3>
+              {span && <p class="mt-1 font-ui text-label-11 text-ink-tertiary">{span}</p>}
+            </div>
+            <p class="font-ui text-label-11 tabular-nums text-ink-tertiary">
+              {hasChanges ? `${total} 项变化` : '无变化'}
+            </p>
+          </header>
 
-            {hasChanges && (
-              <div class="change-details">
-                {change.entered.length > 0 && (
-                  <div class="change-kind change-kind--enter">
-                    <div class="change-kind-header">
-                      <span class="change-icon">＋</span>
-                      <strong>新增入选</strong>
-                    </div>
-                    <div class="change-rows">
-                      {change.entered.map(([name, group]) => (
-                        <div class="change-row">
-                          <span class="bank-name">{name}</span>
-                          <span class={`z-tag z-tag--g${group}`}>{groupLabels[group]}</span>
-                        </div>
-                      ))}
-                    </div>
+          <p class={`mt-2 max-w-[62ch] font-ui text-copy-13 leading-[1.6] ${hasChanges ? 'text-ink-secondary' : 'text-ink-tertiary'}`}>
+            {summary(change)}
+          </p>
+
+          {hasChanges && (
+            <div class="mt-5 grid gap-x-8 gap-y-5 sm:grid-cols-2">
+              {change.entered.length > 0 && (
+                <div class="border-t border-line pt-3">
+                  <div class="flex items-baseline gap-2 font-ui text-label-11">
+                    <span class="text-ink-quiet" aria-hidden="true">＋</span>
+                    <span class="text-ink">新增入选</span>
+                    <span class="ml-auto tabular-nums text-ink-tertiary">{change.entered.length}</span>
                   </div>
-                )}
-
-                {change.exited.length > 0 && (
-                  <div class="change-kind change-kind--exit">
-                    <div class="change-kind-header">
-                      <span class="change-icon">－</span>
-                      <strong>退出名单</strong>
-                    </div>
-                    <div class="change-rows">
-                      {change.exited.map((name) => (
-                        <div class="change-row">
-                          <span class="bank-name">{name}</span>
-                          <span class="exit-label">退出</span>
-                        </div>
-                      ))}
-                    </div>
+                  <div class="mt-2 grid gap-1.5">
+                    {change.entered.map(([name, group]) => (
+                      <div class="flex items-baseline justify-between gap-3">
+                        <span class="font-prose text-copy-13 text-ink">{name}</span>
+                        <GroupMark group={group} label={groupLabels[group]} srLabel={groupLabels[group]} />
+                      </div>
+                    ))}
                   </div>
-                )}
+                </div>
+              )}
 
-                {change.upgraded.length > 0 && (
-                  <div class="change-kind change-kind--up">
-                    <div class="change-kind-header">
-                      <span class="change-icon">↑</span>
-                      <strong>组别上升</strong>
-                    </div>
-                    <div class="change-rows">
-                      {change.upgraded.map(([name, from, to]) => (
-                        <div class="change-row">
-                          <span class="bank-name">{name}</span>
-                          <span class="group-flow">
-                            <span class={`z-tag z-tag--g${from}`}>{groupLabels[from]}</span>
-                            <span class="flow-arrow">→</span>
-                            <span class={`z-tag z-tag--g${to}`}>{groupLabels[to]}</span>
-                          </span>
-                        </div>
-                      ))}
-                    </div>
+              {change.exited.length > 0 && (
+                <div class="border-t border-line pt-3">
+                  <div class="flex items-baseline gap-2 font-ui text-label-11">
+                    <span class="text-ink-quiet" aria-hidden="true">−</span>
+                    <span class="text-ink">退出名单</span>
+                    <span class="ml-auto tabular-nums text-ink-tertiary">{change.exited.length}</span>
                   </div>
-                )}
-
-                {change.downgraded.length > 0 && (
-                  <div class="change-kind change-kind--down">
-                    <div class="change-kind-header">
-                      <span class="change-icon">↓</span>
-                      <strong>组别下降</strong>
-                    </div>
-                    <div class="change-rows">
-                      {change.downgraded.map(([name, from, to]) => (
-                        <div class="change-row">
-                          <span class="bank-name">{name}</span>
-                          <span class="group-flow">
-                            <span class={`z-tag z-tag--g${from}`}>{groupLabels[from]}</span>
-                            <span class="flow-arrow">→</span>
-                            <span class={`z-tag z-tag--g${to}`}>{groupLabels[to]}</span>
-                          </span>
-                        </div>
-                      ))}
-                    </div>
+                  <div class="mt-2 grid gap-1.5">
+                    {change.exited.map((name) => (
+                      <div class="flex items-baseline justify-between gap-3">
+                        <span class="font-prose text-copy-13 text-ink">{name}</span>
+                        <span class="font-ui text-label-11 text-ink-tertiary">退出</span>
+                      </div>
+                    ))}
                   </div>
-                )}
-              </div>
-            )}
-          </article>
-        )
-      })
-    }
-  </div>
-</section>
+                </div>
+              )}
 
-<style>
-  .change-years {
-    display: grid;
-    gap: var(--z-space-6);
-    border-inline-start: 1px solid var(--z-color-border);
-    margin-inline-start: var(--z-space-2);
-    padding-inline-start: var(--z-space-6);
+              {change.upgraded.length > 0 && (
+                <div class="border-t border-line pt-3">
+                  <div class="flex items-baseline gap-2 font-ui text-label-11">
+                    <span class="text-ink-quiet" aria-hidden="true">↑</span>
+                    <span class="text-ink">组别上升</span>
+                    <span class="ml-auto tabular-nums text-ink-tertiary">{change.upgraded.length}</span>
+                  </div>
+                  <div class="mt-2 grid gap-1.5">
+                    {change.upgraded.map(([name, from, to]) => (
+                      <div class="flex items-baseline justify-between gap-3">
+                        <span class="font-prose text-copy-13 text-ink">{name}</span>
+                        <span class="inline-flex items-baseline gap-1.5">
+                          <GroupMark group={from} label={String(from)} srLabel={groupLabels[from]} />
+                          <span class="font-ui text-label-11 text-ink-quiet" aria-hidden="true">→</span>
+                          <GroupMark group={to} label={String(to)} srLabel={groupLabels[to]} />
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {change.downgraded.length > 0 && (
+                <div class="border-t border-line pt-3">
+                  <div class="flex items-baseline gap-2 font-ui text-label-11">
+                    <span class="text-ink-quiet" aria-hidden="true">↓</span>
+                    <span class="text-ink">组别下降</span>
+                    <span class="ml-auto tabular-nums text-ink-tertiary">{change.downgraded.length}</span>
+                  </div>
+                  <div class="mt-2 grid gap-1.5">
+                    {change.downgraded.map(([name, from, to]) => (
+                      <div class="flex items-baseline justify-between gap-3">
+                        <span class="font-prose text-copy-13 text-ink">{name}</span>
+                        <span class="inline-flex items-baseline gap-1.5">
+                          <GroupMark group={from} label={String(from)} srLabel={groupLabels[from]} />
+                          <span class="font-ui text-label-11 text-ink-quiet" aria-hidden="true">→</span>
+                          <GroupMark group={to} label={String(to)} srLabel={groupLabels[to]} />
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </article>
+      )
+    })
   }
-
-  .section-kicker {
-    color: var(--z-color-text-dimmed);
-    font-size: var(--z-text-label-13);
-    font-weight: 600;
-    line-height: var(--z-leading-label-13);
-    margin-bottom: var(--z-space-2);
-  }
-
-  .section-intro {
-    color: var(--z-color-text-secondary);
-    font-size: var(--z-text-copy-14);
-    line-height: var(--z-leading-copy-14);
-    margin: 0 0 var(--z-space-8);
-  }
-
-  .change-year {
-    position: relative;
-    padding: var(--z-space-6);
-    border: 1px solid var(--z-color-border);
-    border-radius: var(--z-radius-subtle);
-    background: var(--z-color-surface);
-  }
-
-  .change-year::before {
-    content: '';
-    position: absolute;
-    top: var(--z-space-8);
-    left: calc(var(--z-space-6) * -1 - var(--z-space-2) - 1px);
-    width: 15px;
-    height: 15px;
-    border: 2px solid var(--z-color-border-active);
-    background: var(--z-color-bg);
-    border-radius: var(--z-radius-full);
-  }
-
-  .change-year.is-muted {
-    padding-block: var(--z-space-4);
-    background: var(--z-color-surface-muted);
-  }
-
-  .change-year-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: var(--z-space-4);
-    margin-bottom: var(--z-space-2);
-  }
-
-  .change-year h3 {
-    color: var(--z-color-heading);
-    font-size: var(--z-text-heading-20);
-    font-weight: 600;
-    letter-spacing: var(--z-tracking-heading-20);
-    line-height: var(--z-leading-heading-20);
-  }
-
-  .change-span {
-    margin-top: var(--z-space-1);
-    color: var(--z-color-text-dimmed);
-    font-size: var(--z-text-label-13);
-    line-height: var(--z-leading-label-13);
-  }
-
-  .change-total {
-    flex-shrink: 0;
-    padding: var(--z-space-1) var(--z-space-2);
-    border: 1px solid var(--z-color-border-subtle);
-    border-radius: var(--z-radius-subtle);
-    color: var(--z-color-text-secondary);
-    background: var(--z-color-background-100);
-    font-size: var(--z-text-label-13);
-    font-weight: 600;
-    line-height: var(--z-leading-label-13);
-  }
-
-  .change-total.is-zero {
-    color: var(--z-color-text-dimmed);
-    background: transparent;
-  }
-
-  .change-summary {
-    margin-bottom: var(--z-space-4);
-    color: var(--z-color-text-secondary);
-    font-size: var(--z-text-copy-14);
-    line-height: var(--z-leading-copy-14);
-  }
-
-  .change-year.is-muted .change-summary {
-    margin-bottom: 0;
-    color: var(--z-color-text-dimmed);
-  }
-
-  .change-details {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--z-space-6);
-  }
-
-  .change-kind {
-    min-width: 0;
-    padding-top: var(--z-space-3);
-    border-top: 1px solid var(--z-color-border);
-  }
-
-  .change-kind-header {
-    display: flex;
-    align-items: center;
-    gap: var(--z-space-2);
-    margin-bottom: var(--z-space-2);
-    font-size: var(--z-text-label-13);
-    line-height: var(--z-leading-label-13);
-  }
-
-  .change-kind-header strong {
-    font-weight: 600;
-  }
-
-  .change-icon {
-    display: inline-grid;
-    place-items: center;
-    width: 1.25rem;
-    height: 1.25rem;
-    border-radius: var(--z-radius-subtle);
-    background: var(--z-color-surface-muted);
-    font-weight: 600;
-  }
-
-  .change-kind--enter .change-icon { color: var(--z-color-green-high); }
-  .change-kind--exit .change-icon { color: var(--z-color-red-high); }
-  .change-kind--up .change-icon { color: var(--z-color-orange-high); }
-  .change-kind--down .change-icon { color: var(--z-color-blue-high); }
-
-  .change-rows {
-    display: grid;
-    gap: var(--z-space-2);
-  }
-
-  .change-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--z-space-3);
-    min-width: 0;
-    color: var(--z-color-text-secondary);
-    font-size: var(--z-text-copy-13);
-    line-height: var(--z-leading-copy-13);
-  }
-
-  .bank-name {
-    min-width: 0;
-    overflow: hidden;
-    color: var(--z-color-primary);
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .group-flow {
-    display: inline-flex;
-    flex-shrink: 0;
-    align-items: center;
-    gap: var(--z-space-1);
-  }
-
-  .flow-arrow {
-    color: var(--z-color-text-dimmed);
-  }
-
-  .exit-label {
-    flex-shrink: 0;
-    color: var(--z-color-red-high);
-    font-size: var(--z-text-label-12);
-    font-weight: 600;
-    line-height: var(--z-leading-label-12);
-  }
-
-  @media (max-width: 640px) {
-    .change-years { padding-inline-start: var(--z-space-4); }
-    .change-year {
-      padding: var(--z-space-4);
-    }
-
-    .change-year::before {
-      top: var(--z-space-6);
-      left: calc(var(--z-space-4) * -1 - var(--z-space-2) - 1px);
-    }
-
-    .change-details { grid-template-columns: 1fr; }
-
-    .change-year-header,
-    .change-row {
-      align-items: flex-start;
-      flex-direction: column;
-      gap: var(--z-space-2);
-    }
-
-  }
-</style>
+</div>

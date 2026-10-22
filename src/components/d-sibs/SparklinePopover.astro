@@ -1,4 +1,4 @@
-<div id="spark-popover" class="spark-popover z-popover" role="dialog" aria-modal="false" aria-labelledby="spark-popover-title" aria-hidden="true" tabindex="-1">
+<div id="spark-popover" class="spark-popover" role="dialog" aria-modal="false" aria-labelledby="spark-popover-title" aria-hidden="true" tabindex="-1">
   <div class="pop-header">
     <div class="pop-heading">
       <span class="pop-kicker">银行变迁</span>
@@ -11,21 +11,26 @@
   </div>
   <p class="pop-summary"></p>
   <div class="pop-track" aria-label="年度组别轨道"></div>
-  <svg class="pop-chart" viewBox="0 0 360 128" aria-hidden="true"></svg>
+  <svg class="pop-chart" viewBox="0 0 360 128" aria-hidden="true" focusable="false"></svg>
 </div>
 
 <style>
   .spark-popover {
+    position: fixed;
+    z-index: 100;
     width: min(420px, calc(100vw - var(--z-space-4) * 2));
     padding: var(--z-space-4);
+    border: 1px solid var(--z-color-line-strong);
+    background: var(--z-color-canvas);
+    box-shadow: var(--z-shadow-3);
     pointer-events: none;
     opacity: 0;
     visibility: hidden;
     transform: translateY(var(--z-space-1)) scale(0.97);
     transition:
-      opacity 200ms var(--z-ease-out),
-      transform 200ms var(--z-ease-out),
-      visibility 200ms;
+      opacity var(--z-motion-duration-2) var(--z-motion-ease-out),
+      transform var(--z-motion-duration-2) var(--z-motion-ease-out),
+      visibility var(--z-motion-duration-2);
   }
 
   .spark-popover[data-placement='below'][aria-hidden='true'] {
@@ -40,7 +45,7 @@
   }
 
   .spark-popover[data-mode='pinned'] {
-    border-color: color-mix(in srgb, var(--z-color-accent) 38%, var(--z-color-border));
+    border-color: var(--z-color-ink-tertiary);
   }
 
   .spark-popover[data-mode='preview'],
@@ -53,7 +58,7 @@
     .spark-popover[data-placement='below'][aria-hidden='true'] {
       transform: none;
       transition:
-        opacity 125ms var(--z-ease-out),
+        opacity 125ms var(--z-motion-ease-out),
         visibility 125ms;
     }
 
@@ -78,18 +83,18 @@
   .pop-kicker {
     display: block;
     margin-bottom: var(--z-space-1);
-    color: var(--z-color-text-dimmed);
-    font-size: var(--z-text-label-12);
-    font-weight: 600;
-    line-height: var(--z-leading-label-12);
+    color: var(--z-color-ink-tertiary);
+    font-family: var(--z-font-ui);
+    font-size: var(--z-text-label-11);
+    line-height: var(--z-leading-label-11);
   }
 
   .pop-name {
     display: block;
-    color: var(--z-color-heading);
+    color: var(--z-color-ink);
+    font-family: var(--z-font-prose);
     font-size: var(--z-text-heading-16);
     font-weight: 600;
-    letter-spacing: var(--z-tracking-heading-16);
     line-height: var(--z-leading-heading-16);
   }
 
@@ -97,36 +102,52 @@
     display: flex;
     flex-shrink: 0;
     flex-wrap: wrap;
+    align-items: baseline;
     justify-content: flex-end;
     gap: var(--z-space-2);
+    font-family: var(--z-font-ui);
+    font-size: var(--z-text-label-11);
+    line-height: var(--z-leading-label-11);
+    color: var(--z-color-ink-tertiary);
   }
 
   .pop-type {
-    display: inline-block;
-    padding: var(--z-space-1) var(--z-space-2);
-    border: 1px solid transparent;
-    border-radius: var(--z-radius-subtle);
-    color: var(--z-color-text-secondary);
-    font-size: var(--z-text-label-12);
-    font-weight: 600;
-    line-height: var(--z-leading-label-12);
+    white-space: nowrap;
   }
 
-  .pop-type.-state {
-    border-color: color-mix(in srgb, var(--z-data-state) 34%, transparent);
+  .pop-current {
+    color: var(--z-color-ink);
   }
 
-  .pop-type.-joint {
-    border-color: color-mix(in srgb, var(--z-data-joint) 34%, transparent);
+  .pop-group {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.35rem;
+    white-space: nowrap;
+    font-family: var(--z-font-ui);
+    font-size: var(--z-text-label-11);
+    line-height: var(--z-leading-label-11);
+    color: var(--z-color-ink-secondary);
   }
 
-  .pop-type.-city {
-    border-color: color-mix(in srgb, var(--z-data-city) 34%, transparent);
+  .pop-group::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    flex-shrink: 0;
+    background: var(--group-color);
   }
+
+  .pop-group[data-group='1'] { --group-color: var(--z-color-data-1); }
+  .pop-group[data-group='2'] { --group-color: var(--z-color-data-2); }
+  .pop-group[data-group='3'] { --group-color: var(--z-color-data-3); }
+  .pop-group[data-group='4'] { --group-color: var(--z-color-data-4); }
+  .pop-group[data-group='5'] { --group-color: var(--z-color-data-5); }
 
   .pop-summary {
     margin-bottom: var(--z-space-3);
-    color: var(--z-color-text-secondary);
+    color: var(--z-color-ink-secondary);
+    font-family: var(--z-font-ui);
     font-size: var(--z-text-copy-13);
     line-height: var(--z-leading-copy-13);
   }
@@ -134,39 +155,34 @@
   .pop-track {
     display: grid;
     grid-template-columns: repeat(var(--track-count), minmax(0, 1fr));
-    gap: var(--z-space-2);
-    margin-bottom: var(--z-space-3);
+    gap: var(--z-space-3);
+    margin-bottom: var(--z-space-4);
   }
 
   .pop-track-item {
     min-width: 0;
-    padding: var(--z-space-2);
-    border: 1px solid var(--z-color-border-subtle);
-    border-radius: var(--z-radius-subtle);
-    background: var(--z-color-surface-soft);
+    padding-top: var(--z-space-2);
+    border-top: 1px solid var(--z-color-line);
   }
 
   .pop-track-item.is-current {
-    border-color: var(--z-color-border-active);
-  }
-
-  .pop-track-item.is-empty {
-    color: var(--z-color-text-dimmed);
+    border-top-color: var(--z-color-ink);
   }
 
   .pop-track-year {
     display: block;
     margin-bottom: var(--z-space-1);
-    color: var(--z-color-text-dimmed);
-    font-size: var(--z-text-label-12);
-    line-height: var(--z-leading-label-12);
+    color: var(--z-color-ink-tertiary);
+    font-family: var(--z-font-ui);
+    font-size: var(--z-text-label-11);
+    line-height: var(--z-leading-label-11);
   }
 
   .pop-track-empty {
-    display: inline-block;
-    color: var(--z-color-text-dimmed);
-    font-size: var(--z-text-label-12);
-    line-height: var(--z-leading-label-12);
+    color: var(--z-color-ink-tertiary);
+    font-family: var(--z-font-ui);
+    font-size: var(--z-text-label-11);
+    line-height: var(--z-leading-label-11);
   }
 
   .pop-chart {
@@ -176,39 +192,95 @@
   }
 
   .pop-chart :global(.pop-grid) {
-    stroke: var(--z-color-hairline-light);
+    stroke: var(--z-color-line);
     stroke-dasharray: 3 3;
     stroke-width: 0.5;
   }
 
   .pop-chart :global(.pop-group-label) {
     dominant-baseline: middle;
-    fill: var(--z-color-text-dimmed);
-    font-size: var(--z-text-label-12);
+    fill: var(--z-color-ink-tertiary);
+    font-family: var(--z-font-ui);
+    font-size: var(--z-text-label-11);
   }
 
   .pop-chart :global(.pop-line) {
     fill: none;
-    stroke: var(--z-color-hairline-shade);
+    stroke: var(--z-color-ink-tertiary);
     stroke-linecap: round;
     stroke-linejoin: round;
-    stroke-width: 2.25;
+    stroke-width: 1.5;
   }
 
   .pop-chart :global(.pop-dot) {
-    stroke: var(--z-color-background-100);
+    stroke: var(--z-color-canvas);
     stroke-width: 1.5;
   }
 
   .pop-chart :global(.pop-dot.is-current) {
-    stroke: var(--z-color-background-100);
+    stroke: var(--z-color-canvas);
     stroke-width: 2.5;
   }
 
-  .pop-chart :global(.pg1) { fill: var(--z-data-g1); }
-  .pop-chart :global(.pg2) { fill: var(--z-data-g2); }
-  .pop-chart :global(.pg3) { fill: var(--z-data-g3); }
-  .pop-chart :global(.pg4) { fill: var(--z-data-g4); }
+  .pop-chart :global(.pg1) { fill: var(--z-color-data-1); }
+  .pop-chart :global(.pg2) { fill: var(--z-color-data-2); }
+  .pop-chart :global(.pg3) { fill: var(--z-color-data-3); }
+  .pop-chart :global(.pg4) { fill: var(--z-color-data-4); }
+  .pop-chart :global(.pg5) { fill: var(--z-color-data-5); }
+</style>
+
+<!-- The track and group marks are created by the script, so their styles cannot be scoped. -->
+<style is:global>
+  .spark-popover .pop-track-item {
+    min-width: 0;
+    padding-top: var(--z-space-2);
+    border-top: 1px solid var(--z-color-line);
+  }
+
+  .spark-popover .pop-track-item.is-current {
+    border-top-color: var(--z-color-ink);
+  }
+
+  .spark-popover .pop-track-year {
+    display: block;
+    margin-bottom: var(--z-space-1);
+    color: var(--z-color-ink-tertiary);
+    font-family: var(--z-font-ui);
+    font-size: var(--z-text-label-11);
+    line-height: var(--z-leading-label-11);
+  }
+
+  .spark-popover .pop-track-empty {
+    color: var(--z-color-ink-tertiary);
+    font-family: var(--z-font-ui);
+    font-size: var(--z-text-label-11);
+    line-height: var(--z-leading-label-11);
+  }
+
+  .spark-popover .pop-group {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.35rem;
+    white-space: nowrap;
+    font-family: var(--z-font-ui);
+    font-size: var(--z-text-label-11);
+    line-height: var(--z-leading-label-11);
+    color: var(--z-color-ink-secondary);
+  }
+
+  .spark-popover .pop-group::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    flex-shrink: 0;
+    background: var(--group-color);
+  }
+
+  .spark-popover .pop-group[data-group='1'] { --group-color: var(--z-color-data-1); }
+  .spark-popover .pop-group[data-group='2'] { --group-color: var(--z-color-data-2); }
+  .spark-popover .pop-group[data-group='3'] { --group-color: var(--z-color-data-3); }
+  .spark-popover .pop-group[data-group='4'] { --group-color: var(--z-color-data-4); }
+  .spark-popover .pop-group[data-group='5'] { --group-color: var(--z-color-data-5); }
 </style>
 
 <script>
@@ -221,16 +293,11 @@
   const popChart = popover.querySelector<SVGSVGElement>('.pop-chart')!
 
   const SVG_NS = 'http://www.w3.org/2000/svg'
-  const GROUP_LABELS: Record<number, string> = { 1: '第一组', 2: '第二组', 3: '第三组', 4: '第四组' }
+  const GROUP_LABELS: Record<number, string> = { 1: '第一组', 2: '第二组', 3: '第三组', 4: '第四组', 5: '第五组' }
   const TYPE_LABELS: Record<string, string> = {
     国有商业银行: '国有',
     股份制商业银行: '股份制',
     城市商业银行: '城商行',
-  }
-  const TYPE_CSS: Record<string, string> = {
-    国有商业银行: '-state',
-    股份制商业银行: '-joint',
-    城市商业银行: '-city',
   }
 
   const PAD_L = 42
@@ -285,11 +352,21 @@
     trigger?.setAttribute('aria-expanded', String(expanded))
   }
 
+  function groupName(group: number): string {
+    return GROUP_LABELS[group] ?? `第${group}组`
+  }
+
+  function makeGroupMark(group: number): HTMLElement {
+    const mark = document.createElement('span')
+    mark.className = 'pop-group'
+    mark.dataset.group = String(group)
+    mark.textContent = groupName(group)
+    return mark
+  }
+
   function renderBadges(latest: (DataPoint & { group: number }) | null): void {
     const latestType = latest?.type ?? ''
-
     popType.textContent = TYPE_LABELS[latestType] || latestType || '未知类型'
-    popType.className = `pop-type ${TYPE_CSS[latestType] || ''}`
 
     popCurrent.replaceChildren()
     if (!latest) {
@@ -297,10 +374,7 @@
       return
     }
 
-    const tag = document.createElement('span')
-    tag.className = `z-tag z-tag--g${latest.group}`
-    tag.textContent = GROUP_LABELS[latest.group] ?? `第${latest.group}组`
-    popCurrent.appendChild(tag)
+    popCurrent.appendChild(makeGroupMark(latest.group))
   }
 
   function renderSummary(traj: DataPoint[]): void {
@@ -317,7 +391,7 @@
     const trend = delta > 0 ? `累计上升 ${delta} 组` : delta < 0 ? `累计下降 ${Math.abs(delta)} 组` : '组别保持不变'
     const missingCount = traj.length - listed.length
     const missingText = missingCount > 0 ? `；${missingCount} 个年份未入选` : ''
-    popSummary.textContent = `${first.year} ${GROUP_LABELS[first.group]} → ${latest.year} ${GROUP_LABELS[latest.group]}，${trend}${missingText}`
+    popSummary.textContent = `${first.year} ${groupName(first.group)} → ${latest.year} ${groupName(latest.group)}，${trend}${missingText}`
   }
 
   function renderTrack(traj: DataPoint[]): void {
@@ -342,10 +416,7 @@
         empty.textContent = '未入选'
         item.appendChild(empty)
       } else {
-        const tag = document.createElement('span')
-        tag.className = `z-tag z-tag--g${point.group}`
-        tag.textContent = GROUP_LABELS[point.group] ?? `第${point.group}组`
-        item.appendChild(tag)
+        item.appendChild(makeGroupMark(point.group))
       }
 
       popTrack.appendChild(item)
@@ -376,7 +447,7 @@
       label.setAttribute('y', String(y))
       label.setAttribute('text-anchor', 'end')
       label.classList.add('pop-group-label')
-      label.textContent = GROUP_LABELS[group]
+      label.textContent = groupName(group)
     }
 
     const xPos = traj.map((_, index) => PAD_L + (traj.length === 1 ? plotW / 2 : (index / (traj.length - 1)) * plotW))
@@ -411,7 +482,7 @@
       const dot = appendSvg('circle')
       dot.setAttribute('cx', String(xPos[index]))
       dot.setAttribute('cy', String(yForGroup(point.group)))
-      dot.setAttribute('r', latest && point.year === latest.year ? '5.5' : '4.5')
+      dot.setAttribute('r', latest && point.year === latest.year ? '5' : '4')
       dot.classList.add('pop-dot', `pg${point.group}`)
       if (latest && point.year === latest.year) dot.classList.add('is-current')
     })

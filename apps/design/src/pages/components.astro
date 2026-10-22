@@ -14,9 +14,24 @@ import Callout from '@zone/ui/components/Callout.astro'
 import CodeBlock from '@zone/ui/components/CodeBlock.astro'
 import Book from '@zone/ui/components/Book.astro'
 import ListenRow from '@zone/ui/components/ListenRow.astro'
+import GroupMark from '@zone/ui/components/GroupMark.astro'
+import CompositionBar from '@zone/ui/components/CompositionBar.astro'
 import { posts, books, episodes } from '../data/demo'
 
 const entries = posts.slice(0, 2)
+const groupNames: Record<number, string> = { 1: '第一组', 2: '第二组', 3: '第三组', 4: '第四组' }
+const latestSegments = [
+  { group: 4, count: 4 },
+  { group: 3, count: 2 },
+  { group: 2, count: 4 },
+  { group: 1, count: 11 },
+]
+const previousSegments = [
+  { group: 4, count: 4 },
+  { group: 3, count: 3 },
+  { group: 2, count: 4 },
+  { group: 1, count: 8 },
+]
 const code = `--z-color-accent: light-dark(#0067A8, #71B8F0);
 --z-color-signal: light-dark(#0A86E8, #3AA9FF);`
 
@@ -223,6 +238,44 @@ const contracts = [
         <input type="checkbox" checked />
         <span>Send me the monthly reading note.</span>
       </label>
+    </DemoFrame>
+  </DocSection>
+
+  <DocSection index="10 / Data" title="Marks and composition">
+    <DemoFrame label="GroupMark">
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+        {[1, 2, 3, 4].map((group) => (
+          <GroupMark group={group} label={groupNames[group]} srLabel={groupNames[group]} />
+        ))}
+      </div>
+      <p class="mt-4 max-w-[62ch] text-label-12 leading-[1.7] text-ink-tertiary">
+        The square is 6px and carries the group color. The label is optional;
+        the accessible name is always “第 N 组”, even when the visible label is
+        only the number.
+      </p>
+    </DemoFrame>
+
+    <DemoFrame label="CompositionBar">
+      <div class="grid gap-5">
+        <div>
+          <div class="mb-2 flex items-baseline justify-between font-ui text-label-11 text-ink-tertiary">
+            <span>2025</span>
+            <span class="tabular-nums">21 家</span>
+          </div>
+          <CompositionBar segments={latestSegments} max={21} label="2025 年：第四组 4 家，第三组 2 家，第二组 4 家，第一组 11 家" />
+        </div>
+        <div>
+          <div class="mb-2 flex items-baseline justify-between font-ui text-label-11 text-ink-tertiary">
+            <span>2021</span>
+            <span class="tabular-nums">19 家</span>
+          </div>
+          <CompositionBar segments={previousSegments} max={21} label="2021 年：第四组 4 家，第三组 3 家，第二组 4 家，第一组 8 家" class="h-2" />
+        </div>
+      </div>
+      <p class="mt-4 max-w-[62ch] text-label-12 leading-[1.7] text-ink-tertiary">
+        Both bars share <code>max=21</code>; the 19 stops short instead of
+        stretching to fill the row. The 1px gaps are the hairline.
+      </p>
     </DemoFrame>
   </DocSection>
 

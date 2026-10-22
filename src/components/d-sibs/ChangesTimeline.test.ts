@@ -3,21 +3,19 @@ import { describe, expect, it } from 'vitest'
 
 const source = readFileSync(new URL('./ChangesTimeline.astro', import.meta.url), 'utf8')
 
-function cssRule(selector: string): string {
-  const escapedSelector = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  const match = source.match(new RegExp(`${escapedSelector}\\s*\\{([^}]+)\\}`))
+describe('ChangesTimeline register', () => {
+	it('uses a hairline timeline instead of a set of cards', () => {
+		expect(source).toContain('w-px bg-line')
+		expect(source).toContain('-translate-x-1/2')
+		expect(source).not.toContain('border-radius')
+		expect(source).not.toContain('box-shadow')
+		expect(source).toContain('GroupMark')
+	})
 
-  expect(match, `Missing CSS rule for ${selector}`).not.toBeNull()
-  return match![1]
-}
-
-describe('ChangesTimeline year cards', () => {
-  it('uses neutral card hierarchy instead of accent decoration', () => {
-    const total = cssRule('.change-total')
-
-    expect(source).not.toContain('.change-year.has-changes::before')
-    expect(total).not.toContain('--z-color-accent')
-    expect(total).toContain('--z-color-border-subtle')
-    expect(total).toContain('--z-color-text-secondary')
-  })
+	it('keeps change counts neutral and uses the group palette only', () => {
+		expect(source).not.toContain('text-positive')
+		expect(source).not.toContain('text-danger')
+		expect(source).not.toContain('z-tag')
+		expect(source).toContain('tabular-nums')
+	})
 })

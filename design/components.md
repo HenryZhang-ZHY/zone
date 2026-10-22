@@ -20,6 +20,8 @@ Every component is a **Tailwind recipe first** and an Astro wrapper second. The 
 | `PageHeader`   | Page title, optional lede      | Used by the reading and listening pages                                        |
 | `Entry`        | Archive row                    | Date, title, excerpt, meta, arrow; the whole row links                         |
 | `Tag`          | Quiet taxonomy                 | Square, 1px, 11px; accent variant for a current state                          |
+| `GroupMark`    | Categorical group              | 6px data-color square plus an optional number or full label; color is never the only carrier |
+| `CompositionBar` | Part-to-whole data            | Flex segments with 1px gaps; pass `max` to share a baseline across rows        |
 | `Button`       | Primary, secondary, quiet      | 40px / 32px; square                                                            |
 | `Notice`       | Translation and language notes | 2px start rule; one notice per page                                            |
 | `SectionHead`  | Label, count, rule, action     | Optional; the reading and listening pages do not use it                        |
@@ -41,6 +43,15 @@ Tables and form fields are HTML, so their recipes live in `packages/ui/src/style
 - `.z-checkbox`
 
 They are the only component-looking classes that are not Astro components. Use them when the markup is naturally tabular or a native form control.
+
+## Data display
+
+Categorical data has two components; everything else is a table or a row.
+
+- `GroupMark` is a 6px square in the group color plus an optional `label`. Pass `srLabel` when the visible label is a number so the screen reader still hears “第 N 组”. The mark is the only categorical fill.
+- `CompositionBar` is a flex row of segments. Pass the same `max` to several bars when their totals must be compared; the bar stops short of the container instead of always filling it. The 1px gaps are the hairline, not a border. `label` is required and should include the counts.
+- Status words (new, exited, up, down) stay in ink with a `+`, `−`, `↑` or `↓`; they do not get success/danger fills. Group colors are data, not sentiment.
+- A data page may use the full shell width and a matrix table. It still has no cards: a hero stat, a shared-baseline bar, a hairline table, a timeline and a two-column archive are enough.
 
 ## Prose
 

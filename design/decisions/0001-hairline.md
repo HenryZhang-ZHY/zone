@@ -30,5 +30,5 @@ The first Hairline proposal tried to make the design more "editorial": warm pape
 - The contents are less discoverable; the ticks need a hover/focus or a learned affordance. The panel makes the full index available when reached for. On mobile there is no TOC.
 - The archive loses a place for a standing introduction and a "now" block. If those return, they need a different pattern, not a second column.
 - Removing visible section labels works because reading and listening are now separate pages: each page has one kind of object. Screen readers still get `h2`s.
-- The live blog now consumes `@zone/ui`; the old `src/styles` and `DESIGN.md` notes were retired. The two data tools keep a scoped token-compatibility stylesheet, not a second design system.
+- The live blog now consumes `@zone/ui`; the old `src/styles` and `DESIGN.md` notes were retired. The stock-sell calculator keeps a scoped token-compatibility stylesheet; the D-SIBs report uses the data components, not a second design system.
 - Tailwind adds a build-time dependency and a custom merge configuration for the type scale. In exchange, the component layer is one vocabulary and the token mapping is explicit.

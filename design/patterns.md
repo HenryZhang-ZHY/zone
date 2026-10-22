@@ -78,6 +78,33 @@ Listening
 - One 68ch column. A listening list is still reading.
 - No section label. The page title says Listening; the rows are obviously episodes. A visually hidden `h2` keeps the semantics.
 
+## The data report
+
+```
+数据观察 / D-SIBs
+中国系统重要性银行
+4 期发布 · 2021–2025 · 最新 2025
+
+2025  21 家  █████████████████████
+      第四组 4  第三组 2  第二组 4  第一组 11
+                              发布记录 01 2021 …
+                              最近变化 2023 → 2025
+
+01 历年规模   [shared-baseline bars]
+02 银行明细   [hairline matrix]
+03 名单变化   [hairline timeline]
+04 各期名单   [two-column archive]
+```
+
+- The data report uses the full shell width, not the 78ch reading measure. Comparison needs the room; the reading pages keep their measure.
+- One hero finding: a single large number, its delta, and one composition bar. The release ledger sits beside it on a hairline, not in a second card.
+- Every bar shares the same `max`; the row for 19 must be visibly shorter than the row for 21. A card grid of totals hides the only comparison that matters.
+- The matrix is a table, not a set of cards. Group cells are a 6px data square plus the group number; the legend carries the labels. The first column sticks when the table scrolls sideways.
+- Status changes use ink and `+`/`−`/`↑`/`↓`; no success/danger fills. The group colors are the only categorical color.
+- The archive is two columns of names separated by `·`; the latest release gets a 2px accent top rule. No boxes, no tag pills.
+- Sections carry only a number and a title. No explanatory note, no inline contents row: the same fixed edge index as the article carries the four anchors. It appears from 1320px so the full-width table is never covered; below that, the headings are the index.
+- The only shadow is the sparkline popover; it is a movable surface, not a content card.
+
 ## Documentation
 
 The docs site is the one place with a left navigation column. It uses an 11rem sticky sidebar, the same 2px accent rule for the current page and the same hairline section breaks. The content column is 48rem because specimens need room. It is documentation chrome, not the product.

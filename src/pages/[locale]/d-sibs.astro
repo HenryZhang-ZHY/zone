@@ -1,13 +1,17 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
-import '../../styles/tools.css'
+import PageHeader from '@zone/ui/components/PageHeader.astro'
+import CompositionBar from '@zone/ui/components/CompositionBar.astro'
+import EdgeToc from '@zone/ui/components/EdgeToc.astro'
+import GroupMark from '@zone/ui/components/GroupMark.astro'
 import BankHistoryTable from '../../components/d-sibs/BankHistoryTable.astro'
 import ChangesTimeline from '../../components/d-sibs/ChangesTimeline.astro'
+import DsibsSection from '../../components/d-sibs/DsibsSection.astro'
 import SparklinePopover from '../../components/d-sibs/SparklinePopover.astro'
 import YearCompositionGrid from '../../components/d-sibs/YearCompositionGrid.astro'
 import { SITE_TITLE } from '../../consts'
 import { getCollection } from 'astro:content'
-import { buildDsibsViewModel, groupKeys, groupLabels } from '../../lib/d-sibs'
+import { buildDsibsViewModel, groupKeys, groupLabels, type YearStats } from '../../lib/d-sibs'
 import { localeStaticPaths, type Locale } from '../../i18n'
 
 export const getStaticPaths = localeStaticPaths
@@ -22,398 +26,208 @@ const { years, sortedBanks, yearStats, changes } = buildDsibsViewModel(
 const latest = yearStats.at(-1)
 const previous = yearStats.at(-2)
 const latestChange = changes.at(-1)
-const presentGroups = [...groupKeys].reverse().filter((group) => yearStats.some((stats) => stats.groups[group].length > 0))
+const groupOrder = [...groupKeys].reverse()
+const latestGroups = latest ? groupOrder.filter((group) => latest.groups[group].length > 0) : []
+const latestSegments = latest
+  ? latestGroups.map((group) => ({ group, count: latest.groups[group].length }))
+  : []
+const latestDelta = latest && previous ? latest.total - previous.total : null
+const latestChangeCount = latestChange
+  ? latestChange.entered.length + latestChange.exited.length + latestChange.upgraded.length + latestChange.downgraded.length
+  : 0
 const description = `汇总中国人民银行发布的 ${years[0]}—${years.at(-1)} 年中国系统重要性银行名单，按附加监管要求分组展示，并追踪历次发布的入选和组别变化。`
+
+const sections = [
+  { id: 'comparison', index: '01', title: '历年规模' },
+  { id: 'history', index: '02', title: '银行明细' },
+  { id: 'changes', index: '03', title: '名单变化' },
+  { id: 'annual-lists', index: '04', title: '各期名单' },
+]
+
+const compositionLabel = (stats: YearStats) =>
+  `${stats.year} 年：${groupOrder
+    .filter((group) => stats.groups[group].length > 0)
+    .map((group) => `${groupLabels[group]} ${stats.groups[group].length} 家`)
+    .join('，')}`
+
+const deltaLabel = (delta: number | null) => (delta === null ? '—' : delta > 0 ? `+${delta}` : delta === 0 ? '±0' : String(delta))
 ---
 
-<BaseLayout title={`系统重要性银行名单 | ${SITE_TITLE}`} description={description} locale={locale} path="/d-sibs/" available={['zh-Hans']} sourceLocale="zh-Hans" pageLayout="medium">
-  <main class="z-main dsibs-page" lang="zh-Hans">
-    <header class="page-header">
-      <p class="eyebrow">数据观察 / D-SIBs</p>
-      <h1 class="z-page-title">中国系统重要性银行</h1>
-      <p class="z-page-subtitle">从最新名单到历次变化，按组别查看每家银行的入选轨迹。</p>
-    </header>
+<BaseLayout
+  title={`系统重要性银行名单 | ${SITE_TITLE}`}
+  description={description}
+  locale={locale}
+  path="/d-sibs/"
+  available={['zh-Hans']}
+  sourceLocale="zh-Hans"
+>
+  <main class="shell py-page-top pb-page-bottom" lang="zh-Hans">
+    <PageHeader
+      class="max-sm:[&>h1]:text-heading-32 [&>p:first-child]:normal-case"
+      eyebrow="数据观察 / D-SIBs"
+      title="中国系统重要性银行"
+      lede="按组别查看每家银行的入选轨迹。"
+    >
+      <div slot="meta" class="mt-6 flex flex-wrap items-baseline gap-x-6 gap-y-2 border-t border-line pt-4 font-ui text-label-11 text-ink-tertiary">
+        <span>{years.length} 期发布</span>
+        <span>{years[0]}—{years.at(-1)}</span>
+        {latest && <span class="text-ink">最新 {latest.year}</span>}
+        {latest && (
+          <a
+            class="ml-auto text-accent underline decoration-accent/40 underline-offset-[0.25em] transition-colors duration-1 hover:decoration-current max-sm:ml-0"
+            href={latest.link}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            查看央行公告 ↗
+          </a>
+        )}
+      </div>
+    </PageHeader>
 
     {latest && (
-      <section class="overview z-section" aria-labelledby="overview-title">
-        <div class="overview-main">
-          <div class="overview-heading">
-            <div>
-              <p class="eyebrow">最新发布 · {latest.year}</p>
-              <h2 id="overview-title">最新名单概况</h2>
-            </div>
-            <a class="source-link" href={latest.link} target="_blank" rel="noopener noreferrer">查看央行公告 ↗</a>
-          </div>
-          <div class="headline-stat">
-            <strong>{latest.total}</strong>
-            <span>家银行入选</span>
-            {previous && <span class="stat-change">较 {previous.year} 年发布名单 {latest.total - previous.total >= 0 ? '+' : ''}{latest.total - previous.total} 家</span>}
-          </div>
-          <p class="overview-note">按附加监管要求分组；组别数字越大，附加要求越高。</p>
-          <div class="group-overview" aria-label={`${latest.year} 年各组银行数量`}>
-            {[...groupKeys].reverse().filter((group) => latest.groups[group].length > 0).map((group) => (
-              <div class="group-row">
-                <span class={`group-mark group-mark--g${group}`} aria-hidden="true"></span>
-                <span class="group-name">{groupLabels[group]}</span>
-                <span class="group-meter" aria-hidden="true"><span class={`group-meter-fill group-meter-fill--g${group}`} style={`width: ${latest.groups[group].length / latest.total * 100}%`}></span></span>
-                <strong class="group-count">{latest.groups[group].length} 家</strong>
+      <section aria-labelledby="latest-title" class="border-y border-line-strong">
+        <h2 id="latest-title" class="sr-only">{latest.year} 年最新名单</h2>
+        <div class="grid gap-10 py-8 lg:grid-cols-[minmax(0,1.55fr)_minmax(17rem,0.45fr)] lg:gap-0">
+          <div class="lg:pr-10">
+            <p class="font-ui text-label-11 tabular-nums text-ink-tertiary">{latest.year}</p>
+            <div class="mt-4 flex flex-wrap items-end gap-x-6 gap-y-2">
+              <p class="font-prose text-display-64 leading-none tabular-nums text-ink">{latest.total}</p>
+              <div class="pb-1">
+                <p class="font-prose text-heading-24 text-ink">家银行入选</p>
+                {previous && (
+                  <p class="mt-1 font-ui text-label-12 tabular-nums text-ink-tertiary">
+                    较 {previous.year} 年 {deltaLabel(latestDelta)} 家
+                  </p>
+                )}
               </div>
-            ))}
-          </div>
-        </div>
-        <div class="overview-aside">
-          <p class="eyebrow">发布记录</p>
-          <div class="record-count">{years.length} <span>期名单</span></div>
-          <nav class="publication-years" aria-label="历次发布公告">
-            {yearStats.map((stats, index) => (
-              <>
-                {index > 0 && <span aria-hidden="true">/</span>}
-                <a href={stats.link} target="_blank" rel="noopener noreferrer" aria-label={`${stats.year} 年中国系统重要性银行公告（新窗口打开）`}>{stats.year}</a>
-              </>
-            ))}
-          </nav>
-          {latestChange && (
-            <div class="latest-change">
-              <span>最近一次变化</span>
-              <strong>{latestChange.entered.length + latestChange.exited.length + latestChange.upgraded.length + latestChange.downgraded.length} 项</strong>
-              <small>{latestChange.from} → {latestChange.to}</small>
             </div>
-          )}
-          <p class="record-note">仅展示已收录的发布年份，未发布年份不作补全。</p>
+
+            <CompositionBar
+              segments={latestSegments}
+              max={latest.total}
+              label={`${latest.year} 年最新名单组别构成：${latestGroups.map((group) => `${groupLabels[group]} ${latest.groups[group].length} 家`).join('，')}`}
+              class="mt-9 h-2"
+            />
+
+            <dl class="mt-3 grid grid-cols-2 gap-x-6 gap-y-2 sm:grid-cols-4">
+              {latestGroups.map((group) => (
+                <div class="flex items-baseline justify-between gap-3 border-t border-line pt-2">
+                  <dt><GroupMark group={group} label={groupLabels[group]} srLabel={groupLabels[group]} /></dt>
+                  <dd class="font-ui text-label-12 tabular-nums text-ink">
+                    {latest.groups[group].length}<span class="ml-1 text-ink-tertiary">家</span>
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+
+          <aside class="border-t border-line pt-6 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
+            <div class="flex items-baseline justify-between font-ui text-label-11 uppercase text-ink-tertiary">
+              <span>发布记录</span>
+              <span class="tabular-nums">{years.length} 期</span>
+            </div>
+            <ol class="mt-3">
+              {yearStats.map((stats, index) => (
+                <li class="grid grid-cols-[1.5rem_1fr_auto] items-baseline gap-3 border-t border-line py-2.5 first:border-t-0">
+                  <span class="font-ui text-label-11 tabular-nums text-ink-quiet">{String(index + 1).padStart(2, '0')}</span>
+                  <a
+                    class={`font-prose text-heading-18 underline decoration-transparent underline-offset-[0.2em] transition-[color,text-decoration-color] duration-1 hover:text-accent hover:decoration-current ${
+                      index === yearStats.length - 1 ? 'text-ink' : 'text-ink-secondary'
+                    }`}
+                    href={stats.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {stats.year}
+                  </a>
+                  <span class="font-ui text-label-11 tabular-nums text-ink-tertiary">{stats.total} 家</span>
+                </li>
+              ))}
+            </ol>
+
+            {latestChange && (
+              <div class="mt-6 border-t border-line pt-4">
+                <div class="flex items-baseline justify-between font-ui text-label-11 text-ink-tertiary">
+                  <span>最近一次变化</span>
+                  <span class="tabular-nums">{latestChangeCount} 项</span>
+                </div>
+                <a
+                  class="mt-2 flex items-baseline justify-between gap-3 font-prose text-heading-18 text-ink underline decoration-transparent underline-offset-[0.2em] transition-[color,text-decoration-color] duration-1 hover:text-accent hover:decoration-current"
+                  href="#changes"
+                >
+                  <span>{latestChange.from} → {latestChange.to}</span>
+                  <span class="font-ui text-label-11 text-ink-tertiary">查看 →</span>
+                </a>
+              </div>
+            )}
+
+          </aside>
         </div>
       </section>
     )}
 
-    <nav class="section-nav" aria-label="本页导航">
-      <a href="#comparison">历年规模</a>
-      <a href="#history">银行明细</a>
-      <a href="#changes">名单变化</a>
-      <a href="#annual-lists">各期名单</a>
-    </nav>
-
-    <section id="comparison" class="comparison z-section" aria-labelledby="comparison-title">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">01 / OVERVIEW</p>
-          <h2 id="comparison-title" class="z-section-title">历年规模</h2>
-        </div>
-        <p>每张卡片对应一次正式发布，并非连续年度序列。</p>
-      </div>
-      <div class="comparison-grid">
-        {yearStats.map((stats) => (
-          <div class="comparison-year">
-            <span class="comparison-label">{stats.year}</span>
-            <strong>{stats.total} <small>家</small></strong>
-            <div class="comparison-bar" aria-label={`${stats.year}年：${[...groupKeys].reverse().filter((group) => stats.groups[group].length > 0).map((group) => `${groupLabels[group]} ${stats.groups[group].length} 家`).join('，')}`}>
-              {[...groupKeys].reverse().filter((group) => stats.groups[group].length > 0).map((group) => (
-                <span class={`comparison-segment comparison-segment--g${group}`} style={`flex-grow: ${stats.groups[group].length}`}></span>
-              ))}
+    <DsibsSection id="comparison" index="01" title="历年规模">
+      <div class="border-t border-line-strong">
+        {yearStats.map((stats, index) => {
+          const previousStats = yearStats[index - 1]
+          const delta = previousStats ? stats.total - previousStats.total : null
+          const segments = groupOrder
+            .filter((group) => stats.groups[group].length > 0)
+            .map((group) => ({ group, count: stats.groups[group].length }))
+          return (
+            <div class="grid grid-cols-[3.5rem_3rem_minmax(0,1fr)_4rem] items-baseline gap-4 border-b border-line py-4 last:border-b-0 max-sm:grid-cols-[3.5rem_2.5rem_minmax(0,1fr)]">
+              <a
+                class={`font-ui text-label-13 tabular-nums underline decoration-transparent underline-offset-[0.2em] transition-[color,text-decoration-color] duration-1 hover:text-accent hover:decoration-current ${
+                  index === yearStats.length - 1 ? 'text-ink' : 'text-ink-secondary'
+                }`}
+                href={stats.link}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {stats.year}
+              </a>
+              <span class="font-prose text-heading-24 tabular-nums text-ink">{stats.total}</span>
+              <CompositionBar
+                segments={segments}
+                max={latest?.total}
+                label={compositionLabel(stats)}
+                class="h-1.5 self-center"
+              />
+              <span class="text-right font-ui text-label-12 tabular-nums text-ink-tertiary max-sm:hidden" aria-label={`较上期 ${deltaLabel(delta)}`}>{deltaLabel(delta)}</span>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
-      <p class="comparison-key">色段由左至右分别为 {presentGroups.map((group) => groupLabels[group]).join('、')}；各期准确数量见下方完整名单。</p>
-    </section>
+    </DsibsSection>
 
-    <div id="history">
+    <DsibsSection id="history" index="02" title="银行明细">
       <BankHistoryTable years={years} banks={sortedBanks} />
-    </div>
+    </DsibsSection>
     <SparklinePopover />
-    <div id="changes"><ChangesTimeline changes={changes} /></div>
-    <div id="annual-lists"><YearCompositionGrid yearStats={yearStats} /></div>
-    <p class="data-credit">数据来源：<a href="https://www.pbc.gov.cn/huobizhengceersi/214481/3868581/3868587/index.html" target="_blank" rel="noopener noreferrer">中国人民银行宏观审慎管理局</a>。各期原始公告可从名单标题进入。</p>
+
+    <DsibsSection id="changes" index="03" title="名单变化">
+      <ChangesTimeline changes={changes} />
+    </DsibsSection>
+
+    <DsibsSection id="annual-lists" index="04" title="各期名单">
+      <YearCompositionGrid yearStats={yearStats} />
+    </DsibsSection>
+
+    <p class="mt-16 border-t border-line pt-4 font-ui text-label-11 leading-[1.7] text-ink-tertiary">
+      数据来源：<a
+        class="text-accent underline decoration-accent/40 underline-offset-[0.25em] hover:decoration-current"
+        href="https://www.pbc.gov.cn/huobizhengceersi/214481/3868581/3868587/index.html"
+        target="_blank"
+        rel="noopener noreferrer"
+      >中国人民银行宏观审慎管理局</a>。
+    </p>
   </main>
+
+  <div class="max-[1319px]:hidden">
+    <EdgeToc
+      headings={sections.map((section) => ({ depth: 2, text: section.title, slug: section.id }))}
+      label="本页导航"
+    />
+  </div>
 </BaseLayout>
-
-<style>
-  .dsibs-page {
-    --dsibs-g1: var(--z-data-g1);
-    --dsibs-g2: var(--z-data-g2);
-    --dsibs-g3: var(--z-data-g3);
-    --dsibs-g4: var(--z-data-g4);
-  }
-
-  .page-header {
-    margin-bottom: var(--z-space-10);
-  }
-
-  .eyebrow {
-    color: var(--z-color-text-dimmed);
-    font-size: var(--z-text-label-13);
-    font-weight: 600;
-    line-height: var(--z-leading-label-13);
-    margin-bottom: var(--z-space-2);
-  }
-
-  .page-header .z-page-title {
-    margin-bottom: var(--z-space-3);
-  }
-
-  .overview {
-    display: grid;
-    grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr);
-    border: 1px solid var(--z-color-border);
-    background: var(--z-color-surface);
-  }
-
-  .overview-main {
-    padding: var(--z-space-8);
-  }
-
-  .overview-heading,
-  .section-heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: var(--z-space-4);
-  }
-
-  .overview-heading h2 {
-    color: var(--z-color-heading);
-    font-size: var(--z-text-heading-24);
-    letter-spacing: var(--z-tracking-heading-24);
-    line-height: var(--z-leading-heading-24);
-  }
-
-  .source-link {
-    color: var(--z-color-text-accent);
-    font-size: var(--z-text-label-13);
-    line-height: var(--z-leading-label-13);
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
-  }
-
-  .headline-stat {
-    display: flex;
-    align-items: baseline;
-    flex-wrap: wrap;
-    column-gap: var(--z-space-3);
-    margin: var(--z-space-6) 0 var(--z-space-2);
-  }
-
-  .headline-stat strong {
-    font-size: var(--z-text-heading-72);
-    line-height: var(--z-leading-heading-72);
-    letter-spacing: var(--z-tracking-heading-72);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .headline-stat > span {
-    font-size: var(--z-text-label-14);
-    line-height: var(--z-leading-label-14);
-  }
-
-  .headline-stat .stat-change {
-    color: var(--z-color-text-secondary);
-  }
-
-  .overview-note,
-  .record-note,
-  .comparison-key,
-  .data-credit {
-    color: var(--z-color-text-secondary);
-    font-size: var(--z-text-copy-13);
-    line-height: var(--z-leading-copy-13);
-  }
-
-  .group-overview {
-    display: grid;
-    gap: var(--z-space-3);
-    margin-top: var(--z-space-8);
-  }
-
-  .group-row {
-    display: grid;
-    grid-template-columns: 4px 4.5rem minmax(0, 1fr) 3rem;
-    align-items: center;
-    gap: var(--z-space-3);
-    font-size: var(--z-text-label-14);
-    line-height: var(--z-leading-label-14);
-  }
-
-  .group-mark,
-  .group-meter-fill {
-    background: var(--group-color);
-  }
-
-  .group-mark { height: 1.25rem; }
-  .group-meter { display: block; height: 6px; background: var(--z-color-gray-alpha-100); }
-  .group-meter-fill { display: block; height: 100%; }
-  .group-count { text-align: end; font-variant-numeric: tabular-nums; }
-  .group-mark--g1, .group-meter-fill--g1 { --group-color: var(--dsibs-g1); }
-  .group-mark--g2, .group-meter-fill--g2 { --group-color: var(--dsibs-g2); }
-  .group-mark--g3, .group-meter-fill--g3 { --group-color: var(--dsibs-g3); }
-  .group-mark--g4, .group-meter-fill--g4 { --group-color: var(--dsibs-g4); }
-  .group-mark--g5, .group-meter-fill--g5 { --group-color: var(--z-color-purple-900); }
-
-  .overview-aside {
-    display: flex;
-    flex-direction: column;
-    padding: var(--z-space-8);
-    border-inline-start: 1px solid var(--z-color-border);
-    background: var(--z-color-surface-muted);
-    color: var(--z-color-text-secondary);
-    font-size: var(--z-text-copy-14);
-    line-height: var(--z-leading-copy-14);
-  }
-
-  .record-count {
-    color: var(--z-color-heading);
-    font-size: var(--z-text-heading-32);
-    font-weight: 600;
-    line-height: var(--z-leading-heading-32);
-    margin: var(--z-space-2) 0;
-  }
-
-  .record-count span {
-    font-size: var(--z-text-label-14);
-    font-weight: 400;
-  }
-
-  .publication-years {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--z-space-2);
-  }
-
-  .publication-years a {
-    color: var(--z-color-text-accent);
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
-  }
-
-  .publication-years a:hover,
-  .publication-years a:focus-visible {
-    color: var(--z-color-text-accent-hover);
-  }
-
-  .latest-change {
-    display: grid;
-    gap: var(--z-space-1);
-    margin-top: auto;
-    padding-top: var(--z-space-8);
-  }
-
-  .latest-change strong {
-    color: var(--z-color-heading);
-    font-size: var(--z-text-heading-24);
-    line-height: var(--z-leading-heading-24);
-  }
-
-  .latest-change small {
-    font-size: var(--z-text-label-13);
-  }
-
-  .record-note {
-    margin-top: var(--z-space-4);
-  }
-
-  .section-nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--z-space-2) var(--z-space-6);
-    padding: var(--z-space-4) 0;
-    margin-bottom: var(--z-space-16);
-    border-bottom: 1px solid var(--z-color-border);
-  }
-
-  .section-nav a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 40px;
-    font-size: var(--z-text-label-14);
-    font-weight: 600;
-    text-decoration: underline;
-    text-decoration-color: transparent;
-    text-underline-offset: 0.25em;
-  }
-
-  .section-nav a:hover,
-  .section-nav a:focus-visible {
-    color: var(--z-color-text-accent);
-    text-decoration-color: currentColor;
-  }
-
-  .section-heading {
-    align-items: end;
-    margin-bottom: var(--z-space-6);
-  }
-
-  .section-heading .z-section-title { margin-bottom: 0; }
-  .section-heading > p {
-    color: var(--z-color-text-secondary);
-    font-size: var(--z-text-copy-13);
-    line-height: var(--z-leading-copy-13);
-  }
-
-  .comparison-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
-    gap: var(--z-space-4);
-  }
-
-  .comparison-year {
-    padding: var(--z-space-4);
-    border: 1px solid var(--z-color-border);
-    background: var(--z-color-surface);
-  }
-
-  .comparison-year:last-child {
-    border-color: var(--z-color-border-active);
-    background: var(--z-color-surface-muted);
-  }
-
-  .comparison-label {
-    display: block;
-    color: var(--z-color-text-secondary);
-    font-size: var(--z-text-label-13);
-    line-height: var(--z-leading-label-13);
-  }
-
-  .comparison-year strong {
-    display: block;
-    margin: var(--z-space-3) 0;
-    font-size: var(--z-text-heading-24);
-    line-height: var(--z-leading-heading-24);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .comparison-year small {
-    font-size: var(--z-text-label-13);
-    font-weight: 400;
-  }
-
-  .comparison-bar {
-    display: flex;
-    gap: 2px;
-    height: 8px;
-    overflow: hidden;
-    background: var(--z-color-gray-alpha-100);
-  }
-
-  .comparison-segment { flex-basis: 0; }
-  .comparison-segment--g1 { background: var(--dsibs-g1); }
-  .comparison-segment--g2 { background: var(--dsibs-g2); }
-  .comparison-segment--g3 { background: var(--dsibs-g3); }
-  .comparison-segment--g4 { background: var(--dsibs-g4); }
-  .comparison-segment--g5 { background: var(--z-color-purple-900); }
-  .comparison-key { margin-top: var(--z-space-3); }
-  .data-credit { padding-top: var(--z-space-4); border-top: 1px solid var(--z-color-border); }
-  .data-credit a { color: var(--z-color-text-accent); text-decoration: underline; }
-
-  @media (max-width: 768px) {
-    .overview { grid-template-columns: 1fr; }
-    .overview-aside { border-inline-start: 0; border-top: 1px solid var(--z-color-border); }
-    .section-nav { margin-bottom: var(--z-space-10); }
-  }
-
-  @media (max-width: 480px) {
-    .page-header { margin-bottom: var(--z-space-8); }
-    .overview-main, .overview-aside { padding: var(--z-space-4); }
-    .overview-heading, .section-heading { flex-direction: column; align-items: flex-start; gap: var(--z-space-2); }
-    .headline-stat strong { font-size: var(--z-text-heading-56); line-height: var(--z-leading-heading-56); letter-spacing: var(--z-tracking-heading-56); }
-    .group-row { grid-template-columns: 4px 3.5rem minmax(0, 1fr) 2.5rem; gap: var(--z-space-2); }
-    .section-nav a { min-height: 44px; }
-  }
-</style>

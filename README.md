@@ -54,7 +54,7 @@ mise run fmt
 
 - Start at [design/README.md](design/README.md).
 - The system lives in `packages/tokens` and `packages/ui`; the documentation and the four applied demos live in `apps/design`.
-- The live blog in `src/` now consumes `@zone/ui` and the Hairline tokens. Its two data tools keep a scoped compatibility stylesheet (`src/styles/tools.css`) for their bespoke charts.
+- The live blog in `src/` consumes `@zone/ui` and the Hairline tokens. The stock-sell calculator keeps a scoped compatibility stylesheet (`src/styles/tools.css`) for its form and result table; the D-SIBs report uses the UI package's `GroupMark` and `CompositionBar`.
 
 ## Project Structure
 
@@ -81,11 +81,11 @@ src/
 - `podcast`: Listening-list entries loaded from `src/content/podcast.yaml`.
 - `dsibs`: Systemically important bank data loaded from `src/content/d-sibs.yaml`.
 
-The D-SIBs page shows the latest published list first, followed by per-publication comparisons, a chronologically ordered bank history table, and changes between adjacent published lists. Each publication year links to its original announcement. Missing publication years are not interpolated.
+The D-SIBs report opens with the latest finding and a composition bar, then shared-baseline release bars, a bank matrix with group marks and sparkline popovers, a hairline change timeline, and the complete lists by release. Each publication year links to its original announcement. Missing publication years are not interpolated.
 
 ## Languages
 
-The site is built in eight languages, identified by BCP 47 tags: `en`, `es`, `de`, `ja`, `fr`, `pt`, `ru` and `zh-Hans`. Every page exists under the lowercase tag, such as `/ja/blog/refuge/` or `/zh-hans/reading/`. The page chrome follows that language; an article without a translation is shown in its original language with a notice, and its canonical URL points at the original. `/` redirects to the reader's saved or browser language through `src/worker/` (locally it redirects to `/en/`); every other URL is served as is. When a page also exists in a language the reader prefers, a one-line suggestion offers it. The language switcher in the footer and the suggestion save the choice in the `lang` cookie.
+The site is built in eight languages, identified by BCP 47 tags: `en`, `es`, `de`, `ja`, `fr`, `pt`, `ru` and `zh-Hans`. Every page exists under the lowercase tag, such as `/ja/blog/refuge/` or `/zh-hans/reading/`. The page chrome follows that language; an article without a translation is shown in its original language with a notice, and its canonical URL points at the original. `/` redirects to the reader's saved or browser language through `src/worker/` (locally it redirects to `/en/`); every other URL is served as is. When a page also exists in a language the reader prefers, a one-line suggestion offers it. The header language menu, the footer index and the suggestion save the choice in the `lang` cookie.
 
 To translate a post, add a file named after the language next to the original:
 

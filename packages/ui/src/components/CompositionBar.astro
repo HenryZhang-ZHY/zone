@@ -1,0 +1,36 @@
+---
+import { cn } from '../recipes/cn'
+
+interface Segment {
+  group: number
+  count: number
+}
+
+interface Props {
+  segments: Segment[]
+  /** Shared maximum; the bar stops short when the total is below it. */
+  max?: number
+  label: string
+  class?: string
+}
+
+const colors = ['bg-data-1', 'bg-data-2', 'bg-data-3', 'bg-data-4', 'bg-data-5']
+const { segments, max, label, class: className } = Astro.props
+const visible = segments.filter((segment) => segment.count > 0)
+const total = visible.reduce((sum, segment) => sum + segment.count, 0)
+const scale = max && max > 0 ? Math.min(1, total / max) : 1
+---
+
+<div class={cn('h-2 w-full bg-line', className)} role="img" aria-label={label}>
+  <div class="flex h-full gap-px" style={`width: ${scale * 100}%`}>
+    {
+      visible.map((segment) => (
+        <span
+          class={cn('h-full', colors[segment.group - 1] ?? 'bg-ink-quiet')}
+          style={`flex-grow: ${segment.count}`}
+          data-group={segment.group}
+        />
+      ))
+    }
+  </div>
+</div>

@@ -1,5 +1,5 @@
 /*
- * Compatibility layer for the two bespoke data tools (d-sibs, stock-sell).
+ * Compatibility layer for the stock-sell calculator.
  * They keep their chart/tool CSS, now mapped onto the Hairline tokens so the
  * live site has one palette, one type scale and one set of hairlines.
  */
