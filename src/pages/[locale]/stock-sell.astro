@@ -1,7 +1,7 @@
 ---
-import StockSellCalculator from '../../components/stock-sell/StockSellCalculator.astro'
-import '../../styles/tools.css'
+import StockSellSheet from '../../components/stock-sell/StockSellSheet.astro'
 import BaseLayout from '../../layouts/BaseLayout.astro'
+import PageHeader from '@zone/ui/components/PageHeader.astro'
 import { SITE_TITLE } from '../../consts'
 import { localeStaticPaths, type Locale } from '../../i18n'
 
@@ -12,20 +12,19 @@ const { locale } = Astro.props as { locale: Locale }
 
 <BaseLayout
   title={`股票卖点计算器 | ${SITE_TITLE}`}
-  description="股票卖点计算器：输入持仓股数与每股分红，按目标股息率估算卖出部分持仓所需的每股价格；结果仅供估算，不构成投资建议。"
+  description="按目标股息率反推卖出价格：输入成本、持仓与每股分红，查看不同卖出股数对应的每股卖价。结果仅供估算，不构成投资建议。"
   locale={locale}
   path="/stock-sell/"
   available={['zh-Hans']}
   sourceLocale="zh-Hans"
-  pageLayout="medium"
 >
-  <main class="z-main" lang="zh-Hans">
-    <div class="page-header z-page-header">
-      <h1 class="z-page-title">股票卖点计算器</h1>
-      <p class="z-page-subtitle">按目标股息率，估算卖出部分持仓所需的每股价格。</p>
-      <p class="z-page-note">输入持仓和每股分红，即可查看不同卖出股数、目标股息率对应的卖点。结果仅供估算，不构成投资建议。</p>
-    </div>
+  <main class="shell py-page-top pb-page-bottom" lang="zh-Hans">
+    <PageHeader
+      eyebrow="工具 / 股息率"
+      title="股票卖点计算器"
+      lede="按目标股息率，反推卖出部分持仓所需的每股价格。"
+    />
 
-    <StockSellCalculator />
+    <StockSellSheet />
   </main>
 </BaseLayout>

@@ -6,7 +6,7 @@ Bun workspace. The live Astro blog is at the root; the design system and its doc
 - `packages/ui` owns the Tailwind theme, the prose layer and the Astro components. Components are `tv()` recipes; use `recipes/tv.ts` and `recipes/cn.ts` (they register the custom type scale for `tailwind-merge`).
 - `apps/design` is Hairline's documentation and the four applied demos. It must consume `@zone/ui` and must not invent values or a second implementation.
 - `design/` is the written design language: principles, foundations, components, patterns and decisions. Start at `design/README.md`.
-- `src/` is the live blog. It consumes `@zone/ui` and Tailwind. `src/styles/tools.css` is a scoped token-compatibility layer for the stock-sell calculator; the D-SIBs report uses the UI package's data components. Do not add new editorial UI to tools.css.
+- `src/` is the live blog. It consumes `@zone/ui` and Tailwind. The D-SIBs report and the stock-sell calculator both use the Hairline data language; there is no page-level compatibility stylesheet.
 
 ## Commands
 

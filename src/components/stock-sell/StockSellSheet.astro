@@ -1,0 +1,405 @@
+---
+import { SHEET_BAND_SIZE } from '../../lib/stock-sell-view'
+
+/**
+ * The sell-point sheet.
+ *
+ * The inputs are a ruled ledger row, not a card. The result is one matrix whose
+ * column headers carry the shares sold and left, and whose row headers carry the
+ * target yield and diluted cost, so every cell holds exactly one number.
+ */
+const band = SHEET_BAND_SIZE
+---
+
+<div data-sell-sheet>
+  <section aria-labelledby="sell-inputs-title">
+    <h2 id="sell-inputs-title" class="sr-only">输入持仓</h2>
+
+    <div class="grid grid-cols-1 border-y border-line-strong sm:grid-cols-3">
+      <label class="group flex flex-col gap-2 border-b border-line py-5 focus-within:shadow-[inset_0_-2px_0_var(--z-color-accent)] sm:border-b-0 sm:px-6 sm:py-6 sm:pl-0">
+        <span class="font-ui text-label-11 text-ink-tertiary transition-colors duration-1 group-focus-within:text-ink">每股买入成本</span>
+        <span class="flex min-w-0 items-baseline gap-2">
+          <input
+            id="sell-cost"
+            type="number"
+            min="0.01"
+            step="any"
+            inputmode="decimal"
+            autocomplete="off"
+            placeholder="10.00"
+            class="sell-input min-w-0 appearance-none border-0 bg-transparent p-0 font-ui text-heading-32 font-normal tabular-nums text-ink outline-none placeholder:text-ink-quiet"
+          />
+          <span class="shrink-0 font-ui text-label-12 text-ink-tertiary">元/股</span>
+        </span>
+        <span id="sell-cost-error" class="sell-field-error" data-error-for="cost" aria-live="polite"></span>
+      </label>
+
+      <label class="group flex flex-col gap-2 border-b border-line py-5 focus-within:shadow-[inset_0_-2px_0_var(--z-color-accent)] sm:border-b-0 sm:border-l sm:border-line sm:px-6 sm:py-6">
+        <span class="font-ui text-label-11 text-ink-tertiary transition-colors duration-1 group-focus-within:text-ink">持有股数</span>
+        <span class="flex min-w-0 items-baseline gap-2">
+          <input
+            id="sell-shares"
+            type="number"
+            min="200"
+            step="1"
+            inputmode="numeric"
+            autocomplete="off"
+            placeholder="1000"
+            class="sell-input min-w-0 appearance-none border-0 bg-transparent p-0 font-ui text-heading-32 font-normal tabular-nums text-ink outline-none placeholder:text-ink-quiet"
+          />
+          <span class="shrink-0 font-ui text-label-12 text-ink-tertiary">股</span>
+        </span>
+        <span id="sell-shares-error" class="sell-field-error" data-error-for="shares" aria-live="polite"></span>
+      </label>
+
+      <label class="group flex flex-col gap-2 py-5 focus-within:shadow-[inset_0_-2px_0_var(--z-color-accent)] sm:border-l sm:border-line sm:px-6 sm:py-6 sm:pr-0">
+        <span class="font-ui text-label-11 text-ink-tertiary transition-colors duration-1 group-focus-within:text-ink">每股分红</span>
+        <span class="flex min-w-0 items-baseline gap-2">
+          <input
+            id="sell-dividend"
+            type="number"
+            min="0"
+            step="any"
+            inputmode="decimal"
+            autocomplete="off"
+            placeholder="0.50"
+            class="sell-input min-w-0 appearance-none border-0 bg-transparent p-0 font-ui text-heading-32 font-normal tabular-nums text-ink outline-none placeholder:text-ink-quiet"
+          />
+          <span class="shrink-0 font-ui text-label-12 text-ink-tertiary">元/股</span>
+        </span>
+        <span id="sell-dividend-error" class="sell-field-error" data-error-for="dividend" aria-live="polite"></span>
+      </label>
+    </div>
+
+    <dl id="sell-facts" class="flex flex-wrap items-baseline gap-x-8 gap-y-2 border-b border-line py-4 font-ui text-copy-13">
+      <div class="flex items-baseline gap-2">
+        <dt class="text-label-11 text-ink-tertiary">成本股息率</dt>
+        <dd id="sell-fact-yield" class="tabular-nums text-ink">—</dd>
+      </div>
+      <div class="flex items-baseline gap-2">
+        <dt class="text-label-11 text-ink-tertiary">持仓成本</dt>
+        <dd id="sell-fact-cost" class="tabular-nums text-ink">—</dd>
+      </div>
+      <div class="flex items-baseline gap-2">
+        <dt class="text-label-11 text-ink-tertiary">年分红</dt>
+        <dd id="sell-fact-dividend" class="tabular-nums text-ink">—</dd>
+      </div>
+      <div class="flex items-baseline gap-2">
+        <dt class="text-label-11 text-ink-tertiary">最多可卖</dt>
+        <dd id="sell-fact-max" class="tabular-nums text-ink">—</dd>
+      </div>
+    </dl>
+
+  </section>
+
+  <section id="sell-results" class="mt-16" aria-labelledby="sell-table-title">
+    <header class="mb-5 border-t border-line-strong pt-3">
+      <div class="flex flex-wrap items-baseline gap-x-4 gap-y-2">
+        <span class="font-ui text-label-11 tabular-nums text-ink-quiet">01</span>
+        <h2 id="sell-table-title" class="font-prose text-heading-28 text-ink max-sm:text-heading-24">卖点表</h2>
+        <div class="ml-auto flex flex-wrap items-baseline gap-x-6 gap-y-2">
+          <div id="sell-lot-field" class="flex items-baseline gap-2" hidden>
+            <label for="sell-lot" class="font-ui text-label-11 text-ink-tertiary">指定股数</label>
+            <input
+              id="sell-lot"
+              type="number"
+              min="100"
+              step="100"
+              inputmode="numeric"
+              autocomplete="off"
+              placeholder="8400"
+              aria-describedby="sell-lot-error"
+              class="sell-lot-input"
+            />
+            <span class="font-ui text-label-11 text-ink-tertiary">股</span>
+          </div>
+          <button
+            id="sell-toggle"
+            type="button"
+            class="border-0 bg-transparent p-0 font-ui text-label-12 text-ink-tertiary underline decoration-transparent underline-offset-[0.25em] transition-[color,text-decoration-color] duration-1 ease-out hover:text-accent hover:decoration-current focus-visible:focus-ring aria-expanded:text-ink"
+            aria-expanded="false"
+            aria-controls="sell-body"
+            hidden
+          ></button>
+        </div>
+      </div>
+    </header>
+
+    <p id="sell-lot-error" class="sell-lot-error" aria-live="polite"></p>
+
+    <p id="sell-hint" class="font-ui text-copy-13 text-ink-tertiary">填入三个数字，卖点表就会出现在这里。</p>
+    <p id="sell-insight" class="max-w-reading font-prose text-copy-18 text-ink-secondary" hidden></p>
+    <p id="sell-summary" class="mt-2 font-ui text-label-12 tabular-nums text-ink-tertiary" hidden></p>
+    <p id="sell-scroll-hint" class="mt-6 font-ui text-label-11 text-ink-tertiary lg:hidden" hidden>表格可左右滑动，查看全部列。</p>
+
+    <div id="sell-table-wrap" class="mt-2 overflow-x-auto border-y border-line-strong focus-visible:focus-ring lg:mt-6" tabindex="0" role="region" aria-label="卖点价格表，可左右滑动" hidden>
+      <table id="sell-table" class="sell-table" aria-describedby="sell-summary">
+        <caption class="sr-only">目标股息率与卖出股数对应的每股卖出价格，单位为元/股；每列同时标出卖出后剩余的股数。</caption>
+        <thead id="sell-head"></thead>
+        <tbody id="sell-body"></tbody>
+      </table>
+    </div>
+
+    <p id="sell-table-note" class="mt-3 font-ui text-label-11 text-ink-tertiary" hidden></p>
+    <p id="sell-message" class="max-w-reading font-ui text-copy-14 text-ink-secondary" hidden></p>
+    <p id="sell-status" class="sr-only" role="status" aria-live="polite"></p>
+  </section>
+
+  <section class="mt-16" aria-labelledby="sell-method-title">
+    <header class="mb-5 border-t border-line-strong pt-3">
+      <div class="flex items-baseline gap-4">
+        <span class="font-ui text-label-11 tabular-nums text-ink-quiet">02</span>
+        <h2 id="sell-method-title" class="font-prose text-heading-28 text-ink max-sm:text-heading-24">方法与假设</h2>
+      </div>
+    </header>
+
+    <dl class="max-w-reading border-y border-line font-ui">
+      <div class="grid gap-1 border-b border-line py-3 last:border-b-0 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-6">
+        <dt class="font-ui text-label-12 text-ink-tertiary">目标摊薄成本</dt>
+        <dd class="font-code text-copy-13 text-ink-secondary">每股分红 ÷ 目标股息率</dd>
+      </div>
+      <div class="grid gap-1 border-b border-line py-3 last:border-b-0 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-6">
+        <dt class="font-ui text-label-12 text-ink-tertiary">卖出价格</dt>
+        <dd class="font-code text-copy-13 text-ink-secondary">（持仓总成本 − 剩余股数 × 目标摊薄成本）÷ 卖出股数</dd>
+      </div>
+      <div class="grid gap-1 py-3 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-6">
+        <dt class="font-ui text-label-12 text-ink-tertiary">较成本涨幅</dt>
+        <dd class="font-code text-copy-13 text-ink-secondary">（卖出价格 − 每股买入成本）÷ 每股买入成本</dd>
+      </div>
+    </dl>
+
+    <ul class="mt-6 max-w-reading space-y-2 font-ui text-copy-13 text-ink-tertiary">
+      <li class="flex gap-3"><span aria-hidden="true" class="text-ink-quiet">—</span><span>每笔卖出按 100 股的整数倍计算，卖出后至少保留 100 股；列按持仓的十分位取整到 100 股。</span></li>
+      <li class="flex gap-3"><span aria-hidden="true" class="text-ink-quiet">—</span><span>表头的「指定股数」可把最接近的一列换成任意 100 股整数倍；10,000 股时能看 8,400 股，而不只是 8,000 或 9,000。</span></li>
+      <li class="flex gap-3"><span aria-hidden="true" class="text-ink-quiet">—</span><span>只列出高于买入成本的卖点，因此目标股息率必然高于成本股息率。</span></li>
+      <li class="flex gap-3"><span aria-hidden="true" class="text-ink-quiet">—</span><span>未计交易费用、税费与未来分红变化。结果仅供估算，不构成投资建议。</span></li>
+    </ul>
+  </section>
+</div>
+
+<script>
+  import '../../scripts/stock-sell-sheet'
+</script>
+
+<style is:global>
+  [data-sell-sheet] .sell-input {
+    width: 11ch;
+  }
+
+  @supports (field-sizing: content) {
+    [data-sell-sheet] .sell-input {
+      width: auto;
+      min-width: 4ch;
+      field-sizing: content;
+    }
+  }
+
+  [data-sell-sheet] .sell-field-error {
+    min-height: 0;
+    color: var(--z-color-danger);
+    font-family: var(--z-font-ui);
+    font-size: var(--z-text-label-11);
+    line-height: var(--z-leading-label-11);
+  }
+
+  [data-sell-sheet] .sell-field-error:empty {
+    display: none;
+  }
+
+  [data-sell-sheet] .sell-lot-input {
+    width: 6.5ch;
+    padding: 0 0 1px;
+    border: 0;
+    border-bottom: 1px solid var(--z-color-line-strong);
+    border-radius: 0;
+    background: transparent;
+    color: var(--z-color-ink);
+    font-family: var(--z-font-ui);
+    font-size: var(--z-text-label-12);
+    line-height: var(--z-leading-label-12);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    transition:
+      border-color var(--z-motion-duration-1) ease,
+      box-shadow var(--z-motion-duration-1) ease;
+  }
+
+  [data-sell-sheet] .sell-lot-input:focus {
+    outline: none;
+    border-bottom-color: var(--z-color-accent);
+    box-shadow: 0 1px 0 var(--z-color-accent);
+  }
+
+  [data-sell-sheet] .sell-lot-input[aria-invalid='true'] {
+    border-bottom-color: var(--z-color-danger);
+    box-shadow: none;
+  }
+
+  [data-sell-sheet] .sell-lot-error {
+    margin: -12px 0 16px;
+    color: var(--z-color-danger);
+    font-family: var(--z-font-ui);
+    font-size: var(--z-text-label-11);
+    line-height: var(--z-leading-label-11);
+  }
+
+  [data-sell-sheet] .sell-lot-error:empty {
+    display: none;
+  }
+
+  [data-sell-sheet] .sell-th-sell.is-custom,
+  [data-sell-sheet] .sell-th-remain.is-custom {
+    color: var(--z-color-accent);
+  }
+
+  [data-sell-sheet] .sell-th-sell.is-custom {
+    box-shadow: inset 0 2px 0 var(--z-color-accent);
+  }
+
+  [data-sell-sheet] .sell-td-price.is-custom {
+    color: var(--z-color-ink);
+  }
+
+  [data-sell-sheet] input[type='number']::-webkit-inner-spin-button,
+  [data-sell-sheet] input[type='number']::-webkit-outer-spin-button {
+    margin: 0;
+    -webkit-appearance: none;
+  }
+
+  [data-sell-sheet] input[type='number'] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+
+  [data-sell-sheet] input[aria-invalid='true'] {
+    color: var(--z-color-danger);
+  }
+
+  [data-sell-sheet] .sell-table {
+    width: max-content;
+    min-width: 100%;
+    border-collapse: collapse;
+    font-family: var(--z-font-ui);
+    font-size: var(--z-text-label-13);
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (min-width: 1024px) {
+    [data-sell-sheet] .sell-table {
+      table-layout: fixed;
+      width: min(100%, calc(10.75rem + var(--sell-columns, 9) * 7rem));
+      min-width: 0;
+    }
+  }
+
+  [data-sell-sheet] .sell-th-yield,
+  [data-sell-sheet] .sell-th-cost {
+    padding: 12px 12px 8px;
+    border-bottom: 1px solid var(--z-color-line-strong);
+    color: var(--z-color-ink-tertiary);
+    font-size: var(--z-text-label-11);
+    font-weight: 500;
+    letter-spacing: var(--z-tracking-label-11);
+    text-align: left;
+    vertical-align: bottom;
+    white-space: nowrap;
+  }
+
+  [data-sell-sheet] .sell-th-cost {
+    text-align: right;
+  }
+
+  [data-sell-sheet] .sell-th-sell,
+  [data-sell-sheet] .sell-th-remain {
+    padding: 12px 8px 4px;
+    color: var(--z-color-ink);
+    font-size: var(--z-text-label-11);
+    font-weight: 500;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  [data-sell-sheet] .sell-th-remain {
+    padding: 0 8px 8px;
+    border-bottom: 1px solid var(--z-color-line-strong);
+    color: var(--z-color-ink-tertiary);
+    font-size: var(--z-text-label-11);
+    font-weight: 400;
+  }
+
+  [data-sell-sheet] .sell-row {
+    border-bottom: 1px solid var(--z-color-line);
+  }
+
+  [data-sell-sheet] .sell-row:last-child {
+    border-bottom: 0;
+  }
+
+  [data-sell-sheet] .sell-row:hover td,
+  [data-sell-sheet] .sell-row:hover th {
+    background: var(--z-color-surface);
+  }
+
+  [data-sell-sheet] .sell-td-yield {
+    padding: 8px 12px;
+    color: var(--z-color-ink);
+    font-size: var(--z-text-label-13);
+    font-weight: 500;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  [data-sell-sheet] .sell-td-cost {
+    padding: 8px 12px;
+    color: var(--z-color-ink-tertiary);
+    font-size: var(--z-text-label-12);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  [data-sell-sheet] .sell-td-price {
+    padding: 8px;
+    color: var(--z-color-ink-secondary);
+    font-size: var(--z-text-label-13);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  [data-sell-sheet] .sell-sticky-left {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--z-color-canvas);
+  }
+
+  [data-sell-sheet] .sell-sticky-cost {
+    position: sticky;
+    left: 5.25rem;
+    z-index: 1;
+    background: var(--z-color-canvas);
+  }
+
+  [data-sell-sheet] .sell-th-yield,
+  [data-sell-sheet] .sell-td-yield {
+    width: 5.25rem;
+    padding-left: 0;
+  }
+
+  [data-sell-sheet] .sell-th-cost,
+  [data-sell-sheet] .sell-td-cost {
+    width: 5.5rem;
+  }
+
+  [data-sell-sheet] .sell-th-sell:last-child,
+  [data-sell-sheet] .sell-th-remain:last-child,
+  [data-sell-sheet] .sell-td-price:last-child {
+    padding-right: 0;
+  }
+
+  @media (max-width: 639px) {
+    [data-sell-sheet] .sell-th-cost,
+    [data-sell-sheet] .sell-td-cost {
+      display: none;
+    }
+  }
+</style>

@@ -54,7 +54,7 @@ mise run fmt
 
 - Start at [design/README.md](design/README.md).
 - The system lives in `packages/tokens` and `packages/ui`; the documentation and the four applied demos live in `apps/design`.
-- The live blog in `src/` consumes `@zone/ui` and the Hairline tokens. The stock-sell calculator keeps a scoped compatibility stylesheet (`src/styles/tools.css`) for its form and result table; the D-SIBs report uses the UI package's `GroupMark` and `CompositionBar`.
+- The live blog in `src/` consumes `@zone/ui` and the Hairline tokens. The stock-sell calculator is a Hairline price sheet and the D-SIBs report uses the UI package's `GroupMark` and `CompositionBar`; neither page carries a compatibility stylesheet.
 
 ## Project Structure
 

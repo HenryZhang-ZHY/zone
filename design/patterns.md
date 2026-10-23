@@ -105,6 +105,25 @@ Listening
 - Sections carry only a number and a title. No explanatory note, no inline contents row: the same fixed edge index as the article carries the four anchors. It appears from 1320px so the full-width table is never covered; below that, the headings are the index.
 - The only shadow is the sparkline popover; it is a movable surface, not a content card.
 
+## The calculator
+
+```
+01 卖点表                                    显示全部 95 档
+   6% 目标下，只卖 100 股需 25.00 元；卖 900 股只需 10.19 元。
+                卖出 100  200  300  …  900
+                剩余 900  800  700  …  100
+   6%   8.33      25.00   16.67 13.89 … 10.19
+   7%   7.14      35.71   21.43 16.67 … 10.32
+```
+
+- The calculator is an instrument, not a form. Three ruled fields in one ledger row, no card and no calculate button: it computes as you type.
+- The result is a matrix, not a long list. Rows are target dividend yields; columns are shares sold. The diluted cost moves into the row header and the remaining shares into the column header, so a cell carries exactly one number: the sell price.
+- Columns are deciles of the position, floored to 100-share lots, so the matrix stays nine columns wide from 1,000 shares to a million. The deciles are a sample, not the rule: the header can swap the nearest decile for any 100-share lot, and the pinned column is the only accent in the table. The first fifteen yields are visible; the rest sit behind one quiet button.
+- The page starts empty with one line of instruction. Results replace it in place; nothing scrolls or jumps.
+- The method closes the page as section 02: formulas in mono, three short caveats, and the only "not investment advice" line on the page.
+- The input strip is the one form on the page. It is ruled top and bottom rather than boxed; focus is a 2px accent rule under the active cell, and a per-field error replaces the quiet line under the field.
+- A live result summary is announced after typing stops, not on every keystroke.
+
 ## Documentation
 
 The docs site is the one place with a left navigation column. It uses an 11rem sticky sidebar, the same 2px accent rule for the current page and the same hairline section breaks. The content column is 48rem because specimens need room. It is documentation chrome, not the product.

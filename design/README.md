@@ -10,7 +10,7 @@ The system is three things that must stay in sync:
 | UI            | `packages/ui`                                | Tailwind v4 theme, prose layer, Astro components, `tv()` recipes   |
 | Documentation | `apps/design`                                | This system's rules, the component gallery, and four applied demos |
 
-The live blog in `src/` now consumes `@zone/ui` and the Hairline tokens. The stock-sell calculator keeps a scoped compatibility stylesheet for its form and result table; the D-SIBs report is fully Hairline.
+The live blog in `src/` now consumes `@zone/ui` and the Hairline tokens. The D-SIBs report and the stock-sell calculator are both Hairline pages; the calculator's ruled inputs and price matrix are described in [Patterns](./patterns.md).
 
 ## Start here
 
