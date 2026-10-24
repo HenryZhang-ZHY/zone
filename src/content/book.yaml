@@ -8,6 +8,36 @@
   ogUrl: "https://book.douban.com/subject/36636224/"
   ogImage: "../assets/books/s34691301.jpg"
 
+- id: "9787111779148"
+  title: "内驱式学习"
+  ogUrl: "https://book.douban.com/subject/37397789/"
+  ogImage: "../assets/books/s35191455.jpg"
+
+- id: "9787513943239"
+  title: "深度工作"
+  ogUrl: "https://book.douban.com/subject/36696278/"
+  ogImage: "../assets/books/s34732199.jpg"
+
+- id: "9787111727613"
+  title: "买入银行股"
+  ogUrl: "https://book.douban.com/subject/36430589/"
+  ogImage: "../assets/books/s34909475.jpg"
+
+- id: "9787521730982"
+  title: "文明、资本与投资"
+  ogUrl: "https://book.douban.com/subject/35563140/"
+  ogImage: "../assets/books/s34982685.jpg"
+
+- id: "9787564234720"
+  title: "估值逻辑: 中国的繁荣"
+  ogUrl: "https://book.douban.com/subject/35102072/"
+  ogImage: "../assets/books/s33669371.jpg"
+
+- id: "9787570509652"
+  title: "估值逻辑: 投资思维的边界"
+  ogUrl: "https://book.douban.com/subject/33418595/"
+  ogImage: "../assets/books/s32327556.jpg"
+
 - id: "9787121140068"
   title: "暗时间"
   ogUrl: "https://book.douban.com/subject/6709809/"
@@ -23,10 +53,35 @@
   ogUrl: "https://book.douban.com/subject/25963524/"
   ogImage: "../assets/books/s27414803.jpg"
 
+- id: "9787521712599"
+  title: "文明、现代化、价值投资与中国"
+  ogUrl: "https://book.douban.com/subject/34997975/"
+  ogImage: "../assets/books/s33638692.jpg"
+
+- id: "9787521782899"
+  title: "读懂“十五五”"
+  ogUrl: "https://book.douban.com/subject/37830737/"
+  ogImage: "../assets/books/s35529827.jpg"
+
+- id: "9787521784282"
+  title: "前瞻“十五五”"
+  ogUrl: "https://book.douban.com/subject/38362377/"
+  ogImage: "../assets/books/s35426784.jpg"
+
+- id: "9787521769425"
+  title: "人生财富靠康波"
+  ogUrl: "https://book.douban.com/subject/37128565/"
+  ogImage: "../assets/books/s35014703.jpg"
+
 - id: "9781492082798"
   title: "Software Engineering at Google"
   ogUrl: "https://book.douban.com/subject/34875994/"
   ogImage: "../assets/books/s35043704.jpg"
+
+- id: "9787111683919"
+  title: "凤凰架构"
+  ogUrl: "https://book.douban.com/subject/35492898/"
+  ogImage: "../assets/books/s33966407.jpg"
 
 - id: "9787521712056"
   title: "俞军产品方法论"
@@ -57,6 +112,11 @@
   title: "孙子兵法"
   ogUrl: "https://weread.qq.com/web/reader/c2732690813aba21dg018ff4#outline?noScroll=1"
   ogImage: "../assets/books/c2732690813aba21dg018ff4.jpg"
+
+- id: "9787115424914"
+  title: "图解密码技术"
+  ogUrl: "https://book.douban.com/subject/26822106/"
+  ogImage: "../assets/books/s28830003.jpg"
 
 - id: "9781484200773"
   title: "Pro Git"
