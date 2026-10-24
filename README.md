@@ -59,7 +59,7 @@ bun run build
 bunx wrangler deploy
 ```
 
-Cloudflare's successor to Wrangler is `cf`, which replaces `wrangler.jsonc` with a TypeScript `cloudflare.config.ts` (`cf migrate`). As of October 2026 it is in beta and cannot stream logs or set a single secret yet, so the project stays on Wrangler.
+Cloudflare's successor to Wrangler is `cf`, which replaces `wrangler.jsonc` with a TypeScript `cloudflare.config.ts` (`cf migrate`). Project commands stay on Wrangler for now: `cf` detects Astro but cannot build it — Cloudflare states that "Astro 6 and later does not build with `cf` during the beta", and the failure is a missing Build Output rather than a configuration mistake. `cf` itself is still installed for account and resource commands, and the `cf-wip` branch holds the migration ready to finish once the beta builds Astro.
 
 ## Design system
 
