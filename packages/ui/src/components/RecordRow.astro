@@ -3,7 +3,7 @@ import { tv } from '../recipes/tv'
 import { cn } from '../recipes/cn'
 
 interface Props {
-	/** The date column. Only the reading list has one; a listening row starts at its title. */
+	/** The date column. The reading list has one; the episode row is its own component. */
 	lead?: string
 	/** `datetime` when the lead is a date. */
 	datetime?: string
@@ -11,10 +11,8 @@ interface Props {
 	href: string
 	/** Quiet facts before the source, e.g. `['E96', '面基']`. Joined with a middle dot. */
 	meta?: string[]
-	/** Where the link goes, e.g. `小宇宙` or `stanford.edu`. */
+	/** Where the link goes, e.g. `stanford.edu`. */
 	source?: string
-	/** A square channel cover. Only the listening list has one. */
-	cover?: string
 	lang?: string
 	class?: string
 }
@@ -23,7 +21,6 @@ const recordRow = tv({
 	slots: {
 		root: 'border-b border-line',
 		link: 'group flex items-start gap-5 py-5 no-underline max-sm:gap-4 max-sm:py-4',
-		cover: 'mt-0.5 block size-10 shrink-0 border border-line object-cover max-sm:size-9',
 		body: 'min-w-0 flex-1',
 		dated: 'grid grid-cols-[5.5rem_minmax(0,1fr)] items-baseline gap-x-6 max-sm:block',
 		lead: 'whitespace-nowrap pt-[0.4em] font-ui text-label-12 tabular-nums text-ink-tertiary max-sm:block max-sm:pt-0 max-sm:pb-1',
@@ -41,7 +38,6 @@ const {
 	href,
 	meta = [],
 	source,
-	cover,
 	lang,
 	class: className,
 } = Astro.props
@@ -57,7 +53,6 @@ const facts = [...meta, ...(source ? [source] : [])].filter(Boolean)
 		target={external ? '_blank' : undefined}
 		rel={external ? 'noopener noreferrer' : undefined}
 	>
-		{cover && <img class={styles.cover()} src={cover} alt="" loading="lazy" width="40" height="40" />}
 		<div class={lead ? styles.dated() : styles.body()}>
 			{
 				lead &&

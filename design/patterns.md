@@ -62,15 +62,20 @@ Reading, listening and the shelf are appendices to the writing, not sections of 
 2026-05-17   Information and the market for lemons
              stanford.edu ↗
 
-[cover]      E96.用3张表的思路看待家庭财务：管钱，易如反掌！
-             E96 · 面基 · 小宇宙 ↗
+[cover]      面基 · 小宇宙 ↗
+             E96.用3张表的思路看待家庭财务：管钱，易如反掌！
+             他们实际上践行的是管理的科学主义…导向成功。 00:12
 ```
 
 - Running head: the page name at 13px mono on the left, the count at 11px on the right, one 1px rule under both. It is the `h1`. No lede, no description paragraph, no action button.
 - The head is followed by one list of rows or one grid of covers, nothing else.
-- Reading and listening share one row (`RecordRow`): a serif title, quiet facts, the place it points at, an external arrow. Reading puts the date in a lead column; listening starts at the title. The episode number stays inside the title, as published — it is part of how the show names its episodes, and lifting it into a column of its own only pushed the title away from the cover.
-- The row is the link. There is no player, no ordinal, no duration: the data does not have it, and chrome that cannot show it is not chrome.
-- The listening row carries the channel: a 40px channel cover, the channel name before the platform (`面基 · 小宇宙`), then the arrow. Without it every row says only "小宇宙", which is the platform, not where the episode came from. The reading row has no cover and no channel: its source is the domain it points at.
+- Reading and listening no longer share a row. Reading is a date and a title (`RecordRow`); listening is a channel, a title and the lines kept from it (`EpisodeRow`). The listening row needed a 56px cover, a channel line above the title and a block of kept lines below it; what was left in common with reading was a hairline. Two small components beat one with two shapes.
+- The listening row reads top to bottom: the channel and the platform it points at (`小马宋商业观察 · 小宇宙 ↗`), then the title at `copy-18`, then the lines. The channel leads because it is what tells one row from the next — the platform alone says nothing — and the arrow belongs on the line that already names where the link goes. The episode number stays inside the title, as published; it is part of how the show names its episodes.
+- The cover is 56px, a square the channel-and-title block sits beside. At 40px it was a smudge — four characters of 面基 in 40px are four grey marks; at 64px every row grows another 12px and the seventh episode leaves the first screen. It is the channel's cover, not the episode's artwork: the row is one size and one shape.
+- The row is one link: cover, channel, title. There is no player, no ordinal, no duration — the data does not have it, and chrome that cannot show it is not chrome. The episode's own `og:image` and the audio URL were the same kind of field, a picture the row never shows and a file it never plays, so the data keeps the channel's cover and nothing else.
+- The kept lines hang under the title, indented to it, outside the link: they are text to read and to select, not part of what the link points at. Text first, then the time it starts at, in mono `label-11` at the end of the last line: `…遵循原则就能导向成功。 00:12`. Nothing at all when there is no time. No fill, no rule, no column — a column would leave a hole in every line that has no time, and the time is the least important thing in the block.
+- A kept line is a list, not a field: one episode can keep two or three, and they stack in the same block with a 12px gap. A word joiner holds the time on the last line; without it the CJK line breaker drops it onto a line of its own, where it reads as a stray number. The cost is a short last line now and then, which is cheaper than a mark that sometimes floats free.
+- A kept line is not always someone else's sentence. Without a time it is the site's own voice: a recommendation. That difference is carried by the time and nothing else, so a mark would be the next step, not the first.
 - One 68ch column. A record list is still reading.
 
 ## The shelf

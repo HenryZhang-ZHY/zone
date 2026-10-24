@@ -21,7 +21,7 @@ The live blog in `src/` now consumes `@zone/ui` and the Hairline tokens. The D-S
 | Add or change a component       | [Components](./components.md)                                                                                                               |
 | Build a page                    | [Patterns](./patterns.md)                                                                                                                   |
 | Design across languages         | [Languages](./languages.md)                                                                                                                 |
-| Know why it changed             | [Decision 0001](./decisions/0001-hairline.md), [0002](./decisions/0002-serif-reading-voice.md), [0003](./decisions/0003-reading-measure.md), [0004](./decisions/0004-language-note.md), [0005](./decisions/0005-footer-sitemap.md) |
+| Know why it changed             | [Decision 0001](./decisions/0001-hairline.md), [0002](./decisions/0002-serif-reading-voice.md), [0003](./decisions/0003-reading-measure.md), [0004](./decisions/0004-language-note.md), [0005](./decisions/0005-footer-sitemap.md), [0006](./decisions/0006-listening-row.md) |
 
 ## Run it
 

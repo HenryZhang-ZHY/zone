@@ -98,10 +98,22 @@ const podcast = defineCollection({
 		order: z.number().int(),
 		ogTitle: z.string(),
 		ogUrl: z.url(),
-		ogImage: z.url(),
 		show: z.string(),
+		// The channel's cover. Xiaoyuzhou's `og:image` is sometimes the episode's own
+		// artwork; the row is one size and one shape, so it shows the channel.
 		showCover: z.url(),
-		ogAudio: z.url(),
+		// The lines worth keeping from the episode, in the order they should be read.
+		// A line is text plus, when it has one, the point in the recording it starts at
+		// as the player shows it (`00:12` or `1:02:40`). No timestamp: it is not a
+		// quotation but a note in the site's own voice.
+		notes: z
+			.array(
+				z.object({
+					text: z.string(),
+					at: z.string().regex(/^\d{1,2}:\d{2}(:\d{2})?$/, '`at` must be a timestamp like 00:12').optional(),
+				}),
+			)
+			.optional(),
 	}),
 });
 

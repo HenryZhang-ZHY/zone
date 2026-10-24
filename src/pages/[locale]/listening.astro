@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro'
 import { SITE_TITLE } from '../../consts'
 import { getCollection } from 'astro:content'
 import RunningHead from '@zone/ui/components/RunningHead.astro'
-import RecordRow from '@zone/ui/components/RecordRow.astro'
+import EpisodeRow from '@zone/ui/components/EpisodeRow.astro'
 import { localeStaticPaths, t, type Locale } from '../../i18n'
 import { linkHost, sourceLabel } from '../../lib/records'
 import { sortByOrder } from '../../lib/order'
@@ -29,12 +29,13 @@ const episodes = sortByOrder(await getCollection('podcast'))
         <ul class="m-0 list-none p-0">
           {
             episodes.map((episode) => (
-              <RecordRow
+              <EpisodeRow
                 title={episode.data.ogTitle}
                 href={episode.data.ogUrl}
-                meta={[episode.data.show]}
+                show={episode.data.show}
                 source={sourceLabel(linkHost(episode.data.ogUrl))}
                 cover={episode.data.showCover}
+                notes={episode.data.notes}
               />
             ))
           }

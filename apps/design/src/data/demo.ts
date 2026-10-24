@@ -159,41 +159,62 @@ export const books: DemoBook[] = [
 ]
 
 export interface DemoEpisode {
-  code: string
   title: string
   href: string
+  show: string
+  cover: string
   source: string
+  notes?: { text: string; at?: string }[]
 }
 
 export const episodes: DemoEpisode[] = [
   {
-    code: 'E96',
+    title: '在拼多多工作：身体在地狱，灵魂在天堂',
+    href: 'https://www.xiaoyuzhoufm.com/episode/660803a01519139e4f8be08c',
+    show: '小马宋商业观察',
+    cover: 'https://image.xyzcdn.net/FoQPUZCPwVzCQhR7gAnRWaUPuFcA.jpg',
+    source: '小宇宙',
+    notes: [
+      {
+        at: '00:12',
+        text: '他们实际上践行的是管理的科学主义，相信这个世界存在着客观规律，客观规律可被认识可被发现，基于客观规律可以建立一些基本原则，遵循原则就能导向成功。',
+      },
+      { text: '适合在地铁上听完：它不讲段子，只把「怎么让一大群人同时高效」一层层拆开。' },
+    ],
+  },
+  {
     title: '用3张表的思路看待家庭财务：管钱，易如反掌！',
     href: 'https://www.xiaoyuzhoufm.com/episode/67b4abe6606e5c5940544785',
+    show: '面基',
+    cover: 'https://image.xyzcdn.net/Ftol1VYmqtTUXqIxdMjkt0BcBuFX.png',
     source: '小宇宙',
   },
   {
-    code: 'E53',
-    title: '《一如既往》：历史不会重复，但它自然成韵',
+    title: 'E53.《一如既往》：历史不会重复，但它自然成韵',
     href: 'https://www.xiaoyuzhoufm.com/episode/661de4895dae7932c6c0923c',
+    show: '面基',
+    cover: 'https://image.xyzcdn.net/Ftol1VYmqtTUXqIxdMjkt0BcBuFX.png',
     source: '小宇宙',
   },
   {
-    code: 'E120',
-    title: '经济上行期的美，增速下行期的狂',
+    title: 'E120.经济上行期的美，增速下行期的狂',
     href: 'https://www.xiaoyuzhoufm.com/episode/68a3dcbd42cc2798e7414974',
+    show: '面基',
+    cover: 'https://image.xyzcdn.net/Ftol1VYmqtTUXqIxdMjkt0BcBuFX.png',
     source: '小宇宙',
   },
   {
-    code: '101',
-    title: '对 YouWare 创始人明超平 3 小时访谈：今天的 Agent 像大猩猩刚拿起一根烧火棍',
+    title: '101. 对 YouWare 创始人明超平 3 小时访谈：今天的 Agent 像大猩猩刚拿起一根烧火棍',
     href: 'https://www.xiaoyuzhoufm.com/episode/68372c9631215eb5063bcdb1',
+    show: '张小珺Jùn｜商业访谈录',
+    cover: 'https://image.xyzcdn.net/Fnuyt9PQDQx0I0wlErG3ZHcW9Gpu.png',
     source: '小宇宙',
   },
   {
-    code: '118',
-    title: '天生卷王郭人杰：从 97 年的扫地机总裁到创业做家庭通用机器人',
+    title: '118: 天生卷王郭人杰：从 97 年的扫地机总裁到创业做家庭通用机器人',
     href: 'https://www.xiaoyuzhoufm.com/episode/68379234661c1af455c9e42c',
+    show: '晚点聊 LateTalk',
+    cover: 'https://bts-image.xyzcdn.net/aHR0cHM6Ly9tZWRpYTI0LmZpcmVzaWRlLmZtL2ZpbGUvZmlyZXNpZGUtaW1hZ2VzLTIwMjQvcG9kY2FzdHMvaW1hZ2VzLzEvMTlhNDlmNTItMjhlZS00ZTI1LWI4ZTktNGYwZWU3MDkxN2UwL2NvdmVyLmpwZz92PTc=.jpg',
     source: '小宇宙',
   },
 ]

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { parse } from 'yaml'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..')
 const read = (...segments: string[]) => readFileSync(resolve(root, ...segments), 'utf8')
@@ -34,10 +35,10 @@ describe('the record pages share one running head and one row', () => {
 		expect(reading).not.toContain('books/')
 	})
 
-	it('opens listening with the same head and drops the player', () => {
+	it('opens listening with the same head and the episode row', () => {
 		const listening = pages('listening.astro')
 		expect(listening).toContain('RunningHead')
-		expect(listening).toContain('RecordRow')
+		expect(listening).toContain('EpisodeRow')
 		expect(listening).toContain('title={episode.data.ogTitle}')
 		expect(listening).not.toContain('AudioPlayer')
 		expect(listening).not.toContain('PageHeader')
@@ -78,17 +79,20 @@ describe('the YAML array order survives Astro', () => {
 	})
 })
 
-describe('the listening row names its channel', () => {
-	it('carries a channel and its cover in the data', () => {
+describe('the listening row leads with the channel', () => {
+	it('carries a channel, its cover and the lines kept from the episode', () => {
 		const config = read('src', 'content.config.ts')
-		expect(config).toContain('show: z.string()')
-		expect(config).toContain('showCover: z.url()')
+		const podcast = config.slice(config.indexOf('const podcast'))
+		expect(podcast).toContain('show: z.string()')
+		expect(podcast).toContain('showCover: z.url()')
+		expect(podcast).toContain('notes: z')
 	})
 
-	it('passes the cover and the channel into the row, in file order', () => {
+	it('passes the channel, the cover and the lines into the row, in file order', () => {
 		const listening = read('src', 'pages', '[locale]', 'listening.astro')
+		expect(listening).toContain('show={episode.data.show}')
 		expect(listening).toContain('cover={episode.data.showCover}')
-		expect(listening).toContain('meta={[episode.data.show]}')
+		expect(listening).toContain('notes={episode.data.notes}')
 		expect(listening).toContain('sortByOrder')
 	})
 
@@ -98,8 +102,59 @@ describe('the listening row names its channel', () => {
 		expect(listening).not.toContain('splitEpisodeCode')
 	})
 
-	it('renders a cover only when the row has one', () => {
-		const row = ui('components', 'RecordRow.astro')
-		expect(row).toContain('cover &&')
+	it('stores one image per row and no audio', () => {
+		const config = read('src', 'content.config.ts')
+		const podcast = config.slice(config.indexOf('const podcast'))
+		expect(podcast).not.toContain('ogAudio')
+		expect(podcast).not.toContain('ogImage')
+		expect(read('src', 'content', 'podcast.yaml')).not.toMatch(/^\s*(ogAudio|ogImage):/m)
+	})
+})
+
+describe('the episode row is the cover, the channel, the title, then the lines', () => {
+	const row = () => ui('components', 'EpisodeRow.astro')
+
+	it('draws them in that order', () => {
+		const file = row()
+		const order = ['styles.cover()', 'styles.channel()', 'styles.title()', 'styles.notes()'].map((slot) =>
+			file.indexOf(slot),
+		)
+		expect(order).not.toContain(-1)
+		expect([...order].sort((a, b) => a - b)).toEqual(order)
+	})
+
+	it('keeps the cover at 56px, the square the channel and title sit beside', () => {
+		expect(row()).toContain('size-14')
+	})
+
+	it('holds no fill and no timestamp column', () => {
+		const file = row()
+		expect(file).not.toContain('bg-surface')
+		expect(file).not.toContain('grid-cols-')
+	})
+
+	it('keeps the time at the end of the line, never starting one of its own', () => {
+		const file = row()
+		expect(file).toContain('\\u2060')
+		expect(file).toContain('whitespace-nowrap')
+	})
+
+	it('lets a line stand without a time, and lets a row hold more than one', () => {
+		const file = row()
+		expect(file).toContain('at?: string')
+		expect(file).toContain('.map(')
+	})
+})
+
+describe('a kept line keeps its time a time', () => {
+	it('only accepts an `at` the player would show', () => {
+		const stamp = /^\d{1,2}:\d{2}(:\d{2})?$/
+		const episodes = parse(read('src', 'content', 'podcast.yaml')) as {
+			notes?: { at?: string; text: string }[]
+		}[]
+		for (const line of episodes.flatMap((episode) => episode.notes ?? [])) {
+			expect(line.text.length).toBeGreaterThan(0)
+			if (line.at) expect(line.at).toMatch(stamp)
+		}
 	})
 })

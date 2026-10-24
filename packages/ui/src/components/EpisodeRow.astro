@@ -1,0 +1,88 @@
+---
+import { tv } from '../recipes/tv'
+import { cn } from '../recipes/cn'
+
+/** A line kept from an episode: the guest's words with where they start, or a note in your own voice. */
+export interface KeptLine {
+	text: string
+	at?: string
+}
+
+interface Props {
+	title: string
+	href: string
+	/** The channel the episode came from, e.g. `面基`. */
+	show: string
+	/** The platform the link goes to, e.g. `小宇宙`. */
+	source?: string
+	/** The channel's cover: 56px, the square the channel and the title sit beside. */
+	cover?: string
+	notes?: KeptLine[]
+	lang?: string
+	class?: string
+}
+
+const episodeRow = tv({
+	slots: {
+		root: 'border-b border-line py-4.5',
+		link: 'group flex items-start gap-5 no-underline max-sm:gap-4',
+		cover: 'mt-px block size-14 shrink-0 border border-line object-cover',
+		body: 'block min-w-0 flex-1',
+		// The channel leads: it is what tells one row from the next, and the platform
+		// it points at belongs on the same line as the arrow.
+		channel: 'flex flex-wrap items-baseline gap-x-2 font-ui text-label-11 tracking-[0.04em] text-ink-tertiary',
+		arrow: 'not-italic text-ink-quiet transition-[color,transform] duration-1 ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent',
+		title: 'mt-px block font-prose text-copy-18 font-medium text-ink underline decoration-transparent underline-offset-[0.18em] transition-[color,text-decoration-color] duration-1 ease-out group-hover:text-accent group-hover:decoration-current group-focus-visible:text-accent group-focus-visible:decoration-current',
+		// The lines hang under the title, aligned to it, outside the link: they are text
+		// to read and to select, not part of what the link points at.
+		notes: 'mt-3 flex flex-col gap-3 pl-[4.75rem] max-sm:pl-[4.5rem]',
+		note: 'm-0 block font-prose text-copy-16 text-ink-secondary',
+		noteAt: 'ml-2.5 whitespace-nowrap font-ui text-label-11 tracking-[0.09em] text-ink-quiet tabular-nums',
+	},
+})
+
+const { title, href, show, source, cover, notes = [], lang, class: className } = Astro.props
+const external = href.startsWith('http')
+const styles = episodeRow()
+---
+
+<li class={cn(styles.root(), className)}>
+	<a
+		class={styles.link()}
+		href={href}
+		target={external ? '_blank' : undefined}
+		rel={external ? 'noopener noreferrer' : undefined}
+	>
+		{cover && <img class={styles.cover()} src={cover} alt="" loading="lazy" width="56" height="56" />}
+		<span class={styles.body()} lang={lang}>
+			<span class={styles.channel()}>
+				<span>{show}</span>
+				{
+					source && (
+						<>
+							<span aria-hidden="true">·</span>
+							<span>{source}</span>
+						</>
+					)
+				}
+				<i class={styles.arrow()} aria-hidden="true">↗</i>
+			</span>
+			<span class={styles.title()}>{title}</span>
+		</span>
+	</a>
+	{
+		notes.length > 0 && (
+			<div class={styles.notes()} lang={lang}>
+				{notes.map((note) => (
+					<p class={styles.note()}>
+						{note.text}
+						{/* A word joiner keeps the time on the last line: without it the CJK
+						    line breaker breaks between the final character and the mark, and a
+						    time alone on a line reads like a stray number. */}
+						{note.at && <span class={styles.noteAt()}>{'\u2060'}{note.at}</span>}
+					</p>
+				))}
+			</div>
+		)
+	}
+</li>

@@ -2,8 +2,9 @@
 
 - Status: accepted
 - Date: 2026-10-24
-- Related: [0001](./0001-hairline.md), [0004](./0004-language-note.md)
+- Related: [0001](./0001-hairline.md), [0004](./0004-language-note.md), [0006](./0006-listening-row.md)
 - Supersedes: the footer language list and the single 72px page top, in 0001 and 0004
+- Partly superseded by: [0006](./0006-listening-row.md) — the listening row is its own component, and keeps the lines worth remembering
 
 ## Context
 
@@ -18,7 +19,7 @@ Page top was one number, `clamp(2.5rem, 6vw, 4.5rem)` — 72px at desktop — ap
 1. **The header is identity and the language menu.** No primary nav: writing is `/`, so a "Writing" link would only point at the page you are reading.
 2. **The footer is the sitemap** — Writing, Books, Reading, Listening, RSS — and nothing else: no description line, no link-group labels, no language row. There is exactly one language control on the site, and it lives in the header, where it persists on every page.
 3. **The three record pages are appendices and share one head.** `RunningHead` renders the page name at 13px mono on the left, the count at 11px on the right and one hairline under both; it is the page's `h1`. It replaces `PageHeader`, its lede and its buttons.
-4. **One row for two logs.** `RecordRow` is a mono lead, a serif title, the domain the link points at, and an external arrow. Reading's lead is the ISO date; listening's is the episode code (`E96`, `120`) parsed out of `ogTitle`, so the title stops repeating its own number. The shelf keeps `Book` and becomes a grid under the same head.
+4. **One row for two logs.** (Superseded by [0006](./0006-listening-row.md).) `RecordRow` is a mono lead, a serif title, the domain the link points at, and an external arrow. Reading's lead is the ISO date; listening's is the episode code (`E96`, `120`) parsed out of `ogTitle`, so the title stops repeating its own number. The shelf keeps `Book` and becomes a grid under the same head.
 5. **No player, no ordinal, no second source line.** The pages link to the source. The data does not have a duration, so the page does not pretend to.
 6. **Page top depends on what the page opens with.** `--z-layout-page-top` is `clamp(2rem, 4vw, 2.5rem)` (32–40px) for lists, the shelf and the instruments; `--z-layout-article-top` is `clamp(2.5rem, 5vw, 4rem)` (40–64px) for the article, the data report, the calculator and a series — pages that open with a 40px title.
 

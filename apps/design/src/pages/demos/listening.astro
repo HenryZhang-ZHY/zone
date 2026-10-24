@@ -1,13 +1,13 @@
 ---
 import DemoLayout from '../../components/DemoLayout.astro'
 import RunningHead from '@zone/ui/components/RunningHead.astro'
-import RecordRow from '@zone/ui/components/RecordRow.astro'
+import EpisodeRow from '@zone/ui/components/EpisodeRow.astro'
 import { episodes } from '../../data/demo'
 ---
 
 <DemoLayout
   title="Listening"
-  description="The listening demo for Hairline: episode rows, no player chrome."
+  description="The listening demo for Hairline: the channel, the title, then the lines worth keeping — no player, no boxes."
   current="/demos/listening/"
 >
   <div class="shell">
@@ -17,12 +17,13 @@ import { episodes } from '../../data/demo'
         <h2 id="episodes" class="sr-only">Episodes</h2>
         <ul class="m-0 list-none p-0">
           {episodes.map((episode) => (
-            <RecordRow
-              lead={episode.code}
+            <EpisodeRow
               title={episode.title}
               href={episode.href}
+              show={episode.show}
               source={episode.source}
-              kind="code"
+              cover={episode.cover}
+              notes={episode.notes}
             />
           ))}
         </ul>

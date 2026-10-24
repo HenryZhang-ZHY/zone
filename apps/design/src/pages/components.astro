@@ -13,7 +13,7 @@ import SeriesPager from '@zone/ui/components/SeriesPager.astro'
 import Callout from '@zone/ui/components/Callout.astro'
 import CodeBlock from '@zone/ui/components/CodeBlock.astro'
 import Book from '@zone/ui/components/Book.astro'
-import RecordRow from '@zone/ui/components/RecordRow.astro'
+import EpisodeRow from '@zone/ui/components/EpisodeRow.astro'
 import GroupMark from '@zone/ui/components/GroupMark.astro'
 import CompositionBar from '@zone/ui/components/CompositionBar.astro'
 import { posts, books, episodes } from '../data/demo'
@@ -222,13 +222,14 @@ const contracts = [
     <DemoFrame label="Listening">
       <div>
         <ul class="m-0 list-none p-0">
-          {episodes.slice(0, 3).map((episode) => (
-            <RecordRow
-              lead={episode.code}
+          {episodes.slice(0, 2).map((episode) => (
+            <EpisodeRow
               title={episode.title}
               href={episode.href}
+              show={episode.show}
               source={episode.source}
-              kind="code"
+              cover={episode.cover}
+              notes={episode.notes}
             />
           ))}
         </ul>
