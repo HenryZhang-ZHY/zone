@@ -5,6 +5,9 @@ dist/
 # local design review captures
 .screenshots/
 
+# local design artboards and their evidence
+.ryugi/
+
 # dependencies
 node_modules/
 
