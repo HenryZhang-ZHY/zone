@@ -36,7 +36,6 @@ const isoDate = (date: Date) => date.toISOString().slice(0, 10)
                 title={item.data.title}
                 href={item.data.ogUrl}
                 source={sourceLabel(linkHost(item.data.ogUrl))}
-                kind="date"
               />
             ))}
           </ul>

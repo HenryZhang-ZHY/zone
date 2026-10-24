@@ -38,7 +38,7 @@ describe('the record pages share one running head and one row', () => {
 		const listening = pages('listening.astro')
 		expect(listening).toContain('RunningHead')
 		expect(listening).toContain('RecordRow')
-		expect(listening).toContain('splitEpisodeCode')
+		expect(listening).toContain('title={episode.data.ogTitle}')
 		expect(listening).not.toContain('AudioPlayer')
 		expect(listening).not.toContain('PageHeader')
 	})
@@ -88,8 +88,14 @@ describe('the listening row names its channel', () => {
 	it('passes the cover and the channel into the row, in file order', () => {
 		const listening = read('src', 'pages', '[locale]', 'listening.astro')
 		expect(listening).toContain('cover={episode.data.showCover}')
-		expect(listening).toContain('meta={episode.data.show}')
+		expect(listening).toContain('meta={[episode.data.show]}')
 		expect(listening).toContain('sortByOrder')
+	})
+
+	it('keeps the episode number inside the title, as published', () => {
+		const listening = read('src', 'pages', '[locale]', 'listening.astro')
+		expect(listening).toContain('title={episode.data.ogTitle}')
+		expect(listening).not.toContain('splitEpisodeCode')
 	})
 
 	it('renders a cover only when the row has one', () => {

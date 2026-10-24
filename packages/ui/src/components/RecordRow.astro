@@ -3,21 +3,19 @@ import { tv } from '../recipes/tv'
 import { cn } from '../recipes/cn'
 
 interface Props {
-	/** The identity of the row: a date on the reading list, an episode code on the listening list. */
+	/** The date column. Only the reading list has one; a listening row starts at its title. */
 	lead?: string
 	/** `datetime` when the lead is a date. */
 	datetime?: string
 	title: string
 	href: string
-	/** The channel the row comes from, e.g. `面基`. Shown before the source. */
-	meta?: string
+	/** Quiet facts before the source, e.g. `['E96', '面基']`. Joined with a middle dot. */
+	meta?: string[]
 	/** Where the link goes, e.g. `小宇宙` or `stanford.edu`. */
 	source?: string
 	/** A square channel cover. Only the listening list has one. */
 	cover?: string
 	lang?: string
-	/** `date` gives the lead the width of an ISO date; `code` the width of `E120`. */
-	kind?: 'date' | 'code'
 	class?: string
 }
 
@@ -26,21 +24,14 @@ const recordRow = tv({
 		root: 'border-b border-line',
 		link: 'group flex items-start gap-5 py-5 no-underline max-sm:gap-4 max-sm:py-4',
 		cover: 'mt-0.5 block size-10 shrink-0 border border-line object-cover max-sm:size-9',
-		body: 'min-w-0 flex-1 items-baseline gap-x-6',
+		body: 'min-w-0 flex-1',
+		dated: 'grid grid-cols-[5.5rem_minmax(0,1fr)] items-baseline gap-x-6 max-sm:block',
 		lead: 'whitespace-nowrap pt-[0.4em] font-ui text-label-12 tabular-nums text-ink-tertiary max-sm:block max-sm:pt-0 max-sm:pb-1',
 		text: 'block min-w-0',
 		title: 'block font-prose text-copy-18 font-medium text-ink underline decoration-transparent underline-offset-[0.18em] transition-[color,text-decoration-color] duration-1 ease-out group-hover:text-accent group-hover:decoration-current group-focus-visible:text-accent group-focus-visible:decoration-current',
 		meta: 'mt-1.5 flex flex-wrap items-baseline gap-x-2 font-ui text-label-11 tracking-[0.04em] text-ink-tertiary',
-		metaName: 'text-ink-secondary',
 		arrow: 'not-italic text-ink-quiet transition-[color,transform] duration-1 ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent',
 	},
-	variants: {
-		kind: {
-			date: { body: 'grid grid-cols-[5.5rem_minmax(0,1fr)] max-sm:block' },
-			code: { body: 'grid grid-cols-[3rem_minmax(0,1fr)] max-sm:block' },
-		},
-	},
-	defaultVariants: { kind: 'date' },
 })
 
 const {
@@ -48,16 +39,15 @@ const {
 	datetime,
 	title,
 	href,
-	meta,
+	meta = [],
 	source,
 	cover,
 	lang,
-	kind = 'date',
 	class: className,
 } = Astro.props
 const external = href.startsWith('http')
-const styles = recordRow({ kind })
-const body = lead ? styles.body() : 'block min-w-0 flex-1'
+const styles = recordRow()
+const facts = [...meta, ...(source ? [source] : [])].filter(Boolean)
 ---
 
 <li class={cn(styles.root(), className)}>
@@ -68,7 +58,7 @@ const body = lead ? styles.body() : 'block min-w-0 flex-1'
 		rel={external ? 'noopener noreferrer' : undefined}
 	>
 		{cover && <img class={styles.cover()} src={cover} alt="" loading="lazy" width="40" height="40" />}
-		<span class={body}>
+		<div class={lead ? styles.dated() : styles.body()}>
 			{
 				lead &&
 					(datetime ? (
@@ -80,16 +70,19 @@ const body = lead ? styles.body() : 'block min-w-0 flex-1'
 			<span class={styles.text()} lang={lang}>
 				<span class={styles.title()}>{title}</span>
 				{
-					(meta || source) && (
+					facts.length > 0 && (
 						<span class={styles.meta()}>
-							{meta && <span class={styles.metaName()}>{meta}</span>}
-							{meta && source && <span aria-hidden="true">·</span>}
-							{source && <span>{source}</span>}
+							{facts.map((fact, index) => (
+								<>
+									{index > 0 && <span aria-hidden="true">·</span>}
+									<span>{fact}</span>
+								</>
+							))}
 							<i class={styles.arrow()} aria-hidden="true">↗</i>
 						</span>
 					)
 				}
 			</span>
-		</span>
+		</div>
 	</a>
 </li>

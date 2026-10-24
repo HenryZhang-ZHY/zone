@@ -28,7 +28,7 @@ Every component is a **Tailwind recipe first** and an Astro wrapper second. The 
 | `SectionHead`  | Label, count, rule, action     | Optional; the reading and listening pages do not use it                        |
 | `SeriesPager`  | Previous / next essay          | Hairline top; two columns                                                      |
 | `Book`         | Cover + title                  | 2:3 cover, 1px border, no shadow                                               |
-| `RecordRow`    | Reading / listening row        | A mono lead (date or episode code), serif title, optional channel cover and name, where it points, external arrow |
+| `RecordRow`    | Reading / listening row        | Serif title, optional date lead, optional channel cover and name, where it points, external arrow |
 | `Callout`      | Note inside prose              | 2px start rule; label optional                                                 |
 | `Figure`       | Image + caption                | Optional plain variant for specimens                                           |
 | `CodeBlock`    | Fenced code                    | Optional filename bar                                                          |

@@ -5,7 +5,7 @@ import { getCollection } from 'astro:content'
 import RunningHead from '@zone/ui/components/RunningHead.astro'
 import RecordRow from '@zone/ui/components/RecordRow.astro'
 import { localeStaticPaths, t, type Locale } from '../../i18n'
-import { linkHost, sourceLabel, splitEpisodeCode } from '../../lib/records'
+import { linkHost, sourceLabel } from '../../lib/records'
 import { sortByOrder } from '../../lib/order'
 
 export const getStaticPaths = localeStaticPaths
@@ -28,20 +28,15 @@ const episodes = sortByOrder(await getCollection('podcast'))
         <h2 id="episodes" class="sr-only">{i18n.listening}</h2>
         <ul class="m-0 list-none p-0">
           {
-            episodes.map((episode) => {
-              const { code, title } = splitEpisodeCode(episode.data.ogTitle)
-              return (
-                <RecordRow
-                  lead={code}
-                  title={title}
-                  href={episode.data.ogUrl}
-                  meta={episode.data.show}
-                  source={sourceLabel(linkHost(episode.data.ogUrl))}
-                  cover={episode.data.showCover}
-                  kind="code"
-                />
-              )
-            })
+            episodes.map((episode) => (
+              <RecordRow
+                title={episode.data.ogTitle}
+                href={episode.data.ogUrl}
+                meta={[episode.data.show]}
+                source={sourceLabel(linkHost(episode.data.ogUrl))}
+                cover={episode.data.showCover}
+              />
+            ))
           }
         </ul>
       </section>

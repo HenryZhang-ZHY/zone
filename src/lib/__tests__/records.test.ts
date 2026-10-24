@@ -1,27 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { linkHost, sourceLabel, splitEpisodeCode } from '../records'
-
-describe('splitEpisodeCode', () => {
-	it('moves a leading episode code out of the title', () => {
-		expect(splitEpisodeCode('E96.用3张表的思路看待家庭财务：管钱，易如反掌！')).toEqual({
-			code: 'E96',
-			title: '用3张表的思路看待家庭财务：管钱，易如反掌！',
-		})
-		expect(splitEpisodeCode('101. 对 YouWare 创始人明超平 3 小时访谈')).toEqual({
-			code: '101',
-			title: '对 YouWare 创始人明超平 3 小时访谈',
-		})
-		expect(splitEpisodeCode('118: 天生卷王郭人杰')).toEqual({ code: '118', title: '天生卷王郭人杰' })
-	})
-
-	it('keeps a title that carries no code', () => {
-		expect(splitEpisodeCode('《一如既往》：历史不会重复')).toEqual({ code: '', title: '《一如既往》：历史不会重复' })
-	})
-
-	it('does not strip a leading number that is part of the title', () => {
-		expect(splitEpisodeCode('2024 年的三件事')).toEqual({ code: '', title: '2024 年的三件事' })
-	})
-})
+import { linkHost, sourceLabel } from '../records'
 
 describe('linkHost', () => {
 	it('returns the bare domain of a link', () => {
