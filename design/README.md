@@ -21,7 +21,7 @@ The live blog in `src/` now consumes `@zone/ui` and the Hairline tokens. The D-S
 | Add or change a component       | [Components](./components.md)                                                                                                               |
 | Build a page                    | [Patterns](./patterns.md)                                                                                                                   |
 | Design across languages         | [Languages](./languages.md)                                                                                                                 |
-| Know why it changed             | [Decision 0001](./decisions/0001-hairline.md), [0002](./decisions/0002-serif-reading-voice.md), [0003](./decisions/0003-reading-measure.md), [0004](./decisions/0004-language-note.md) |
+| Know why it changed             | [Decision 0001](./decisions/0001-hairline.md), [0002](./decisions/0002-serif-reading-voice.md), [0003](./decisions/0003-reading-measure.md), [0004](./decisions/0004-language-note.md), [0005](./decisions/0005-footer-sitemap.md) |
 
 ## Run it
 
@@ -39,6 +39,8 @@ bun run design:build  # static build of apps/design
 - The page is pure white. The ink is a cool blue-black. No tinted paper.
 - The article is one centered 78ch measure at 22px. No sidebars, no sticky cards, no rails. Serif is the reading voice; mono is the apparatus.
 - The contents live at the right edge as hairline ticks; hover or focus reveals the labels. Reading and listening are separate pages.
+- The header is identity and the language menu. The footer is the sitemap: writing, books, reading, listening, the feed.
+- The three record pages open with a running head — name, count, one rule — and then one list. No lede, no player.
 - The archive starts with the first entry. It is one flat list with full dates; no year groups, no introduction.
 - The layout explains the page. Do not add a label or a description that repeats what the rules and the space already say.
 - A language note is one line, never a box: a running head above an article, an inline line under a data page's lede, nothing on an index of mixed-language entries.
@@ -49,6 +51,7 @@ bun run design:build  # static build of apps/design
 ## What is intentionally absent
 
 - Hero sections with a call to action.
+- A primary navigation row in the header, and a second language list in the footer.
 - Year-grouped archives and a combined reading/listening page.
 - Card grids for writing.
 - A left rail of article metadata.

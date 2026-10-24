@@ -26,7 +26,7 @@ const available = localeTags.filter((tag) => tag === series.data.lang || series.
 ---
 
 <BaseLayout locale={locale} path={`/series/${series.id}/`} title={title} description={description} available={available} sourceLocale={series.data.lang} editorial>
-  <main class="shell py-page-top pb-page-bottom">
+  <main class="shell pt-article-top pb-page-bottom">
     <div class="mx-auto max-w-reading">
       <div lang={lang}>
         <PageHeader title={title} lede={description} class="mb-10">

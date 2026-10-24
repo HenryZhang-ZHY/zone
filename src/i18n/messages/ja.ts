@@ -30,6 +30,10 @@ export default {
 	booksSubtitle: '自分を形作った本',
 	booksDescription: 'ソフトウェア、ビジネス、投資についての考え方を形作った本です。表紙と各タイトルへのリンク付き。',
 
+	readingCount: (n: number) => `${n} 記事`,
+	listeningCount: (n: number) => `${n} エピソード`,
+	booksCount: (n: number) => `${n} 冊`,
+
 	seriesPart: (n: number) => `第${n}回`,
 	seriesPartOf: (n: number, total: number) => `全${total}回中の第${n}回`,
 	seriesPrev: '前へ',

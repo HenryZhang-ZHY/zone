@@ -79,6 +79,9 @@ The rhythm:
 - **Reading measure**: 78ch (max-w-reading). The article is centered in it; the margins are air.
 - **Index measure**: 68ch (max-w-measure). The archive and listening list use it.
 - **Edge index**: fixed at the right edge, outside the measure. It never reserves a column and disappears below 1180px.
+- **Page top**: 32 → 40px (`--z-layout-page-top`). A list, a shelf or an instrument starts close under the header: its rhythm is carried by the rows, and a large gap reads as a missing element.
+- **Article top**: 40 → 64px (`--z-layout-article-top`). Only a page that opens with a 40px title gets the extra air; a title pushed off the fold looks pressed against the chrome.
+- **Page bottom**: 64 → 112px (`--z-layout-page-bottom`), unchanged: the page ends with space, not with a rule.
 - **Breakpoints**: 600px (mobile), 900px (navigation/docs), 1180px (edge index), 1280px (nothing; the article does not need a wider shell).
 
 Do not create a second page width inside a component.

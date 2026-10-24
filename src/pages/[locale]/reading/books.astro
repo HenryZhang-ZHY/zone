@@ -1,9 +1,9 @@
 ---
 import { getCollection } from 'astro:content'
 import BaseLayout from '../../../layouts/BaseLayout.astro'
-import PageHeader from '@zone/ui/components/PageHeader.astro'
-import Book from '@zone/ui/components/Book.astro'
 import { SITE_TITLE } from '../../../consts'
+import Book from '@zone/ui/components/Book.astro'
+import RunningHead from '@zone/ui/components/RunningHead.astro'
 import { localeStaticPaths, t, type Locale } from '../../../i18n'
 
 export const getStaticPaths = localeStaticPaths
@@ -20,21 +20,21 @@ const books = await getCollection('book')
   description={i18n.booksDescription}
 >
   <main class="shell py-page-top pb-page-bottom">
-    <div class="mx-auto max-w-[66rem]">
-      <PageHeader title={i18n.booksTitle} lede={i18n.booksSubtitle} class="mb-10" />
-      <section aria-labelledby="books">
-        <h2 id="books" class="sr-only">{i18n.booksTitle}</h2>
-        <div class="grid grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))] gap-x-6 gap-y-10 max-sm:grid-cols-2 max-sm:gap-x-4 max-sm:gap-y-8">
-          {books.map((book, index) => (
+    <RunningHead label={i18n.books} count={i18n.booksCount(books.length)} />
+    <section aria-labelledby="books" class="mt-8">
+      <h2 id="books" class="sr-only">{i18n.books}</h2>
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))] gap-x-5 gap-y-8 max-sm:grid-cols-3 max-sm:gap-x-3 max-sm:gap-y-6">
+        {
+          books.map((book, index) => (
             <Book
               title={book.data.title}
               href={book.data.ogUrl}
               cover={book.data.ogImage.src}
               loading={index < 8 ? 'eager' : 'lazy'}
             />
-          ))}
-        </div>
-      </section>
-    </div>
+          ))
+        }
+      </div>
+    </section>
   </main>
 </BaseLayout>

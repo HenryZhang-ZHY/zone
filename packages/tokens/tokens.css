@@ -184,6 +184,7 @@
   --z-layout-measure: 68ch;
   --z-layout-reading: 78ch;
   --z-layout-gutter: clamp(1rem, 3.5vw, 2rem);
-  --z-layout-page-top: clamp(2.5rem, 6vw, 4.5rem);
+  --z-layout-page-top: clamp(2rem, 4vw, 2.5rem);
+  --z-layout-article-top: clamp(2.5rem, 5vw, 4rem);
   --z-layout-page-bottom: clamp(4rem, 9vw, 7rem);
 }

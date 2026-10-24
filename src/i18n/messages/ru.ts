@@ -30,6 +30,10 @@ export default {
 	booksSubtitle: 'Книги, которые меня сформировали',
 	booksDescription: 'Книги, которые сформировали мой взгляд на программное обеспечение, бизнес и инвестиции, с обложками и ссылками на каждую.',
 
+	readingCount: (n: number) => `${n} статей`,
+	listeningCount: (n: number) => `${n} выпусков`,
+	booksCount: (n: number) => `${n} книг`,
+
 	seriesPart: (n: number) => `Часть ${n}`,
 	seriesPartOf: (n: number, total: number) => `Часть ${n} из ${total}`,
 	seriesPrev: 'Назад',

@@ -29,6 +29,10 @@ const en = {
 	booksSubtitle: 'Books that shaped me',
 	booksDescription: 'Books that shaped how I think about software, business and investing, with the covers and links to each title on my shelf.',
 
+	readingCount: (n: number) => `${n} articles`,
+	listeningCount: (n: number) => `${n} episodes`,
+	booksCount: (n: number) => `${n} books`,
+
 	seriesPart: (n: number) => `Part ${n}`,
 	seriesPartOf: (n: number, total: number) => `Part ${n} of ${total}`,
 	seriesPrev: 'Previous',

@@ -1,0 +1,63 @@
+---
+import { tv } from '../recipes/tv'
+import { cn } from '../recipes/cn'
+
+interface Props {
+	/** The identity of the row: a date on the reading list, an episode code on the listening list. */
+	lead: string
+	/** `datetime` when the lead is a date. */
+	datetime?: string
+	title: string
+	href: string
+	/** Where the link goes, e.g. `stanford.edu` or `小宇宙`. */
+	source?: string
+	lang?: string
+	/** `date` gives the lead the width of an ISO date; `code` the width of `E120`. */
+	kind?: 'date' | 'code'
+	class?: string
+}
+
+const recordRow = tv({
+	slots: {
+		root: 'border-b border-line',
+		link: 'group grid items-start gap-6 py-5 no-underline max-sm:gap-4 max-sm:py-4',
+		lead: 'whitespace-nowrap pt-[0.45em] font-ui text-label-12 tabular-nums text-ink-tertiary',
+		body: 'block min-w-0',
+		title: 'block font-prose text-copy-18 font-medium text-ink underline decoration-transparent underline-offset-[0.18em] transition-[color,text-decoration-color] duration-1 ease-out group-hover:text-accent group-hover:decoration-current group-focus-visible:text-accent group-focus-visible:decoration-current',
+		source: 'mt-1.5 flex items-baseline gap-2 font-ui text-label-11 tracking-[0.04em] text-ink-tertiary',
+		arrow: 'not-italic text-ink-quiet transition-[color,transform] duration-1 ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent',
+	},
+	variants: {
+		kind: {
+			date: { link: 'grid-cols-[5.5rem_minmax(0,1fr)] max-sm:grid-cols-[minmax(0,1fr)]' },
+			code: { link: 'grid-cols-[3.5rem_minmax(0,1fr)] max-sm:grid-cols-[minmax(0,1fr)]' },
+		},
+	},
+	defaultVariants: { kind: 'date' },
+})
+
+const { lead, datetime, title, href, source, lang, kind = 'date', class: className } = Astro.props
+const external = href.startsWith('http')
+const styles = recordRow({ kind })
+---
+
+<li class={cn(styles.root(), className)}>
+	<a
+		class={styles.link()}
+		href={href}
+		target={external ? '_blank' : undefined}
+		rel={external ? 'noopener noreferrer' : undefined}
+	>
+		{
+			datetime ? (
+				<time class={styles.lead()} datetime={datetime}>{lead}</time>
+			) : (
+				<span class={styles.lead()}>{lead}</span>
+			)
+		}
+		<span class={styles.body()} lang={lang}>
+			<span class={styles.title()}>{title}</span>
+			{source && <span class={styles.source()}>{source} <i class={styles.arrow()} aria-hidden="true">↗</i></span>}
+		</span>
+	</a>
+</li>

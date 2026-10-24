@@ -30,6 +30,10 @@ export default {
 	booksSubtitle: 'Bücher, die mich geprägt haben',
 	booksDescription: 'Bücher, die mein Denken über Software, Unternehmen und Investieren geprägt haben, mit Covern und Links zu jedem Titel.',
 
+	readingCount: (n: number) => `${n} Artikel`,
+	listeningCount: (n: number) => `${n} Folgen`,
+	booksCount: (n: number) => `${n} Bücher`,
+
 	seriesPart: (n: number) => `Teil ${n}`,
 	seriesPartOf: (n: number, total: number) => `Teil ${n} von ${total}`,
 	seriesPrev: 'Zurück',

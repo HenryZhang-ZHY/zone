@@ -1,6 +1,6 @@
 ---
 import DemoLayout from '../../components/DemoLayout.astro'
-import PageHeader from '@zone/ui/components/PageHeader.astro'
+import RunningHead from '@zone/ui/components/RunningHead.astro'
 import Book from '@zone/ui/components/Book.astro'
 import { books } from '../../data/demo'
 ---
@@ -11,16 +11,14 @@ import { books } from '../../data/demo'
   current="/demos/reading/"
 >
   <div class="shell">
-    <div class="mx-auto max-w-[66rem]">
-      <PageHeader title="The shelf" class="mb-10" />
-      <section aria-labelledby="books">
-        <h2 id="books" class="sr-only">Books</h2>
-        <div class="grid grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))] gap-x-6 gap-y-10 max-sm:grid-cols-2 max-sm:gap-x-4 max-sm:gap-y-8">
-          {books.map((book) => (
-            <Book title={book.title} cover={book.cover} href={book.href} />
-          ))}
-        </div>
-      </section>
-    </div>
+    <RunningHead label="The shelf" count={`${books.length} books`} />
+    <section aria-labelledby="books" class="mt-8">
+      <h2 id="books" class="sr-only">Books</h2>
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))] gap-x-5 gap-y-8 max-sm:grid-cols-3 max-sm:gap-x-3 max-sm:gap-y-6">
+        {books.map((book) => (
+          <Book title={book.title} cover={book.cover} href={book.href} />
+        ))}
+      </div>
+    </section>
   </div>
 </DemoLayout>

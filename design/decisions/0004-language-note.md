@@ -2,7 +2,8 @@
 
 - Status: accepted
 - Date: 2026-10-24
-- Related: [0001](./0001-hairline.md), [0003](./0003-reading-measure.md)
+- Related: [0001](./0001-hairline.md), [0003](./0003-reading-measure.md), [0005](./0005-footer-sitemap.md)
+- Partly superseded by: [0005](./0005-footer-sitemap.md) — the footer language list, and the 72px article top
 
 ## Context
 
@@ -16,7 +17,7 @@ The design system already had a boxed `Notice` component, but the live site reim
 
 1. **The note is one line.** `NoteLine` renders `provenance · target endonym →`: `Original · 简体中文 →`, `Translated from English · 简体中文 →`. It does not accept children or multiple paragraphs.
 2. **Placement follows the page's measure.**
-   - Article pages: `runhead`, above the title, provenance left, target right, one hairline. The article's top padding is 40 when the note is present, 72 when it is not.
+   - Article pages: `runhead`, above the title, provenance left, target right, one hairline. The article's top padding is 40 when the note is present, 64 when it is not.
    - Data, tool and series-index pages: `inline`, under the lede, aligned to the page's own measure.
    - Index pages (Writing, Reading, Listening, Books): no page-level note. Their entries carry their own `lang`; the header language menu is the switch.
 3. **Fallback, translation, or a preferred version.** A fallback or translation note is server-rendered. A same-language article with other versions renders the note hidden and reveals it before paint only when the reader prefers another version. A reader already in the right language sees no note. Index pages have no page-level note at all.
@@ -27,9 +28,9 @@ The design system already had a boxed `Notice` component, but the live site reim
 ## Consequences
 
 - The 72px gap and the 749px box are gone. The article starts with its running head and title; the data page's note starts at the page's own left edge.
-- The note no longer lists every available language. The target is the reader's preferred available version, or the source when there is no better one. The header menu remains the full index; the footer keeps the eight-language list.
+- The note no longer lists every available language. The target is the reader's preferred available version, or the source when there is no better one. The header menu remains the full index.
 - The old same-language suggestion banner is folded into the note's hidden/reveal state: a same-language article shows the note only when the reader prefers another version. A reader already in the right language sees no note. The header menu remains the full index and the switch on index pages.
-- The article's top padding is a conditional 40/72. Pages without a note keep the standard 72; the difference is about 20px at the title and is part of the running head's composition.
+- The article's top padding is a conditional 40/64. Pages without a note keep the article top; the difference is about 24px at the title and is part of the running head's composition.
 - The copy no longer promises a translation ("not available in English yet"). It states provenance (`Original` / `Translated from …`) and offers a target.
 - The docs gallery shows `NoteLine` in both placements; the `Notice` specimen is gone.
 - Tests: the i18n copy and the per-locale key set changed; the visual checks are 1440, 1240, 390, light, dark and keyboard focus.

@@ -15,9 +15,10 @@ Every component is a **Tailwind recipe first** and an Astro wrapper second. The 
 | `Wordmark`     | Identity                       | `plain` (domain only) or `slash`; the domain dot is punctuation, not an accent |
 | `BranchMark`   | The app mark                   | 60 line variants, 1.4px, `currentColor`; `/marks/` curates the latest round    |
 | `LanguageMenu` | Language switch                | Endonyms, two-column panel, `hreflang` and `lang`; no flags                    |
-| `SiteHeader`   | Identity + primary nav         | Current page gets a 2px signal underline                                       |
-| `SiteFooter`   | Wordmark, links, copyright     | No link-group labels                                                           |
-| `PageHeader`   | Page title, optional lede      | Used by the reading and listening pages                                        |
+| `SiteHeader`   | Identity + language menu       | No primary nav: writing is the home, everything else is in the footer          |
+| `SiteFooter`   | Wordmark, sitemap links, ©     | The site's whole map; no link-group labels, no language row                    |
+| `PageHeader`   | Page title, optional lede      | Used by pages that open with a subject: the data report, the calculator, a series |
+| `RunningHead`  | Page name + count, one hairline| Opens every record page; the layout explains, so there is no lede              |
 | `Entry`        | Archive row                    | Date, title, excerpt, meta, arrow; the whole row links                         |
 | `Tag`          | Quiet taxonomy                 | Square, 1px, 11px; accent variant for a current state                          |
 | `GroupMark`    | Categorical group              | 6px data-color square plus an optional number or full label; color is never the only carrier |
@@ -27,7 +28,7 @@ Every component is a **Tailwind recipe first** and an Astro wrapper second. The 
 | `SectionHead`  | Label, count, rule, action     | Optional; the reading and listening pages do not use it                        |
 | `SeriesPager`  | Previous / next essay          | Hairline top; two columns                                                      |
 | `Book`         | Cover + title                  | 2:3 cover, 1px border, no shadow                                               |
-| `ListenRow`    | Episode row                    | Index, title, meta, external arrow                                             |
+| `RecordRow`    | Reading / listening row        | A mono lead (date or episode code), serif title, where it points, external arrow |
 | `Callout`      | Note inside prose              | 2px start rule; label optional                                                 |
 | `Figure`       | Image + caption                | Optional plain variant for specimens                                           |
 | `CodeBlock`    | Fenced code                    | Optional filename bar                                                          |

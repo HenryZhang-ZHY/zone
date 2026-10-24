@@ -1,10 +1,11 @@
 ---
-import { getCollection } from 'astro:content'
-import AudioPlayer from '../../components/audio/AudioPlayer.astro'
 import BaseLayout from '../../layouts/BaseLayout.astro'
-import PageHeader from '@zone/ui/components/PageHeader.astro'
 import { SITE_TITLE } from '../../consts'
+import { getCollection } from 'astro:content'
+import RunningHead from '@zone/ui/components/RunningHead.astro'
+import RecordRow from '@zone/ui/components/RecordRow.astro'
 import { localeStaticPaths, t, type Locale } from '../../i18n'
+import { linkHost, sourceLabel, splitEpisodeCode } from '../../lib/records'
 
 export const getStaticPaths = localeStaticPaths
 
@@ -21,37 +22,25 @@ const episodes = await getCollection('podcast')
 >
   <main class="shell py-page-top pb-page-bottom">
     <div class="mx-auto max-w-measure">
-      <PageHeader title={i18n.listening} class="mb-8" />
+      <RunningHead label={i18n.listening} count={i18n.listeningCount(episodes.length)} />
       <section aria-labelledby="episodes">
         <h2 id="episodes" class="sr-only">{i18n.listening}</h2>
-        {
-          episodes.map((episode, index) => (
-            <article class="border-t border-line py-5 last:border-b">
-              <div class="grid gap-x-6 gap-y-3 sm:grid-cols-[2.25rem_minmax(0,1fr)_1rem]">
-                <span class="pt-[0.35em] font-ui text-label-11 tabular-nums text-ink-quiet">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <div class="min-w-0">
-                  <div class="flex items-start justify-between gap-4">
-                    <a
-                      class="font-prose text-copy-18 text-ink underline decoration-transparent underline-offset-[0.18em] transition-[color,text-decoration-color] duration-1 ease-out hover:text-accent hover:decoration-current"
-                      href={episode.data.ogUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {episode.data.ogTitle}
-                    </a>
-                    <span class="shrink-0 font-ui text-label-13 text-ink-quiet" aria-hidden="true">↗</span>
-                  </div>
-                  <p class="mt-1 font-ui text-label-12 text-ink-tertiary">{i18n.listeningTitle}</p>
-                  <div class="mt-3">
-                    <AudioPlayer src={episode.data.ogAudio} />
-                  </div>
-                </div>
-              </div>
-            </article>
-          ))
-        }
+        <ul class="m-0 list-none p-0">
+          {
+            episodes.map((episode) => {
+              const { code, title } = splitEpisodeCode(episode.data.ogTitle)
+              return (
+                <RecordRow
+                  lead={code}
+                  title={title}
+                  href={episode.data.ogUrl}
+                  source={sourceLabel(linkHost(episode.data.ogUrl))}
+                  kind="code"
+                />
+              )
+            })
+          }
+        </ul>
       </section>
     </div>
   </main>

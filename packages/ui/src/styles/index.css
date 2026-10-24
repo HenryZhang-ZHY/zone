@@ -134,6 +134,7 @@
   --spacing-24: var(--z-space-24);
   --spacing-gutter: var(--z-layout-gutter);
   --spacing-page-top: var(--z-layout-page-top);
+  --spacing-article-top: var(--z-layout-article-top);
   --spacing-page-bottom: var(--z-layout-page-bottom);
   --radius-none: var(--z-radius-none);
   --radius-subtle: var(--z-radius-subtle);

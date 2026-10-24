@@ -1,6 +1,5 @@
 ---
 import BaseHead from '../components/BaseHead.astro'
-import LanguageIndex from '../components/LanguageIndex.astro'
 import SiteFooter from '@zone/ui/components/SiteFooter.astro'
 import SiteHeader from '@zone/ui/components/SiteHeader.astro'
 import LanguageMenu from '@zone/ui/components/LanguageMenu.astro'
@@ -44,31 +43,18 @@ const alternates = alternateLinks(path, available, xDefault, Astro.site!)
 const i18n = t(locale)
 const href = (sitePath: string) => localizePath(sitePath, locale)
 
-const nav = [
-  { label: i18n.writing, href: href('/') },
-  { label: i18n.reading, href: href('/reading/') },
-  { label: i18n.listening, href: href('/listening/') },
-]
-
-const isTool = path.startsWith('/d-sibs/') || path.startsWith('/stock-sell/')
-const current = path.startsWith('/reading/')
-  ? href('/reading/')
-  : path.startsWith('/listening/')
-    ? href('/listening/')
-    : isTool
-      ? ''
-      : href('/')
-
 const languageItems = localeTags.map((tag) => ({
   tag,
   name: endonym(tag),
   href: localizePath(path, tag),
 }))
 
+// The footer is the whole sitemap: writing is the site itself, the three record
+// pages and the feed live here. The header keeps only the wordmark and language.
 const footerLinks = [
   { label: i18n.writing, href: href('/') },
-  { label: i18n.reading, href: href('/reading/') },
   { label: i18n.books, href: href('/reading/books/') },
+  { label: i18n.reading, href: href('/reading/') },
   { label: i18n.listening, href: href('/listening/') },
   { label: i18n.rssFeed, href: href('/rss.xml') },
 ]
@@ -89,17 +75,15 @@ const copyright = `© ${new Date().getFullYear()} ${SITE_TITLE}. ${i18n.copyrigh
     />
   </head>
   <body class="min-h-screen bg-canvas text-ink">
-    <SiteHeader current={current} items={nav} home={href('/')}>
-      <LanguageMenu current={locale} items={languageItems} label={i18n.language} class="max-sm:ml-auto" />
+    <SiteHeader home={href('/')}>
+      <LanguageMenu current={locale} items={languageItems} label={i18n.language} />
     </SiteHeader>
 
     <div id="main">
       <slot />
     </div>
 
-    <SiteFooter links={footerLinks} copyright={copyright}>
-      <LanguageIndex locale={locale} path={path} label={i18n.language} />
-    </SiteFooter>
+    <SiteFooter links={footerLinks} copyright={copyright} />
 
     <script define:vars={{ cookie: LOCALE_COOKIE }}>
       document.addEventListener('click', (event) => {

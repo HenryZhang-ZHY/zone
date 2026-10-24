@@ -1,7 +1,7 @@
 ---
 import DemoLayout from '../../components/DemoLayout.astro'
-import PageHeader from '@zone/ui/components/PageHeader.astro'
-import ListenRow from '@zone/ui/components/ListenRow.astro'
+import RunningHead from '@zone/ui/components/RunningHead.astro'
+import RecordRow from '@zone/ui/components/RecordRow.astro'
 import { episodes } from '../../data/demo'
 ---
 
@@ -12,19 +12,20 @@ import { episodes } from '../../data/demo'
 >
   <div class="shell">
     <div class="mx-auto max-w-measure">
-      <PageHeader title="Listening" class="mb-10" />
+      <RunningHead label="Listening" count="6 episodes" />
       <section aria-labelledby="episodes">
         <h2 id="episodes" class="sr-only">Episodes</h2>
-        <div>
-          {episodes.map((episode, index) => (
-            <ListenRow
-              index={String(index + 1).padStart(2, '0')}
+        <ul class="m-0 list-none p-0">
+          {episodes.map((episode) => (
+            <RecordRow
+              lead={episode.code}
               title={episode.title}
               href={episode.href}
-              meta={episode.meta}
+              source={episode.source}
+              kind="code"
             />
           ))}
-        </div>
+        </ul>
       </section>
     </div>
   </div>

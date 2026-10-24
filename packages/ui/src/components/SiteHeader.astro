@@ -33,11 +33,7 @@ const header = tv({
 
 const {
   current = '/',
-  items = [
-    { label: 'Writing', href: '/' },
-    { label: 'Reading', href: '/reading/' },
-    { label: 'Listening', href: '/listening/' },
-  ],
+  items = [],
   home = '/',
   class: className,
 } = Astro.props
@@ -48,22 +44,26 @@ const styles = header()
 <header class={cn(styles.root(), className)}>
   <div class={styles.inner()}>
     <Wordmark href={home} />
-    <nav class={styles.nav()} aria-label="Primary">
-      {
-        items.map((item, index) => (
-          <>
-            {index > 0 && <span class={styles.sep()} aria-hidden="true">/</span>}
-            <a
-              class={styles.link()}
-              href={item.href}
-              aria-current={current === item.href ? 'page' : undefined}
-            >
-              {item.label}
-            </a>
-          </>
-        ))
-      }
+    {
+      items.length > 0 && (
+        <nav class={styles.nav()} aria-label="Primary">
+          {items.map((item, index) => (
+            <>
+              {index > 0 && <span class={styles.sep()} aria-hidden="true">/</span>}
+              <a
+                class={styles.link()}
+                href={item.href}
+                aria-current={current === item.href ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </>
+          ))}
+        </nav>
+      )
+    }
+    <div class:list={['flex items-center gap-1', items.length === 0 && 'ml-auto']}>
       <slot />
-    </nav>
+    </div>
   </div>
 </header>

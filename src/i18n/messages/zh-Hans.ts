@@ -30,6 +30,10 @@ export default {
 	booksSubtitle: '塑造了我的书',
 	booksDescription: '塑造了我对软件、商业和投资思考方式的书，附封面和每本书的链接。',
 
+	readingCount: (n: number) => `${n} 篇`,
+	listeningCount: (n: number) => `${n} 期`,
+	booksCount: (n: number) => `${n} 本`,
+
 	seriesPart: (n: number) => `第 ${n} 篇`,
 	seriesPartOf: (n: number, total: number) => `第 ${n} 篇，共 ${total} 篇`,
 	seriesPrev: '上一篇',

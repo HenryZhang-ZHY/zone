@@ -47,7 +47,7 @@ const showNote = visibleNote || entry.available.length > 1
   pageLayout="article"
   editorial
 >
-  <main class:list={['shell pb-page-bottom', visibleNote ? 'pt-10' : 'pt-page-top']}>
+  <main class:list={['shell pb-page-bottom', visibleNote ? 'pt-10' : 'pt-article-top']}>
     <article class="mx-auto w-full max-w-reading">
       <header class="mb-8 border-b border-line pb-6">
         {showNote && (

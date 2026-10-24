@@ -1,0 +1,28 @@
+---
+import { tv } from '../recipes/tv'
+import { cn } from '../recipes/cn'
+
+interface Props {
+	/** The page's own name, e.g. `阅读`. */
+	label: string
+	/** Quiet tally at the right edge, e.g. `2 篇`. */
+	count?: string
+	class?: string
+}
+
+const runningHead = tv({
+	slots: {
+		root: 'flex items-baseline gap-3 border-b border-line-strong pb-2.5 font-ui',
+		label: 'm-0 text-label-13 font-normal text-ink-tertiary',
+		count: 'm-0 ml-auto text-label-11 tracking-[0.09em] text-ink-quiet tabular-nums',
+	},
+})
+
+const { label, count, class: className } = Astro.props
+const styles = runningHead()
+---
+
+<div class={cn(styles.root(), className)}>
+	<h1 class={styles.label()}>{label}</h1>
+	{count && <p class={styles.count()}>{count}</p>}
+</div>

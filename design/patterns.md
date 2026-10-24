@@ -6,8 +6,9 @@ A pattern is a decision about where the eye starts and where it rests. The pages
 
 - 1200px max width, fluid gutter, centered.
 - Header, main and footer consume `.shell`; no page sets its own width.
-- The article's 78ch measure is centered inside the shell; the archive and listening list keep 68ch.
-- Page padding: 40–72px top, 64–112px bottom, depending on viewport.
+- The article's 78ch measure is centered inside the shell; the archive and the record lists keep 68ch.
+- The header holds the wordmark and the language menu. The footer holds the site's whole map: writing, the three record pages, the feed.
+- Page top: 32–40px when the page opens with a list, a shelf or an instrument; 40–64px when it opens with a title — the article, the two data pages, a series. Page bottom: 64–112px.
 
 ## The archive
 
@@ -51,34 +52,36 @@ A pattern is a decision about where the eye starts and where it rests. The pages
 - The article ends with footnotes, then the series pager, then the footer. No related-post grid.
 - There is no reading-mode switch. Chinese and Japanese change the type values, not the structure. The edge index hides on mobile.
 
+## The record pages
+
+Reading, listening and the shelf are appendices to the writing, not sections of their own. They open with the same running head and live in the footer.
+
+```
+书籍                    14 本
+────────────────────────────
+2026-05-17   Information and the market for lemons
+             stanford.edu ↗
+E96          用3张表的思路看待家庭财务：管钱，易如反掌！
+             小宇宙 ↗
+```
+
+- Running head: the page name at 13px mono on the left, the count at 11px on the right, one 1px rule under both. It is the `h1`. No lede, no description paragraph, no action button.
+- The head is followed by one list of rows or one grid of covers, nothing else.
+- Reading and listening share one row (`RecordRow`): a mono lead, a serif title, the domain it points at, an external arrow. The lead is a date on the reading list and the episode code — `E96`, `120` — on the listening list, so the title never repeats what the lead already says.
+- The row is the link. There is no player, no ordinal, no source line naming the show, no duration: the data does not have it, and chrome that cannot show it is not chrome.
+- One 68ch column. A record list is still reading.
+
 ## The shelf
 
 ```
-The shelf
-
-[cover] [cover] [cover] [cover] [cover] [cover]
-[cover] [cover] [cover] [cover] [cover] [cover]
+[cover] [cover] [cover] [cover] [cover] [cover] [cover]
+[cover] [cover] [cover] [cover] [cover] [cover] [cover]
 ```
 
-- Books and listening are different pages. A book cover is an object; an episode is a row. Combining them made both weaker.
-- A page title, then the books. No introduction paragraph and no "Books" section label; the covers explain themselves. A visually hidden `h2` keeps the semantics.
+- A book cover is an object; an episode is a row. Books keep their own page because the object is the point.
+- A running head, then the books. No subtitle and no "Books" section label; the covers explain themselves. A visually hidden `h2` keeps the semantics.
 - Covers keep a 2:3 ratio, a 1px border and no shadow. Titles are serif, 14px; there are no stars, counts or completion metrics.
-- Grid: `auto-fill` at 8.5rem minimum, six columns at 1440px, two at 390px.
-
-## The listening list
-
-```
-Listening
-
-01  Episode title                               ↗
-    Source · language
-02  …
-```
-
-- A ledger, not a player. The page links to the source; it does not pretend to own the audio.
-- Index, title, source, external arrow. The title is serif; the index, source and duration are mono.
-- One 68ch column. A listening list is still reading.
-- No section label. The page title says Listening; the rows are obviously episodes. A visually hidden `h2` keeps the semantics.
+- Grid: `auto-fill` at 8.5rem minimum with a 20px column gap — seven columns in the 1136px shell, three at 390px.
 
 ## The data report
 

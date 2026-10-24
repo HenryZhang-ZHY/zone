@@ -1,10 +1,11 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
-import PageHeader from '@zone/ui/components/PageHeader.astro'
-import Button from '@zone/ui/components/Button.astro'
 import { SITE_TITLE } from '../../consts'
 import { getCollection } from 'astro:content'
-import { formatDate, localeStaticPaths, localizePath, t, type Locale } from '../../i18n'
+import RunningHead from '@zone/ui/components/RunningHead.astro'
+import RecordRow from '@zone/ui/components/RecordRow.astro'
+import { localeStaticPaths, t, type Locale } from '../../i18n'
+import { linkHost, sourceLabel } from '../../lib/records'
 
 export const getStaticPaths = localeStaticPaths
 
@@ -12,6 +13,7 @@ const { locale } = Astro.props as { locale: Locale }
 const i18n = t(locale)
 const readingItems = await getCollection('readingList')
 const items = readingItems.sort((a, b) => b.data.dateRead.getTime() - a.data.dateRead.getTime())
+const isoDate = (date: Date) => date.toISOString().slice(0, 10)
 ---
 
 <BaseLayout
@@ -21,42 +23,30 @@ const items = readingItems.sort((a, b) => b.data.dateRead.getTime() - a.data.dat
   description={i18n.readingDescription}
 >
   <main class="shell py-page-top pb-page-bottom">
-    <div class="mx-auto max-w-reading">
-      <div class="mb-10 flex flex-wrap items-end justify-between gap-4">
-        <PageHeader title={i18n.readingTitle} lede={i18n.readingDescription} class="mb-0" />
-        <Button variant="quiet" href={localizePath('/reading/books/', locale)}>{i18n.books} →</Button>
-      </div>
+    <div class="mx-auto max-w-measure">
+      <RunningHead label={i18n.reading} count={i18n.readingCount(items.length)} />
 
-      {items.length > 0 ? (
-        <ul class="m-0 list-none border-t border-line-strong p-0">
-          {items.map((item) => (
-            <li class="border-b border-line">
-              <a
-                class="group grid grid-cols-[7rem_minmax(0,1fr)_1.25rem] items-baseline gap-6 py-5 max-sm:grid-cols-[5.5rem_minmax(0,1fr)] max-sm:gap-4"
+      {
+        items.length > 0 ? (
+          <ul class="m-0 list-none p-0">
+            {items.map((item) => (
+              <RecordRow
+                lead={isoDate(item.data.dateRead)}
+                datetime={isoDate(item.data.dateRead)}
+                title={item.data.title}
                 href={item.data.ogUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <time
-                  class="font-ui text-label-12 tabular-nums text-ink-tertiary"
-                  datetime={item.data.dateRead.toISOString().slice(0, 10)}
-                >
-                  {formatDate(item.data.dateRead, locale)}
-                </time>
-                <h2 class="font-prose text-heading-20 font-semibold text-ink underline decoration-transparent underline-offset-[0.18em] transition-[color,text-decoration-color] duration-1 ease-out group-hover:text-accent group-hover:decoration-current max-sm:text-heading-16">
-                  {item.data.title}
-                </h2>
-                <span class="self-center font-ui text-label-14 text-ink-quiet opacity-0 transition-opacity duration-1 group-hover:opacity-100 max-sm:hidden" aria-hidden="true">↗</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <div class="py-16 text-center font-ui text-copy-14 text-ink-tertiary">
-          <h2 class="font-prose text-heading-24 text-ink">{i18n.noReading}</h2>
-          <p class="mt-2">{i18n.noReadingHint}</p>
-        </div>
-      )}
+                source={sourceLabel(linkHost(item.data.ogUrl))}
+                kind="date"
+              />
+            ))}
+          </ul>
+        ) : (
+          <div class="py-16 text-center font-ui text-copy-14 text-ink-tertiary">
+            <h2 class="font-prose text-heading-24 text-ink">{i18n.noReading}</h2>
+            <p class="mt-2">{i18n.noReadingHint}</p>
+          </div>
+        )
+      }
     </div>
   </main>
 </BaseLayout>

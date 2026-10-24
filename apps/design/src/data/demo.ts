@@ -159,36 +159,42 @@ export const books: DemoBook[] = [
 ]
 
 export interface DemoEpisode {
+  code: string
   title: string
   href: string
-  meta: string
+  source: string
 }
 
 export const episodes: DemoEpisode[] = [
   {
-    title: 'E96. 用3张表的思路看待家庭财务：管钱，易如反掌！',
+    code: 'E96',
+    title: '用3张表的思路看待家庭财务：管钱，易如反掌！',
     href: 'https://www.xiaoyuzhoufm.com/episode/67b4abe6606e5c5940544785',
-    meta: '小宇宙 · 播客 · 中文',
+    source: '小宇宙',
   },
   {
-    title: 'E53.《一如既往》：历史不会重复，但它自然成韵',
+    code: 'E53',
+    title: '《一如既往》：历史不会重复，但它自然成韵',
     href: 'https://www.xiaoyuzhoufm.com/episode/661de4895dae7932c6c0923c',
-    meta: '小宇宙 · 播客 · 中文',
+    source: '小宇宙',
   },
   {
-    title: 'E120. 经济上行期的美，增速下行期的狂',
+    code: 'E120',
+    title: '经济上行期的美，增速下行期的狂',
     href: 'https://www.xiaoyuzhoufm.com/episode/68a3dcbd42cc2798e7414974',
-    meta: '小宇宙 · 播客 · 中文',
+    source: '小宇宙',
   },
   {
-    title: '101. 对 YouWare 创始人明超平 3 小时访谈：今天的 Agent 像大猩猩刚拿起一根烧火棍',
+    code: '101',
+    title: '对 YouWare 创始人明超平 3 小时访谈：今天的 Agent 像大猩猩刚拿起一根烧火棍',
     href: 'https://www.xiaoyuzhoufm.com/episode/68372c9631215eb5063bcdb1',
-    meta: '小宇宙 · 播客 · 中文',
+    source: '小宇宙',
   },
   {
-    title: '118. 天生卷王郭人杰：从 97 年的扫地机总裁到创业做家庭通用机器人',
+    code: '118',
+    title: '天生卷王郭人杰：从 97 年的扫地机总裁到创业做家庭通用机器人',
     href: 'https://www.xiaoyuzhoufm.com/episode/68379234661c1af455c9e42c',
-    meta: '小宇宙 · 播客 · 中文',
+    source: '小宇宙',
   },
 ]
 

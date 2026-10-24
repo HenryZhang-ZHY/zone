@@ -30,6 +30,10 @@ export default {
 	booksSubtitle: 'Libros que me formaron',
 	booksDescription: 'Libros que han moldeado mi forma de pensar sobre el software, los negocios y la inversión, con sus portadas y un enlace a cada título.',
 
+	readingCount: (n: number) => `${n} artículos`,
+	listeningCount: (n: number) => `${n} episodios`,
+	booksCount: (n: number) => `${n} libros`,
+
 	seriesPart: (n: number) => `Parte ${n}`,
 	seriesPartOf: (n: number, total: number) => `Parte ${n} de ${total}`,
 	seriesPrev: 'Anterior',
