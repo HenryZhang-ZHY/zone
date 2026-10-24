@@ -68,7 +68,8 @@ E96          用3张表的思路看待家庭财务：管钱，易如反掌！
 - Running head: the page name at 13px mono on the left, the count at 11px on the right, one 1px rule under both. It is the `h1`. No lede, no description paragraph, no action button.
 - The head is followed by one list of rows or one grid of covers, nothing else.
 - Reading and listening share one row (`RecordRow`): a mono lead, a serif title, the domain it points at, an external arrow. The lead is a date on the reading list and the episode code — `E96`, `120` — on the listening list, so the title never repeats what the lead already says.
-- The row is the link. There is no player, no ordinal, no source line naming the show, no duration: the data does not have it, and chrome that cannot show it is not chrome.
+- The row is the link. There is no player, no ordinal, no duration: the data does not have it, and chrome that cannot show it is not chrome.
+- The listening row carries the channel: a 40px channel cover, the channel name before the platform (`面基 · 小宇宙`), then the arrow. Without it every row says only "小宇宙", which is the platform, not where the episode came from. The reading row has no cover and no channel: its source is the domain it points at.
 - One 68ch column. A record list is still reading.
 
 ## The shelf

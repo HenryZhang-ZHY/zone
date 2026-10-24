@@ -77,3 +77,23 @@ describe('the YAML array order survives Astro', () => {
 		expect(read('src', 'pages', '[locale]', 'listening.astro')).toContain('sortByOrder')
 	})
 })
+
+describe('the listening row names its channel', () => {
+	it('carries a channel and its cover in the data', () => {
+		const config = read('src', 'content.config.ts')
+		expect(config).toContain('show: z.string()')
+		expect(config).toContain('showCover: z.url()')
+	})
+
+	it('passes the cover and the channel into the row, in file order', () => {
+		const listening = read('src', 'pages', '[locale]', 'listening.astro')
+		expect(listening).toContain('cover={episode.data.showCover}')
+		expect(listening).toContain('meta={episode.data.show}')
+		expect(listening).toContain('sortByOrder')
+	})
+
+	it('renders a cover only when the row has one', () => {
+		const row = ui('components', 'RecordRow.astro')
+		expect(row).toContain('cover &&')
+	})
+})

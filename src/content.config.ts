@@ -99,6 +99,8 @@ const podcast = defineCollection({
 		ogTitle: z.string(),
 		ogUrl: z.url(),
 		ogImage: z.url(),
+		show: z.string(),
+		showCover: z.url(),
 		ogAudio: z.url(),
 	}),
 });

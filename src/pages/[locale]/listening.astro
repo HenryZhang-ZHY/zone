@@ -35,7 +35,9 @@ const episodes = sortByOrder(await getCollection('podcast'))
                   lead={code}
                   title={title}
                   href={episode.data.ogUrl}
+                  meta={episode.data.show}
                   source={sourceLabel(linkHost(episode.data.ogUrl))}
+                  cover={episode.data.showCover}
                   kind="code"
                 />
               )
