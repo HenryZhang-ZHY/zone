@@ -41,13 +41,8 @@ export default {
 	footnotes: 'Примечания',
 	footnoteBack: (ref: string) => `Вернуться к ссылке ${ref}`,
 
-	untranslated: (source: string) => `Этой страницы пока нет на русском языке. Она показана на языке оригинала (${source}).`,
-	translatedFrom: (source: string) => `Перевод. Язык оригинала: ${source}.`,
-	readOriginal: 'Читать оригинал',
-	outdatedTranslation: 'Оригинал изменился после этого перевода.',
-	alsoAvailableIn: 'Другие языки:',
-
-	suggestLanguage: 'Эта страница есть и на русском языке.',
-	switchLanguage: 'Читать на русском',
-	dismiss: 'Закрыть',
+	original: 'Оригинал',
+	translatedFrom: (source: string) => `Перевод: ${source}`,
+	originalUpdated: 'Оригинал обновлён',
+	readIn: (language: string) => `Читать: ${language}`,
 } satisfies Messages

@@ -1,5 +1,6 @@
 ---
 import StockSellSheet from '../../components/stock-sell/StockSellSheet.astro'
+import LanguageNote from '../../components/LanguageNote.astro'
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import PageHeader from '@zone/ui/components/PageHeader.astro'
 import { SITE_TITLE } from '../../consts'
@@ -23,7 +24,16 @@ const { locale } = Astro.props as { locale: Locale }
       eyebrow="工具 / 股息率"
       title="股票卖点计算器"
       lede="按目标股息率，反推卖出部分持仓所需的每股价格。"
-    />
+    >
+      <LanguageNote
+        slot="note"
+        placement="inline"
+        locale={locale}
+        path="/stock-sell/"
+        sourceLocale="zh-Hans"
+        available={['zh-Hans'] as Locale[]}
+      />
+    </PageHeader>
 
     <StockSellSheet />
   </main>

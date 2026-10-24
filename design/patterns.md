@@ -22,6 +22,7 @@ A pattern is a decision about where the eye starts and where it rests. The pages
 - No introduction block, no sticky sidebar, no page title. The site header carries identity; the list carries the work.
 - A visually hidden `h1` keeps the document outline correct.
 - One flat list. No year groups, no month dividers. Every row carries its full ISO date.
+- No page-level language note. The entries carry their own `lang` and the page has no single content language; the header language menu is the switch.
 - The row is the link. Date, title, optional excerpt, quiet metadata, hover arrow.
 - Dates and metadata are mono; the title and excerpt are serif. That split is the whole system in miniature.
 - No thumbnails. It is a list of writing, not a feed.
@@ -43,6 +44,7 @@ A pattern is a decision about where the eye starts and where it rests. The pages
 - One centered 78ch measure at 22px. No left rail of metadata, no right TOC column, no sticky card.
 - Title, 24px lede and 22px body set in the serif reading voice; metadata is one quiet mono row beneath them.
 - A hairline closes the header; the body starts after one clean gap.
+- When the page is a fallback or a translation, a language note is a running head above the title: provenance left, target endonym right, one hairline. It is not a box and it never carries a second paragraph. The note replaces the page's top gap: the article content starts at 40, not 72, and the note sits above the title. On a same-language article with other versions it stays hidden until the reader prefers another version.
 - `h2` sections carry a rule and a number in the left margin. Below 1180px the number moves above the heading.
 - Metadata that used to live in a rail — date, reading time, copy link — is in the title block.
 - The contents are the edge index: hairline ticks at the right viewport edge, labels on hover or focus. It never reserves a column.
@@ -100,6 +102,7 @@ Listening
 - One hero finding: a single large number, its delta, and one composition bar. The release ledger sits beside it on a hairline, not in a second card.
 - Every bar shares the same `max`; the row for 19 must be visibly shorter than the row for 21. A card grid of totals hides the only comparison that matters.
 - The matrix is a table, not a set of cards. Group cells are a 6px data square plus the group number; the legend carries the labels. The first column sticks when the table scrolls sideways.
+- The language note, when the report is a fallback, is an inline line under the lede. It follows the full shell measure, not the reading measure, and it sits above the release metadata rule.
 - Status changes use ink and `+`/`−`/`↑`/`↓`; no success/danger fills. The group colors are the only categorical color.
 - The archive is two columns of names separated by `·`; the latest release gets a 2px accent top rule. No boxes, no tag pills.
 - Sections carry only a number and a title. No explanatory note, no inline contents row: the same fixed edge index as the article carries the four anchors. It appears from 1320px so the full-width table is never covered; below that, the headings are the index.

@@ -41,13 +41,8 @@ export default {
 	footnotes: '脚注',
 	footnoteBack: (ref: string) => `返回引用 ${ref}`,
 
-	untranslated: (source: string) => `本页暂无简体中文版本，以下按原文语言（${source}）显示。`,
-	translatedFrom: (source: string) => `译自${source}。`,
-	readOriginal: '阅读原文',
-	outdatedTranslation: '原文在本译文完成后有更新。',
-	alsoAvailableIn: '其他语言版本：',
-
-	suggestLanguage: '本页有简体中文版本。',
-	switchLanguage: '切换到简体中文',
-	dismiss: '关闭',
+	original: '原文',
+	translatedFrom: (source: string) => `译自${source}`,
+	originalUpdated: '原文有更新',
+	readIn: (language: string) => `以${language}阅读`,
 } satisfies Messages

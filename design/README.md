@@ -21,7 +21,7 @@ The live blog in `src/` now consumes `@zone/ui` and the Hairline tokens. The D-S
 | Add or change a component       | [Components](./components.md)                                                                                                               |
 | Build a page                    | [Patterns](./patterns.md)                                                                                                                   |
 | Design across languages         | [Languages](./languages.md)                                                                                                                 |
-| Know why it changed             | [Decision 0001](./decisions/0001-hairline.md), [0002](./decisions/0002-serif-reading-voice.md), [0003](./decisions/0003-reading-measure.md) |
+| Know why it changed             | [Decision 0001](./decisions/0001-hairline.md), [0002](./decisions/0002-serif-reading-voice.md), [0003](./decisions/0003-reading-measure.md), [0004](./decisions/0004-language-note.md) |
 
 ## Run it
 
@@ -41,6 +41,7 @@ bun run design:build  # static build of apps/design
 - The contents live at the right edge as hairline ticks; hover or focus reveals the labels. Reading and listening are separate pages.
 - The archive starts with the first entry. It is one flat list with full dates; no year groups, no introduction.
 - The layout explains the page. Do not add a label or a description that repeats what the rules and the space already say.
+- A language note is one line, never a box: a running head above an article, an inline line under a data page's lede, nothing on an index of mixed-language entries.
 - Buttons, tags and structure are square. Inputs and small controls get 3px.
 - One accent: links, focus, the current section. Never decoration.
 - Motion is 120ms for state, 180ms for a menu, 260ms for an overlay. No reveal animations.
@@ -51,6 +52,7 @@ bun run design:build  # static build of apps/design
 - Year-grouped archives and a combined reading/listening page.
 - Card grids for writing.
 - A left rail of article metadata.
+- Boxed language notices, and a page-level language bar on an index of mixed-language entries.
 - Drop caps, gradients, decorative illustration, shadows on content.
 - A theme switch in the product. The demo switch exists to inspect the dark theme; the product follows the system.
 

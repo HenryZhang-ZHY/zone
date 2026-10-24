@@ -41,13 +41,8 @@ export default {
 	footnotes: '脚注',
 	footnoteBack: (ref: string) => `参照 ${ref} に戻る`,
 
-	untranslated: (source: string) => `このページの日本語版はまだありません。原文（${source}）で表示しています。`,
-	translatedFrom: (source: string) => `${source}からの翻訳です。`,
-	readOriginal: '原文を読む',
-	outdatedTranslation: 'この翻訳の後に原文が更新されています。',
-	alsoAvailableIn: 'ほかの言語：',
-
-	suggestLanguage: 'このページは日本語でもご覧いただけます。',
-	switchLanguage: '日本語で読む',
-	dismiss: '閉じる',
+	original: '原文',
+	translatedFrom: (source: string) => `${source}からの翻訳`,
+	originalUpdated: '原文更新あり',
+	readIn: (language: string) => `${language}で読む`,
 } satisfies Messages

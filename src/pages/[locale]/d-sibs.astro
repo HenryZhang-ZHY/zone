@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
+import LanguageNote from '../../components/LanguageNote.astro'
 import PageHeader from '@zone/ui/components/PageHeader.astro'
 import CompositionBar from '@zone/ui/components/CompositionBar.astro'
 import EdgeToc from '@zone/ui/components/EdgeToc.astro'
@@ -68,6 +69,14 @@ const deltaLabel = (delta: number | null) => (delta === null ? '—' : delta > 0
       title="中国系统重要性银行"
       lede="按组别查看每家银行的入选轨迹。"
     >
+      <LanguageNote
+        slot="note"
+        placement="inline"
+        locale={locale}
+        path="/d-sibs/"
+        sourceLocale="zh-Hans"
+        available={['zh-Hans'] as Locale[]}
+      />
       <div slot="meta" class="mt-6 flex flex-wrap items-baseline gap-x-6 gap-y-2 border-t border-line pt-4 font-ui text-label-11 text-ink-tertiary">
         <span>{years.length} 期发布</span>
         <span>{years[0]}—{years.at(-1)}</span>

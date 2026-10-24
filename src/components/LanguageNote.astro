@@ -1,0 +1,91 @@
+---
+import NoteLine from '@zone/ui/components/NoteLine.astro'
+import { endonym, localeTags, LOCALE_COOKIE, localizePath, t, type Locale } from '../i18n'
+import { rankLocales, suggestLocale } from '../i18n/match'
+import { mountLanguageNote, type LanguageNoteConfig } from '../scripts/language-note'
+
+interface Props {
+  /** Language of the page chrome. */
+  locale: Locale
+  /** Site path without the locale segment, e.g. `/blog/refuge/`. */
+  path: string
+  /** Language the main content was written in. */
+  sourceLocale: Locale
+  /** Languages the page's main content really exists in. */
+  available: Locale[]
+  /** Set when the translation predates the original. */
+  outdated?: boolean
+  /** `runhead` above an article title; `inline` under a page lede. */
+  placement?: 'runhead' | 'inline'
+  class?: string
+}
+
+const { locale, path, sourceLocale, available, outdated = false, placement = 'runhead', class: className } = Astro.props
+const isFallback = !available.includes(locale)
+const isTranslation = available.includes(locale) && sourceLocale !== locale
+// The page is in its original language, but other versions exist. The note is
+// rendered hidden and revealed only when the reader prefers another version.
+const isMultilingualOriginal = placement === 'runhead' && available.includes(locale) && sourceLocale === locale && available.length > 1
+const show = isFallback || isTranslation || isMultilingualOriginal
+const i18n = t(locale)
+
+const links = Object.fromEntries(
+  available
+    .filter((tag) => tag !== locale)
+    .map((tag) => {
+      const name = endonym(tag)
+      return [tag, { href: localizePath(path, tag), name, label: i18n.readIn(name) }]
+    }),
+) as Record<string, { href: string; name: string; label: string }>
+
+const target = (sourceLocale !== locale && links[sourceLocale] ? sourceLocale : (Object.keys(links)[0] as Locale | undefined)) ?? undefined
+const targetInfo = target ? links[target] : undefined
+const provenance = isTranslation ? i18n.translatedFrom(endonym(sourceLocale)) : i18n.original
+
+const config: LanguageNoteConfig | undefined =
+  target && targetInfo
+    ? { current: locale, available, supported: localeTags, cookie: LOCALE_COOKIE, links }
+    : undefined
+
+// The matching logic is the tested TypeScript in src/i18n/match.ts, serialized so
+// the preferred target is in the link before first paint.
+const code = config
+  ? `(() => {
+${rankLocales}
+${suggestLocale}
+(${mountLanguageNote})(${JSON.stringify(config).replace(/</g, '\\u003c')}, suggestLocale)
+})()`
+  : ''
+---
+
+{
+  show && target && targetInfo && (
+    <>
+      <NoteLine placement={placement} lang={locale} class={className} hidden={isMultilingualOriginal}>
+        <span slot="origin">
+          {provenance}
+          {isTranslation && outdated && (
+            <>
+              {' · '}
+              <span class="text-warning">{i18n.originalUpdated}</span>
+            </>
+          )}
+        </span>
+        <a
+          slot="target"
+          href={targetInfo.href}
+          hreflang={target}
+          data-locale={target}
+          data-language-target
+          aria-label={targetInfo.label}
+        >
+          <span class="font-prose" lang={target} data-language-name>
+            {targetInfo.name}
+          </span>
+          <span aria-hidden="true" class="ml-1">→</span>
+        </a>
+      </NoteLine>
+      <script is:inline set:html={code} />
+    </>
+  )
+}

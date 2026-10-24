@@ -26,6 +26,7 @@ const styles = pageHeader()
   {eyebrow && <p class={styles.eyebrow()}>{eyebrow}</p>}
   <h1 class={styles.title()}>{title}</h1>
   {lede && <p class={styles.lede()}>{lede}</p>}
+  <slot name="note" />
   <slot name="meta" />
   <slot />
 </header>

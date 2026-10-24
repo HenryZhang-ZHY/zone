@@ -1,6 +1,6 @@
 /*
  * Language matching shared by the Worker and the in-page language suggestion.
- * Both functions are serialized into an inline script (see LanguageSuggestion.astro),
+ * Both functions are serialized into an inline script (see LanguageNote.astro),
  * so each must be self-contained: no imports, no references outside its own body.
  */
 

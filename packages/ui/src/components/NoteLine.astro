@@ -1,0 +1,48 @@
+---
+import { tv } from '../recipes/tv'
+import { cn } from '../recipes/cn'
+
+interface Props {
+  /** `runhead`: above an article title. `inline`: under a page lede. */
+  placement?: 'runhead' | 'inline'
+  /** Language of the note's own words; the target keeps its own lang. */
+  lang?: string
+  /** Hidden until the inline script finds a target the reader prefers. */
+  hidden?: boolean
+  class?: string
+}
+
+const note = tv({
+  slots: {
+    root: [
+      'flex flex-wrap items-baseline font-ui text-ink-tertiary',
+      '[&_a]:text-accent [&_a]:underline [&_a]:decoration-accent/40 [&_a]:underline-offset-[0.25em]',
+      '[&_a:hover]:decoration-current [&_a]:whitespace-nowrap',
+    ],
+    origin: 'inline-flex flex-wrap items-baseline gap-x-2',
+    dot: 'text-ink-quiet',
+  },
+  variants: {
+    placement: {
+      runhead: {
+        root: 'mb-5 justify-between gap-x-4 gap-y-1 border-b border-line pb-3 text-label-12 [&_a]:text-label-13',
+        origin: 'text-label-11 uppercase',
+      },
+      inline: {
+        root: 'mt-5 gap-x-2 gap-y-1 text-label-12 [&_a]:text-label-12',
+        origin: 'text-label-12',
+      },
+    },
+  },
+  defaultVariants: { placement: 'runhead' },
+})
+
+const { placement = 'runhead', lang, hidden = false, class: className } = Astro.props
+const styles = note({ placement })
+---
+
+<p class={cn(styles.root(), className)} lang={lang} hidden={hidden}>
+  <span class={styles.origin()}><slot name="origin" /></span>
+  {placement === 'inline' && <span class={styles.dot()} aria-hidden="true">·</span>}
+  <slot name="target" />
+</p>

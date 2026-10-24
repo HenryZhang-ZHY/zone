@@ -20,8 +20,12 @@ describe('t', () => {
 		expect(languageName('en', 'ja')).toBe('英語')
 	})
 
-	it('builds the fallback notice from the reader and source languages', () => {
-		expect(t('en').untranslated(languageName('zh-Hans', 'en'))).toBe('This page is not available in English yet. It is shown in Simplified Chinese, the language it was written in.')
+	it('builds the language note from the source language', () => {
+		expect(t('en').original).toBe('Original')
+		expect(t('en').translatedFrom('简体中文')).toBe('Translated from 简体中文')
+		expect(t('en').readIn('简体中文')).toBe('Read in 简体中文')
+		expect(t('zh-Hans').original).toBe('原文')
+		expect(t('zh-Hans').translatedFrom('English')).toBe('译自English')
 	})
 })
 

@@ -1,6 +1,7 @@
 ---
 import type { MarkdownHeading } from 'astro'
 import FormattedDate from '../components/FormattedDate.astro'
+import LanguageNote from '../components/LanguageNote.astro'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import EdgeToc from '@zone/ui/components/EdgeToc.astro'
 import SeriesPager from '@zone/ui/components/SeriesPager.astro'
@@ -30,6 +31,10 @@ const i18n = t(locale)
 
 const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3 && h.slug !== 'footnote-label')
 const hasSections = tocHeadings.some((h) => h.depth === 2)
+const isFallback = !entry.available.includes(locale)
+const isTranslation = Boolean(entry.translation)
+const visibleNote = isFallback || isTranslation
+const showNote = visibleNote || entry.available.length > 1
 ---
 
 <BaseLayout
@@ -39,13 +44,22 @@ const hasSections = tocHeadings.some((h) => h.depth === 2)
   description={description}
   available={entry.available}
   sourceLocale={entry.sourceLocale}
-  translation={entry.translation && { outdated: entry.outdated }}
   pageLayout="article"
   editorial
 >
-  <main class="shell py-page-top pb-page-bottom">
+  <main class:list={['shell pb-page-bottom', visibleNote ? 'pt-10' : 'pt-page-top']}>
     <article class="mx-auto w-full max-w-reading">
       <header class="mb-8 border-b border-line pb-6">
+        {showNote && (
+          <LanguageNote
+            locale={locale}
+            path={`/blog/${post.id}/`}
+            sourceLocale={entry.sourceLocale}
+            available={entry.available}
+            outdated={entry.outdated}
+            placement="runhead"
+          />
+        )}
         <h1
           class="mt-0 font-prose text-heading-40 font-semibold text-ink max-sm:text-heading-32"
           lang={contentLang}

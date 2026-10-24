@@ -23,7 +23,7 @@ Every component is a **Tailwind recipe first** and an Astro wrapper second. The 
 | `GroupMark`    | Categorical group              | 6px data-color square plus an optional number or full label; color is never the only carrier |
 | `CompositionBar` | Part-to-whole data            | Flex segments with 1px gaps; pass `max` to share a baseline across rows        |
 | `Button`       | Primary, secondary, quiet      | 40px / 32px; square                                                            |
-| `Notice`       | Translation and language notes | 2px start rule; one notice per page                                            |
+| `NoteLine`     | Language provenance            | One line, no box; `runhead` above an article, `inline` under a data page's lede |
 | `SectionHead`  | Label, count, rule, action     | Optional; the reading and listening pages do not use it                        |
 | `SeriesPager`  | Previous / next essay          | Hairline top; two columns                                                      |
 | `Book`         | Cover + title                  | 2:3 cover, 1px border, no shadow                                               |
@@ -88,6 +88,7 @@ Categorical data has two components; everything else is a table or a row.
 ## What not to do
 
 - No component-level page widths, gutters or `max-width` formulas.
+- No boxed language notice. Language provenance is one line: `NoteLine` with `runhead` on an article, `inline` on a data page, and no note on an index of mixed-language entries.
 - No hex values, raw px outside the scale, or inline durations.
 - No `z-index` beyond the existing layers: edge index 40, demo controls 50, docs header 30.
 - No business copy in `packages/ui`. The words belong to the site.

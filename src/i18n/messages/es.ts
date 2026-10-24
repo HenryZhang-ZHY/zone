@@ -41,13 +41,8 @@ export default {
 	footnotes: 'Notas',
 	footnoteBack: (ref: string) => `Volver a la referencia ${ref}`,
 
-	untranslated: (source: string) => `Esta página aún no está disponible en español. Se muestra en ${source}, el idioma en que se escribió.`,
-	translatedFrom: (source: string) => `Traducción. Idioma original: ${source}.`,
-	readOriginal: 'Leer el original',
-	outdatedTranslation: 'El original ha cambiado desde que se hizo esta traducción.',
-	alsoAvailableIn: 'También disponible en:',
-
-	suggestLanguage: 'Esta página también está disponible en español.',
-	switchLanguage: 'Leer en español',
-	dismiss: 'Cerrar',
+	original: 'Original',
+	translatedFrom: (source: string) => `Traducción: ${source}`,
+	originalUpdated: 'Original actualizado',
+	readIn: (language: string) => `Leer en ${language}`,
 } satisfies Messages

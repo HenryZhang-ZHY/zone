@@ -1,6 +1,7 @@
 ---
 import { type CollectionEntry, getCollection } from 'astro:content'
 import BaseLayout from '../../../layouts/BaseLayout.astro'
+import LanguageNote from '../../../components/LanguageNote.astro'
 import Entry from '@zone/ui/components/Entry.astro'
 import PageHeader from '@zone/ui/components/PageHeader.astro'
 import { formatDate, localeTags, segmentOf, t, type Locale } from '../../../i18n'
@@ -28,7 +29,16 @@ const available = localeTags.filter((tag) => tag === series.data.lang || series.
   <main class="shell py-page-top pb-page-bottom">
     <div class="mx-auto max-w-reading">
       <div lang={lang}>
-        <PageHeader title={title} lede={description} class="mb-10" />
+        <PageHeader title={title} lede={description} class="mb-10">
+          <LanguageNote
+            slot="note"
+            placement="inline"
+            locale={locale}
+            path={`/series/${series.id}/`}
+            sourceLocale={series.data.lang}
+            available={available}
+          />
+        </PageHeader>
       </div>
       <ol class="m-0 list-none p-0">
         {entries.map((entry) => (

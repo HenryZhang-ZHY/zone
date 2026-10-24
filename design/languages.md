@@ -8,6 +8,23 @@ One compact control in the header. It names languages in their own words — Eng
 
 Each link carries `hreflang` and `lang`. The document carries its own `lang`. The URLs are localized (`/ja/blog/…`, `/zh-hans/blog/…`); the root negotiates `Accept-Language`, remembers an explicit choice, and exposes `hreflang` alternates. The footer keeps the full language index for readers and crawlers; the header is the quick switch.
 
+## The language note
+
+When the chrome and the text disagree, the reader is told once, in one line:
+
+```
+Original · 简体中文 →
+Translated from English · 简体中文 →
+```
+
+The provenance is in the chrome language; the target is an endonym. The line never explains what the reader can already see, never carries a second paragraph, and never has a second link to the same page.
+
+- **Articles** use it as a running head above the title: provenance left, target right, one hairline. The article's top padding is 40 when the note is present, 72 when it is not.
+- **Data and tool pages** use it inline under the lede, aligned to the page's own measure. A full-width page has no reading margin for a running head.
+- **Index pages** (Writing, Reading, Listening, Books) have no page-level note. Their entries carry their own `lang`; the page itself has no single content language. The header language menu is the switch.
+
+The note renders for a fallback or a translation. On a same-language article with other versions, it is rendered hidden and revealed only when the reader prefers another version. A reader already in the right language sees no note. Index pages get no page-level note. There is no dismiss: it is metadata, not a banner. Clicking the target sets the language cookie, so the next page opens in that language.
+
 ## The scripts
 
 | Script            | Face                                | Size / leading | Measure |

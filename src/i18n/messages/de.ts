@@ -41,13 +41,8 @@ export default {
 	footnotes: 'Fußnoten',
 	footnoteBack: (ref: string) => `Zurück zu Verweis ${ref}`,
 
-	untranslated: (source: string) => `Diese Seite gibt es noch nicht auf Deutsch. Sie wird in ihrer Originalsprache angezeigt: ${source}.`,
-	translatedFrom: (source: string) => `Übersetzung. Originalsprache: ${source}.`,
-	readOriginal: 'Original lesen',
-	outdatedTranslation: 'Das Original wurde seit dieser Übersetzung geändert.',
-	alsoAvailableIn: 'Auch verfügbar auf:',
-
-	suggestLanguage: 'Diese Seite gibt es auch auf Deutsch.',
-	switchLanguage: 'Auf Deutsch lesen',
-	dismiss: 'Schließen',
+	original: 'Original',
+	translatedFrom: (source: string) => `Übersetzung: ${source}`,
+	originalUpdated: 'Original aktualisiert',
+	readIn: (language: string) => `In ${language} lesen`,
 } satisfies Messages

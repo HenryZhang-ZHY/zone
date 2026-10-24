@@ -1,8 +1,6 @@
 ---
 import BaseHead from '../components/BaseHead.astro'
 import LanguageIndex from '../components/LanguageIndex.astro'
-import LanguageSuggestion from '../components/LanguageSuggestion.astro'
-import TranslationNotice from '../components/TranslationNotice.astro'
 import SiteFooter from '@zone/ui/components/SiteFooter.astro'
 import SiteHeader from '@zone/ui/components/SiteHeader.astro'
 import LanguageMenu from '@zone/ui/components/LanguageMenu.astro'
@@ -24,8 +22,6 @@ interface Props {
   sourceLocale?: Locale
   /** hreflang x-default: a locale's version of this page, or another URL such as `/`. */
   xDefault?: Locale | string
-  /** Set when the main content is a translation, to credit the original. */
-  translation?: { outdated: boolean }
   /** Retained for page compatibility; the migrated layout uses the design system's measures. */
   pageLayout?: 'narrow' | 'medium' | 'wide' | 'article'
   editorial?: boolean
@@ -40,7 +36,6 @@ const {
   available = localeTags,
   sourceLocale = 'en',
   xDefault = sourceLocale,
-  translation,
 } = Astro.props
 
 const isFallback = !available.includes(locale)
@@ -97,18 +92,6 @@ const copyright = `© ${new Date().getFullYear()} ${SITE_TITLE}. ${i18n.copyrigh
     <SiteHeader current={current} items={nav} home={href('/')}>
       <LanguageMenu current={locale} items={languageItems} label={i18n.language} class="max-sm:ml-auto" />
     </SiteHeader>
-
-    {isFallback || translation ? (
-      <TranslationNotice
-        locale={locale}
-        path={path}
-        sourceLocale={sourceLocale}
-        available={available}
-        outdated={translation?.outdated ?? false}
-      />
-    ) : (
-      <LanguageSuggestion locale={locale} path={path} available={available} mode="banner" />
-    )}
 
     <div id="main">
       <slot />

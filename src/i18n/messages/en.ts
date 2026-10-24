@@ -40,16 +40,10 @@ const en = {
 	footnotes: 'Footnotes',
 	footnoteBack: (ref: string) => `Back to reference ${ref}`,
 
-	untranslated: (source: string) => `This page is not available in English yet. It is shown in ${source}, the language it was written in.`,
-	translatedFrom: (source: string) => `Translated from ${source}.`,
-	readOriginal: 'Read the original',
-	outdatedTranslation: 'The original has changed since this translation was made.',
-	alsoAvailableIn: 'Also available in:',
-
-	// Shown in this language to readers who prefer it, on pages written in another.
-	suggestLanguage: 'This page is also available in English.',
-	switchLanguage: 'Read in English',
-	dismiss: 'Dismiss',
+	original: 'Original',
+	translatedFrom: (source: string) => `Translated from ${source}`,
+	originalUpdated: 'Original updated',
+	readIn: (language: string) => `Read in ${language}`,
 }
 
 export type Messages = typeof en
