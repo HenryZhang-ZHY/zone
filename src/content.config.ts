@@ -65,7 +65,7 @@ const book = defineCollection({
 	loader: file('./src/content/book.yaml'),
 	schema: ({ image }) => z.object({
 		title: z.string(),
-		ogUrl: z.string().url(),
+		ogUrl: z.url(),
 		ogImage: image(),
 	}),
 });
@@ -74,7 +74,7 @@ const readingList = defineCollection({
 	loader: file('./src/content/reading-list.yaml'),
 	schema: z.object({
 		title: z.string(),
-		ogUrl: z.string().url(),
+		ogUrl: z.url(),
 		dateRead: z.coerce.date(),
 	}),
 });
@@ -83,9 +83,9 @@ const podcast = defineCollection({
 	loader: file('./src/content/podcast.yaml'),
 	schema: z.object({
 		ogTitle: z.string(),
-		ogUrl: z.string().url(),
-		ogImage: z.string().url(),
-		ogAudio: z.string().url(),
+		ogUrl: z.url(),
+		ogImage: z.url(),
+		ogAudio: z.url(),
 	}),
 });
 
@@ -95,7 +95,7 @@ const dsibs = defineCollection({
 	loader: file('./src/content/d-sibs.yaml'),
 	schema: z.object({
 		year: z.number().int(),
-		link: z.string().url(),
+		link: z.url(),
 		groups: z.array(z.object({
 			level: z.number().int().min(1).max(5),
 			banks: z.array(z.object({

@@ -19,7 +19,8 @@ export function mountLanguageNote(config: LanguageNoteConfig, suggest: (input: S
 	if (!script) return
 
 	const note = script.previousElementSibling
-	const link = note?.querySelector<HTMLAnchorElement>('[data-language-target]')
+	if (!note) return
+	const link = note.querySelector<HTMLAnchorElement>('[data-language-target]')
 	if (!link) return
 
 	const saved = document.cookie

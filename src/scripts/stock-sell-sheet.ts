@@ -209,7 +209,7 @@ function initSellSheet(): void {
     const firstColumn = sheet.columns[0]
     const lastColumn = sheet.columns.at(-1)!
 
-    if (sheet.columns.length === 1 || first === null || last === null) {
+    if (sheet.columns.length === 1 || first === null || last === null || last === undefined) {
       return `${row.yieldPercent}% 目标下，卖出 ${formatShares(firstColumn.sellShares)} 股需 ${formatPrice(first ?? last ?? 0)} 元。`
     }
 
