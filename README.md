@@ -50,6 +50,17 @@ mise run fmt
 
 `fmt:check` checks formatting without modifying files. `fmt` writes formatting changes to Markdown and MDX files only; neither task formats Astro components.
 
+## Deploying
+
+The site runs as Cloudflare Workers static assets. `wrangler` is pinned in `devDependencies`, and [wrangler.jsonc](wrangler.jsonc) holds the Worker name, the `dist` assets directory, the root-URL Worker and the `shuzhi.zone` custom domain:
+
+```sh
+bun run build
+bunx wrangler deploy
+```
+
+Cloudflare's successor to Wrangler is `cf`, which replaces `wrangler.jsonc` with a TypeScript `cloudflare.config.ts` (`cf migrate`). As of October 2026 it is in beta and cannot stream logs or set a single secret yet, so the project stays on Wrangler.
+
 ## Design system
 
 - Start at [design/README.md](design/README.md).

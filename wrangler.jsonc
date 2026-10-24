@@ -1,6 +1,6 @@
 {
   "name": "zone",
-  "compatibility_date": "2025-08-23",
+  "compatibility_date": "2026-10-23",
   // Negotiates the language for the root URL only; every other request is a static asset.
   "main": "./src/worker/index.ts",
   "assets": {

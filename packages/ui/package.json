@@ -11,7 +11,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@fontsource-variable/newsreader": "^5.2.8",
+    "@fontsource-variable/newsreader": "^5.3.0",
     "@fontsource/ibm-plex-mono": "^5.3.0",
     "@zone/tokens": "workspace:*",
     "tailwind-merge": "^3.7.0",
