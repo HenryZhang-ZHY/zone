@@ -5,12 +5,13 @@ import { SITE_TITLE } from '../../../consts'
 import Book from '@zone/ui/components/Book.astro'
 import RunningHead from '@zone/ui/components/RunningHead.astro'
 import { localeStaticPaths, t, type Locale } from '../../../i18n'
+import { sortByOrder } from '../../../lib/order'
 
 export const getStaticPaths = localeStaticPaths
 
 const { locale } = Astro.props as { locale: Locale }
 const i18n = t(locale)
-const books = await getCollection('book')
+const books = sortByOrder(await getCollection('book'))
 ---
 
 <BaseLayout

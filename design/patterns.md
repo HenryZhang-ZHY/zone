@@ -80,6 +80,7 @@ E96          用3张表的思路看待家庭财务：管钱，易如反掌！
 
 - A book cover is an object; an episode is a row. Books keep their own page because the object is the point.
 - A running head, then the books. No subtitle and no "Books" section label; the covers explain themselves. A visually hidden `h2` keeps the semantics.
+- The order is the order of the array in `book.yaml`: importance, not date, not title. Astro keys a `file()` collection by id and sorts it, so the loader stamps each entry with its array index and the page sorts by it. The same holds for the listening list: its order is the order of `podcast.yaml`.
 - Covers keep a 2:3 ratio, a 1px border and no shadow. Titles are serif, 14px; there are no stars, counts or completion metrics.
 - Grid: `auto-fill` at 8.5rem minimum with a 20px column gap — seven columns in the 1136px shell, three at 390px.
 

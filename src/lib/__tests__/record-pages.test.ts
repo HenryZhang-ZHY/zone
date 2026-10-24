@@ -61,3 +61,19 @@ describe('page top depends on what the page opens with', () => {
 		expect(article).toContain('pt-article-top')
 	})
 })
+
+describe('the YAML array order survives Astro', () => {
+	it('stamps the array index on ordered data files', () => {
+		const config = read('src', 'content.config.ts')
+		expect(config).toContain('orderedFile')
+		expect(config).toContain('order: z.number().int()')
+	})
+
+	it('sorts the shelf by the order the file was written in', () => {
+		expect(read('src', 'pages', '[locale]', 'reading/books.astro')).toContain('sortByOrder')
+	})
+
+	it('sorts the listening list the same way', () => {
+		expect(read('src', 'pages', '[locale]', 'listening.astro')).toContain('sortByOrder')
+	})
+})

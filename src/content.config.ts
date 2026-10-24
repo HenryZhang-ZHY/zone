@@ -1,9 +1,21 @@
 import { glob, file } from 'astro/loaders';
+import { parse } from 'yaml';
 import { defineCollection, reference, z } from 'astro:content';
 import { localeTags, type Locale } from './i18n/locales';
 import { translationKey } from './lib/localized';
 
 const lang = z.enum(localeTags as [Locale, ...Locale[]]);
+
+/**
+ * A YAML array is ordered on purpose — the shelf runs by importance, not by date — but
+ * Astro keys a `file()` collection by id and sorts it, which throws that order away.
+ * Stamp each entry with its index so the page can put the array back in order.
+ */
+const orderedFile = (fileName: string) =>
+	file(fileName, {
+		parser: (text: string) =>
+			(parse(text) as Record<string, unknown>[]).map((item, order) => ({ ...item, order })),
+	});
 
 const localizedText = z.object({
 	title: z.string(),
@@ -62,8 +74,9 @@ const translations = defineCollection({
 });
 
 const book = defineCollection({
-	loader: file('./src/content/book.yaml'),
+	loader: orderedFile('./src/content/book.yaml'),
 	schema: ({ image }) => z.object({
+		order: z.number().int(),
 		title: z.string(),
 		ogUrl: z.url(),
 		ogImage: image(),
@@ -80,8 +93,9 @@ const readingList = defineCollection({
 });
 
 const podcast = defineCollection({
-	loader: file('./src/content/podcast.yaml'),
+	loader: orderedFile('./src/content/podcast.yaml'),
 	schema: z.object({
+		order: z.number().int(),
 		ogTitle: z.string(),
 		ogUrl: z.url(),
 		ogImage: z.url(),

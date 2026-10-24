@@ -6,12 +6,13 @@ import RunningHead from '@zone/ui/components/RunningHead.astro'
 import RecordRow from '@zone/ui/components/RecordRow.astro'
 import { localeStaticPaths, t, type Locale } from '../../i18n'
 import { linkHost, sourceLabel, splitEpisodeCode } from '../../lib/records'
+import { sortByOrder } from '../../lib/order'
 
 export const getStaticPaths = localeStaticPaths
 
 const { locale } = Astro.props as { locale: Locale }
 const i18n = t(locale)
-const episodes = await getCollection('podcast')
+const episodes = sortByOrder(await getCollection('podcast'))
 ---
 
 <BaseLayout
