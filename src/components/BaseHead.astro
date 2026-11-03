@@ -26,18 +26,11 @@ const ogAlternates = alternates.flatMap(({ hreflang }) => (hreflang === 'x-defau
 const imageURL = new URL(image, Astro.site ?? Astro.url)
 
 /**
- * Analytics reports from the deployed site only.
- *
- * The build-time half is `import.meta.env.PROD`, so `astro dev` never renders the
- * tags at all. The runtime half compares `location.hostname` to the site's own host
- * from `astro.config.mjs` (`import.meta.env.SITE`, the same value the canonical and
- * hreflang URLs are built from): `astro preview` and `wrangler dev` serve the
- * production build byte for byte at localhost, and no build-time flag can tell that
- * serving apart from the deployed one.
+ * Analytics belongs to a production build. `astro dev` builds in development mode, so
+ * `import.meta.env.PROD` keeps both tags out of the page while developing. `astro
+ * preview` and `wrangler dev` serve the production build itself and do report.
  */
-const siteUrl = import.meta.env.SITE
-const analyticsHost = siteUrl ? new URL(siteUrl).hostname : undefined
-const showAnalytics = enableAnalytics && import.meta.env.PROD && Boolean(analyticsHost)
+const analytics = enableAnalytics && import.meta.env.PROD
 ---
 
 <!-- Global Metadata -->
@@ -81,23 +74,16 @@ const showAnalytics = enableAnalytics && import.meta.env.PROD && Boolean(analyti
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={imageURL} />
 
-{/* Analytics: Umami for traffic, Clarity for session recordings. Absent from a dev
-    build, and from a production build served on any host but the site's own. */}
-{showAnalytics && (
-	<script is:inline define:vars={{ host: analyticsHost }}>
-		if (location.hostname === host) {
-			const umami = document.createElement('script');
-			umami.defer = true;
-			umami.src = 'https://umami.shuzhi.zone/script.js';
-			umami.dataset.websiteId = 'b3d2c549-74d8-46b1-b28f-26d50f2d1f1a';
-			umami.dataset.domains = host;
-			document.head.append(umami);
+<!-- Umami Analytics -->
+{analytics && <script defer src="https://umami.shuzhi.zone/script.js" data-website-id="b3d2c549-74d8-46b1-b28f-26d50f2d1f1a" />}
 
-			(function(c,l,a,r,i,t,y){
-				c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-				t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";
-				y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-			})(window, document, "clarity", "script", "yejo0hhmrs");
-		}
+<!-- Microsoft Clarity -->
+{analytics && (
+	<script is:inline>
+		(function(c,l,a,r,i,t,y){
+			c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+			t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";
+			y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+		})(window, document, "clarity", "script", "yejo0hhmrs");
 	</script>
 )}
