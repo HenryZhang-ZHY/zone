@@ -29,12 +29,12 @@
   ogImage: "../assets/books/s34982685.jpg"
 
 - id: "9787564234720"
-  title: "估值逻辑: 中国的繁荣"
+  title: "估值逻辑：中国的繁荣"
   ogUrl: "https://book.douban.com/subject/35102072/"
   ogImage: "../assets/books/s33669371.jpg"
 
 - id: "9787570509652"
-  title: "估值逻辑: 投资思维的边界"
+  title: "估值逻辑：投资思维的边界"
   ogUrl: "https://book.douban.com/subject/33418595/"
   ogImage: "../assets/books/s32327556.jpg"
 
@@ -99,7 +99,7 @@
   ogImage: "../assets/books/s4103991.jpg"
 
 - id: "9787115508645"
-  title: "重构: 改善既有代码的设计"
+  title: "重构：改善既有代码的设计"
   ogUrl: "https://book.douban.com/subject/30468597/"
   ogImage: "../assets/books/s30014452.jpg"
 
@@ -124,6 +124,6 @@
   ogImage: "../assets/books/s27715507.jpg"
 
 - id: "9780521559287"
-  title: "Essential Grammer in Use"
+  title: "Essential Grammar in Use"
   ogUrl: "https://book.douban.com/subject/1341033/"
   ogImage: "../assets/books/s1376550.jpg"

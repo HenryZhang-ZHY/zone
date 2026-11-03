@@ -89,7 +89,8 @@ Reading, listening and the shelf are appendices to the writing, not sections of 
 - A running head, then the books. No subtitle and no "Books" section label; the covers explain themselves. A visually hidden `h2` keeps the semantics.
 - The order is the order of the array in `book.yaml`: importance, not date, not title. Astro keys a `file()` collection by id and sorts it, so the loader stamps each entry with its array index and the page sorts by it. The same holds for the listening list: its order is the order of `podcast.yaml`.
 - Covers keep a 2:3 ratio, a 1px border and no shadow. Titles are serif, 14px; there are no stars, counts or completion metrics.
-- Grid: `auto-fill` at 8.5rem minimum with a 20px column gap — seven columns in the 1136px shell, three at 390px.
+- A title reserves two lines under its cover. One title that wraps would otherwise make its whole row a line taller, and the shelf's rows would stop marching at one interval. `text-wrap: balance` spreads a wrapped title rather than leaving a last line of two glyphs, which is what a shelf of Chinese titles otherwise produces.
+- Grid: `auto-fill` at 8.5rem minimum with a 20px column gap — seven columns in the 1136px shell, three at 390px. The track stays narrow on purpose: the source covers are 270px wide, and a wider track only magnifies them.
 
 ## The data report
 
@@ -148,7 +149,7 @@ Specimens are framed by a 1px border and a small label bar. A specimen is the ar
 
 | Range        | Behavior                                                                                                 |
 | ------------ | -------------------------------------------------------------------------------------------------------- |
-| `< 600px`    | 16px gutter; archive rows lose the arrow; the shelf grid is two columns; header nav moves to its own row |
+| `< 600px`    | 16px gutter; archive rows lose the arrow; the shelf grid is three columns; header nav gets its own row |
 | `600–899px`  | 24px gutter; nav single row; the article still one column                                                |
 | `900–1179px` | Full navigation; docs sidebar; no edge index                                                             |
 | `≥ 1180px`   | Edge index appears; the article keeps its 78ch measure                                                   |

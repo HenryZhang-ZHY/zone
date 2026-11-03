@@ -27,7 +27,7 @@ Every component is a **Tailwind recipe first** and an Astro wrapper second. The 
 | `NoteLine`     | Language provenance            | One line, no box; `runhead` above an article, `inline` under a data page's lede |
 | `SectionHead`  | Label, count, rule, action     | Optional; the reading and listening pages do not use it                        |
 | `SeriesPager`  | Previous / next essay          | Hairline top; two columns                                                      |
-| `Book`         | Cover + title                  | 2:3 cover, 1px border, no shadow                                               |
+| `Book`         | Cover + title                  | 2:3 cover, 1px border, no shadow; the title reserves two lines                 |
 | `RecordRow`    | Reading row                    | Date lead, serif title, the domain it points at, external arrow               |
 | `EpisodeRow`   | Listening row                  | 56px channel cover, `channel · platform ↗`, the title, then the lines kept from it, each ending with the time when it has one |
 | `Callout`      | Note inside prose              | 2px start rule; label optional                                                 |

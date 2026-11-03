@@ -16,7 +16,9 @@ const book = tv({
     root: 'group flex min-w-0 flex-col font-ui',
     cover: 'block aspect-[2/3] overflow-hidden border border-line bg-surface transition-colors duration-1 ease-out group-hover:border-line-strong',
     image: 'h-full w-full object-cover',
-    title: 'mt-3 block font-prose text-copy-14 font-medium leading-[1.45] text-ink [overflow-wrap:anywhere] group-hover:text-accent group-hover:underline group-hover:underline-offset-[0.18em]',
+    // Two lines are reserved so one wrapped title cannot raise its whole row;
+    // `balance` keeps a wrapped title from leaving two glyphs alone on a line.
+    title: 'mt-3 block min-h-[2lh] font-prose text-copy-14 font-medium leading-[1.45] text-balance text-ink [overflow-wrap:anywhere] transition-colors duration-1 ease-out group-hover:text-accent group-hover:underline group-hover:underline-offset-[0.18em]',
     meta: 'mt-1 block text-label-11 text-ink-tertiary',
   },
 })
