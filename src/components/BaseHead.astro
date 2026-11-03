@@ -26,12 +26,18 @@ const ogAlternates = alternates.flatMap(({ hreflang }) => (hreflang === 'x-defau
 const imageURL = new URL(image, Astro.site ?? Astro.url)
 
 /**
- * Where analytics may report. The deploy and a laptop run the same build command, so
- * the tags decide at runtime instead of at build: `astro dev`, `astro preview`,
- * `wrangler dev` and a LAN address all render this page, and a visit from any of them
- * would land in the readers' numbers.
+ * Analytics reports from the deployed site only.
+ *
+ * The build-time half is `import.meta.env.PROD`, so `astro dev` never renders the
+ * tags at all. The runtime half compares `location.hostname` to the site's own host
+ * from `astro.config.mjs` (`import.meta.env.SITE`, the same value the canonical and
+ * hreflang URLs are built from): `astro preview` and `wrangler dev` serve the
+ * production build byte for byte at localhost, and no build-time flag can tell that
+ * serving apart from the deployed one.
  */
-const ANALYTICS_HOSTS = ['shuzhi.zone']
+const siteUrl = import.meta.env.SITE
+const analyticsHost = siteUrl ? new URL(siteUrl).hostname : undefined
+const showAnalytics = enableAnalytics && import.meta.env.PROD && Boolean(analyticsHost)
 ---
 
 <!-- Global Metadata -->
@@ -75,17 +81,16 @@ const ANALYTICS_HOSTS = ['shuzhi.zone']
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={imageURL} />
 
-<!-- Analytics: Umami for traffic, Clarity for session recordings. Neither is in the
-     markup until the page is on the deployed host, so nothing is collected — and no
-     third-party request is made — from a development or preview build. -->
-{enableAnalytics && (
-	<script is:inline define:vars={{ hosts: ANALYTICS_HOSTS }}>
-		if (hosts.includes(location.hostname)) {
+{/* Analytics: Umami for traffic, Clarity for session recordings. Absent from a dev
+    build, and from a production build served on any host but the site's own. */}
+{showAnalytics && (
+	<script is:inline define:vars={{ host: analyticsHost }}>
+		if (location.hostname === host) {
 			const umami = document.createElement('script');
 			umami.defer = true;
 			umami.src = 'https://umami.shuzhi.zone/script.js';
 			umami.dataset.websiteId = 'b3d2c549-74d8-46b1-b28f-26d50f2d1f1a';
-			umami.dataset.domains = hosts.join(',');
+			umami.dataset.domains = host;
 			document.head.append(umami);
 
 			(function(c,l,a,r,i,t,y){
