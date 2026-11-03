@@ -37,7 +37,10 @@ const episodeRow = tv({
 		// to read and to select, not part of what the link points at.
 		notes: 'mt-3 flex flex-col gap-3 pl-[4.75rem] max-sm:pl-[4.5rem]',
 		note: 'm-0 block font-prose text-copy-16 text-ink-secondary',
-		noteAt: 'ml-2.5 whitespace-nowrap font-ui text-label-11 tracking-[0.09em] text-ink-quiet tabular-nums',
+		// The time is information, not apparatus: it is the only mark that separates a
+		// quotation from the site's own voice, so it holds the lowest informational tone
+		// at 11px. `ink-quiet` is 3.1:1 and reserved for rules and decoration.
+		noteAt: 'ml-2.5 whitespace-nowrap font-ui text-label-11 tracking-[0.09em] text-ink-tertiary tabular-nums',
 	},
 })
 
