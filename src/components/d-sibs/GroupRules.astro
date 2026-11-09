@@ -1,0 +1,104 @@
+---
+import {
+  type BankType,
+  type YearStats,
+  formatRate,
+  groupCapitalAddon,
+  groupKeys,
+  groupLabels,
+  groupLeverageAddon,
+  groupScoreBands,
+} from '../../lib/d-sibs'
+import GroupMark from '@zone/ui/components/GroupMark.astro'
+
+interface Props {
+  /** The latest release: its group counts are the last column of the table. */
+  stats: YearStats
+}
+
+const { stats } = Astro.props
+const groups = [...groupKeys]
+const countByGroup = (group: number) => stats.groups[group].length
+const emptyGroups = groups.filter((group) => countByGroup(group) === 0)
+const banks = groups.flatMap((group) => stats.groups[group])
+const countByType = (type: BankType) => banks.filter((bank) => bank.type === type).length
+---
+
+<div
+  class="overflow-x-auto border-y border-line-strong focus-visible:focus-ring"
+  role="region"
+  aria-label="第一组到第五组的得分区间、附加资本要求与本年度入选数量，可横向滚动"
+  tabindex="0"
+>
+  <table class="w-full min-w-[38rem] border-collapse text-left">
+    <caption class="sr-only">
+      {stats.year} 年度：系统重要性银行的五个组别、系统重要性得分区间、附加资本要求、附加杠杆率，以及每组入选的银行数量
+    </caption>
+    <thead>
+      <tr class="border-b border-line-strong bg-canvas font-ui text-label-11 text-ink-tertiary">
+        <th scope="col" class="px-3 py-2.5 text-left font-medium">组别</th>
+        <th scope="col" class="whitespace-nowrap px-3 py-2.5 text-left font-medium">系统重要性得分</th>
+        <th scope="col" class="whitespace-nowrap px-3 py-2.5 text-left font-medium">附加资本要求</th>
+        <th scope="col" class="whitespace-nowrap px-3 py-2.5 text-left font-medium">附加杠杆率</th>
+        <th scope="col" class="whitespace-nowrap px-3 py-2.5 text-right font-medium">{stats.year} 年度</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        groups.map((group) => (
+          <tr class="border-b border-line last:border-b-0">
+            <th scope="row" class="px-3 py-3 text-left font-normal">
+              <GroupMark group={group} label={groupLabels[group]} srLabel={groupLabels[group]} />
+            </th>
+            <td class="whitespace-nowrap px-3 py-3 font-ui text-label-12 tabular-nums text-ink-secondary">
+              {groupScoreBands[group]}
+            </td>
+            <td class="whitespace-nowrap px-3 py-3 font-ui text-label-12 tabular-nums text-ink">
+              {formatRate(groupCapitalAddon[group])}
+            </td>
+            <td class="whitespace-nowrap px-3 py-3 font-ui text-label-12 tabular-nums text-ink-secondary">
+              {formatRate(groupLeverageAddon[group])}
+            </td>
+            <td class="whitespace-nowrap px-3 py-3 text-right font-ui text-label-12 tabular-nums">
+              {countByGroup(group) > 0 ? (
+                <span class="text-ink">
+                  {countByGroup(group)}<span class="ml-1 text-ink-tertiary">家</span>
+                </span>
+              ) : (
+                <span class="text-ink-quiet">暂无</span>
+              )}
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+
+<div class="mt-8 grid gap-x-12 gap-y-6 lg:grid-cols-[minmax(0,40rem)_minmax(0,1fr)]">
+  <div>
+    <p class="font-prose text-copy-16 leading-[1.8] text-ink-secondary">
+      组别是系统重要性得分的区间：按《系统重要性银行评估办法》，得分达到 100 分的国内系统重要性银行（D-SIBs）进入名单，再按得分从低到高归入第一组到第五组。组别越高，银行对金融体系的潜在影响越大，附加监管要求也越重。
+    </p>
+    <p class="mt-3 font-prose text-copy-16 leading-[1.8] text-ink-secondary">
+      附加资本要求由核心一级资本满足，第一组到第五组分别适用 0.25%、0.5%、0.75%、1% 和 1.5%，同时还要满足额度为其一半的附加杠杆率要求。{stats.year} 年度名单 {stats.total} 家中，国有商业银行 {countByType('国有商业银行')} 家、股份制商业银行 {countByType('股份制商业银行')} 家、城市商业银行 {countByType('城市商业银行')} 家{emptyGroups.length > 0 &&
+        `；${emptyGroups.map((group) => groupLabels[group]).join('、')}暂无银行进入`}。
+    </p>
+  </div>
+
+  <div class="max-w-[18.75rem] lg:mt-0.5">
+    <p class="font-ui text-label-11 text-ink-quiet">依据</p>
+    <a
+      class="mt-1.5 block font-ui text-label-11 leading-[1.7] text-accent underline decoration-accent/40 underline-offset-[0.25em] hover:decoration-current"
+      href="https://www.pbc.gov.cn/zhengwugongkai/4081330/4406346/4693545/4153508/index.html"
+      target="_blank"
+      rel="noopener noreferrer">《系统重要性银行评估办法》</a
+    >
+    <a
+      class="mt-0.5 block font-ui text-label-11 leading-[1.7] text-accent underline decoration-accent/40 underline-offset-[0.25em] hover:decoration-current"
+      href="https://www.gov.cn/zhengce/2021-09/30/content_5712703.htm"
+      target="_blank"
+      rel="noopener noreferrer">《系统重要性银行附加监管规定（试行）》</a
+    >
+  </div>
+</div>

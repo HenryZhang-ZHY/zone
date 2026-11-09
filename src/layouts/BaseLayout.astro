@@ -72,7 +72,9 @@ const copyright = `© ${new Date().getFullYear()} ${SITE_TITLE}. ${i18n.copyrigh
       image={image}
       canonicalURL={canonicalURL}
       alternates={alternates}
-    />
+    >
+      <slot name="head" slot="head" />
+    </BaseHead>
   </head>
   <body class="min-h-screen bg-canvas text-ink">
     <SiteHeader home={href('/')}>

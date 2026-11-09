@@ -7,6 +7,8 @@ export type BankEntry = {
 
 export type DsibsEntry = {
   year: number
+  /** The day the central bank published this assessment. */
+  published: Date
   link: string
   groups: {
     level: number
@@ -21,6 +23,7 @@ export type YearData = {
   4: BankEntry[]
   5: BankEntry[]
   link: string
+  published: Date
 }
 
 export type BankHistory = {
@@ -33,6 +36,7 @@ export type YearStats = {
   year: string
   total: number
   link: string
+  published: Date
   groups: Record<number, BankEntry[]>
 }
 
@@ -54,6 +58,27 @@ export const groupLabels: Record<number, string> = {
   4: '第四组',
   5: '第五组',
 }
+
+/**
+ * The score band of each group, 《系统重要性银行评估办法》(银发〔2020〕289 号) 第九项:
+ * 100 points puts a bank on the initial list, and the five groups are the bands above it.
+ */
+export const groupScoreBands: Record<number, string> = {
+  1: '100—299 分',
+  2: '300—449 分',
+  3: '450—749 分',
+  4: '750—1399 分',
+  5: '1400 分以上',
+}
+
+/** 附加资本要求 by group, 《系统重要性银行附加监管规定（试行）》第四条. */
+export const groupCapitalAddon: Record<number, number> = { 1: 0.25, 2: 0.5, 3: 0.75, 4: 1, 5: 1.5 }
+
+/** 附加杠杆率要求 is half of the capital add-on, 同规定第六条. */
+export const groupLeverageAddon: Record<number, number> = { 1: 0.125, 2: 0.25, 3: 0.375, 4: 0.5, 5: 0.75 }
+
+/** `0.25` → `0.25%`, `1` → `1%`: the rates are published with no trailing zeros. */
+export const formatRate = (rate: number) => `${rate}%`
 
 const typeOrder: Record<BankType, number> = {
   国有商业银行: 0,
@@ -96,6 +121,7 @@ function normalizeEntries(entries: DsibsEntry[]): {
           4: byLevel[4] ?? [],
           5: byLevel[5] ?? [],
           link: entry.link,
+          published: entry.published,
         } satisfies YearData,
       ]
     }),
@@ -170,7 +196,7 @@ export function buildDsibsViewModel(entries: DsibsEntry[]): {
       total += bankEntries.length
     }
 
-    return { year, total, link: yd.link, groups }
+    return { year, total, link: yd.link, published: yd.published, groups }
   })
 
   const changes: YearChange[] = []

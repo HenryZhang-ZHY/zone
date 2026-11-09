@@ -8,12 +8,13 @@ import GroupMark from '@zone/ui/components/GroupMark.astro'
 import BankHistoryTable from '../../components/d-sibs/BankHistoryTable.astro'
 import ChangesTimeline from '../../components/d-sibs/ChangesTimeline.astro'
 import DsibsSection from '../../components/d-sibs/DsibsSection.astro'
+import GroupRules from '../../components/d-sibs/GroupRules.astro'
 import SparklinePopover from '../../components/d-sibs/SparklinePopover.astro'
 import YearCompositionGrid from '../../components/d-sibs/YearCompositionGrid.astro'
 import { SITE_TITLE } from '../../consts'
 import { getCollection } from 'astro:content'
 import { buildDsibsViewModel, groupKeys, groupLabels, type YearStats } from '../../lib/d-sibs'
-import { localeStaticPaths, type Locale } from '../../i18n'
+import { localeStaticPaths, localizePath, type Locale } from '../../i18n'
 
 export const getStaticPaths = localeStaticPaths
 
@@ -36,14 +37,108 @@ const latestDelta = latest && previous ? latest.total - previous.total : null
 const latestChangeCount = latestChange
   ? latestChange.entered.length + latestChange.exited.length + latestChange.upgraded.length + latestChange.downgraded.length
   : 0
-const description = `汇总中国人民银行发布的 ${years[0]}—${years.at(-1)} 年中国系统重要性银行名单，按附加监管要求分组展示，并追踪历次发布的入选和组别变化。`
+
+const isoDate = (date: Date) => date.toISOString().slice(0, 10)
+const groupCountsText = latest
+  ? groupKeys
+      .filter((group) => latest.groups[group].length > 0)
+      .map((group) => `${groupLabels[group]} ${latest.groups[group].length} 家`)
+      .join('、')
+  : ''
+const emptyGroupNames = latest
+  ? groupKeys
+      .filter((group) => latest.groups[group].length === 0)
+      .map((group) => groupLabels[group])
+      .join('、')
+  : ''
+const emptyGroupText = emptyGroupNames ? `，${emptyGroupNames}暂无` : ''
+
+// The title and description answer what a search for the list asks: which year, how many
+// banks, and what the groups mean. The figures are read from the data, not written here.
+const pageTitle = latest
+  ? `中国系统重要性银行名单（${latest.year} 年度）：五组划分与附加资本要求 | ${SITE_TITLE}`
+  : `中国系统重要性银行名单 | ${SITE_TITLE}`
+const description = latest
+  ? `中国人民银行 ${latest.year} 年度系统重要性银行名单共 ${latest.total} 家：${groupCountsText}${emptyGroupText}。附第一至第五组 0.25%—1.5% 的附加资本要求，以及 ${years[0]} 年以来的入选与升降组记录。`
+  : `汇总中国人民银行发布的 ${years[0]}—${years.at(-1)} 年中国系统重要性银行名单，按附加监管要求分组展示，并追踪历次发布的入选和组别变化。`
 
 const sections = [
   { id: 'comparison', index: '01', title: '历年规模' },
   { id: 'history', index: '02', title: '银行明细' },
   { id: 'changes', index: '03', title: '名单变化' },
   { id: 'annual-lists', index: '04', title: '各期名单' },
+  { id: 'groups', index: '05', title: '五组划分与附加要求' },
 ]
+
+const canonical = new URL(localizePath('/d-sibs/', 'zh-Hans'), Astro.site)
+const home = new URL(localizePath('/', 'zh-Hans'), Astro.site)
+const faq = [
+  {
+    question: '什么是 D-SIBs？',
+    answer:
+      'D-SIBs 即国内系统重要性银行（Domestic Systemically Important Banks），指规模较大、与其他金融机构关联性强、在金融体系中提供难以替代的关键服务，一旦出现重大风险可能影响金融体系稳定的银行。我国由中国人民银行依据《系统重要性银行评估办法》按年度开展评估并公布名单。',
+  },
+  {
+    question: '系统重要性银行的第一组到第五组是什么意思？',
+    answer:
+      '组别是系统重要性得分的区间。得分达到 100 分的银行进入名单，再按得分从低到高归入第一组（100—299 分）、第二组（300—449 分）、第三组（450—749 分）、第四组（750—1399 分）和第五组（1400 分以上）。组别越高，附加资本要求越高，第一组到第五组分别为 0.25%、0.5%、0.75%、1% 和 1.5%。',
+  },
+  ...(latest
+    ? [
+        {
+          question: `${latest.year} 年度我国系统重要性银行有多少家？`,
+          answer: `${latest.year} 年度名单共 ${latest.total} 家：${groupCountsText}${emptyGroupText}。`,
+        },
+      ]
+    : []),
+  {
+    question: '银行进入名单后，什么时候要满足附加资本要求？',
+    answer:
+      '银行在进入名单或组别上升后，从经历一个完整自然年度后的 1 月 1 日起满足附加资本要求；退出名单或组别下降时，新的要求立即适用。附加资本要求由核心一级资本满足，附加杠杆率要求为其一半。',
+  },
+]
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebPage',
+      '@id': `${canonical.href}#webpage`,
+      url: canonical.href,
+      name: pageTitle,
+      description,
+      inLanguage: 'zh-Hans',
+      ...(latest ? { dateModified: isoDate(latest.published) } : {}),
+      isPartOf: {
+        '@type': 'WebSite',
+        '@id': `${home.href}#website`,
+        url: home.href,
+        name: SITE_TITLE,
+        inLanguage: 'zh-Hans',
+      },
+      about: { '@type': 'Thing', name: '系统重要性银行' },
+      breadcrumb: { '@id': `${canonical.href}#breadcrumb` },
+      mainEntity: { '@id': `${canonical.href}#faq` },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      '@id': `${canonical.href}#breadcrumb`,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: '首页', item: home.href },
+        { '@type': 'ListItem', position: 2, name: '中国系统重要性银行名单' },
+      ],
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${canonical.href}#faq`,
+      mainEntity: faq.map(({ question, answer }) => ({
+        '@type': 'Question',
+        name: question,
+        acceptedAnswer: { '@type': 'Answer', text: answer },
+      })),
+    },
+  ],
+}
 
 const compositionLabel = (stats: YearStats) =>
   `${stats.year} 年：${groupOrder
@@ -55,18 +150,20 @@ const deltaLabel = (delta: number | null) => (delta === null ? '—' : delta > 0
 ---
 
 <BaseLayout
-  title={`系统重要性银行名单 | ${SITE_TITLE}`}
+  title={pageTitle}
   description={description}
   locale={locale}
   path="/d-sibs/"
   available={['zh-Hans']}
   sourceLocale="zh-Hans"
 >
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(structuredData)} />
+
   <main class="shell pt-article-top pb-page-bottom" lang="zh-Hans">
     <PageHeader
       class="max-sm:[&>h1]:text-heading-32 [&>p:first-child]:normal-case"
       eyebrow="数据观察 / D-SIBs"
-      title="中国系统重要性银行"
+      title="中国系统重要性银行名单"
       lede="按组别查看每家银行的入选轨迹。"
     >
       <LanguageNote
@@ -80,16 +177,19 @@ const deltaLabel = (delta: number | null) => (delta === null ? '—' : delta > 0
       <div slot="meta" class="mt-6 flex flex-wrap items-baseline gap-x-6 gap-y-2 border-t border-line pt-4 font-ui text-label-11 text-ink-tertiary">
         <span>{years.length} 期发布</span>
         <span>{years[0]}—{years.at(-1)}</span>
-        {latest && <span class="text-ink">最新 {latest.year}</span>}
         {latest && (
-          <a
-            class="ml-auto text-accent underline decoration-accent/40 underline-offset-[0.25em] transition-colors duration-1 hover:decoration-current max-sm:ml-0"
-            href={latest.link}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            查看央行公告 ↗
-          </a>
+          <>
+            <span class="text-ink">最新 {latest.year}</span>
+            <time datetime={isoDate(latest.published)}>更新于 {isoDate(latest.published)}</time>
+            <a
+              class="ml-auto text-accent underline decoration-accent/40 underline-offset-[0.25em] transition-colors duration-1 hover:decoration-current max-sm:ml-0"
+              href={latest.link}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              查看央行公告 ↗
+            </a>
+          </>
         )}
       </div>
     </PageHeader>
@@ -150,7 +250,12 @@ const deltaLabel = (delta: number | null) => (delta === null ? '—' : delta > 0
                   >
                     {stats.year}
                   </a>
-                  <span class="font-ui text-label-11 tabular-nums text-ink-tertiary">{stats.total} 家</span>
+                  <span class="text-right">
+                    <span class="block font-ui text-label-11 tabular-nums text-ink-tertiary">{stats.total} 家</span>
+                    <time class="mt-0.5 block font-ui text-label-11 tabular-nums text-ink-quiet" datetime={isoDate(stats.published)}>
+                      {isoDate(stats.published)}
+                    </time>
+                  </span>
                 </li>
               ))}
             </ol>
@@ -221,6 +326,10 @@ const deltaLabel = (delta: number | null) => (delta === null ? '—' : delta > 0
 
     <DsibsSection id="annual-lists" index="04" title="各期名单">
       <YearCompositionGrid yearStats={yearStats} />
+    </DsibsSection>
+
+    <DsibsSection id="groups" index="05" title="五组划分与附加要求">
+      {latest && <GroupRules stats={latest} />}
     </DsibsSection>
 
     <p class="mt-16 border-t border-line pt-4 font-ui text-label-11 leading-[1.7] text-ink-tertiary">

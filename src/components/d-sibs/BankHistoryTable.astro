@@ -69,7 +69,12 @@ const presentGroups = groupKeys.filter((group) =>
             return (
               <td class="px-3 py-3 text-center">
                 {info ? (
-                  <GroupMark group={info.group} label={String(info.group)} srLabel={groupLabels[info.group]} class="justify-center" />
+                  <>
+                    <span class="sr-only">{groupLabels[info.group]}</span>
+                    <span class="inline-flex" aria-hidden="true">
+                      <GroupMark group={info.group} label={String(info.group)} srLabel={groupLabels[info.group]} class="justify-center" />
+                    </span>
+                  </>
                 ) : (
                   <span class="font-ui text-label-13 text-ink-quiet" aria-label="未入选">—</span>
                 )}

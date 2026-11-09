@@ -109,6 +109,7 @@ Reading, listening and the shelf are appendices to the writing, not sections of 
 02 银行明细   [hairline matrix]
 03 名单变化   [hairline timeline]
 04 各期名单   [two-column archive]
+05 五组划分   [score band table + two notes]
 ```
 
 - The data report uses the full shell width, not the 78ch reading measure. Comparison needs the room; the reading pages keep their measure.
@@ -118,7 +119,8 @@ Reading, listening and the shelf are appendices to the writing, not sections of 
 - The language note, when the report is a fallback, is an inline line under the lede. It follows the full shell measure, not the reading measure, and it sits above the release metadata rule.
 - Status changes use ink and `+`/`−`/`↑`/`↓`; no success/danger fills. The group colors are the only categorical color.
 - The archive is two columns of names separated by `·`; the latest release gets a 2px accent top rule. No boxes, no tag pills.
-- Sections carry only a number and a title. No explanatory note, no inline contents row: the same fixed edge index as the article carries the four anchors. It appears from 1320px so the full-width table is never covered; below that, the headings are the index.
+- The report closes with the rule that produces the groups: one hairline table of the five bands (得分区间, 附加资本要求, 附加杠杆率, this year's count), then two paragraphs on one 640px measure at 16px/1.8 — a reading column, not a second grid. The citation is a marginal note at the right edge (a label, then each regulation on its own line), so the source never hangs off the end of the last sentence; below 1024px it drops under the note. The colored squares and the numbers are the report's evidence; without the rule behind them, a reader who arrives from a search for "第一组是什么意思" has no way in, and a crawler sees five colors and no words.
+- Sections carry only a number and a title. The closing rule section is the one exception, and it earns its two paragraphs by explaining the report rather than describing it. No inline contents row: the same fixed edge index as the article carries the five anchors. It appears from 1320px so the full-width table is never covered; below that, the headings are the index.
 - The only shadow is the sparkline popover; it is a movable surface, not a content card.
 
 ## The calculator

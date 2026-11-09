@@ -123,6 +123,8 @@ const dsibs = defineCollection({
 	loader: file('./src/content/d-sibs.yaml'),
 	schema: z.object({
 		year: z.number().int(),
+		// The date the central bank published the assessment this entry transcribes.
+		published: z.coerce.date(),
 		link: z.url(),
 		groups: z.array(z.object({
 			level: z.number().int().min(1).max(5),

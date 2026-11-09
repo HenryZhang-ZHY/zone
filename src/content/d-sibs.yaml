@@ -1,5 +1,6 @@
 - id: "dsib-2021"
   year: 2021
+  published: "2021-10-15"
   link: "https://www.pbc.gov.cn/huobizhengceersi/214481/3868581/3868587/762c43beec6a412abd935a54770ad1ff/index.html"
   groups:
     - level: 4
@@ -32,6 +33,7 @@
 
 - id: "dsib-2022"
   year: 2022
+  published: "2022-09-09"
   link: "https://www.pbc.gov.cn/huobizhengceersi/214481/3868581/3868587/f08b6ff135f04a458a8d33ad786ee0df/index.html"
   groups:
     - level: 4
@@ -64,6 +66,7 @@
 
 - id: "dsib-2023"
   year: 2023
+  published: "2023-09-22"
   link: "https://www.pbc.gov.cn/huobizhengceersi/214481/3868581/3868587/70f69ff284254dcf88774ddfda485c96/index.html"
   groups:
     - level: 4
@@ -97,6 +100,7 @@
 
 - id: "dsib-2025"
   year: 2025
+  published: "2026-02-13"
   link: "https://www.pbc.gov.cn/huobizhengceersi/214481/3868581/3868587/2026021318433023031/index.html"
   groups:
     - level: 4

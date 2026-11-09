@@ -1,11 +1,22 @@
 import { describe, expect, it } from 'vitest'
-import { buildDsibsViewModel, groupLabels, typeClass, typeLabel } from '../d-sibs'
+import {
+  buildDsibsViewModel,
+  formatRate,
+  groupCapitalAddon,
+  groupKeys,
+  groupLabels,
+  groupLeverageAddon,
+  groupScoreBands,
+  typeClass,
+  typeLabel,
+} from '../d-sibs'
 
 type TestEntry = Parameters<typeof buildDsibsViewModel>[0][number]
 
 const entries: TestEntry[] = [
   {
     year: 2024,
+    published: new Date('2024-09-09'),
     link: 'https://example.com/2024',
     groups: [
       {
@@ -20,6 +31,7 @@ const entries: TestEntry[] = [
   },
   {
     year: 2025,
+    published: new Date('2025-09-09'),
     link: 'https://example.com/2025',
     groups: [
       {
@@ -63,6 +75,7 @@ describe('buildDsibsViewModel', () => {
       ...entries,
       {
         year: 2026,
+        published: new Date('2026-09-09'),
         link: 'https://example.com/2026',
         groups: [
           {
@@ -101,6 +114,15 @@ describe('buildDsibsViewModel', () => {
     expect(viewModel.yearStats[0].groups[5]).toEqual([])
     expect(viewModel.yearStats[0].total).toBe(2)
   })
+
+  it('carries each release date into the year stats', () => {
+    const viewModel = buildDsibsViewModel(entries)
+
+    expect(viewModel.yearStats.map((stats) => stats.published)).toEqual([
+      new Date('2024-09-09'),
+      new Date('2025-09-09'),
+    ])
+  })
 })
 
 describe('D-SIBS labels and classes', () => {
@@ -112,5 +134,18 @@ describe('D-SIBS labels and classes', () => {
     expect(typeClass('国有商业银行', 'tag')).toBe('tag-state')
     expect(typeClass('股份制商业银行', 'spark')).toBe('spark-joint')
     expect(typeClass('城市商业银行', '')).toBe('-city')
+  })
+
+  it('keeps the leverage add-on at half the capital add-on for every group', () => {
+    for (const group of groupKeys) {
+      expect(groupLeverageAddon[group]).toBeCloseTo(groupCapitalAddon[group] / 2)
+    }
+  })
+
+  it('prints the published rates without trailing zeros', () => {
+    expect(formatRate(groupCapitalAddon[1])).toBe('0.25%')
+    expect(formatRate(groupCapitalAddon[4])).toBe('1%')
+    expect(formatRate(groupLeverageAddon[5])).toBe('0.75%')
+    expect(groupScoreBands[1]).toBe('100—299 分')
   })
 })

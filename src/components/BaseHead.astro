@@ -74,6 +74,9 @@ const analytics = enableAnalytics && import.meta.env.PROD
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={imageURL} />
 
+<!-- Page-specific head: structured data, prefetch hints, an alternate feed -->
+<slot name="head" />
+
 <!-- Umami Analytics: traffic, then the recorder for replays and heatmaps. Both are
      deferred, so the recorder still runs after the tracker that feeds it. -->
 {analytics && <script defer src="https://umami.shuzhi.zone/script.js" data-website-id="b3d2c549-74d8-46b1-b28f-26d50f2d1f1a" />}
