@@ -53,6 +53,10 @@ const analytics = enableAnalytics && import.meta.env.PROD
 <link rel="canonical" href={canonicalHref} />
 {alternates.map(({ hreflang, href }) => <link rel="alternate" hreflang={hreflang} href={href} />)}
 
+<!-- Site ownership: proves shuzhi.zone to ByteDance/Toutiao search. Toutiao re-checks it,
+     so it stays in the head after verification passes. -->
+<meta name="bytedance-verification-code" content="ZWf6b658e1sDr374vV/r" />
+
 <!-- Primary Meta Tags -->
 <title>{title}</title>
 <meta name="title" content={title} />
