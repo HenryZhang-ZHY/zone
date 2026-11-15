@@ -1,0 +1,59 @@
+---
+import { PANEL_JSON_URL } from '../../lib/shareholders/types'
+
+interface Props {
+  latestYear: number
+}
+
+const { latestYear } = Astro.props
+
+const examples = [
+  { code: '600519', name: '贵州茅台' },
+  { code: '601318', name: '中国平安' },
+  { code: '600000', name: '浦发银行' },
+  { code: '688981', name: '中芯国际' },
+  { code: '601628', name: '中国人寿' },
+]
+---
+
+<div id="stock" data-stock-lookup data-endpoint={PANEL_JSON_URL} data-latest-year={latestYear}>
+  <div class="stock-search">
+    <label for="stock-search" class="stock-search__label">证券代码或简称</label>
+    <input
+      id="stock-search"
+      class="stock-search__input"
+      type="search"
+      placeholder="600519 或 贵州茅台"
+      autocomplete="off"
+      autocapitalize="off"
+      spellcheck="false"
+      enterkeyhint="search"
+      role="combobox"
+      aria-expanded="false"
+      aria-controls="stock-results"
+      aria-autocomplete="list"
+      aria-describedby="stock-hint"
+    />
+    <span class="stock-search__hint">输入后从匹配项中选一只</span>
+  </div>
+
+  <ul id="stock-results" class="stock-results" role="listbox" aria-label="匹配的股票" hidden></ul>
+
+  <p id="stock-hint" class="stock-hint">
+    输入证券代码或简称，查看这只股票 2007—2024 年末的自然人、一般法人与专业机构持股，以及它在同一年所有股票里的位置。
+  </p>
+  <p class="stock-quick">
+    <span>试试：</span>
+    {examples.map((example) => (
+      <a href={`?stock=${example.code}#stock`} data-stock-code={example.code}>{example.name}</a>
+    ))}
+  </p>
+
+  <p class="stock-message" data-stock-message hidden></p>
+  <p class="sr-only" role="status" aria-live="polite" data-stock-status></p>
+  <noscript>
+    <p class="stock-message">个股查询需要 JavaScript；原始 CSV 仍可直接下载。</p>
+  </noscript>
+
+  <article id="stock-detail" class="stock-detail" aria-labelledby="stock-detail-name" hidden></article>
+</div>
