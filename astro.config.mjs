@@ -43,6 +43,14 @@ export default defineConfig({
   ],
   vite: {
     plugins: [tailwindcss()],
+    // Local review artifacts (`.screenshots/`, `.ryugi/`) and build output are not
+    // source: watching them makes the dev server churn on locked browser-profile
+    // files and can take the watcher down mid-edit.
+    server: {
+      watch: {
+        ignored: ['**/.ryugi/**', '**/.screenshots/**', '**/dist/**'],
+      },
+    },
     // esbuild escapes non-ASCII (lightningcss, Vite's default, does not), so CSS
     // `content` glyphs like • and · survive servers that send text/css without a charset.
     build: { cssMinify: 'esbuild' },
