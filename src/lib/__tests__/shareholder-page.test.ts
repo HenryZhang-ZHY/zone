@@ -6,19 +6,24 @@ import { fileURLToPath } from 'node:url'
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..')
 const read = (...segments: string[]) => readFileSync(resolve(root, ...segments), 'utf8')
 
-describe('shareholder panel wiring', () => {
-  it('keeps the page, the data endpoint and the stylesheet connected', () => {
+describe('shareholder table wiring', () => {
+  it('keeps the page, the table, the data endpoint and the stylesheet connected', () => {
     const page = read('src', 'pages', '[locale]', 'shareholders.astro')
-    const chart = read('src', 'components', 'shareholders', 'MarketChart.astro')
-    const lookup = read('src', 'components', 'shareholders', 'StockLookup.astro')
+    const table = read('src', 'components', 'shareholders', 'HolderTable.astro')
+    const script = read('src', 'scripts', 'shareholder-table.ts')
 
-    expect(page).toContain('<MarketChart')
-    expect(page).toContain('<StockLookup')
+    expect(page).toContain('<HolderTable')
+    expect(page).toContain('<DataNotes')
     expect(page).toContain('PANEL_CSV_URL')
     expect(page).toContain('shareholders.css')
-    expect(page).toContain("import '../../scripts/shareholder-panel'")
-    expect(chart).toContain('data-market-chart')
-    expect(lookup).toContain('data-stock-lookup')
+    expect(page).toContain("import '../../scripts/shareholder-table'")
+    expect(table).toContain('data-holder-table')
+    expect(table).toContain('type="search"')
+    expect(table).toContain('data-holder-year')
+    expect(table).toContain('aria-sort')
+    expect(script).toContain("addEventListener('input'")
+    expect(script).toContain("addEventListener('change'")
+    expect(script).toContain("addEventListener('click'")
 
     const endpoint = read('src', 'pages', 'data', 'sse-shareholders', 'panel.json.ts')
     expect(endpoint).toContain('buildClientPayload')
@@ -32,9 +37,10 @@ describe('shareholder panel wiring', () => {
     expect(lines).toHaveLength(24585)
   })
 
-  it('records the panel pattern in the design language', () => {
+  it('records the table pattern in the design language', () => {
     const patterns = read('design', 'patterns.md')
-    expect(patterns).toContain('## The panel')
+    expect(patterns).toContain('## The shareholder table')
     expect(patterns).toContain('A chart always has a hairline table')
+    expect(patterns).toContain('clicks a header to sort')
   })
 })

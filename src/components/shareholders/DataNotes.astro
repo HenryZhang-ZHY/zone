@@ -1,161 +1,87 @@
 ---
-import Button from '@zone/ui/components/Button.astro'
-import { quantile } from '../../lib/shareholders/model'
-import { PANEL_CSV_FILENAME, PANEL_CSV_URL, type PanelModel } from '../../lib/shareholders/types'
-import { formatCount, formatDelta, formatPercent } from '../../lib/shareholders/view'
+import {
+  PANEL_CSV_FILENAME,
+  PANEL_CSV_URL,
+  PANEL_JSON_URL,
+  type PanelModel,
+} from '../../lib/shareholders/types'
+import { formatCount } from '../../lib/shareholders/view'
 
 interface Props {
   model: PanelModel
-  /** Median 2021 → 2022 change, same stocks. */
-  classificationShift: { individual: number; corporate: number; institution: number }
-  /** Median 2023 → 2024 change and the weighted share it did not move. */
-  recentShift: { individual: number; institution: number; weightedIndividual: number; previousWeightedIndividual: number }
-  /** Questions rendered here; the page reuses them for FAQ structured data. */
-  faqs: { question: string; answer: string }[]
 }
 
-const { model, classificationShift, recentShift, faqs } = Astro.props
-const { coverage } = model
-
-const medianOf = (values: number[]) => quantile([...values].sort((a, b) => a - b), 0.5)
-
-const residualYears = [2009, 2010, 2011, 2012]
-const residualRows = model.rows.filter((row) => residualYears.includes(row.year) && row.otherPct !== 0)
-const residualMax = Math.max(...residualRows.map((row) => Math.abs(row.otherPct)))
-const residualMedian = (year: number) =>
-  medianOf(model.rows.filter((row) => row.year === year).map((row) => row.otherPct))
-const residual2011Median = residualMedian(2011)
-const residual2012Median = residualMedian(2012)
-const bShare2013 = model.rows.filter((row) => row.board === 'B股' && row.year === 2013)
+const { model } = Astro.props
 ---
 
-<div class="max-w-[54rem]">
-  <div class="flex flex-wrap items-start justify-between gap-x-10 gap-y-6 border-y border-line-strong py-6">
-    <div>
-      <p class="font-ui text-label-11 text-ink-tertiary">原始数据</p>
-      <p class="mt-2 font-prose text-heading-24 text-ink">
+<section id="method" class="mt-20 scroll-mt-8 border-t border-line-strong pt-4 sm:mt-24">
+  <h2 class="font-prose text-heading-24 text-ink">数据说明</h2>
+
+  <dl class="mt-8 max-w-[64rem]">
+    <div class="grid gap-2 border-b border-line py-5 md:grid-cols-[8rem_minmax(0,1fr)] md:gap-8">
+      <dt class="font-ui text-label-11 tracking-[0.02em] text-ink-tertiary">来源</dt>
+      <dd class="max-w-[48rem] font-ui text-copy-13 leading-[1.8] text-ink-secondary">
+        上海证券交易所编、中国金融出版社出版的《上海证券交易所统计年鉴》2008–2025 卷「年末个股股东持股情况」。由
         <a
-          class="underline decoration-accent/40 underline-offset-[0.2em] transition-[text-decoration-color] duration-1 hover:decoration-current"
+          class="text-accent underline decoration-accent/40 underline-offset-[0.25em] hover:decoration-current"
+          href="https://github.com/HenryZhang-ZHY/surfer"
+          target="_blank"
+          rel="noopener noreferrer"
+        >surfer</a>
+        从公开 PDF 抽取，只覆盖上交所，不含深交所、北交所。全期共 {formatCount(model.coverage.rows)} 行、{formatCount(
+          model.coverage.companies,
+        )} 只股票、{model.coverage.years} 个年度。
+      </dd>
+    </div>
+
+    <div class="grid gap-2 border-b border-line py-5 md:grid-cols-[8rem_minmax(0,1fr)] md:gap-8">
+      <dt class="font-ui text-label-11 tracking-[0.02em] text-ink-tertiary">口径</dt>
+      <dd class="max-w-[48rem] font-ui text-copy-13 leading-[1.8] text-ink-secondary">
+        表内比例是印在年鉴上的值，分母为当年合计持股；合计持股按 1 亿股 = 10,000 万股换算。2007–2008
+        年末的合计为流通股口径，2009 年起为 A 股总股本；2022 年起股东分类调整。跨年比较前先看这两处断点。
+      </dd>
+    </div>
+
+    <div class="grid gap-2 border-b border-line py-5 md:grid-cols-[8rem_minmax(0,1fr)] md:gap-8">
+      <dt class="font-ui text-label-11 tracking-[0.02em] text-ink-tertiary">B 股</dt>
+      <dd class="max-w-[48rem] font-ui text-copy-13 leading-[1.8] text-ink-secondary">
+        B 股只在部分卷收录；2013 年末的 53 条记录全部记为自然人 100%，疑为原始表退化，不作分布解读。
+      </dd>
+    </div>
+
+    <div class="grid gap-2 border-b border-line py-5 md:grid-cols-[8rem_minmax(0,1fr)] md:gap-8">
+      <dt class="font-ui text-label-11 tracking-[0.02em] text-ink-tertiary">下载</dt>
+      <dd class="max-w-[48rem] font-ui text-copy-13 leading-[1.8] text-ink-secondary">
+        <a
+          class="text-accent underline decoration-accent/40 underline-offset-[0.25em] hover:decoration-current"
           href={PANEL_CSV_URL}
           download={PANEL_CSV_FILENAME}
         >panel.csv</a>
-      </p>
-      <p class="mt-2 font-ui text-label-11 leading-[1.7] tabular-nums text-ink-tertiary">
-        {formatCount(coverage.rows)} 行 × 15 列 · 2.5 MB · UTF-8 · CRLF · 单位万股
-      </p>
+        <span class="text-ink-tertiary">（{formatCount(model.coverage.rows)} 行 × 15 列，2.5 MB，UTF-8）</span>
+        <span class="mx-2 text-ink-quiet" aria-hidden="true">/</span>
+        <a
+          class="text-accent underline decoration-accent/40 underline-offset-[0.25em] hover:decoration-current"
+          href={PANEL_JSON_URL}
+        >panel.json</a>
+        <span class="text-ink-tertiary">（页面使用的精简结构）</span>
+      </dd>
     </div>
-    <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
-      <Button href={PANEL_CSV_URL} variant="secondary" download={PANEL_CSV_FILENAME}>下载 CSV</Button>
-      <a
-        class="font-ui text-label-12 text-ink-tertiary underline decoration-transparent underline-offset-[0.25em] transition-colors duration-1 hover:text-accent hover:decoration-current"
-        href="https://github.com/HenryZhang-ZHY/surfer"
-        target="_blank"
-        rel="noopener noreferrer"
-      >整理脚本与单年表 ↗</a>
+
+    <div class="grid gap-2 py-5 md:grid-cols-[8rem_minmax(0,1fr)] md:gap-8">
+      <dt class="font-ui text-label-11 tracking-[0.02em] text-ink-tertiary">引用</dt>
+      <dd class="max-w-[48rem]">
+        <p class="font-code text-label-12 leading-[1.9] text-ink-secondary">
+          上海证券交易所. 上海证券交易所统计年鉴（2008–2025 卷）[M]. 北京: 中国金融出版社.
+        </p>
+        <p class="mt-1 font-code text-label-11 leading-[1.8] text-ink-tertiary">
+          数据整理：https://github.com/HenryZhang-ZHY/surfer
+        </p>
+      </dd>
     </div>
-  </div>
-
-  <p class="mt-6 max-w-[44rem] font-ui text-copy-14 leading-[1.8] text-ink-secondary">
-    一行是一只股票一个年末：合计持股数，以及自然人、一般法人、专业机构三类持股数与比例，差额放在「其他」。本页只读取
-    <code class="font-code text-copy-13 text-ink">panel.csv</code>，不另做推断；CSV 与页面数字同源。
-  </p>
-
-  <h3 class="mt-12 border-t border-line-strong pt-3 font-prose text-heading-20 text-ink">口径与断点</h3>
-  <ol class="mt-4 border-t border-line">
-    <li class="grid gap-2 border-b border-line py-4 sm:grid-cols-[8.5rem_minmax(0,1fr)] sm:gap-6">
-      <span class="font-ui text-label-12 tabular-nums text-ink-tertiary">2008 → 2009</span>
-      <p class="font-ui text-copy-14 leading-[1.75] text-ink-secondary">
-        合计口径从<b class="font-medium text-ink">流通股</b>改为<b class="font-medium text-ink">A 股总股本</b>。工商银行 2008 年末 149.5 亿股 →
-        2009 年末 2,509.6 亿股，是分母变化，不是有人买了两千亿股。本页的加权比例叙述从 2009 年起，2007–2008 年只作参照。
-      </p>
-    </li>
-    <li class="grid gap-2 border-b border-line py-4 sm:grid-cols-[8.5rem_minmax(0,1fr)] sm:gap-6">
-      <span class="font-ui text-label-12 tabular-nums text-ink-tertiary">2009–2012</span>
-      <p class="font-ui text-copy-14 leading-[1.75] text-ink-secondary">
-        三类持股之和小于合计，差额是限售与未分类股份，已放在 <code class="font-code text-copy-13 text-ink">other_*</code> 列：2011、2012
-        年残差中位分别为 {formatPercent(residual2011Median, 2)}、{formatPercent(residual2012Median, 2)}，2012 年最大
-        {formatPercent(residualMax, 2)}；2009 年多数为 0。2013 年起只剩 ±0.01pp 的四舍五入尾差。
-      </p>
-    </li>
-    <li class="grid gap-2 border-b border-line py-4 sm:grid-cols-[8.5rem_minmax(0,1fr)] sm:gap-6">
-      <span class="font-ui text-label-12 tabular-nums text-ink-tertiary">2014、2023–2025</span>
-      <p class="font-ui text-copy-14 leading-[1.75] text-ink-secondary">
-        B 股只在 2014 卷（2013 年末）和 2023–2025 卷（2022–2024 年末）收录，中间年份的年鉴只列 A 股。2014 卷的 {bShare2013.length}
-        行 B 股全部记为自然人 100%、法人机构为 0，疑为原始表退化，本页 B 股只从 2022 年起解读；图表中 B 股按收录年份断开。
-      </p>
-    </li>
-    <li class="grid gap-2 border-b border-line py-4 sm:grid-cols-[8.5rem_minmax(0,1fr)] sm:gap-6">
-      <span class="font-ui text-label-12 tabular-nums text-ink-tertiary">2022 卷起</span>
-      <p class="font-ui text-copy-14 leading-[1.75] text-ink-secondary">
-        股东分类调整：同一批股票 2021 → 2022 年专业机构比例中位 {formatDelta(classificationShift.institution)}pp、一般法人 {formatDelta(classificationShift.corporate)}pp、自然人 {formatDelta(classificationShift.individual)}pp。分类占比跨 2022
-        年不可直接同比，个别公司（如中国平安）变动远大于中位数。
-      </p>
-    </li>
-    <li class="grid gap-2 border-b border-line py-4 sm:grid-cols-[8.5rem_minmax(0,1fr)] sm:gap-6">
-      <span class="font-ui text-label-12 tabular-nums text-ink-tertiary">2023 → 2024</span>
-      <p class="font-ui text-copy-14 leading-[1.75] text-ink-secondary">
-        同口径年度内，公司自然人比例中位 {formatDelta(recentShift.individual)}pp、专业机构中位 {formatDelta(recentShift.institution)}pp，
-        但按持股数加权的自然人比例基本不动（{formatPercent(recentShift.previousWeightedIndividual)} → {formatPercent(recentShift.weightedIndividual)}）。变化集中在中小盘与科创板；本页把「公司中位」和「市场加权」分开写，避免把前者读成后者。
-      </p>
-    </li>
-  </ol>
-
-  <h3 class="mt-12 border-t border-line-strong pt-3 font-prose text-heading-20 text-ink">字段</h3>
-  <div class="mt-4 overflow-x-auto border-y border-line-strong" role="region" aria-label="字段说明表，可左右滚动" tabindex="0">
-    <table class="w-full min-w-[40rem] border-collapse text-left font-ui text-copy-13">
-      <thead>
-        <tr class="border-b border-line-strong">
-          <th scope="col" class="py-2 pr-6 font-ui text-label-11 font-medium text-ink-tertiary">字段</th>
-          <th scope="col" class="py-2 pr-6 font-ui text-label-11 font-medium text-ink-tertiary">含义</th>
-          <th scope="col" class="py-2 font-ui text-label-11 font-medium text-ink-tertiary">说明</th>
-        </tr>
-      </thead>
-      <tbody class="text-ink-secondary">
-        <tr class="border-b border-line"><th scope="row" class="py-3 pr-6 text-left font-code text-label-12 font-normal text-ink">edition / data_year</th><td class="py-3 pr-6">年鉴卷号 / 数据年份</td><td class="py-3 text-ink-tertiary">edition = data_year + 1</td></tr>
-        <tr class="border-b border-line"><th scope="row" class="py-3 pr-6 text-left font-code text-label-12 font-normal text-ink">sec_code / sec_name</th><td class="py-3 pr-6">证券代码 / 简称</td><td class="py-3 text-ink-tertiary">简称取该卷原文</td></tr>
-        <tr class="border-b border-line"><th scope="row" class="py-3 pr-6 text-left font-code text-label-12 font-normal text-ink">name_source</th><td class="py-3 pr-6">简称来源</td><td class="py-3 text-ink-tertiary">native / decoded / neighbor，仅 2019 卷用到后两者</td></tr>
-        <tr class="border-b border-line"><th scope="row" class="py-3 pr-6 text-left font-code text-label-12 font-normal text-ink">board</th><td class="py-3 pr-6">板块</td><td class="py-3 text-ink-tertiary">按代码前缀推断：主板A / 科创板 / B股</td></tr>
-        <tr class="border-b border-line"><th scope="row" class="py-3 pr-6 text-left font-code text-label-12 font-normal text-ink">total_hold_10k</th><td class="py-3 pr-6">合计持股数</td><td class="py-3 text-ink-tertiary">万股；2007–2008 为流通股，2009 起为 A 股总股本</td></tr>
-        <tr class="border-b border-line"><th scope="row" class="py-3 pr-6 text-left font-code text-label-12 font-normal text-ink">individual_*</th><td class="py-3 pr-6">自然人持股数 / 比例</td><td class="py-3 text-ink-tertiary">比例分母为合计持股数</td></tr>
-        <tr class="border-b border-line"><th scope="row" class="py-3 pr-6 text-left font-code text-label-12 font-normal text-ink">corporate_*</th><td class="py-3 pr-6">一般法人持股数 / 比例</td><td class="py-3 text-ink-tertiary">同上</td></tr>
-        <tr class="border-b border-line"><th scope="row" class="py-3 pr-6 text-left font-code text-label-12 font-normal text-ink">institution_*</th><td class="py-3 pr-6">专业机构持股数 / 比例</td><td class="py-3 text-ink-tertiary">同上</td></tr>
-        <tr><th scope="row" class="py-3 pr-6 text-left font-code text-label-12 font-normal text-ink">other_*</th><td class="py-3 pr-6">残差 = 合计 − 三类之和</td><td class="py-3 text-ink-tertiary">2009–2012 的限售 / 未分类股份，别当脏数据删</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <p class="panel-scroll-hint mt-3 font-ui text-label-11 text-ink-tertiary">表格可左右滑动，查看全部列。</p>
-
-  <h3 class="mt-12 border-t border-line-strong pt-3 font-prose text-heading-20 text-ink">来源与校验</h3>
-  <div class="mt-4 max-w-[44rem] space-y-3 font-ui text-copy-14 leading-[1.8] text-ink-secondary">
-    <p>
-      数据来自上海证券交易所编、中国金融出版社出版的《上海证券交易所统计年鉴》2008–2025 卷「年末个股股东持股情况」一节，由
-      <a class="text-accent underline decoration-accent/40 underline-offset-[0.25em] hover:decoration-current" href="https://github.com/HenryZhang-ZHY/surfer" target="_blank" rel="noopener noreferrer">surfer</a>
-      从公开 PDF 抽取。只覆盖上交所，不含深交所、北交所。
-    </p>
-    <p>
-      抽取时逐卷校验：三类之和 + 残差 = 合计；持股数 ÷ 合计 = 印刷比例（容差 0.06）；行数与年鉴总览表的股票数逐年对齐。2019
-      卷中文乱码用逐字映射还原，2020 卷全角数字做 NFKC 归一，早期卷的残差逐行对照过原文。2019 卷（2018 年末）简称由字体映射还原，
-      少数「金ST…」坏名保留原样，按代码检索不受影响；28 只非 B 股在 2019 年末缺记录，图表与表格按缺失处理。
-      <a class="text-accent underline decoration-accent/40 underline-offset-[0.25em] hover:decoration-current" href="https://github.com/HenryZhang-ZHY/surfer/blob/main/docs/method.md" target="_blank" rel="noopener noreferrer">方法说明 ↗</a>
-    </p>
-    <p>
-      本页与 CSV 是对公开出版物中事实性数据的整理，不主张额外权利，也不对准确性作担保；原始 PDF 版权归上海证券交易所 / 中国金融出版社。
-    </p>
-  </div>
-
-  <h3 class="mt-12 border-t border-line-strong pt-3 font-prose text-heading-20 text-ink">引用</h3>
-  <div class="mt-4 max-w-[44rem] border-l-2 border-line-strong pl-4 font-code text-label-12 leading-[1.9] text-ink-secondary">
-    <p>上海证券交易所. 上海证券交易所统计年鉴（2008–2025 卷）[M]. 北京: 中国金融出版社.</p>
-    <p class="text-ink-tertiary">数据整理：https://github.com/HenryZhang-ZHY/surfer</p>
-  </div>
-
-  <h3 class="mt-12 border-t border-line-strong pt-3 font-prose text-heading-20 text-ink">常见问题</h3>
-  <dl class="mt-4 border-t border-line">
-    {faqs.map((faq) => (
-      <div class="border-b border-line py-5">
-        <dt class="font-prose text-heading-18 text-ink">{faq.question}</dt>
-        <dd class="mt-2 max-w-[44rem] font-ui text-copy-14 leading-[1.8] text-ink-secondary">{faq.answer}</dd>
-      </div>
-    ))}
   </dl>
-</div>
+
+  <p class="max-w-[48rem] font-ui text-label-11 leading-[1.8] text-ink-quiet">
+    本页与 CSV 是对公开出版物中事实性数据的整理，不主张额外权利，也不对准确性作担保；原始 PDF 版权归上海证券交易所 /
+    中国金融出版社。数据按原样提供，不构成投资建议。
+  </p>
+</section>

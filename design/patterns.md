@@ -123,38 +123,30 @@ Reading, listening and the shelf are appendices to the writing, not sections of 
 - Sections carry only a number and a title. The closing rule section is the one exception, and it earns its two paragraphs by explaining the report rather than describing it. No inline contents row: the same fixed edge index as the article carries the five anchors. It appears from 1320px so the full-width table is never covered; below that, the headings are the index.
 - The only shadow is the sparkline popover; it is a movable surface, not a content card.
 
-## The panel
+## The shareholder table
 
-The shareholder panel is a data report with one instrument and one lookup, on the full shell width. It uses the report's hero, its hairline tables and its numbered sections; the difference is that the reader can change what the evidence shows.
+The shareholder page is one table, not a report. Search, the year switch, sortable headers and one accordion replace the old hero, market chart, lookup and snapshot lists.
 
 ```
 数据观察 / 股东结构
 谁在持有上交所的股票
-18 个年度 · 2007–2024 · 最新 2024 年末 … 下载原始 CSV ↓
-
-2024 年末
-21.7%  按持股数加权，自然人持有全部上交所股票
-       [composition bar] 自然人 21.7% 一般法人 63.8% 专业机构 14.5% 其他 0.0%
-                                板块 2024 年末   主板A 中位 43.0% …   B股 87.4%
-
-01 结构变化   全部 | 主板A | 科创板 | B股
-   [P25–P75 band + 中位 line + 加权 accent line, 口径断点 as hairlines]
-   [readout line]  [annual table, one row per year]
-02 个股查询    [ruled search]  [composition columns per year + table]
-03 2024 年末榜单   [four hairline lists of rows, not cards]
-04 数据说明    download, fields, breakpoints, citation, FAQ
+[search ......................]  [年末 2024 ▾]  2,317 只
+[代码 | 简称 | 板块 | 自然人% | 一般法人% | 专业机构% | 其他% | 合计]
+[ ... 2,317 rows ... ]
+  [open row: name, summary, four-line chart, exact yearly table]
+[数据说明: source, calibers, B shares, download, citation]
 ```
 
-- The hero keeps the report's one large number, but the panel's finding is the **gap between two readings**: the weighted share (each stock counts by its shares) and the median company (each stock counts once). Both are drawn on the same chart, and the annual table repeats both. The chart never shows only one of them.
-- The plot is one SVG with `preserveAspectRatio="none"` and `vector-effect: non-scaling-stroke`; every label is HTML. That is how the chart stays at 11px from 390px to the full shell instead of shrinking with the viewBox.
-- The chart's series are categorical data colors, not a new palette: the interquartile band is `surface`, the median is ink, the weighted line is the one accent, and the breakpoint rules are `line-strong`. Vertical rules mark calibers the data cannot cross (2009, 2022); a line that spans a breakpoint is still drawn, because hiding the discontinuity would be worse than labelling it.
-- The controls are the tag's shape: square 11px mono labels with a 1px rule, the checked one in ink. A radio group, not a dropdown, because there are four options and all of them fit.
-- A chart always has a hairline table under it. The table is the accessible record and the place the exact numbers live; hovering the plot can only add a readout, never the only way to read a value.
-- The instrument is one ruled field, like the calculator: no box, no button, focus is a 2px accent rule under the row. The result is not a card: a name block, a four-item fact row, repeated composition columns (one per year, 1px hairlines between segments, data colors), the same hairline table, and a note that names the calibers.
-- The lookup is JavaScript, the report is not. The page ships the market aggregates inline (a few KB) and fetches `panel.json` only when the reader searches or follows a stock link. Without JavaScript the chart, the annual table, the snapshot lists and the CSV download are all still there; the board filter and the lookup are hidden or explained.
-- The snapshot section is four lists of rows, not a card grid: rank, name, code and the one number the list is about. Every row is a link into the lookup; a list is an entry point, not a destination.
-- The data notes are the report's closing rule section: download, the field table, the caliber breaks with their sizes, the citation and the FAQ. A panel without its calibers invites the reader to compare years the yearbook itself changed the definition of.
-- Page-specific CSS lives in `src/styles/shareholders.css`; no new `@zone/ui` component. The chart, the lookup and the snapshot row are one page's evidence, not a system pattern yet.
+- The table is the page. It server-renders the latest year so the data is readable before JavaScript; search, column sort, the year switch and the accordion enhance it. The full panel is fetched in the background (`panel.json`) and only blocks the first interaction if it has not arrived.
+- Search is one ruled field with no button and no result list. It filters in place on code prefix, current name, every printed old name and the board; the count is live.
+- The reader clicks a header to sort: each label is a button, `aria-sort` carries the state, text starts ascending and numbers start descending, and the active arrow is the only accent in the row. The header sticks while the table scrolls.
+- The latest year is the default, not the only year. The year select rebuilds the same table for any yearbook, and search and sort survive the switch. `?stock=` opens the accordion at the row's last recorded year, so a delisted company still has a link.
+- Clicking a row opens one accordion at a time. The chevron, `aria-expanded` and the close button all say the same thing. The open band is `surface`, not a card.
+- The accordion reads one company: the name at the selected year, the change since 2009 (or the stock’s first year), a four-series line chart, and the exact yearly table behind `逐年数据`. A chart always has a hairline table under it; here the table is one disclosure away, not a second page.
+- The chart uses the four data colors, 1px grid and breakpoint hairlines, and HTML labels. 2009 and 2022 are dashed vertical rules, drawn only when the company's history crosses them. Missing years break the line instead of interpolating across a gap. Hovering only moves a readout and four dots.
+- Below 900px the board and residual columns drop; below 720px the share total drops too. The accordion keeps its year labels by showing every second, then every third, year. The table never scrolls sideways.
+- The data notes stay short and visible: source, the two calibers, the B-share degeneracy, download and citation. No field dictionary and no FAQ; the table is the explanation.
+- Page-specific CSS lives in `src/styles/shareholders.css`; no new `@zone/ui` component. The table, the chart and the accordion are one page's instrument, not a system pattern yet.
 
 ## The calculator
 

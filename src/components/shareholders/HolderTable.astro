@@ -1,0 +1,106 @@
+---
+import { PANEL_JSON_URL } from '../../lib/shareholders/types'
+import {
+  SORT_LABELS,
+  TABLE_COLUMNS,
+  tableEmptyRowHtml,
+} from '../../lib/shareholders/table'
+import { formatCount } from '../../lib/shareholders/view'
+
+interface Props {
+  years: number[]
+  latestYear: number
+  rowCount: number
+  rowsHtml: string
+}
+
+const { years, latestYear, rowCount, rowsHtml } = Astro.props
+const yearsDescending = [...years].sort((a, b) => b - a)
+---
+
+<section
+  class="holder"
+  data-holder-table
+  aria-labelledby="holder-heading"
+  data-endpoint={PANEL_JSON_URL}
+  data-latest-year={latestYear}
+  data-row-count={rowCount}
+>
+  <h2 id="holder-heading" class="sr-only">个股股东结构表</h2>
+
+  <div class="holder-toolbar" data-holder-toolbar hidden>
+    <div class="holder-search">
+      <label class="holder-search__label" for="holder-search">搜索</label>
+      <input
+        id="holder-search"
+        class="holder-search__input"
+        type="search"
+        placeholder="代码、简称或板块"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        enterkeyhint="search"
+        aria-describedby="holder-search-hint"
+        aria-label="搜索股票代码、简称或板块"
+      />
+    </div>
+
+    <div class="holder-year">
+      <label class="holder-year__label" for="holder-year">年份</label>
+      <select id="holder-year" class="holder-year__select" data-holder-year>
+        {yearsDescending.map((year) => (
+          <option value={year} selected={year === latestYear}>{year} 年末</option>
+        ))}
+      </select>
+    </div>
+
+    <p class="holder-count" role="status" aria-live="polite">
+      <span data-holder-count>{formatCount(rowCount)}</span> 只
+    </p>
+  </div>
+
+  <p class="holder-hint" id="holder-search-hint" data-holder-hint hidden>
+    点表头排序，点整行展开历年变化。
+  </p>
+
+  <noscript>
+    <p class="holder-noscript">
+      搜索、排序、切换年份和展开历史需要 JavaScript；下表已包含最新年末的全部公司，原始 CSV 可直接下载。
+    </p>
+  </noscript>
+
+  <table class="holder-table">
+    <caption class="sr-only" data-holder-caption>
+      个股股东持股结构表。最新年末为 {latestYear} 年末，列有自然人、一般法人、专业机构、其他持股比例与合计持股数；各列可按升序或降序排列。
+    </caption>
+    <thead>
+      <tr>
+        {TABLE_COLUMNS.map((column) => (
+          <th
+            scope="col"
+            class:list={[
+              'holder-th',
+              column.numeric && 'holder-th--num',
+              column.className,
+            ]}
+            aria-sort={column.key === 'code' ? 'ascending' : 'none'}
+            data-sort-th={column.key}
+          >
+            <button
+              type="button"
+              class="holder-th__button"
+              data-sort={column.key}
+              aria-label={`按${SORT_LABELS[column.key]}排序`}
+            >
+              <span>{column.label}</span>
+              <span class="holder-th__mark" data-sort-mark aria-hidden="true">{column.key === 'code' ? '↑' : ''}</span>
+            </button>
+          </th>
+        ))}
+      </tr>
+    </thead>
+    <tbody data-holder-body set:html={rowsHtml + tableEmptyRowHtml()} />
+  </table>
+
+  <p class="sr-only" role="status" aria-live="polite" data-holder-status></p>
+</section>

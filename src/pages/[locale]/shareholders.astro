@@ -2,24 +2,17 @@
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import LanguageNote from '../../components/LanguageNote.astro'
 import PageHeader from '@zone/ui/components/PageHeader.astro'
-import CompositionBar from '@zone/ui/components/CompositionBar.astro'
-import EdgeToc from '@zone/ui/components/EdgeToc.astro'
-import GroupMark from '@zone/ui/components/GroupMark.astro'
-import PanelSection from '../../components/shareholders/PanelSection.astro'
-import MarketChart from '../../components/shareholders/MarketChart.astro'
-import StockLookup from '../../components/shareholders/StockLookup.astro'
-import SnapshotLists, { type SnapshotRow } from '../../components/shareholders/SnapshotLists.astro'
+import HolderTable from '../../components/shareholders/HolderTable.astro'
 import DataNotes from '../../components/shareholders/DataNotes.astro'
-import { buildCompactStats } from '../../lib/shareholders/client-data'
-import { buildMoves, buildPanelModel, quantile } from '../../lib/shareholders/model'
+import { buildPanelModel } from '../../lib/shareholders/model'
 import { loadPanelRows } from '../../lib/shareholders/parse'
+import { panelRowToTableRow, tableRowHtml } from '../../lib/shareholders/table'
 import {
   PANEL_CSV_FILENAME,
   PANEL_CSV_URL,
   PANEL_JSON_URL,
-  type Board,
 } from '../../lib/shareholders/types'
-import { formatCount, formatDelta, formatPercent, formatShares } from '../../lib/shareholders/view'
+import { formatCount, formatPercent } from '../../lib/shareholders/view'
 import { SITE_TITLE } from '../../consts'
 import { localeStaticPaths, localizePath, type Locale } from '../../i18n'
 import '../../styles/shareholders.css'
@@ -29,187 +22,34 @@ export const getStaticPaths = localeStaticPaths
 const { locale } = Astro.props as { locale: Locale }
 
 const model = buildPanelModel(loadPanelRows())
-const compact = buildCompactStats(model)
 const latestYear = model.latestYear
-const latestAll = model.stats.all.at(-1)!
-const firstComparable = model.stats.all.find((stats) => stats?.year === 2009)!
-
-const codeText = (code: number) => String(code).padStart(6, '0')
-const medianOf = (values: number[]) => quantile([...values].sort((a, b) => a - b), 0.5)
-const formatBoard = (board: Board) => (board === '主板A' ? '主板 A' : board)
-
 const latestRows = model.rows.filter((row) => row.year === latestYear)
-const aShares = latestRows.filter((row) => row.board !== 'B股')
-const bShares = latestRows.filter((row) => row.board === 'B股')
-const latestB = model.stats['B股'].at(-1)
+const companiesByCode = new Map(model.companies.map((company) => [company.code, company]))
 
-const topTen = [...latestRows].sort((a, b) => b.totalHold10k - a.totalHold10k).slice(0, 10)
-const topTenMedian = medianOf(topTen.map((row) => row.individualPct))
+// The table's first paint is the latest year, in code order. The browser takes
+// over search, sort, the year switch and the accordion from this same markup.
+const tableRows = latestRows
+  .map((row) =>
+    panelRowToTableRow(
+      row,
+      [...new Set(companiesByCode.get(row.code)?.names.map((entry) => entry.name) ?? [row.name])],
+    ),
+  )
+  .sort((first, second) => first.code.localeCompare(second.code))
+const rowsHtml = tableRows.map(tableRowHtml).join('')
 
-const deltaWeighted = latestAll.weightedIndividual - firstComparable.weightedIndividual
-const deltaMedian = latestAll.median - firstComparable.median
-const medianDirection = deltaMedian < 0 ? '降到' : deltaMedian > 0 ? '升到' : '停在'
-
-const boardRows: { board: Board; label: string; median: number; count: number }[] = (
-  [
-    ['主板A', '主板 A'],
-    ['科创板', '科创板'],
-    ['B股', 'B 股'],
-  ] as const
-).flatMap(([board, label]) => {
-  const stats = model.stats[board].at(-1)
-  return stats ? [{ board, label, median: stats.median, count: stats.count }] : []
-})
-
-const composition = [
-  { group: 1, name: '自然人', value: latestAll.weightedIndividual },
-  { group: 2, name: '一般法人', value: latestAll.weightedCorporate },
-  { group: 3, name: '专业机构', value: latestAll.weightedInstitution },
-  { group: 4, name: '其他', value: Math.max(0, latestAll.weightedOther) },
-]
-const compositionText = `2024 年末持股构成：${composition
-  .map((item) => `${item.name} ${formatPercent(item.value)}`)
-  .join('，')}`
-const compositionSegments = composition.map((item) => ({ group: item.group, count: item.value }))
-
-const toSnapshot = (
-  row: { code: number; name: string; board: Board; totalHold10k: number },
-  value: string,
-  sub?: string,
-): SnapshotRow => ({
-  code: row.code,
-  name: row.name,
-  codeText: codeText(row.code),
-  board: formatBoard(row.board),
-  value,
-  sub,
-})
-
-const byIndividual = [...aShares].sort((a, b) => a.individualPct - b.individualPct)
-const topIndividual = [...byIndividual]
-  .reverse()
-  .slice(0, 8)
-  .map((row) => toSnapshot(row, formatPercent(row.individualPct), formatShares(row.totalHold10k)))
-const bottomIndividual = byIndividual
-  .slice(0, 8)
-  .map((row) => toSnapshot(row, formatPercent(row.individualPct), formatShares(row.totalHold10k)))
-const topInstitution = [...aShares]
-  .sort((a, b) => b.institutionPct - a.institutionPct)
-  .slice(0, 8)
-  .map((row) => toSnapshot(row, formatPercent(row.institutionPct), formatShares(row.totalHold10k)))
-
-const moves = buildMoves(model, latestYear - 1, latestYear).filter((move) => move.board !== 'B股')
-const toMoveRow = (move: (typeof moves)[number]): SnapshotRow => ({
-  code: move.code,
-  name: move.name,
-  codeText: codeText(move.code),
-  board: formatBoard(move.board),
-  value: formatDelta(move.delta),
-  sub: `${formatPercent(move.first)} → ${formatPercent(move.second)}`,
-})
-const moversUp = [...moves].sort((a, b) => b.delta - a.delta).slice(0, 4).map(toMoveRow)
-const moversDown = [...moves].sort((a, b) => a.delta - b.delta).slice(0, 4).map(toMoveRow)
-
-// The 2021 → 2022 reclassification is a level shift in the category split, not a
-// market move. Measure it on the same stocks so the page can state the size.
-const rows2021 = new Map(model.rows.filter((row) => row.year === 2021).map((row) => [row.code, row]))
-const classificationShift = (() => {
-  const pairs = buildMoves(model, 2021, 2022).flatMap((move) => {
-    const first = rows2021.get(move.code)
-    const second = model.rows.find((row) => row.code === move.code && row.year === 2022)
-    return first && second
-      ? [{ individual: second.individualPct - first.individualPct, corporate: second.corporatePct - first.corporatePct, institution: second.institutionPct - first.institutionPct }]
-      : []
-  })
-  return {
-    individual: medianOf(pairs.map((pair) => pair.individual)),
-    corporate: medianOf(pairs.map((pair) => pair.corporate)),
-    institution: medianOf(pairs.map((pair) => pair.institution)),
-  }
-})()
-
-// The latest year moved the median company but barely moved the weighted market;
-// both numbers are stated so the page never conflates the two readings.
-const previousStats = model.stats.all.find((stats) => stats?.year === latestYear - 1)!
-const recentShift = (() => {
-  const previous = new Map(model.rows.filter((row) => row.year === latestYear - 1).map((row) => [row.code, row]))
-  const pairs = model.rows
-    .filter((row) => row.year === latestYear)
-    .flatMap((row) => {
-      const before = previous.get(row.code)
-      return before
-        ? [{ individual: row.individualPct - before.individualPct, institution: row.institutionPct - before.institutionPct }]
-        : []
-    })
-  return {
-    individual: medianOf(pairs.map((pair) => pair.individual)),
-    institution: medianOf(pairs.map((pair) => pair.institution)),
-    weightedIndividual: latestAll.weightedIndividual,
-    previousWeightedIndividual: previousStats.weightedIndividual,
-  }
-})()
-
-const icbc2008 = model.rows.find((row) => row.code === 601398 && row.year === 2008)!
-const icbc2009 = model.rows.find((row) => row.code === 601398 && row.year === 2009)!
-const highest = topIndividual[0]
-const lowest = bottomIndividual[0]
-const topTieNames = topIndividual.filter((row) => row.value === highest?.value).map((row) => row.name)
-
-const faqs = [
-  {
-    question: '为什么 2007–2008 年的数据不能和后几年直接比较？',
-    answer: `2008、2009 卷（2007、2008 年末）的「合计持股数」是流通股口径，2009 年末起改为 A 股总股本。工商银行 2008 年末合计 ${formatShares(
-      icbc2008.totalHold10k,
-    )}，2009 年末 ${formatShares(icbc2009.totalHold10k)}，是分母换了。本页的加权比例因此从 2009 年起叙述，2007–2008 年只作参照。`,
-  },
-  {
-    question: '为什么「按持股数加权」和「中位数」差这么多？',
-    answer: `加权把工行、中石油这类大盘股按持股数算进来，2024 年末自然人只占 ${formatPercent(
-      latestAll.weightedIndividual,
-    )}；中位数是「普通一家公司」，同年为 ${formatPercent(
-      latestAll.median,
-    )}。2024 年末持股数最大的 10 只股票占全部 ${formatPercent(
-      model.coverage.top10Share,
-    )}，它们自然人比例的中位数只有 ${formatPercent(topTenMedian)}，权重自然把它们算成了「少数」。`,
-  },
-  {
-    question: '自然人持股比例最高和最低的股票是哪些？',
-    answer: `2024 年末 A 股（不含 B 股）最高是${topTieNames.join('、')}（${highest?.value ?? '—'}），最低是${
-      lowest?.name ?? '—'
-    } ${lowest?.value ?? ''}。完整名单见 03 榜单；B 股另有 ${bShares.length} 只，自然人持股比例中位数为 ${formatPercent(
-      latestB?.median ?? Number.NaN,
-    )}。`,
-  },
-  {
-    question: '2022 年前后的股东分类为什么不能直接同比？',
-    answer: `2022 卷起股东分类调整。同一批股票 2021 → 2022 年：专业机构比例中位 ${formatDelta(
-      classificationShift.institution,
-    )}pp、一般法人 ${formatDelta(classificationShift.corporate)}pp、自然人 ${formatDelta(
-      classificationShift.individual,
-    )}pp。机构与法人的此消彼长主要是分类口径变化；自然人比例受影响较小，但个别公司（如中国平安）变动很大。`,
-  },
-  {
-    question: '数据可以下载和引用吗？',
-    answer: `可以：原始面板 CSV 在页面顶部和 04 数据说明中下载，共 ${formatCount(
-      model.coverage.rows,
-    )} 行。数据整理自上海证券交易所《统计年鉴》公开出版物（surfer 项目），请按 04 的「引用」格式标注来源；数据按原样提供，不构成投资建议。`,
-  },
-]
+const latestTotalHold10k = latestRows.reduce((sum, row) => sum + row.totalHold10k, 0)
+const weightedIndividual =
+  latestTotalHold10k > 0
+    ? latestRows.reduce((sum, row) => sum + row.individualPct * row.totalHold10k, 0) / latestTotalHold10k
+    : 0
 
 const pageTitle = `谁在持有上交所的股票：2007–2024 年个股股东结构 | ${SITE_TITLE}`
 const description = `上交所《统计年鉴》2008–2025 卷的年末个股股东持股数据：${model.coverage.years} 个年度、${formatCount(
   model.coverage.companies,
 )} 只股票、${formatCount(
   model.coverage.rows,
-)} 条记录。按板块看自然人、一般法人与专业机构的持股变化，查询个股历史，下载原始 CSV。`
-
-const snapshotTitle = `${latestYear} 年末榜单`
-const sections = [
-  { id: 'market', index: '01', title: '结构变化' },
-  { id: 'stock', index: '02', title: '个股查询' },
-  { id: 'snapshot', index: '03', title: snapshotTitle },
-  { id: 'method', index: '04', title: '数据说明' },
-]
+)} 条记录。一页可搜索、可按列排序的表格，点开任意股票看历年股东结构变化，下载原始 CSV。`
 
 const canonical = new URL(localizePath('/shareholders/', 'zh-Hans'), Astro.site)
 const home = new URL(localizePath('/', 'zh-Hans'), Astro.site)
@@ -242,14 +82,14 @@ const structuredData = {
       '@id': `${canonical.href}#breadcrumb`,
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: '首页', item: home.href },
-        { '@type': 'ListItem', position: 2, name: '持股结构面板' },
+        { '@type': 'ListItem', position: 2, name: '持股结构数据表' },
       ],
     },
     {
       '@type': 'Dataset',
       '@id': `${canonical.href}#dataset`,
       name: '上海证券交易所年末个股股东持股结构（2007–2024）',
-      description: `上海证券交易所《统计年鉴》2008–2025 卷「年末个股股东持股情况」的结构化面板：${formatCount(
+      description: `上海证券交易所《统计年鉴》2008–2025 卷「年末个股股东持股情况」的结构化数据：${formatCount(
         model.coverage.rows,
       )} 行，一行一只股票一个年末，含自然人、一般法人、专业机构持股数与比例。`,
       url: canonical.href,
@@ -275,15 +115,6 @@ const structuredData = {
         },
       ],
     },
-    {
-      '@type': 'FAQPage',
-      '@id': `${canonical.href}#faq`,
-      mainEntity: faqs.map(({ question, answer }) => ({
-        '@type': 'Question',
-        name: question,
-        acceptedAnswer: { '@type': 'Answer', text: answer },
-      })),
-    },
   ],
 }
 ---
@@ -297,14 +128,16 @@ const structuredData = {
   sourceLocale="zh-Hans"
 >
   <script type="application/ld+json" slot="head" set:html={JSON.stringify(structuredData)} />
-  <link rel="alternate" type="application/json" title="股东结构面板数据" href={PANEL_JSON_URL} slot="head" />
+  <link rel="alternate" type="application/json" title="股东结构数据" href={PANEL_JSON_URL} slot="head" />
 
   <main class="shell pt-article-top pb-page-bottom" lang="zh-Hans">
     <PageHeader
       class="max-sm:[&>h1]:text-heading-32 [&>p:first-child]:normal-case"
       eyebrow="数据观察 / 股东结构"
       title="谁在持有上交所的股票"
-      lede="2007–2024 年末，上交所每只股票的自然人、一般法人与专业机构持股。18 卷年鉴，整理成可筛选、可查个股的面板。"
+      lede={`2007–2024 年末，上交所每只股票的自然人、一般法人与专业机构持股。表内是逐家公司的比例；按持股数加权，${latestYear} 年末自然人持有全部上交所股票的 ${formatPercent(
+        weightedIndividual,
+      )}。`}
     >
       <LanguageNote
         slot="note"
@@ -318,7 +151,7 @@ const structuredData = {
         <span>{model.coverage.years} 个年度</span>
         <span>{model.coverage.firstYear}–{model.coverage.lastYear}</span>
         <span class="text-ink">最新 {latestYear} 年末</span>
-        <span>{formatCount(model.coverage.companies)} 只股票</span>
+        <span>{formatCount(latestRows.length)} 只股票</span>
         <span>{formatCount(model.coverage.rows)} 条记录</span>
         <a
           class="ml-auto text-accent underline decoration-accent/40 underline-offset-[0.25em] transition-colors duration-1 hover:decoration-current max-sm:ml-0"
@@ -330,99 +163,12 @@ const structuredData = {
       </div>
     </PageHeader>
 
-    <section aria-labelledby="latest-title" class="border-y border-line-strong">
-      <h2 id="latest-title" class="sr-only">{latestYear} 年末股东结构</h2>
-      <div class="grid gap-10 py-8 lg:grid-cols-[minmax(0,1.55fr)_minmax(17rem,0.45fr)] lg:gap-0">
-        <div class="lg:pr-10">
-          <p class="font-ui text-label-11 tabular-nums text-ink-tertiary">{latestYear} 年末 · {latestAll.edition} 卷</p>
-          <div class="mt-4 flex flex-wrap items-end gap-x-6 gap-y-2">
-            <p class="font-prose text-display-64 leading-none tabular-nums text-ink">{formatPercent(latestAll.weightedIndividual)}</p>
-            <div class="pb-1">
-              <p class="font-prose text-heading-24 text-ink">按持股数加权，自然人持有全部上交所股票的比例</p>
-              <p class="mt-1 font-ui text-label-12 tabular-nums text-ink-tertiary">
-                2009 年以来 {formatDelta(deltaWeighted)}pp；中位从 {formatPercent(firstComparable.median)} {medianDirection} {formatPercent(latestAll.median)}
-              </p>
-              <p class="mt-1 font-ui text-label-11 text-ink-quiet">2007–2008 年为流通股口径，不直接比较。</p>
-            </div>
-          </div>
+    <HolderTable years={model.years} latestYear={latestYear} rowCount={latestRows.length} rowsHtml={rowsHtml} />
 
-          <CompositionBar segments={compositionSegments} label={compositionText} class="mt-9 h-2" />
-
-          <dl class="mt-3 grid grid-cols-2 gap-x-6 gap-y-2 sm:grid-cols-4">
-            {composition.map((item) => (
-              <div class="flex items-baseline justify-between gap-3 border-t border-line pt-2">
-                <dt><GroupMark group={item.group} label={item.name} srLabel={item.name} /></dt>
-                <dd class="font-ui text-label-12 tabular-nums text-ink">{formatPercent(item.value)}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-
-        <aside class="border-t border-line pt-6 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
-          <div class="flex items-baseline justify-between font-ui text-label-11 uppercase text-ink-tertiary">
-            <span>板块</span>
-            <span class="tabular-nums">{latestYear} 年末</span>
-          </div>
-          <dl class="mt-3">
-            {boardRows.map((row) => (
-              <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-t border-line py-2.5 first:border-t-0">
-                <dt class="font-prose text-heading-18 text-ink">{row.label}</dt>
-                <dd class="text-right">
-                  <span class="block font-ui text-label-12 tabular-nums text-ink">中位 {formatPercent(row.median)}</span>
-                  <span class="mt-0.5 block font-ui text-label-11 tabular-nums text-ink-tertiary">{formatCount(row.count)} 只</span>
-                </dd>
-              </div>
-            ))}
-          </dl>
-          <p class="mt-4 font-ui text-label-11 leading-[1.7] text-ink-tertiary">
-            板块按代码前缀划分。B 股只在 2014 卷和 2023–2025 卷收录。
-          </p>
-        </aside>
-      </div>
-    </section>
-
-    <PanelSection id="market" index="01" title="结构变化">
-      <p class="max-w-reading font-ui text-copy-14 leading-[1.8] text-ink-secondary">
-        「按持股数加权」回答的是市场里多少股份在自然人手里；「中位数」回答的是普通一家公司里自然人占多少。两者差得远，因为上交所的股本集中在少数大型国企。
-      </p>
-
-      <MarketChart years={model.years} stats={model.stats} compact={compact} latestYear={latestYear} />
-    </PanelSection>
-
-    <PanelSection id="stock" index="02" title="个股查询">
-      <p class="mb-6 max-w-reading font-ui text-copy-14 leading-[1.8] text-ink-secondary">
-        查一只股票：它 2007–2024 年末的三类股东持股，以及 2024 年末它在全部 {formatCount(model.coverage.latestCount)} 只股票里的位置。
-      </p>
-      <StockLookup latestYear={latestYear} />
-    </PanelSection>
-
-    <PanelSection id="snapshot" index="03" title={snapshotTitle}>
-      <SnapshotLists
-        latestYear={latestYear}
-        topIndividual={topIndividual}
-        bottomIndividual={bottomIndividual}
-        topInstitution={topInstitution}
-        moversUp={moversUp}
-        moversDown={moversDown}
-        aShareCount={aShares.length}
-        bShareCount={bShares.length}
-        bShareMedian={latestB?.median ?? Number.NaN}
-      />
-    </PanelSection>
-
-    <PanelSection id="method" index="04" title="数据说明">
-      <DataNotes model={model} classificationShift={classificationShift} recentShift={recentShift} faqs={faqs} />
-    </PanelSection>
+    <DataNotes model={model} />
   </main>
-
-  <div class="max-[1319px]:hidden">
-    <EdgeToc
-      headings={sections.map((section) => ({ depth: 2, text: section.title, slug: section.id }))}
-      label="本页导航"
-    />
-  </div>
 </BaseLayout>
 
 <script>
-  import '../../scripts/shareholder-panel'
+  import '../../scripts/shareholder-table'
 </script>
