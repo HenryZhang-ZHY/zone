@@ -4,6 +4,72 @@
  * the chart and the year switch are not system components yet.
  */
 
+/* ---------- Market switch ---------- */
+
+.holder-markets {
+	display: flex;
+	flex-wrap: wrap;
+	border-top: 1px solid var(--z-color-line-strong);
+}
+
+.holder-market {
+	display: flex;
+	flex: 1 1 18rem;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: var(--z-space-1) var(--z-space-3);
+	border: 0;
+	border-right: 1px solid var(--z-color-line);
+	background: transparent;
+	padding: var(--z-space-3) var(--z-space-4);
+	color: var(--z-color-ink-tertiary);
+	font-family: var(--z-font-ui);
+	text-align: left;
+	cursor: pointer;
+	transition:
+		background-color var(--z-motion-duration-1) var(--z-motion-ease-out),
+		color var(--z-motion-duration-1) var(--z-motion-ease-out);
+}
+
+.holder-market:last-child {
+	border-right: 0;
+}
+
+.holder-market:hover {
+	color: var(--z-color-ink);
+}
+
+.holder-market[aria-pressed='true'] {
+	background: var(--z-color-surface);
+	box-shadow: inset 0 -2px 0 var(--z-color-accent);
+	color: var(--z-color-ink);
+}
+
+.holder-market:focus-visible {
+	outline: 2px solid var(--z-color-accent);
+	outline-offset: -2px;
+}
+
+.holder-market__label {
+	font-family: var(--z-font-prose);
+	font-size: var(--z-text-heading-16);
+	line-height: var(--z-leading-heading-16);
+	color: inherit;
+}
+
+.holder-market__metric {
+	color: var(--z-color-ink-secondary);
+	font-size: var(--z-text-label-11);
+	line-height: var(--z-leading-label-11);
+}
+
+.holder-market__range {
+	margin-left: auto;
+	color: var(--z-color-ink-tertiary);
+	font-size: var(--z-text-label-11);
+	line-height: var(--z-leading-label-11);
+}
+
 /* ---------- Search, year, count ---------- */
 
 .holder-toolbar {
@@ -118,10 +184,27 @@
 	line-height: var(--z-leading-copy-13);
 }
 
-/* ---------- Table ---------- */
+/* ---------- Table viewport and table ---------- */
+
+.holder-viewport {
+	--holder-row-height: 44px;
+	position: relative;
+	height: clamp(26rem, 62vh, 44rem);
+	overflow: auto;
+	overscroll-behavior: contain;
+	border-top: 1px solid var(--z-color-line-strong);
+	border-bottom: 1px solid var(--z-color-line-strong);
+	scrollbar-gutter: stable;
+}
+
+.holder-viewport:focus-visible {
+	outline: 2px solid var(--z-color-accent);
+	outline-offset: 3px;
+}
 
 .holder-table {
 	width: 100%;
+	table-layout: fixed;
 	border-collapse: separate;
 	border-spacing: 0;
 	font-family: var(--z-font-ui);
@@ -211,14 +294,87 @@
 	width: 8rem;
 }
 
+.holder-col--holders,
+.holder-col--negotiable {
+	width: 7rem;
+}
+
+.holder-col--avg {
+	width: 6.5rem;
+}
+
+.holder-col--small,
+.holder-col--large {
+	width: 5.5rem;
+}
+
+.holder-col--mid {
+	width: 6rem;
+}
+
+.holder-th__static {
+	display: block;
+	padding: var(--z-space-2) var(--z-space-3);
+}
+
+.holder-th--num .holder-th__static {
+	text-align: right;
+}
+
+/* ---------- Virtual spacers, loading, preview ---------- */
+
+.holder-spacer td {
+	border: 0;
+	padding: 0;
+}
+
+.holder-loading td {
+	border-bottom: 1px solid var(--z-color-line);
+	padding: var(--z-space-12) var(--z-space-3);
+	color: var(--z-color-ink-tertiary);
+	font-family: var(--z-font-ui);
+	font-size: var(--z-text-label-13);
+	text-align: center;
+}
+
+.holder-retry {
+	margin-left: var(--z-space-2);
+	border: 1px solid var(--z-color-line-strong);
+	border-radius: 0;
+	background: var(--z-color-canvas);
+	padding: var(--z-space-1) var(--z-space-2);
+	color: var(--z-color-ink-secondary);
+	font-family: var(--z-font-ui);
+	font-size: var(--z-text-label-11);
+	cursor: pointer;
+}
+
+.holder-preview-wrap {
+	overflow-x: auto;
+	margin-top: var(--z-space-3);
+	border-top: 1px solid var(--z-color-line-strong);
+	border-bottom: 1px solid var(--z-color-line-strong);
+}
+
+.holder-preview-wrap:focus-visible {
+	outline: 2px solid var(--z-color-accent);
+	outline-offset: 3px;
+}
+
+.holder-table--preview {
+	min-width: 46rem;
+}
+
 .holder-row {
 	cursor: pointer;
 	transition: background-color var(--z-motion-duration-1) var(--z-motion-ease-out);
 }
 
 .holder-row > * {
-	height: 44px;
-	border-bottom: 1px solid var(--z-color-line);
+	box-sizing: border-box;
+	height: var(--holder-row-height);
+	border-bottom: 0;
+	box-shadow: inset 0 -1px 0 var(--z-color-line);
 	padding: var(--z-space-2) var(--z-space-3);
 	text-align: left;
 	vertical-align: middle;
@@ -231,7 +387,7 @@
 }
 
 .holder-row.is-open > * {
-	border-bottom-color: transparent;
+	box-shadow: none;
 }
 
 .holder-row__code {
@@ -343,11 +499,15 @@
 }
 
 .holder-detail__head {
+	position: sticky;
+	top: 41px;
+	z-index: 1;
 	display: flex;
 	flex-wrap: wrap;
 	align-items: flex-start;
 	justify-content: space-between;
 	gap: var(--z-space-3) var(--z-space-6);
+	background: var(--z-color-surface);
 }
 
 .holder-detail__kicker {
@@ -521,6 +681,30 @@
 .holder-chart__dot--other,
 .holder-chart__swatch--other {
 	color: var(--z-color-data-4);
+}
+
+.holder-chart__bar {
+	stroke: var(--z-color-surface);
+	stroke-width: 0.15;
+	vector-effect: non-scaling-stroke;
+}
+
+.holder-chart__bar--small,
+.holder-chart__swatch--small {
+	fill: var(--z-color-data-1);
+	background: var(--z-color-data-1);
+}
+
+.holder-chart__bar--mid,
+.holder-chart__swatch--mid {
+	fill: var(--z-color-data-2);
+	background: var(--z-color-data-2);
+}
+
+.holder-chart__bar--large,
+.holder-chart__swatch--large {
+	fill: var(--z-color-data-3);
+	background: var(--z-color-data-3);
 }
 
 .holder-chart__crosshair {
@@ -714,10 +898,35 @@
 	background: var(--z-color-canvas);
 }
 
+.holder-years__table--wide {
+	min-width: 46rem;
+}
+
+.holder-years__hint {
+	margin-top: var(--z-space-1);
+	color: var(--z-color-ink-tertiary);
+	font-family: var(--z-font-ui);
+	font-size: 10px;
+	line-height: 1.6;
+}
+
+@media (min-width: 900px) {
+	.holder-years__hint {
+		display: none;
+	}
+}
+
 /* ---------- Responsive ---------- */
 
-@media (max-width: 899px) {
+@media (max-width: 1099px) {
 	.holder-col--board,
+	.holder-col--mid,
+	.holder-col--avg {
+		display: none;
+	}
+}
+
+@media (max-width: 899px) {
 	.holder-col--other {
 		display: none;
 	}
@@ -729,6 +938,16 @@
 	.holder-col--individual,
 	.holder-col--corporate,
 	.holder-col--institution {
+		width: 5.5rem;
+	}
+
+	.holder-col--holders,
+	.holder-col--negotiable {
+		width: 7rem;
+	}
+
+	.holder-col--small,
+	.holder-col--large {
 		width: 5.5rem;
 	}
 
@@ -751,7 +970,8 @@
 }
 
 @media (max-width: 719px) {
-	.holder-col--total {
+	.holder-col--total,
+	.holder-col--negotiable {
 		display: none;
 	}
 }
@@ -786,6 +1006,11 @@
 		padding-bottom: var(--z-space-1);
 	}
 
+	.holder-viewport {
+		--holder-row-height: 40px;
+		height: clamp(22rem, 58vh, 34rem);
+	}
+
 	.holder-col--code {
 		width: 4rem;
 	}
@@ -796,9 +1021,35 @@
 		width: 4rem;
 	}
 
+	.holder-col--small,
+	.holder-col--large {
+		width: 4.4rem;
+	}
+
+	.holder-col--holders {
+		display: none;
+	}
+
 	.holder-row > * {
-		height: 40px;
-		padding: var(--z-space-2) var(--z-space-1);
+		padding: var(--z-space-1);
+	}
+
+	.holder-markets {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.holder-market {
+		flex: none;
+		padding: var(--z-space-2) var(--z-space-3);
+	}
+
+	.holder-market__range {
+		margin-left: 0;
+	}
+
+	.holder-table--preview {
+		min-width: 34rem;
 	}
 
 	.holder-row__name-cell {
@@ -895,6 +1146,17 @@
 
 	.holder-years__table th:nth-child(n + 3) {
 		width: 15.5%;
+	}
+
+	.holder-years__table--wide {
+		min-width: 46rem;
+		table-layout: auto;
+	}
+
+	.holder-years__table--wide th:first-child,
+	.holder-years__table--wide th:nth-child(2),
+	.holder-years__table--wide th:nth-child(n + 3) {
+		width: auto;
 	}
 }
 

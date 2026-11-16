@@ -20,21 +20,31 @@ describe('shareholder table wiring', () => {
     expect(table).toContain('data-holder-table')
     expect(table).toContain('type="search"')
     expect(table).toContain('data-holder-year')
-    expect(table).toContain('aria-sort')
+    expect(table).toContain('data-holder-viewport')
     expect(script).toContain("addEventListener('input'")
+    expect(script).toContain('renderWindow')
     expect(script).toContain("addEventListener('change'")
     expect(script).toContain("addEventListener('click'")
 
     const endpoint = read('src', 'pages', 'data', 'sse-shareholders', 'panel.json.ts')
     expect(endpoint).toContain('buildClientPayload')
     expect(endpoint).toContain('loadPanelRows')
+
+    const szseEndpoint = read('src', 'pages', 'data', 'szse-shareholders', 'panel.json.ts')
+    expect(szseEndpoint).toContain('buildSzseClientPayload')
+    expect(szseEndpoint).toContain('loadSzseRows')
   })
 
-  it('ships the raw CSV next to the page that downloads it', () => {
-    const csv = read('public', 'data', 'sse-shareholders', 'panel.csv')
-    const lines = csv.trim().split(/\r?\n/)
-    expect(lines[0].split(',')).toHaveLength(15)
-    expect(lines).toHaveLength(24585)
+  it('ships both raw CSVs next to the page that downloads them', () => {
+    const sse = read('public', 'data', 'sse-shareholders', 'panel.csv')
+    const sseLines = sse.trim().split(/\r?\n/)
+    expect(sseLines[0].split(',')).toHaveLength(15)
+    expect(sseLines).toHaveLength(24585)
+
+    const szse = read('public', 'data', 'szse-shareholders', 'panel.csv')
+    const szseLines = szse.trim().split(/\r?\n/)
+    expect(szseLines[0].split(',')).toHaveLength(19)
+    expect(szseLines).toHaveLength(34934)
   })
 
   it('records the table pattern in the design language', () => {

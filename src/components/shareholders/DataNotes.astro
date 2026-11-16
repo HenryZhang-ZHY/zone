@@ -1,87 +1,108 @@
 ---
+import type { PanelModel } from '../../lib/shareholders/types'
+import {
+  SZSE_CSV_FILENAME,
+  SZSE_CSV_URL,
+  SZSE_JSON_URL,
+  type SzseModel,
+} from '../../lib/shareholders/szse'
 import {
   PANEL_CSV_FILENAME,
   PANEL_CSV_URL,
   PANEL_JSON_URL,
-  type PanelModel,
 } from '../../lib/shareholders/types'
 import { formatCount } from '../../lib/shareholders/view'
 
 interface Props {
-  model: PanelModel
+  sseModel: PanelModel
+  szseModel: SzseModel
 }
 
-const { model } = Astro.props
+const { sseModel, szseModel } = Astro.props
+
+const rowClass = 'grid gap-2 border-b border-line py-5 md:grid-cols-[8rem_minmax(0,1fr)] md:gap-8'
+const termClass = 'font-ui text-label-11 tracking-[0.02em] text-ink-tertiary'
+const detailClass = 'max-w-[48rem] font-ui text-copy-13 leading-[1.8] text-ink-secondary'
+const linkClass = 'text-accent underline decoration-accent/40 underline-offset-[0.25em] hover:decoration-current'
 ---
 
 <section id="method" class="mt-20 scroll-mt-8 border-t border-line-strong pt-4 sm:mt-24">
   <h2 class="font-prose text-heading-24 text-ink">数据说明</h2>
 
-  <dl class="mt-8 max-w-[64rem]">
-    <div class="grid gap-2 border-b border-line py-5 md:grid-cols-[8rem_minmax(0,1fr)] md:gap-8">
-      <dt class="font-ui text-label-11 tracking-[0.02em] text-ink-tertiary">来源</dt>
-      <dd class="max-w-[48rem] font-ui text-copy-13 leading-[1.8] text-ink-secondary">
+  <h3 class="mt-8 border-t border-line-strong pt-3 font-prose text-heading-20 text-ink">上交所 · 投资者身份</h3>
+  <dl class="mt-4 max-w-[64rem]">
+    <div class={rowClass}>
+      <dt class={termClass}>来源</dt>
+      <dd class={detailClass}>
         上海证券交易所编、中国金融出版社出版的《上海证券交易所统计年鉴》2008–2025 卷「年末个股股东持股情况」。由
-        <a
-          class="text-accent underline decoration-accent/40 underline-offset-[0.25em] hover:decoration-current"
-          href="https://github.com/HenryZhang-ZHY/surfer"
-          target="_blank"
-          rel="noopener noreferrer"
-        >surfer</a>
-        从公开 PDF 抽取，只覆盖上交所，不含深交所、北交所。全期共 {formatCount(model.coverage.rows)} 行、{formatCount(
-          model.coverage.companies,
-        )} 只股票、{model.coverage.years} 个年度。
+        <a class={linkClass} href="https://github.com/HenryZhang-ZHY/surfer" target="_blank" rel="noopener noreferrer">surfer</a>
+        从公开 PDF 抽取，只覆盖上交所。全期共 {formatCount(sseModel.coverage.rows)} 行、{formatCount(
+          sseModel.coverage.companies,
+        )} 只股票、{sseModel.coverage.years} 个年度。
       </dd>
     </div>
-
-    <div class="grid gap-2 border-b border-line py-5 md:grid-cols-[8rem_minmax(0,1fr)] md:gap-8">
-      <dt class="font-ui text-label-11 tracking-[0.02em] text-ink-tertiary">口径</dt>
-      <dd class="max-w-[48rem] font-ui text-copy-13 leading-[1.8] text-ink-secondary">
+    <div class={rowClass}>
+      <dt class={termClass}>口径</dt>
+      <dd class={detailClass}>
         表内比例是印在年鉴上的值，分母为当年合计持股；合计持股按 1 亿股 = 10,000 万股换算。2007–2008
         年末的合计为流通股口径，2009 年起为 A 股总股本；2022 年起股东分类调整。跨年比较前先看这两处断点。
       </dd>
     </div>
-
-    <div class="grid gap-2 border-b border-line py-5 md:grid-cols-[8rem_minmax(0,1fr)] md:gap-8">
-      <dt class="font-ui text-label-11 tracking-[0.02em] text-ink-tertiary">B 股</dt>
-      <dd class="max-w-[48rem] font-ui text-copy-13 leading-[1.8] text-ink-secondary">
+    <div class={rowClass}>
+      <dt class={termClass}>B 股</dt>
+      <dd class={detailClass}>
         B 股只在部分卷收录；2013 年末的 53 条记录全部记为自然人 100%，疑为原始表退化，不作分布解读。
       </dd>
     </div>
-
-    <div class="grid gap-2 border-b border-line py-5 md:grid-cols-[8rem_minmax(0,1fr)] md:gap-8">
-      <dt class="font-ui text-label-11 tracking-[0.02em] text-ink-tertiary">下载</dt>
-      <dd class="max-w-[48rem] font-ui text-copy-13 leading-[1.8] text-ink-secondary">
-        <a
-          class="text-accent underline decoration-accent/40 underline-offset-[0.25em] hover:decoration-current"
-          href={PANEL_CSV_URL}
-          download={PANEL_CSV_FILENAME}
-        >panel.csv</a>
-        <span class="text-ink-tertiary">（{formatCount(model.coverage.rows)} 行 × 15 列，2.5 MB，UTF-8）</span>
+    <div class={rowClass}>
+      <dt class={termClass}>下载</dt>
+      <dd class={detailClass}>
+        <a class={linkClass} href={PANEL_CSV_URL} download={PANEL_CSV_FILENAME}>panel.csv</a>
+        <span class="text-ink-tertiary">（{formatCount(sseModel.coverage.rows)} 行 × 15 列，UTF-8）</span>
         <span class="mx-2 text-ink-quiet" aria-hidden="true">/</span>
-        <a
-          class="text-accent underline decoration-accent/40 underline-offset-[0.25em] hover:decoration-current"
-          href={PANEL_JSON_URL}
-        >panel.json</a>
-        <span class="text-ink-tertiary">（页面使用的精简结构）</span>
-      </dd>
-    </div>
-
-    <div class="grid gap-2 py-5 md:grid-cols-[8rem_minmax(0,1fr)] md:gap-8">
-      <dt class="font-ui text-label-11 tracking-[0.02em] text-ink-tertiary">引用</dt>
-      <dd class="max-w-[48rem]">
-        <p class="font-code text-label-12 leading-[1.9] text-ink-secondary">
-          上海证券交易所. 上海证券交易所统计年鉴（2008–2025 卷）[M]. 北京: 中国金融出版社.
-        </p>
-        <p class="mt-1 font-code text-label-11 leading-[1.8] text-ink-tertiary">
-          数据整理：https://github.com/HenryZhang-ZHY/surfer
-        </p>
+        <a class={linkClass} href={PANEL_JSON_URL}>panel.json</a>
       </dd>
     </div>
   </dl>
 
-  <p class="max-w-[48rem] font-ui text-label-11 leading-[1.8] text-ink-quiet">
-    本页与 CSV 是对公开出版物中事实性数据的整理，不主张额外权利，也不对准确性作担保；原始 PDF 版权归上海证券交易所 /
-    中国金融出版社。数据按原样提供，不构成投资建议。
+  <h3 class="mt-12 border-t border-line-strong pt-3 font-prose text-heading-20 text-ink">深交所 · 持股规模</h3>
+  <dl class="mt-4 max-w-[64rem]">
+    <div class={rowClass}>
+      <dt class={termClass}>来源</dt>
+      <dd class={detailClass}>
+        深圳证券交易所《市场统计年鉴》2008–2025 卷「股东持股情况统计」。由
+        <a class={linkClass} href="https://github.com/HenryZhang-ZHY/surfer" target="_blank" rel="noopener noreferrer">surfer</a>
+        从公开 PDF 抽取。深交所卷号就是数据年份（《2025》= 2025 年末），与上交所「卷号 = 数据年 + 1」错开一年；只收录 A
+        股。全期共 {formatCount(szseModel.coverage.rows)} 行、{formatCount(
+          szseModel.coverage.companies,
+        )} 只股票、{szseModel.coverage.years} 个年度。
+      </dd>
+    </div>
+    <div class={rowClass}>
+      <dt class={termClass}>口径</dt>
+      <dd class={detailClass}>
+        托管流通股数和股东总数按年鉴印刷值整理，户均持股由两者相除并四舍五入到股；六个持股档位的比例之和为 100%，股东数之和等于股东总数。表内把前三个档位合为「＜1
+        万」，中间两档合为「1 万–10 万」，最后一档为「＞10 万」；图表和逐年数据保留六档明细。2013 年前后版式不同，但字段口径一致，可以跨年比较。
+      </dd>
+    </div>
+    <div class={rowClass}>
+      <dt class={termClass}>下载</dt>
+      <dd class={detailClass}>
+        <a class={linkClass} href={SZSE_CSV_URL} download={SZSE_CSV_FILENAME}>panel.csv</a>
+        <span class="text-ink-tertiary">（{formatCount(szseModel.coverage.rows)} 行 × 19 列，UTF-8）</span>
+        <span class="mx-2 text-ink-quiet" aria-hidden="true">/</span>
+        <a class={linkClass} href={SZSE_JSON_URL}>panel.json</a>
+      </dd>
+    </div>
+  </dl>
+
+  <h3 class="mt-12 border-t border-line-strong pt-3 font-prose text-heading-20 text-ink">引用与许可</h3>
+  <div class="mt-4 max-w-[48rem] border-l-2 border-line-strong pl-4 font-code text-label-12 leading-[1.9] text-ink-secondary">
+    <p>上海证券交易所. 上海证券交易所统计年鉴（2008–2025 卷）[M]. 北京: 中国金融出版社.</p>
+    <p>深圳证券交易所. 深圳证券交易所市场统计年鉴（2008–2025 卷）[M].</p>
+    <p class="text-ink-tertiary">数据整理：https://github.com/HenryZhang-ZHY/surfer</p>
+  </div>
+  <p class="mt-6 max-w-[48rem] font-ui text-label-11 leading-[1.8] text-ink-quiet">
+    本页与 CSV 是对公开出版物中事实性数据的整理，不主张额外权利，也不对准确性作担保；原始 PDF 版权归上海证券交易所 / 深圳证券交易所所有。数据按原样提供，不构成投资建议。
   </p>
 </section>

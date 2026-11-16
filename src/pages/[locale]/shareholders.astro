@@ -6,13 +6,20 @@ import HolderTable from '../../components/shareholders/HolderTable.astro'
 import DataNotes from '../../components/shareholders/DataNotes.astro'
 import { buildPanelModel } from '../../lib/shareholders/model'
 import { loadPanelRows } from '../../lib/shareholders/parse'
-import { panelRowToTableRow, tableRowHtml } from '../../lib/shareholders/table'
+import { ssePanelRowToTableRow, type MarketInfo } from '../../lib/shareholders/table'
 import {
   PANEL_CSV_FILENAME,
   PANEL_CSV_URL,
   PANEL_JSON_URL,
 } from '../../lib/shareholders/types'
-import { formatCount, formatPercent } from '../../lib/shareholders/view'
+import {
+  SZSE_CSV_FILENAME,
+  SZSE_CSV_URL,
+  SZSE_JSON_URL,
+  buildSzseModel,
+} from '../../lib/shareholders/szse'
+import { loadSzseRows } from '../../lib/shareholders/szse-parse'
+import { formatCount } from '../../lib/shareholders/view'
 import { SITE_TITLE } from '../../consts'
 import { localeStaticPaths, localizePath, type Locale } from '../../i18n'
 import '../../styles/shareholders.css'
@@ -21,40 +28,65 @@ export const getStaticPaths = localeStaticPaths
 
 const { locale } = Astro.props as { locale: Locale }
 
-const model = buildPanelModel(loadPanelRows())
-const latestYear = model.latestYear
-const latestRows = model.rows.filter((row) => row.year === latestYear)
-const companiesByCode = new Map(model.companies.map((company) => [company.code, company]))
+const sseModel = buildPanelModel(loadPanelRows())
+const szseModel = buildSzseModel(loadSzseRows())
 
-// The table's first paint is the latest year, in code order. The browser takes
-// over search, sort, the year switch and the accordion from this same markup.
-const tableRows = latestRows
+const sseMarket: MarketInfo = {
+  id: 'sse',
+  label: '上交所',
+  metric: '投资者身份',
+  years: sseModel.years,
+  latestYear: sseModel.latestYear,
+  latestCount: sseModel.coverage.latestCount,
+  totalRows: sseModel.coverage.rows,
+  jsonUrl: PANEL_JSON_URL,
+  csvUrl: PANEL_CSV_URL,
+  csvFilename: PANEL_CSV_FILENAME,
+}
+
+const szseMarket: MarketInfo = {
+  id: 'szse',
+  label: '深交所',
+  metric: '持股规模',
+  years: szseModel.years,
+  latestYear: szseModel.latestYear,
+  latestCount: szseModel.coverage.latestCount,
+  totalRows: szseModel.coverage.rows,
+  jsonUrl: SZSE_JSON_URL,
+  csvUrl: SZSE_CSV_URL,
+  csvFilename: SZSE_CSV_FILENAME,
+}
+
+const markets = [sseMarket, szseMarket]
+const totalRows = sseModel.coverage.rows + szseModel.coverage.rows
+const totalCompanies = sseModel.coverage.companies + szseModel.coverage.companies
+
+// The no-JS preview is the default market's latest year, first 20 rows. The
+// interactive table replaces it on load and is virtualised, so the page no longer
+// ships 5,000 rows of HTML.
+const companiesByCode = new Map(sseModel.companies.map((company) => [company.code, company]))
+const previewRows = sseModel.rows
+  .filter((row) => row.year === sseModel.latestYear)
+  .sort((first, second) => first.code - second.code)
+  .slice(0, 20)
   .map((row) =>
-    panelRowToTableRow(
-      row,
-      [...new Set(companiesByCode.get(row.code)?.names.map((entry) => entry.name) ?? [row.name])],
-    ),
+    ssePanelRowToTableRow(row, [
+      ...new Set(companiesByCode.get(row.code)?.names.map((entry) => entry.name) ?? [row.name]),
+    ]),
   )
-  .sort((first, second) => first.code.localeCompare(second.code))
-const rowsHtml = tableRows.map(tableRowHtml).join('')
+const previewLabel = `上交所 ${sseModel.latestYear} 年末`
 
-const latestTotalHold10k = latestRows.reduce((sum, row) => sum + row.totalHold10k, 0)
-const weightedIndividual =
-  latestTotalHold10k > 0
-    ? latestRows.reduce((sum, row) => sum + row.individualPct * row.totalHold10k, 0) / latestTotalHold10k
-    : 0
-
-const pageTitle = `谁在持有上交所的股票：2007–2024 年个股股东结构 | ${SITE_TITLE}`
-const description = `上交所《统计年鉴》2008–2025 卷的年末个股股东持股数据：${model.coverage.years} 个年度、${formatCount(
-  model.coverage.companies,
-)} 只股票、${formatCount(
-  model.coverage.rows,
-)} 条记录。一页可搜索、可按列排序的表格，点开任意股票看历年股东结构变化，下载原始 CSV。`
+const pageTitle = `谁在持有沪深股票：沪深个股股东结构（2007–2025） | ${SITE_TITLE}`
+const description = `上交所《统计年鉴》与深交所《市场统计年鉴》的个股股东数据：${formatCount(
+  totalRows,
+)} 条记录、${formatCount(totalCompanies)} 只股票。一页可搜索、可按列排序的表格，点开任意股票看历年变化，下载原始 CSV。`
 
 const canonical = new URL(localizePath('/shareholders/', 'zh-Hans'), Astro.site)
 const home = new URL(localizePath('/', 'zh-Hans'), Astro.site)
-const csvURL = new URL(PANEL_CSV_URL, Astro.site)
-const jsonURL = new URL(PANEL_JSON_URL, Astro.site)
+const sseCsvURL = new URL(PANEL_CSV_URL, Astro.site)
+const sseJsonURL = new URL(PANEL_JSON_URL, Astro.site)
+const szseCsvURL = new URL(SZSE_CSV_URL, Astro.site)
+const szseJsonURL = new URL(SZSE_JSON_URL, Astro.site)
 
 const structuredData = {
   '@context': 'https://schema.org',
@@ -73,25 +105,28 @@ const structuredData = {
         name: SITE_TITLE,
         inLanguage: 'zh-Hans',
       },
-      about: { '@type': 'Thing', name: '上交所个股股东持股结构' },
+      about: { '@type': 'Thing', name: '沪深个股股东结构' },
       breadcrumb: { '@id': `${canonical.href}#breadcrumb` },
-      mainEntity: { '@id': `${canonical.href}#dataset` },
+      mainEntity: [
+        { '@id': `${canonical.href}#dataset-sse` },
+        { '@id': `${canonical.href}#dataset-szse` },
+      ],
     },
     {
       '@type': 'BreadcrumbList',
       '@id': `${canonical.href}#breadcrumb`,
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: '首页', item: home.href },
-        { '@type': 'ListItem', position: 2, name: '持股结构数据表' },
+        { '@type': 'ListItem', position: 2, name: '沪深个股股东结构数据' },
       ],
     },
     {
       '@type': 'Dataset',
-      '@id': `${canonical.href}#dataset`,
+      '@id': `${canonical.href}#dataset-sse`,
       name: '上海证券交易所年末个股股东持股结构（2007–2024）',
       description: `上海证券交易所《统计年鉴》2008–2025 卷「年末个股股东持股情况」的结构化数据：${formatCount(
-        model.coverage.rows,
-      )} 行，一行一只股票一个年末，含自然人、一般法人、专业机构持股数与比例。`,
+        sseModel.coverage.rows,
+      )} 行，一行一只股票一个年末，按自然人、一般法人、专业机构拆分。`,
       url: canonical.href,
       creator: { '@type': 'Organization', name: '上海证券交易所' },
       creditText: '数据整理：surfer（https://github.com/HenryZhang-ZHY/surfer）',
@@ -101,18 +136,28 @@ const structuredData = {
       spatialCoverage: { '@type': 'Place', name: '中国上海' },
       variableMeasured: ['自然人持股比例', '一般法人持股比例', '专业机构持股比例', '合计持股数'],
       distribution: [
-        {
-          '@type': 'DataDownload',
-          name: 'panel.csv',
-          contentUrl: csvURL.href,
-          encodingFormat: 'text/csv',
-        },
-        {
-          '@type': 'DataDownload',
-          name: 'panel.json',
-          contentUrl: jsonURL.href,
-          encodingFormat: 'application/json',
-        },
+        { '@type': 'DataDownload', name: 'sse-panel.csv', contentUrl: sseCsvURL.href, encodingFormat: 'text/csv' },
+        { '@type': 'DataDownload', name: 'sse-panel.json', contentUrl: sseJsonURL.href, encodingFormat: 'application/json' },
+      ],
+    },
+    {
+      '@type': 'Dataset',
+      '@id': `${canonical.href}#dataset-szse`,
+      name: '深圳证券交易所年末个股持股规模（2008–2025）',
+      description: `深圳证券交易所《市场统计年鉴》2008–2025 卷「股东持股情况统计」的结构化数据：${formatCount(
+        szseModel.coverage.rows,
+      )} 行，一行一只股票一个年末，按六个持股规模档位拆分。`,
+      url: canonical.href,
+      creator: { '@type': 'Organization', name: '深圳证券交易所' },
+      creditText: '数据整理：surfer（https://github.com/HenryZhang-ZHY/surfer）',
+      citation: '深圳证券交易所. 深圳证券交易所市场统计年鉴（2008–2025 卷）[M].',
+      isBasedOn: 'https://github.com/HenryZhang-ZHY/surfer',
+      temporalCoverage: '2008/2025',
+      spatialCoverage: { '@type': 'Place', name: '中国深圳' },
+      variableMeasured: ['股东总数', '户均持股', '10万股以上持股比例', '托管流通股数'],
+      distribution: [
+        { '@type': 'DataDownload', name: 'szse-panel.csv', contentUrl: szseCsvURL.href, encodingFormat: 'text/csv' },
+        { '@type': 'DataDownload', name: 'szse-panel.json', contentUrl: szseJsonURL.href, encodingFormat: 'application/json' },
       ],
     },
   ],
@@ -128,16 +173,15 @@ const structuredData = {
   sourceLocale="zh-Hans"
 >
   <script type="application/ld+json" slot="head" set:html={JSON.stringify(structuredData)} />
-  <link rel="alternate" type="application/json" title="股东结构数据" href={PANEL_JSON_URL} slot="head" />
+  <link rel="alternate" type="application/json" title="上交所股东结构数据" href={PANEL_JSON_URL} slot="head" />
+  <link rel="alternate" type="application/json" title="深交所持股规模数据" href={SZSE_JSON_URL} slot="head" />
 
   <main class="shell pt-article-top pb-page-bottom" lang="zh-Hans">
     <PageHeader
       class="max-sm:[&>h1]:text-heading-32 [&>p:first-child]:normal-case"
       eyebrow="数据观察 / 股东结构"
-      title="谁在持有上交所的股票"
-      lede={`2007–2024 年末，上交所每只股票的自然人、一般法人与专业机构持股。表内是逐家公司的比例；按持股数加权，${latestYear} 年末自然人持有全部上交所股票的 ${formatPercent(
-        weightedIndividual,
-      )}。`}
+      title="谁在持有沪深股票"
+      lede="上交所按投资者身份拆分，深交所按持股规模拆分；两套年鉴口径不同，分开读。默认显示各自最新一年，搜索、排序和逐只股票的历年变化都在一张表里。"
     >
       <LanguageNote
         slot="note"
@@ -148,24 +192,34 @@ const structuredData = {
         available={['zh-Hans'] as Locale[]}
       />
       <div slot="meta" class="mt-6 flex flex-wrap items-baseline gap-x-6 gap-y-2 border-t border-line pt-4 font-ui text-label-11 text-ink-tertiary">
-        <span>{model.coverage.years} 个年度</span>
-        <span>{model.coverage.firstYear}–{model.coverage.lastYear}</span>
-        <span class="text-ink">最新 {latestYear} 年末</span>
-        <span>{formatCount(latestRows.length)} 只股票</span>
-        <span>{formatCount(model.coverage.rows)} 条记录</span>
-        <a
-          class="ml-auto text-accent underline decoration-accent/40 underline-offset-[0.25em] transition-colors duration-1 hover:decoration-current max-sm:ml-0"
-          href={PANEL_CSV_URL}
-          download={PANEL_CSV_FILENAME}
-        >
-          下载原始 CSV ↓
-        </a>
+        <span>2 个市场</span>
+        <span>{formatCount(totalRows)} 条记录</span>
+        <span>{formatCount(totalCompanies)} 只股票</span>
+        <span class="text-ink">沪 2007–2024</span>
+        <span class="text-ink">深 2008–2025</span>
+        <span class="ml-auto flex flex-wrap items-baseline gap-x-4 max-sm:ml-0">
+          <a
+            class="text-accent underline decoration-accent/40 underline-offset-[0.25em] transition-colors duration-1 hover:decoration-current"
+            href={PANEL_CSV_URL}
+            download={PANEL_CSV_FILENAME}
+          >沪 CSV ↓</a>
+          <a
+            class="text-accent underline decoration-accent/40 underline-offset-[0.25em] transition-colors duration-1 hover:decoration-current"
+            href={SZSE_CSV_URL}
+            download={SZSE_CSV_FILENAME}
+          >深 CSV ↓</a>
+        </span>
       </div>
     </PageHeader>
 
-    <HolderTable years={model.years} latestYear={latestYear} rowCount={latestRows.length} rowsHtml={rowsHtml} />
+    <HolderTable
+      markets={markets}
+      defaultMarket={sseMarket}
+      previewRows={previewRows}
+      previewLabel={previewLabel}
+    />
 
-    <DataNotes model={model} />
+    <DataNotes sseModel={sseModel} szseModel={szseModel} />
   </main>
 </BaseLayout>
 

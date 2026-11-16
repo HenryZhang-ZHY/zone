@@ -125,28 +125,31 @@ Reading, listening and the shelf are appendices to the writing, not sections of 
 
 ## The shareholder table
 
-The shareholder page is one table, not a report. Search, the year switch, sortable headers and one accordion replace the old hero, market chart, lookup and snapshot lists.
+The page is one virtualised table over two separate yearbooks. The SSE yearbook splits holders by investor identity; the SZSE yearbook splits them by holding size. Their columns are different, so the table switches datasets instead of mixing them.
 
 ```
 数据观察 / 股东结构
-谁在持有上交所的股票
-[search ......................]  [年末 2024 ▾]  2,317 只
+谁在持有沪深股票
+[上交所 投资者身份 2007–2024] [深交所 持股规模 2008–2025]
+[search ......................]  [年份 2024 ▾]  2,317 只
 [代码 | 简称 | 板块 | 自然人% | 一般法人% | 专业机构% | 其他% | 合计]
-[ ... 2,317 rows ... ]
-  [open row: name, summary, four-line chart, exact yearly table]
-[数据说明: source, calibers, B shares, download, citation]
+[ viewport: only the rows around the scroll position; sticky header ]
+  [open row: name, summary, chart, exact yearly table behind 逐年数据]
+[数据说明: both sources, calibers, download, citation]
 ```
 
-- The table is the page. It server-renders the latest year so the data is readable before JavaScript; search, column sort, the year switch and the accordion enhance it. The full panel is fetched in the background (`panel.json`) and only blocks the first interaction if it has not arrived.
-- Search is one ruled field with no button and no result list. It filters in place on code prefix, current name, every printed old name and the board; the count is live.
-- The reader clicks a header to sort: each label is a button, `aria-sort` carries the state, text starts ascending and numbers start descending, and the active arrow is the only accent in the row. The header sticks while the table scrolls.
-- The latest year is the default, not the only year. The year select rebuilds the same table for any yearbook, and search and sort survive the switch. `?stock=` opens the accordion at the row's last recorded year, so a delisted company still has a link.
-- Clicking a row opens one accordion at a time. The chevron, `aria-expanded` and the close button all say the same thing. The open band is `surface`, not a card.
-- The accordion reads one company: the name at the selected year, the change since 2009 (or the stock’s first year), a four-series line chart, and the exact yearly table behind `逐年数据`. A chart always has a hairline table under it; here the table is one disclosure away, not a second page.
-- The chart uses the four data colors, 1px grid and breakpoint hairlines, and HTML labels. 2009 and 2022 are dashed vertical rules, drawn only when the company's history crosses them. Missing years break the line instead of interpolating across a gap. Hovering only moves a readout and four dots.
-- Below 900px the board and residual columns drop; below 720px the share total drops too. The accordion keeps its year labels by showing every second, then every third, year. The table never scrolls sideways.
-- The data notes stay short and visible: source, the two calibers, the B-share degeneracy, download and citation. No field dictionary and no FAQ; the table is the explanation.
-- Page-specific CSS lives in `src/styles/shareholders.css`; no new `@zone/ui` component. The table, the chart and the accordion are one page's instrument, not a system pattern yet.
+- The table is the page. It no longer ships every row: a fixed-height viewport renders only the rows around the scroll position plus one overscan window. The latest year is an array, search and sort run on that array, and the DOM stays around thirty rows. A 20-row `<noscript>` preview and the CSV downloads remain for readers without JavaScript.
+- The two markets are two buttons, not a dropdown or a shared column set. Switching exchanges changes the header, the year options and the accordion vocabulary. Search, sort and the year switch survive within a market; switching resets the query and sort because the columns changed.
+- Search is one ruled field with no button and no result list. It filters on code prefix, current name, every printed old name and the board; the count is live and the viewport returns to the first match.
+- The reader clicks a header to sort: each label is a button, `aria-sort` carries the state, text starts ascending and numbers start descending, and the active arrow is the only accent in the row. The header sticks while the viewport scrolls.
+- The latest year is the default, not the only year. The year select rebuilds the rows for that volume; `?stock=` opens the accordion at the stock's last recorded year, so a delisted company still has a link. The URL keeps `?market=szse` when the Shenzhen exchange is active.
+- Clicking a row opens one accordion at a time. The accordion is one virtual item with its measured height, so rows after it are offset rather than incorrectly spaced. Its header sticks under the table header, the chevron and `aria-expanded` move, and the close button stays reachable while the chart and yearly table scroll.
+- The accordion reads one company: the name printed in the selected year, the change since 2009 (or the stock's first year), a chart, and the exact yearly table behind `逐年数据`. A chart always has a hairline table under it; here the table is one disclosure away, not a second page.
+- The SSE chart is four identity lines with 2009/2022 dashed caliber rules and a four-dot hover readout. The SZSE chart is a 100% stacked column of `＜1万 / 1万–10万 / ＞10万`, with the six printed buckets still in the exact table. Missing years break the SSE line and leave a blank SZSE column instead of interpolating.
+- Below 1100px the board, middle bucket and household-average columns drop; below 720px the share total and tradable-share total drop; below 600px the SZSE holder count drops. The accordion keeps every second, then every third, year label. The table itself never scrolls sideways; only the SZSE yearly table does.
+- The page does not use a grid library. At 5,000 rows, two column sets and one custom detail, a 400 KB virtual-scroll dependency and its theme would cost more than the small window above; the table keeps the Hairline markup, the server-rendered fallback and the accordion. This is a page instrument, not a system component.
+- The data notes stay short and visible: both sources, the identity/size difference, the yearbook year definitions, the SSE calibers, the SZSE bucket checks, download and citation. No field dictionary and no FAQ; the table is the explanation.
+- Page-specific CSS lives in `src/styles/shareholders.css`; no new `@zone/ui` component.
 
 ## The calculator
 

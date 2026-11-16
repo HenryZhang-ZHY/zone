@@ -1,36 +1,46 @@
-import type { Board, ClientCompany, ClientPayload, PanelRow } from './types'
-import { formatDelta, formatPercent, formatShares } from './view'
+import type { ClientCompany, ClientPayload, PanelRow } from './types'
+import type { SzseClientCompany, SzseClientPayload } from './szse'
+import { formatCount, formatDelta, formatPercent, formatShares } from './view'
 
 /**
- * The one table on the shareholder page, and the one chart inside its accordion.
+ * The one table shared by the two yearbooks.
  *
- * A row is deliberately plain data: the server renders the latest year from
- * `PanelRow`s, the browser rebuilds other years from `ClientCompany`s, and both
- * paths print the same markup through `tableRowHtml`.
+ * The Shanghai data splits holders by investor identity, the Shenzhen data by
+ * holding size. Their columns are different, so the page switches datasets rather
+ * than blending them. Everything below is the common row shape, the two column
+ * sets, and the historical series the accordion draws.
  */
 
-export type SortKey =
-  | 'code'
-  | 'name'
-  | 'board'
-  | 'individual'
-  | 'corporate'
-  | 'institution'
-  | 'other'
-  | 'total'
+export type Market = 'sse' | 'szse'
 
-export interface TableColumn {
-  key: SortKey
+export interface MarketInfo {
+  id: Market
+  label: string
+  metric: string
+  years: number[]
+  latestYear: number
+  latestCount: number
+  totalRows: number
+  jsonUrl: string
+  csvUrl: string
+  csvFilename: string
+}
+
+export interface ColumnDef {
+  key: string
   label: string
   numeric: boolean
   className: string
 }
 
-/** Reading order: identity, then the composition, then the size. */
-export const TABLE_COLUMNS: readonly TableColumn[] = [
+const BASE_COLUMNS: readonly ColumnDef[] = [
   { key: 'code', label: '代码', numeric: false, className: 'holder-col--code' },
   { key: 'name', label: '简称', numeric: false, className: 'holder-col--name' },
   { key: 'board', label: '板块', numeric: false, className: 'holder-col--board' },
+]
+
+export const SSE_COLUMNS: readonly ColumnDef[] = [
+  ...BASE_COLUMNS,
   { key: 'individual', label: '自然人 %', numeric: true, className: 'holder-col--individual' },
   { key: 'corporate', label: '一般法人 %', numeric: true, className: 'holder-col--corporate' },
   { key: 'institution', label: '专业机构 %', numeric: true, className: 'holder-col--institution' },
@@ -38,30 +48,28 @@ export const TABLE_COLUMNS: readonly TableColumn[] = [
   { key: 'total', label: '合计（亿股）', numeric: true, className: 'holder-col--total' },
 ]
 
-/** First click on a number means "the biggest", on text "the alphabet". */
-export const NUMERIC_SORT_KEYS: readonly SortKey[] = ['individual', 'corporate', 'institution', 'other', 'total']
+export const SZSE_COLUMNS: readonly ColumnDef[] = [
+  ...BASE_COLUMNS,
+  { key: 'holders', label: '股东（户）', numeric: true, className: 'holder-col--holders' },
+  { key: 'avg', label: '户均（股）', numeric: true, className: 'holder-col--avg' },
+  { key: 'small', label: '＜1万 %', numeric: true, className: 'holder-col--small' },
+  { key: 'mid', label: '1万–10万 %', numeric: true, className: 'holder-col--mid' },
+  { key: 'large', label: '＞10万 %', numeric: true, className: 'holder-col--large' },
+  { key: 'negotiable', label: '托管（亿股）', numeric: true, className: 'holder-col--negotiable' },
+]
 
-export const SORT_LABELS: Record<SortKey, string> = {
-  code: '代码',
-  name: '简称',
-  board: '板块',
-  individual: '自然人持股比例',
-  corporate: '一般法人持股比例',
-  institution: '专业机构持股比例',
-  other: '其他持股比例',
-  total: '合计持股',
-}
+export const columnsForMarket = (market: Market): readonly ColumnDef[] =>
+  market === 'sse' ? SSE_COLUMNS : SZSE_COLUMNS
 
 export interface TableRow {
   code: string
   name: string
-  board: Board
+  board: string
   aliases: string[]
-  totalYi: number
-  individual: number
-  corporate: number
-  institution: number
-  other: number
+  /** Preformatted text for the numeric columns. */
+  cells: Record<string, string>
+  /** Values used by the header sort; the identity columns use the row fields. */
+  sort: Record<string, number>
 }
 
 const ENTITIES: Record<string, string> = {
@@ -74,49 +82,85 @@ const ENTITIES: Record<string, string> = {
 
 export const escapeHtml = (value: string): string => value.replace(/[&<>"']/g, (character) => ENTITIES[character])
 
-export function boardLabel(board: Board): string {
-  return board === '主板A' ? '主板 A' : board === 'B股' ? 'B 股' : board
+export function boardLabel(board: string): string {
+  if (board === '主板A') return '主板 A'
+  if (board === 'B股') return 'B 股'
+  return board
 }
 
-/** One printed panel row → the row the table and its sorter use. */
-export function panelRowToTableRow(row: PanelRow, aliases: string[]): TableRow {
-  return {
-    code: String(row.code).padStart(6, '0'),
-    name: row.name,
-    board: row.board,
-    aliases,
-    totalYi: Math.round((row.totalHold10k / 1e4) * 100) / 100,
-    individual: row.individualPct,
-    corporate: row.corporatePct,
-    institution: row.institutionPct,
-    other: row.otherPct,
-  }
+export function tableHeadHtml(
+  columns: readonly ColumnDef[],
+  sortKey: string = 'code',
+  direction: 'asc' | 'desc' = 'asc',
+  interactive = true,
+): string {
+  return `<tr>${columns
+    .map((column) => {
+      if (!interactive) {
+        return `<th scope="col" class="holder-th${column.numeric ? ' holder-th--num' : ''} ${column.className}"><span class="holder-th__static">${escapeHtml(
+          column.label,
+        )}</span></th>`
+      }
+      const active = column.key === sortKey
+      const ariaSort = active ? (direction === 'asc' ? 'ascending' : 'descending') : 'none'
+      const mark = active ? (direction === 'asc' ? '↑' : '↓') : ''
+      return `<th scope="col" class="holder-th${column.numeric ? ' holder-th--num' : ''} ${column.className}" aria-sort="${ariaSort}" data-sort-th="${column.key}"><button type="button" class="holder-th__button" data-sort="${column.key}" aria-label="按${escapeHtml(
+        column.label,
+      )}排序"><span>${escapeHtml(column.label)}</span><span class="holder-th__mark" data-sort-mark aria-hidden="true">${mark}</span></button></th>`
+    })
+    .join('')}</tr>`
 }
 
-/** The server-rendered row: every cell the browser may later sort on is in a data attribute. */
-export function tableRowHtml(row: TableRow): string {
-  const aliases = row.aliases.join('|')
-  return `<tr class="holder-row" data-code="${row.code}" data-name="${escapeHtml(row.name)}" data-board="${row.board}" data-aliases="${escapeHtml(aliases)}" data-individual="${row.individual}" data-corporate="${row.corporate}" data-institution="${row.institution}" data-other="${row.other}" data-total="${row.totalYi}">
-  <td class="holder-row__code holder-col--code">${row.code}</td>
-  <th scope="row" class="holder-row__name-cell holder-col--name"><button type="button" class="holder-row__toggle" aria-expanded="false" data-row-toggle><span class="holder-row__name">${escapeHtml(row.name)}</span><span class="holder-row__chevron" aria-hidden="true"></span></button></th>
-  <td class="holder-row__board holder-col--board">${boardLabel(row.board)}</td>
-  <td class="holder-row__num holder-col--individual">${formatPercent(row.individual)}</td>
-  <td class="holder-row__num holder-col--corporate">${formatPercent(row.corporate)}</td>
-  <td class="holder-row__num holder-col--institution">${formatPercent(row.institution)}</td>
-  <td class="holder-row__num holder-row__other holder-col--other">${formatPercent(row.other)}</td>
-  <td class="holder-row__num holder-row__total holder-col--total">${formatShares(row.totalYi * 1e4)}</td>
-</tr>`
+export function tableRowHtml(
+  row: TableRow,
+  columns: readonly ColumnDef[],
+  interactive = true,
+  open = false,
+  detailId?: string,
+): string {
+  const cells = columns
+    .map((column) => {
+      if (column.key === 'code') {
+        return `<td class="holder-row__code ${column.className}">${row.code}</td>`
+      }
+      if (column.key === 'name') {
+        const controls = open && detailId ? ` aria-controls="${detailId}"` : ''
+        const content = interactive
+          ? `<button type="button" class="holder-row__toggle" aria-expanded="${open}"${controls} data-row-toggle><span class="holder-row__name">${escapeHtml(
+              row.name,
+            )}</span><span class="holder-row__chevron" aria-hidden="true"></span></button>`
+          : `<span class="holder-row__name">${escapeHtml(row.name)}</span>`
+        return `<th scope="row" class="holder-row__name-cell ${column.className}">${content}</th>`
+      }
+      if (column.key === 'board') {
+        return `<td class="holder-row__board ${column.className}">${escapeHtml(boardLabel(row.board))}</td>`
+      }
+      return `<td class="holder-row__num ${column.className}">${row.cells[column.key] ?? '—'}</td>`
+    })
+    .join('')
+
+  return `<tr class="${open ? 'holder-row is-open' : 'holder-row'}" data-code="${row.code}" data-name="${escapeHtml(
+    row.name,
+  )}" data-board="${escapeHtml(row.board)}" data-aliases="${escapeHtml(
+    row.aliases.join('|'),
+  )}" data-sort="${escapeHtml(JSON.stringify(row.sort))}">${cells}</tr>`
 }
 
-export function tableEmptyRowHtml(): string {
-  return '<tr class="holder-empty" data-holder-empty hidden><td colspan="8">没有匹配的股票。试试代码、简称或板块。</td></tr>'
+export function tableEmptyRowHtml(colspan: number): string {
+  return `<tr class="holder-empty" data-holder-empty><td colspan="${colspan}">没有匹配的股票。试试代码、简称或板块。</td></tr>`
 }
+
+export function tableLoadingRowHtml(colspan: number): string {
+  return `<tr class="holder-loading"><td colspan="${colspan}">正在载入数据…</td></tr>`
+}
+
+const collator = new Intl.Collator('zh-Hans', { numeric: true, sensitivity: 'base' })
+const BOARD_ORDER: Record<string, number> = { 主板A: 0, 主板: 0, 科创板: 1, 创业板: 1, B股: 2, 其他: 3 }
 
 export function normalizeQuery(value: string): string {
   return value.normalize('NFKC').replace(/\s+/g, '').trim().toLowerCase()
 }
 
-/** Search covers the code, the current name, every printed old name and the board. */
 export function matchesTableRow(row: TableRow, query: string): boolean {
   const text = normalizeQuery(query)
   if (text === '') return true
@@ -129,38 +173,18 @@ export function matchesTableRow(row: TableRow, query: string): boolean {
   )
 }
 
-const collator = new Intl.Collator('zh-Hans', { numeric: true, sensitivity: 'base' })
-const BOARD_ORDER: Record<Board, number> = { 主板A: 0, 科创板: 1, B股: 2 }
-
 /** Ascending comparison of the chosen column; ties are left to `compareForSort`. */
-export function compareTableRows(first: TableRow, second: TableRow, key: SortKey): number {
-  let result = 0
-
-  switch (key) {
-    case 'code':
-      result = first.code.localeCompare(second.code)
-      break
-    case 'name':
-      result = collator.compare(first.name, second.name)
-      break
-    case 'board':
-      result = BOARD_ORDER[first.board] - BOARD_ORDER[second.board]
-      break
-    case 'total':
-      result = first.totalYi - second.totalYi
-      break
-    default:
-      result = first[key] - second[key]
-  }
-
-  return result
+export function compareTableRows(first: TableRow, second: TableRow, key: string): number {
+  if (key === 'code') return first.code.localeCompare(second.code)
+  if (key === 'name') return collator.compare(first.name, second.name)
+  if (key === 'board') return (BOARD_ORDER[first.board] ?? 9) - (BOARD_ORDER[second.board] ?? 9)
+  return (first.sort[key] ?? 0) - (second.sort[key] ?? 0)
 }
 
-/** The sort order: the chosen column changes direction, ties stay in code order. */
 export function compareForSort(
   first: TableRow,
   second: TableRow,
-  key: SortKey,
+  key: string,
   direction: 'asc' | 'desc',
 ): number {
   const primary = compareTableRows(first, second, key)
@@ -168,11 +192,14 @@ export function compareForSort(
   return first.code.localeCompare(second.code)
 }
 
-export function sortTableRows(rows: TableRow[], key: SortKey, direction: 'asc' | 'desc'): TableRow[] {
+export function sortTableRows(rows: TableRow[], key: string, direction: 'asc' | 'desc'): TableRow[] {
   return [...rows].sort((first, second) => compareForSort(first, second, key, direction))
 }
 
-export function companyNameAt(company: ClientCompany, year: number): string {
+/** Shared by both markets: the latest name, the printed old names, the current name. */
+type NamedCompany = { n: string; h?: [number, string][] }
+
+export function companyNameAt(company: NamedCompany, year: number): string {
   if (!company.h?.length) return company.n
 
   let name = company.h[0][1]
@@ -183,12 +210,39 @@ export function companyNameAt(company: ClientCompany, year: number): string {
   return name
 }
 
-export function companyAliases(company: ClientCompany): string[] {
+export function companyAliases(company: NamedCompany): string[] {
   return [...new Set([company.n, ...(company.h?.map(([, name]) => name) ?? [])])]
 }
 
-/** Rebuilds one table year from the browser payload. */
-export function clientTableRows(payload: ClientPayload, year: number): TableRow[] {
+/* ------------------------------------------------------------------ */
+/* Row builders                                                        */
+/* ------------------------------------------------------------------ */
+
+/** The server-rendered preview and the browser use the same row shape. */
+export function ssePanelRowToTableRow(row: PanelRow, aliases: string[]): TableRow {
+  return {
+    code: String(row.code).padStart(6, '0'),
+    name: row.name,
+    board: row.board,
+    aliases,
+    cells: {
+      individual: formatPercent(row.individualPct),
+      corporate: formatPercent(row.corporatePct),
+      institution: formatPercent(row.institutionPct),
+      other: formatPercent(row.otherPct),
+      total: formatShares(row.totalHold10k),
+    },
+    sort: {
+      individual: row.individualPct,
+      corporate: row.corporatePct,
+      institution: row.institutionPct,
+      other: row.otherPct,
+      total: row.totalHold10k / 1e4,
+    },
+  }
+}
+
+export function sseTableRows(payload: ClientPayload, year: number): TableRow[] {
   const index = payload.years.indexOf(year)
   if (index < 0) return []
 
@@ -196,17 +250,53 @@ export function clientTableRows(payload: ClientPayload, year: number): TableRow[
   for (const company of payload.companies) {
     const row = company.r[index]
     if (!row) continue
+    const [totalYi, individual, corporate, institution, other] = row
+    rows.push({
+      code: company.c,
+      name: companyNameAt(company, year),
+      board: company.b,
+      aliases: companyAliases(company),
+      cells: {
+        individual: formatPercent(individual),
+        corporate: formatPercent(corporate),
+        institution: formatPercent(institution),
+        other: formatPercent(other),
+        total: formatShares(totalYi * 1e4),
+      },
+      sort: { individual, corporate, institution, other, total: totalYi },
+    })
+  }
+
+  return rows
+}
+
+export function szseTableRows(payload: SzseClientPayload, year: number): TableRow[] {
+  const index = payload.years.indexOf(year)
+  if (index < 0) return []
+
+  const rows: TableRow[] = []
+  for (const company of payload.companies) {
+    const row = company.r[index]
+    if (!row) continue
+    const [negotiableYi, holders, avgHold, pLt1k, p1k5k, p5k10k, p10k50k, p50k100k, pGt100k] = row
+    const small = pLt1k + p1k5k + p5k10k
+    const mid = p10k50k + p50k100k
+    const large = pGt100k
 
     rows.push({
       code: company.c,
       name: companyNameAt(company, year),
       board: company.b,
       aliases: companyAliases(company),
-      totalYi: row[0],
-      individual: row[1],
-      corporate: row[2],
-      institution: row[3],
-      other: row[4],
+      cells: {
+        holders: formatCount(holders),
+        avg: formatCount(avgHold),
+        small: formatPercent(small),
+        mid: formatPercent(mid),
+        large: formatPercent(large),
+        negotiable: formatShares(negotiableYi * 1e4),
+      },
+      sort: { holders, avg: avgHold, small, mid, large, negotiable: negotiableYi },
     })
   }
 
@@ -214,7 +304,7 @@ export function clientTableRows(payload: ClientPayload, year: number): TableRow[
 }
 
 /* ------------------------------------------------------------------ */
-/* The accordion chart                                                 */
+/* SSE: investor identity over time                                    */
 /* ------------------------------------------------------------------ */
 
 export type HistoryKey = 'individual' | 'corporate' | 'institution' | 'other'
@@ -324,10 +414,85 @@ export function historyAriaLabel(name: string, history: History): string {
   const first = firstComparable(history)
   const last = lastPoint(history)
   if (!first || !last) return `${name} 的历年股东结构暂无可读数据。`
-  if (first.year === last.year) return `${name} ${last.year} 年末的股东结构：自然人 ${formatPercent(last.individual)}，一般法人 ${formatPercent(last.corporate)}，专业机构 ${formatPercent(last.institution)}。`
-  return `${name} ${first.year} 到 ${last.year} 年末的股东结构折线图：自然人从 ${formatPercent(first.individual)} 变为 ${formatPercent(
-    last.individual,
-  )}，一般法人从 ${formatPercent(first.corporate)} 变为 ${formatPercent(last.corporate)}，专业机构从 ${formatPercent(
-    first.institution,
-  )} 变为 ${formatPercent(last.institution)}。`
+  if (first.year === last.year) {
+    return `${name} ${last.year} 年末的股东结构：自然人 ${formatPercent(last.individual)}，一般法人 ${formatPercent(
+      last.corporate,
+    )}，专业机构 ${formatPercent(last.institution)}。`
+  }
+  return `${name} ${first.year} 到 ${last.year} 年末的股东结构折线图：自然人从 ${formatPercent(
+    first.individual,
+  )} 变为 ${formatPercent(last.individual)}，一般法人从 ${formatPercent(first.corporate)} 变为 ${formatPercent(
+    last.corporate,
+  )}，专业机构从 ${formatPercent(first.institution)} 变为 ${formatPercent(last.institution)}。`
+}
+
+/* ------------------------------------------------------------------ */
+/* SZSE: holding size over time                                        */
+/* ------------------------------------------------------------------ */
+
+export interface SzseHistoryPoint {
+  year: number
+  negotiableYi: number
+  holders: number
+  avgHold: number
+  small: number
+  mid: number
+  large: number
+  /** The six printed buckets, for the exact yearly table. */
+  buckets: [number, number, number, number, number, number]
+}
+
+export type SzseHistory = (SzseHistoryPoint | null)[]
+
+export function buildSzseHistory(company: SzseClientCompany, years: number[]): SzseHistory {
+  return years.map((year, index) => {
+    const row = company.r[index]
+    if (!row) return null
+    const [negotiableYi, holders, avgHold, pLt1k, p1k5k, p5k10k, p10k50k, p50k100k, pGt100k] = row
+    return {
+      year,
+      negotiableYi,
+      holders,
+      avgHold,
+      small: pLt1k + p1k5k + p5k10k,
+      mid: p10k50k + p50k100k,
+      large: pGt100k,
+      buckets: [pLt1k, p1k5k, p5k10k, p10k50k, p50k100k, pGt100k],
+    }
+  })
+}
+
+export function szseLastPoint(history: SzseHistory): SzseHistoryPoint | null {
+  return [...history].reverse().find((point): point is SzseHistoryPoint => point !== null) ?? null
+}
+
+export function szseHistorySummary(history: SzseHistory): string {
+  const points = history.filter((point): point is SzseHistoryPoint => point !== null)
+  const first = points[0]
+  const last = points.at(-1)
+  if (!last) return '没有可展示的历史记录。'
+  if (!first || first.year === last.year) {
+    return `只有 ${last.year} 年末一条记录：${formatCount(last.holders)} 户股东，户均 ${formatCount(
+      last.avgHold,
+    )} 股，10 万股以上占 ${formatPercent(last.large)}。`
+  }
+
+  return `${last.year} 年末：${formatCount(last.holders)} 户股东，户均 ${formatCount(last.avgHold)} 股；10 万股以上占 ${formatPercent(
+    last.large,
+  )}（${first.year} 年为 ${formatPercent(first.large)}，${formatDelta(last.large - first.large)}pp）。`
+}
+
+export function szseHistoryAriaLabel(name: string, history: SzseHistory): string {
+  const points = history.filter((point): point is SzseHistoryPoint => point !== null)
+  const first = points[0]
+  const last = points.at(-1)
+  if (!last) return `${name} 的历年持股规模暂无可读数据。`
+  if (!first || first.year === last.year) {
+    return `${name} ${last.year} 年末：${formatCount(last.holders)} 户股东，户均 ${formatCount(
+      last.avgHold,
+    )} 股，10 万股以上占 ${formatPercent(last.large)}。`
+  }
+  return `${name} ${first.year} 到 ${last.year} 年末的持股规模图：10 万股以上占比从 ${formatPercent(
+    first.large,
+  )} 变为 ${formatPercent(last.large)}，股东数从 ${formatCount(first.holders)} 户变为 ${formatCount(last.holders)} 户。`
 }
