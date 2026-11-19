@@ -1,9 +1,9 @@
 ---
 import {
-  SSE_COLUMNS,
   tableHeadHtml,
   tableLoadingRowHtml,
   tableRowHtml,
+  type ColumnDef,
   type MarketInfo,
   type TableRow,
 } from '../../lib/shareholders/table'
@@ -12,11 +12,12 @@ import { formatCount } from '../../lib/shareholders/view'
 interface Props {
   markets: MarketInfo[]
   defaultMarket: MarketInfo
+  defaultColumns: readonly ColumnDef[]
   previewRows: TableRow[]
   previewLabel: string
 }
 
-const { markets, defaultMarket, previewRows, previewLabel } = Astro.props
+const { markets, defaultMarket, defaultColumns, previewRows, previewLabel } = Astro.props
 const yearsDescending = [...defaultMarket.years].sort((a, b) => b - a)
 ---
 
@@ -25,6 +26,7 @@ const yearsDescending = [...defaultMarket.years].sort((a, b) => b - a)
   data-holder-table
   data-markets={JSON.stringify(markets)}
   data-default-market={defaultMarket.id}
+  data-default-year={defaultMarket.latestYear}
   aria-labelledby="holder-heading"
 >
   <h2 id="holder-heading" class="sr-only">沪深个股股东结构表</h2>
@@ -56,7 +58,6 @@ const yearsDescending = [...defaultMarket.years].sort((a, b) => b - a)
         autocapitalize="off"
         spellcheck="false"
         enterkeyhint="search"
-        aria-describedby="holder-search-hint"
         aria-label="搜索股票代码、简称或板块"
       />
     </div>
@@ -65,7 +66,7 @@ const yearsDescending = [...defaultMarket.years].sort((a, b) => b - a)
       <label class="holder-year__label" for="holder-year">年份</label>
       <select id="holder-year" class="holder-year__select" data-holder-year>
         {yearsDescending.map((year) => (
-          <option value={year} selected={year === defaultMarket.latestYear}>{year} 年末</option>
+          <option value={year} selected={year === defaultMarket.latestYear}>{year}</option>
         ))}
       </select>
     </div>
@@ -75,17 +76,13 @@ const yearsDescending = [...defaultMarket.years].sort((a, b) => b - a)
     </p>
   </div>
 
-  <p class="holder-hint" id="holder-search-hint">
-    点表头排序，点整行展开历年变化。上交所看身份，深交所看筹码。
-  </p>
-
   <div class="holder-viewport" data-holder-viewport role="region" aria-label="个股股东结构表，可滚动" tabindex="0">
     <table class="holder-table">
       <caption class="sr-only" data-holder-caption>
-        沪深个股股东结构表。上交所按自然人、一般法人、专业机构拆分；深交所按持股规模拆分。各列可按升序或降序排列。
+        沪深个股股东结构表。上交所按自然人、一般法人、专业机构拆分；深交所按持股规模拆分。各列可按升序或降序排列，每只股票可展开历年变化。
       </caption>
-      <thead data-holder-head set:html={tableHeadHtml(SSE_COLUMNS)} />
-      <tbody data-holder-body set:html={tableLoadingRowHtml(SSE_COLUMNS.length)} />
+      <thead data-holder-head set:html={tableHeadHtml(defaultColumns)} />
+      <tbody data-holder-body set:html={tableLoadingRowHtml(defaultColumns.length)} />
     </table>
   </div>
 
@@ -95,7 +92,6 @@ const yearsDescending = [...defaultMarket.years].sort((a, b) => b - a)
     <style is:inline>
       .holder-markets,
       .holder-toolbar,
-      .holder-hint,
       .holder-viewport {
         display: none !important;
       }
@@ -112,8 +108,8 @@ const yearsDescending = [...defaultMarket.years].sort((a, b) => b - a)
     <div class="holder-preview-wrap" role="region" aria-label="上交所最新年末前 20 行预览，可左右滚动" tabindex="0">
       <table class="holder-table holder-table--preview">
         <caption class="sr-only">{previewLabel}前 20 行预览</caption>
-        <thead set:html={tableHeadHtml(SSE_COLUMNS, 'code', 'asc', false)} />
-        <tbody set:html={previewRows.map((row) => tableRowHtml(row, SSE_COLUMNS, false)).join('')} />
+        <thead set:html={tableHeadHtml(defaultColumns, 'code', 'asc', false)} />
+        <tbody set:html={previewRows.map((row) => tableRowHtml(row, defaultColumns, false)).join('')} />
       </table>
     </div>
   </noscript>

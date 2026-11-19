@@ -7,6 +7,7 @@ import {
   buildHistory,
   buildSzseHistory,
   columnsForMarket,
+  columnsForRows,
   companyNameAt,
   escapeHtml,
   historyAriaLabel,
@@ -86,6 +87,7 @@ const OVERSCAN = 6
 const payloads = new Map<Market, Payload>()
 const loading = new Map<Market, Promise<Payload>>()
 const selectedYears = new Map<Market, number>()
+const columnsCache = new Map<string, readonly ColumnDef[]>()
 
 let elements: Elements
 let infos: Record<Market, MarketInfo>
@@ -98,15 +100,23 @@ let keyboardMode = false
 /* Formatting helpers                                                  */
 /* ------------------------------------------------------------------ */
 
+const formatWan = (value: number, digits: number): string =>
+  (value / 1e4).toLocaleString('zh-Hans', {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  })
+
+// The legend gives the categories in order; the readout carries only the numbers.
 const SSE_READOUT = (point: HistoryPoint): string =>
-  `${point.year} 年末 · 自然人 ${formatPercent(point.individual)} · 一般法人 ${formatPercent(
-    point.corporate,
-  )} · 专业机构 ${formatPercent(point.institution)} · 其他 ${formatPercent(point.other, 2)}`
+  `${point.year} 年末 · ${formatPercent(point.individual)} · ${formatPercent(point.corporate)} · ${formatPercent(
+    point.institution,
+  )} · ${formatPercent(point.other, 2)}`
 
 const SZSE_READOUT = (point: SzseHistoryPoint): string =>
-  `${point.year} 年末 · 股东 ${formatCount(point.holders)} 户 · 户均 ${formatCount(point.avgHold)} 股 · ＜1万 ${formatPercent(
-    point.small,
-  )} · 1万–10万 ${formatPercent(point.mid)} · ＞10万 ${formatPercent(point.large)}`
+  `${point.year} 年末 · 股东 ${formatWan(point.holders, 1)} 万户 · 户均 ${formatWan(
+    point.avgHold,
+    2,
+  )} 万股 · ${formatPercent(point.small)} · ${formatPercent(point.mid)} · ${formatPercent(point.large)}`
 
 const rowHeightPx = (): number => {
   const value = getComputedStyle(elements.viewport).getPropertyValue('--holder-row-height')
@@ -182,6 +192,19 @@ function filteredRows(table: ActiveTable): TableRow[] {
   return sortTableRows(rows, table.sortKey, table.direction)
 }
 
+function setColumns(table: ActiveTable): boolean {
+  const next = columnsForRows(table.market, table.rows)
+  const changed = next.length !== table.columns.length
+  table.columns = next
+  columnsCache.set(`${table.market}:${table.year}`, next)
+  if (!next.some((column) => column.key === table.sortKey)) {
+    table.sortKey = 'code'
+    table.direction = 'asc'
+    return true
+  }
+  return changed
+}
+
 function updateCount(table: ActiveTable): void {
   elements.count.textContent =
     table.query.trim() === ''
@@ -192,9 +215,11 @@ function updateCount(table: ActiveTable): void {
 function updateCaption(table: ActiveTable): void {
   const columns =
     table.market === 'sse'
-      ? '自然人、一般法人、专业机构与其他持股比例'
+      ? table.columns.some((column) => column.key === 'other')
+        ? '自然人、一般法人、专业机构与其他持股比例'
+        : '自然人、一般法人与专业机构持股比例'
       : '股东数、户均持股、三档持股比例与托管流通股'
-  elements.caption.textContent = `${table.info.label} ${table.year} 年末个股股东结构表。列有${columns}；各列可按升序或降序排列。`
+  elements.caption.textContent = `${table.info.label} ${table.year} 年末个股股东结构表。列有${columns}；各列可按升序或降序排列，每只股票可展开历年变化。`
 }
 
 function updateTabs(): void {
@@ -220,7 +245,7 @@ function updateSortHeader(table: ActiveTable): void {
 function renderYearOptions(table: ActiveTable): void {
   const years = [...table.info.years].sort((first, second) => second - first)
   elements.year.innerHTML = years
-    .map((year) => `<option value="${year}"${year === table.year ? ' selected' : ''}>${year} 年末</option>`)
+    .map((year) => `<option value="${year}"${year === table.year ? ' selected' : ''}>${year}</option>`)
     .join('')
   elements.year.value = String(table.year)
 }
@@ -401,10 +426,10 @@ function detailShell(
   return `<div class="holder-detail" role="region" aria-labelledby="${titleId}">
     <header class="holder-detail__head">
       <div class="holder-detail__identity">
-        <p class="holder-detail__kicker">${meta.map(escapeHtml).join(' · ')}</p>
         <h3 class="holder-detail__title" id="${titleId}">${escapeHtml(
           name,
         )}<span class="holder-detail__code">${code}</span></h3>
+        <p class="holder-detail__meta">${meta.map(escapeHtml).join(' · ')}</p>
       </div>
       <button type="button" class="holder-detail__close" data-close-detail aria-label="收起 ${escapeHtml(
         name,
@@ -458,20 +483,18 @@ function sseChartHtml(name: string, years: number[], history: History): string {
     (key) => `<path class="holder-chart__line holder-chart__line--${key}" d="${historyPath(history, key)}" />`,
   ).join('')
 
-  const legend = HISTORY_KEYS.map((key) => {
-    const latest = historyLatest(history, key)
-    return `<li><span class="holder-chart__swatch holder-chart__swatch--${key}" aria-hidden="true"></span>${HISTORY_LABELS[key]}<b>${
-      latest ? formatPercent(latest.value) : '—'
-    }</b></li>`
-  }).join('')
+  const legend = HISTORY_KEYS.map(
+    (key) =>
+      `<li><span class="holder-chart__swatch holder-chart__swatch--${key}" aria-hidden="true"></span>${HISTORY_LABELS[key]}</li>`,
+  ).join('')
 
-  const notes: string[] = ['比例为占当年合计持股，合计单位为亿股。', '在图上移动可查看单年数值。']
+  const notes: string[] = []
   if (breaks.length > 0) {
     notes.push(
-      `虚线：${breakYears.map((year) => (year === 2009 ? '2009 年合计口径' : '2022 年分类调整')).join('、')}。`,
+      `虚线：${breakYears.map((year) => (year === 2009 ? '2009 起总股本口径' : '2022 起分类调整')).join(' · ')}。`,
     )
   }
-  if (history.some((entry) => entry === null)) notes.push('折线断开处表示该年末未收录。')
+  if (history.some((entry) => entry === null)) notes.push('断点：该年末未收录。')
 
   return `<figure class="holder-chart">
     <div class="holder-chart__body">
@@ -494,7 +517,7 @@ function sseChartHtml(name: string, years: number[], history: History): string {
     <figcaption class="holder-chart__caption">
       <ul class="holder-chart__legend">${legend}</ul>
       <p class="holder-chart__readout" data-readout>${point ? SSE_READOUT(point) : '—'}</p>
-      <p class="holder-chart__note">${notes.join(' ')}</p>
+      ${notes.length > 0 ? `<p class="holder-chart__note">${notes.join(' ')}</p>` : ''}
     </figcaption>
   </figure>`
 }
@@ -659,26 +682,19 @@ function szseChartHtml(name: string, years: number[], history: SzseHistory): str
     )
     .join('')
 
-  const latest = point
   const legend = [
-    { key: 'small', label: '＜1万', value: latest?.small },
-    { key: 'mid', label: '1万–10万', value: latest?.mid },
-    { key: 'large', label: '＞10万', value: latest?.large },
+    { key: 'small', label: '＜1万' },
+    { key: 'mid', label: '1万–10万' },
+    { key: 'large', label: '＞10万' },
   ]
     .map(
       (item) =>
-        `<li><span class="holder-chart__swatch holder-chart__swatch--${item.key}" aria-hidden="true"></span>${item.label}<b>${
-          item.value === undefined ? '—' : formatPercent(item.value)
-        }</b></li>`,
+        `<li><span class="holder-chart__swatch holder-chart__swatch--${item.key}" aria-hidden="true"></span>${item.label}</li>`,
     )
     .join('')
 
-  const notes = [
-    '三段为 ＜1万、1万–10万、＞10万；六档明细见下表。',
-    '深交所只收录 A 股，卷号 = 数据年份。',
-    '在图上移动可查看单年数值。',
-  ]
-  if (history.some((entry) => entry === null)) notes.push('空白年份表示该年末未收录。')
+  const notes: string[] = []
+  if (history.some((entry) => entry === null)) notes.push('空白：该年末未收录。')
 
   return `<figure class="holder-chart">
     <div class="holder-chart__body">
@@ -700,7 +716,7 @@ function szseChartHtml(name: string, years: number[], history: SzseHistory): str
     <figcaption class="holder-chart__caption">
       <ul class="holder-chart__legend">${legend}</ul>
       <p class="holder-chart__readout" data-readout>${point ? SZSE_READOUT(point) : '—'}</p>
-      <p class="holder-chart__note">${notes.join(' ')}</p>
+      ${notes.length > 0 ? `<p class="holder-chart__note">${notes.join(' ')}</p>` : ''}
     </figcaption>
   </figure>`
 }
@@ -754,7 +770,6 @@ function szseYearTable(history: SzseHistory): string {
         <tbody>${rows}</tbody>
       </table>
     </div>
-    <p class="holder-years__hint">表格可左右滑动，查看六档明细。</p>
   </details>`
 }
 
@@ -947,9 +962,11 @@ function applyYear(table: ActiveTable, year: number): void {
   table.year = year
   selectedYears.set(table.market, year)
   table.rows = buildRows(table, year)
+  const columnsChanged = setColumns(table)
   table.visible = filteredRows(table)
   elements.year.value = String(year)
   elements.viewport.scrollTop = 0
+  if (columnsChanged) renderHeader(table)
   updateCaption(table)
   updateCount(table)
   lastSignature = ''
@@ -957,16 +974,20 @@ function applyYear(table: ActiveTable, year: number): void {
   status(`已显示${table.info.label} ${year} 年末，共 ${formatCount(table.visible.length)} 只。`)
 }
 
-async function activate(market: Market, options: { year?: number; code?: string } = {}): Promise<void> {
+async function activate(
+  market: Market,
+  options: { year?: number; code?: string; columns?: readonly ColumnDef[]; initial?: boolean } = {},
+): Promise<void> {
   const info = infos[market]
   if (!info) return
   if (active) closeDetail(active, false, false)
 
   const year = options.year ?? selectedYears.get(market) ?? info.latestYear
+  const cacheKey = `${market}:${year}`
   const table: ActiveTable = {
     market,
     info,
-    columns: columnsForMarket(market),
+    columns: options.columns ?? columnsCache.get(cacheKey) ?? columnsForMarket(market),
     payload: null,
     year,
     rows: [],
@@ -985,12 +1006,16 @@ async function activate(market: Market, options: { year?: number; code?: string 
   selectedYears.set(market, year)
   lastSignature = ''
   elements.search.value = ''
-  elements.year.disabled = true
+  const serverDefault =
+    options.initial === true &&
+    market === (elements.root.dataset.defaultMarket as Market | undefined) &&
+    year === Number(elements.root.dataset.defaultYear)
+  elements.year.disabled = !serverDefault
   elements.viewport.scrollTop = 0
   updateTabs()
   renderYearOptions(table)
   renderLoading(table)
-  elements.count.textContent = '—'
+  if (!serverDefault) elements.count.textContent = '—'
   writeMarketParam(market)
   status(`正在载入${info.label} ${year} 年末数据…`)
 
@@ -999,6 +1024,7 @@ async function activate(market: Market, options: { year?: number; code?: string 
     if (active !== table) return
     table.payload = payload
     table.rows = buildRows(table, year)
+    setColumns(table)
     table.visible = filteredRows(table)
     elements.year.disabled = false
     updateCaption(table)
@@ -1029,8 +1055,10 @@ async function openLinkedStock(table: ActiveTable, code: string): Promise<void> 
     table.year = year
     selectedYears.set(table.market, year)
     table.rows = buildRows(table, year)
+    const columnsChanged = setColumns(table)
     table.visible = filteredRows(table)
     elements.year.value = String(year)
+    if (columnsChanged) renderHeader(table)
     updateCaption(table)
     updateCount(table)
     lastSignature = ''
@@ -1161,10 +1189,15 @@ function init(): void {
   root.addEventListener('keydown', () => {
     keyboardMode = true
   }, true)
-  root.addEventListener('keydown', (event) => {
+  document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && active && active.openIndex !== null) {
       event.preventDefault()
-      closeDetail(active, true, true)
+      const table = active
+      const openIndex = table.openIndex
+      if (openIndex === null) return
+      const code = table.visible[openIndex]?.code ?? null
+      closeDetail(table, true, false)
+      if (code) focusRow(table, code)
     }
   })
 
@@ -1188,7 +1221,17 @@ function init(): void {
     if (requestedStock.startsWith('6') || requestedStock.startsWith('9')) startMarket = 'sse'
     else if (requestedStock.startsWith('0') || requestedStock.startsWith('3')) startMarket = 'szse'
   }
-  void activate(startMarket, { code: requestedStock || undefined })
+
+  // Reuse the server header's keys for the first loading state, so a hidden
+  // residual column does not flash in and out before the payload arrives.
+  const headerKeys = [...head.querySelectorAll<HTMLTableCellElement>('th[data-sort-th]')].map(
+    (cell) => cell.dataset.sortTh,
+  )
+  const baseStartColumns = columnsForMarket(startMarket)
+  const startColumns = baseStartColumns.filter((column) => headerKeys.includes(column.key))
+  const columns = startColumns.length >= baseStartColumns.length - 1 ? startColumns : undefined
+
+  void activate(startMarket, { code: requestedStock || undefined, columns, initial: true })
 }
 
 init()

@@ -6,7 +6,7 @@ import HolderTable from '../../components/shareholders/HolderTable.astro'
 import DataNotes from '../../components/shareholders/DataNotes.astro'
 import { buildPanelModel } from '../../lib/shareholders/model'
 import { loadPanelRows } from '../../lib/shareholders/parse'
-import { ssePanelRowToTableRow, type MarketInfo } from '../../lib/shareholders/table'
+import { SSE_COLUMNS, ssePanelRowToTableRow, type MarketInfo } from '../../lib/shareholders/table'
 import {
   PANEL_CSV_FILENAME,
   PANEL_CSV_URL,
@@ -65,8 +65,11 @@ const totalCompanies = sseModel.coverage.companies + szseModel.coverage.companie
 // interactive table replaces it on load and is virtualised, so the page no longer
 // ships 5,000 rows of HTML.
 const companiesByCode = new Map(sseModel.companies.map((company) => [company.code, company]))
-const previewRows = sseModel.rows
-  .filter((row) => row.year === sseModel.latestYear)
+const latestSseRows = sseModel.rows.filter((row) => row.year === sseModel.latestYear)
+const defaultColumns = SSE_COLUMNS.filter(
+  (column) => column.key !== 'other' || latestSseRows.some((row) => Math.abs(row.otherPct) >= 0.05),
+)
+const previewRows = [...latestSseRows]
   .sort((first, second) => first.code - second.code)
   .slice(0, 20)
   .map((row) =>
@@ -178,10 +181,8 @@ const structuredData = {
 
   <main class="shell pt-article-top pb-page-bottom" lang="zh-Hans">
     <PageHeader
-      class="max-sm:[&>h1]:text-heading-32 [&>p:first-child]:normal-case"
-      eyebrow="数据观察 / 股东结构"
+      class="max-sm:[&>h1]:text-heading-32 [&>h1]:mt-0"
       title="谁在持有沪深股票"
-      lede="上交所按投资者身份拆分，深交所按持股规模拆分；两套年鉴口径不同，分开读。默认显示各自最新一年，搜索、排序和逐只股票的历年变化都在一张表里。"
     >
       <LanguageNote
         slot="note"
@@ -192,29 +193,19 @@ const structuredData = {
         available={['zh-Hans'] as Locale[]}
       />
       <div slot="meta" class="mt-6 flex flex-wrap items-baseline gap-x-6 gap-y-2 border-t border-line pt-4 font-ui text-label-11 text-ink-tertiary">
-        <span>2 个市场</span>
-        <span>{formatCount(totalRows)} 条记录</span>
+        <span>全期 {formatCount(totalRows)} 条记录</span>
         <span>{formatCount(totalCompanies)} 只股票</span>
-        <span class="text-ink">沪 2007–2024</span>
-        <span class="text-ink">深 2008–2025</span>
-        <span class="ml-auto flex flex-wrap items-baseline gap-x-4 max-sm:ml-0">
-          <a
-            class="text-accent underline decoration-accent/40 underline-offset-[0.25em] transition-colors duration-1 hover:decoration-current"
-            href={PANEL_CSV_URL}
-            download={PANEL_CSV_FILENAME}
-          >沪 CSV ↓</a>
-          <a
-            class="text-accent underline decoration-accent/40 underline-offset-[0.25em] transition-colors duration-1 hover:decoration-current"
-            href={SZSE_CSV_URL}
-            download={SZSE_CSV_FILENAME}
-          >深 CSV ↓</a>
-        </span>
+        <a
+          class="ml-auto text-accent underline decoration-accent/40 underline-offset-[0.25em] transition-colors duration-1 hover:decoration-current max-sm:ml-0"
+          href="#method"
+        >数据说明 ↓</a>
       </div>
     </PageHeader>
 
     <HolderTable
       markets={markets}
       defaultMarket={sseMarket}
+      defaultColumns={defaultColumns}
       previewRows={previewRows}
       previewLabel={previewLabel}
     />

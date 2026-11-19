@@ -7,6 +7,7 @@ import {
   buildHistory,
   buildSzseHistory,
   columnsForMarket,
+  columnsForRows,
   companyNameAt,
   compareForSort,
   historyAriaLabel,
@@ -84,6 +85,12 @@ describe('market columns', () => {
     ])
     expect(columnsForMarket('sse')).toBe(SSE_COLUMNS)
     expect(columnsForMarket('szse')).toBe(SZSE_COLUMNS)
+  })
+
+  it('drops the residual column only when the year has no residual', () => {
+    expect(columnsForRows('sse', [sseRow()]).map((column) => column.key)).not.toContain('other')
+    expect(columnsForRows('sse', [sseRow({ sort: { ...sseRow().sort, other: 3.8 } })]).map((column) => column.key)).toContain('other')
+    expect(columnsForRows('szse', [szseRow()])).toBe(SZSE_COLUMNS)
   })
 })
 

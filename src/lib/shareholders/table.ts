@@ -61,6 +61,15 @@ export const SZSE_COLUMNS: readonly ColumnDef[] = [
 export const columnsForMarket = (market: Market): readonly ColumnDef[] =>
   market === 'sse' ? SSE_COLUMNS : SZSE_COLUMNS
 
+/** The SSE residual is a printed zero in most years; keep the column only when it carries data. */
+export function columnsForRows(market: Market, rows: readonly TableRow[]): readonly ColumnDef[] {
+  const columns = columnsForMarket(market)
+  if (market !== 'sse') return columns
+  return rows.some((row) => Math.abs(row.sort.other ?? 0) >= 0.05)
+    ? columns
+    : columns.filter((column) => column.key !== 'other')
+}
+
 export interface TableRow {
   code: string
   name: string
@@ -147,7 +156,7 @@ export function tableRowHtml(
 }
 
 export function tableEmptyRowHtml(colspan: number): string {
-  return `<tr class="holder-empty" data-holder-empty><td colspan="${colspan}">没有匹配的股票。试试代码、简称或板块。</td></tr>`
+  return `<tr class="holder-empty" data-holder-empty><td colspan="${colspan}">没有匹配的股票。</td></tr>`
 }
 
 export function tableLoadingRowHtml(colspan: number): string {
